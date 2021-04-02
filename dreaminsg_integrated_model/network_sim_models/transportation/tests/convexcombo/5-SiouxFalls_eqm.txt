@@ -1,0 +1,19 @@
+# Points possible
+2
+
+# Network files
+tests/SiouxFalls_net.txt
+tests/SiouxFalls_trips.txt
+
+# Base flows file
+tests/convexcombo/SiouxFalls_eqm_flows.txt
+
+# Target flows file
+tests/convexcombo/SiouxFalls_eqm_flows.txt
+
+# Step size
+0.0
+
+# Answer flows file
+tests/convexcombo/SiouxFalls_eqm_flows.txt
+

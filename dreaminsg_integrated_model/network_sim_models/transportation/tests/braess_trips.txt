@@ -1,0 +1,7 @@
+<NUMBER OF ZONES> 4
+<TOTAL OD FLOW> 6
+<END OF METADATA>
+
+
+Origin 	1 
+    4 :  6;

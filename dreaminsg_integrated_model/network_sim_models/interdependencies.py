@@ -1,4 +1,7 @@
 import pandas as pd
+import re
+from scipy import spatial
+
 import dreaminsg_integrated_model.network_sim_models.water.water_network_model as water
 import dreaminsg_integrated_model.network_sim_models.power.power_system_model as power
 import dreaminsg_integrated_model.network_sim_models.transportation.network as transpo
@@ -10,51 +13,43 @@ power_dict = power.get_power_dict()
 #                               DEPENDENCY TABLE CLASS AND METHODS                                #
 #-------------------------------------------------------------------------------------------------#
 
+
 class DependencyTable:
-    def __init__(self, table_type):
+    def __init__(self):
         """Initiates an empty dataframe to store node-to-node dependencies.
 
         Arguments:
-            table_type {string} -- The type of the table (wp_table - water-power interdependencies, pt_table = power-transportation interdependencies, tw_table - transportation-water interdependencies)
+            table_type {string} -- The type of the table (wp_table - water-power interdependencies, transpo_access_table -- transportation access table)
         """
-        if table_type == 'wp_table':
-            self.table = pd.DataFrame(
-                columns=['name', 'water_id', 'power_id', 'water_type', 'power_type'])
-        elif table_type == 'pt_table':
-            self.table = pd.DataFrame(
-                columns=['name', 'power_id', 'transp_id', 'power_type', 'transp_type'])
-        elif table_type == 'tw_table':
-            self.table = pd.DataFrame(
-                columns=['name', 'transp_id', 'water_id', 'transp_type', 'water_type'])
-        else:
-            print("Enter a valid dependency table type (wp_table - water-power interdependencies, pt_table = power-transportation interdependencies, tw_table - transportation-water interdependencies).")
+        self.wp_table = pd.DataFrame(
+            columns=['water_id', 'power_id', 'water_type', 'power_type'])
+        self.access_table = pd.DataFrame(
+            columns=['origin_id', 'transp_id', 'origin_cat', 'origin_type', "access_dist"])
 
     #Water-Power interdependencies
-    def add_pump_motor_coupling(self, name, water_id, power_id, motor_mw, pm_efficiency=1):
+    def add_pump_motor_coupling(self, water_id, power_id, motor_mw, pm_efficiency=1):
         """Creates a pump-on-motor dependency entry in the dependency table.
 
         Arguments:
-            name {string} -- The user-defined name of the dependency. This name will be used to call the dependency objects during simulation.
             water_id {string} -- The name of the pump in the water network model.
             power_id {string} -- The name of the motor in the power systems model.
             motor_mw {float} -- The rated power of the motor in MegaWatts.
-            pm_efficiency {float} -- motor-to-pump efficiency.
+            pm_efficiency {float} -- Motor-to-pump efficiency.
 
         Returns:
-            pandas dataframe -- The modified power-water dependency table
+            pandas dataframe -- The modified power-water dependency table.
         """
         water_type = get_water_type(water_id)
         power_type = get_power_type(power_id)
         #PumpOnMotorDep(name, water_id, power_id, motor_mw, pm_efficiency)
-        self.table = self.table.append({
-            'name'      : name,
-            'water_id'  : water_id,
-            'power_id'  : power_id,
+        self.wp_table = self.wp_table.append({
+            'water_id': water_id,
+            'power_id': power_id,
             'water_type': water_type,
             'power_type': power_type},
             ignore_index=True)
 
-    def add_gen_reserv_coupling(self, name, water_id, power_id, gen_mw, gr_efficiency):
+    def add_gen_reserv_coupling(self, water_id, power_id, gen_mw, gr_efficiency):
         """Creates a generator-on-reservoir dependency entry in the dependency table.
 
         Arguments:
@@ -67,8 +62,7 @@ class DependencyTable:
         water_type = get_water_type(water_id)
         power_type = get_power_type(power_id)
         #GeneratorOnReservoirDep(name = name, water_id, pump_id, gen_mw, gr_efficiency)
-        self.table = self.table.append({
-            'name': name,
+        self.wp_table = self.wp_table.append({
             'water_id': water_id,
             'power_id': power_id,
             'water_type': water_type,
@@ -76,17 +70,31 @@ class DependencyTable:
             ignore_index=True)
 
     #Power-Transportation and  Interdependencies
-    def add_access_to_water_node(self, water_compon):
-        """Create a mapping to nearest road link from the water network component.
+    def add_transpo_access(self, integrated_graph):
+        """Create a mapping to nearest road link from every water/power network component.
 
         Arguments:
-            water_component {string} -- The name of the water network component.
+            component {string} -- The name of the water/power network component.
         """
-        pass
+        nodes_of_interest = [x for x, y in integrated_graph.nodes(
+            data=True) if y['type'] == "power_node" or y['type'] == 'water_node']
+        for node in nodes_of_interest:
+            name = '{}'
+            compon_cat = get_infra_type(node)
+            compon_type = get_power_type(node) if compon_cat == "power" else get_water_type(node)
+            near_node, near_dist = get_nearest_node(integrated_graph, node, "transpo_node")
+            self.access_table = self.access_table.append({
+                'origin_id': node, 
+                'transp_id': near_node, 
+                'origin_cat': compon_cat, 
+                'origin_type': compon_type, 
+                'access_dist': near_dist},
+            ignore_index = True)
 
 #-------------------------------------------------------------------------------------------------#
 #                                           DEPENDENCY CLASSES                                    #
 #-------------------------------------------------------------------------------------------------#
+
 
 class Dependency:
     """A class of infrastructure dependencies.
@@ -95,12 +103,14 @@ class Dependency:
     def __init__(self, name):
         self.name = name
 
+
 class PumpOnMotorDep(Dependency):
     """A class of pump-on-motor dependencies. Inherited from the Dependency superclass.
 
     Arguments:
         Dependency {class} -- Dependency class.
     """
+
     def __init__(self, name, start_id, end_id, motor_mw, pm_efficiency=1):
         self.name = name
         self.pump_id = start_id
@@ -110,12 +120,14 @@ class PumpOnMotorDep(Dependency):
         def modify_pump_power(self, motor_mw):
             self.pump_power = motor_mw*1000*pm_efficiency
 
+
 class GeneratorOnReservoirDep(Dependency):
     """A class of generator-on-reservoir dependencies. Inherited from the Dependency superclass.
 
     Arguments:
         Dependency {class} -- Dependency class.
     """
+
     def __init__(self, name, start_id, end_id, reserv_head, flowrate, gen_efficiency=1):
         self.name = name
         self.generator_id = start_id
@@ -125,6 +137,7 @@ class GeneratorOnReservoirDep(Dependency):
 #-------------------------------------------------------------------------------------------------#
 #                                   MISCELLANEOUS FUNCTIONS                                       #
 #-------------------------------------------------------------------------------------------------#
+
 
 def get_water_type(compon_name):
     """Returns type of water network component
@@ -146,7 +159,7 @@ def get_power_type(compon_name):
     """Returns the type of power systems component
 
     Arguments:
-        compon_name {string} -- [description]
+        compon_name {string} -- The name of the power systems component in the network.
 
     Returns:
         string -- The type of the power systems component.
@@ -156,3 +169,35 @@ def get_power_type(compon_name):
         if char.isalpha():
             power_type = "".join([power_type, char])
     return power_dict[power_type]
+
+def get_infra_type(compon_name):
+    type = ""
+    for char in compon_name[0:2]:
+        if char.isalpha():
+            type = "".join([type, char])
+    if type in power_dict.keys():
+        return "power"
+    elif type in water_dict.keys():
+        return "water"
+    else:
+        print("Component does not belong to either water or power component dictionary.")
+
+def get_nearest_node(integrated_graph, origin_node, target_type):
+    """Finds the nearest node belonging to a specific family from a given node and the distance between the two.
+
+    Arguments:
+        integrated_graph {netwrokx integrated network object} -- [description]
+        origin_node {string/integer} -- Name of the node for which the nearest node has to be identified.
+        target_type {string} -- The type of the target node (power_node, transpo_node, water_node)
+    """
+    curr_node_loc = integrated_graph.nodes[origin_node]['coord']
+    nodes_of_interest = [x for x, y in integrated_graph.nodes(
+        data=True) if y['type'] == target_type]
+    coords_of_interest = [y['coord'] for x, y in integrated_graph.nodes(
+        data=True) if y['type'] == target_type]
+
+    tree = spatial.KDTree(coords_of_interest)
+    dist_nearest = tree.query([curr_node_loc])[0][0]
+    nearest_node = nodes_of_interest[tree.query([curr_node_loc])[1][0]]
+
+    return nearest_node, round(dist_nearest, 2)

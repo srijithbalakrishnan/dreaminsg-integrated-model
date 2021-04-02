@@ -1,0 +1,13 @@
+# Points possible
+2
+
+# Network files
+tests/SiouxFalls_net.txt
+tests/SiouxFalls_trips.txt
+
+# Flows file
+tests/relativegap/SiouxFalls_eqm_flows.txt
+
+# Answer (relative gap)
+0.0
+

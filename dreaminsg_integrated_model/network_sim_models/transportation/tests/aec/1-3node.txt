@@ -1,0 +1,13 @@
+# Points possible
+2
+
+# Network file
+tests/3parallel_net.txt
+tests/3parallel_trips.txt
+
+# Flows file
+tests/relativegap/3parallel_flows.txt
+
+# Answer (average excess cost)
+1
+
