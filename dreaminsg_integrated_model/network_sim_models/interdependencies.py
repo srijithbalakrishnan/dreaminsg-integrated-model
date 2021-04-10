@@ -12,8 +12,6 @@ power_dict = power.get_power_dict()
 #-------------------------------------------------------------------------------------------------#
 #                               DEPENDENCY TABLE CLASS AND METHODS                                #
 #-------------------------------------------------------------------------------------------------#
-
-
 class DependencyTable:
     def __init__(self):
         """Initiates an empty dataframe to store node-to-node dependencies.
@@ -40,13 +38,13 @@ class DependencyTable:
             pandas dataframe -- The modified power-water dependency table.
         """
         water_type = get_water_type(water_id)
-        power_type = get_power_type(power_id)
+        power_code, power_type, power_name = get_power_type(power_id)
         #PumpOnMotorDep(name, water_id, power_id, motor_mw, pm_efficiency)
         self.wp_table = self.wp_table.append({
             'water_id': water_id,
             'power_id': power_id,
             'water_type': water_type,
-            'power_type': power_type},
+            'power_type': power_name},
             ignore_index=True)
 
     def add_gen_reserv_coupling(self, water_id, power_id, gen_mw, gr_efficiency):
@@ -60,13 +58,13 @@ class DependencyTable:
             gr_efficiency {float} -- Generator efficiency in fractions.
         """
         water_type = get_water_type(water_id)
-        power_type = get_power_type(power_id)
+        power_code,power_type, power_name = get_power_type(power_id)
         #GeneratorOnReservoirDep(name = name, water_id, pump_id, gen_mw, gr_efficiency)
         self.wp_table = self.wp_table.append({
             'water_id': water_id,
             'power_id': power_id,
             'water_type': water_type,
-            'power_type': power_type},
+            'power_type': power_name},
             ignore_index=True)
 
     #Power-Transportation and  Interdependencies
@@ -90,11 +88,15 @@ class DependencyTable:
                 'origin_type': compon_type, 
                 'access_dist': near_dist},
             ignore_index = True)
+    
+    def update_dependencies(self, pn, wn):
+        for index, row in self.wp_table.iterrows():
+            if (row.water_type == "Pump") & (row.power_type == "Motor"):
+                wn.get_link(row.water_id).power = pn.motor.index[pn.motor.name == row.power_id].item()*1000
 
 #-------------------------------------------------------------------------------------------------#
 #                                           DEPENDENCY CLASSES                                    #
 #-------------------------------------------------------------------------------------------------#
-
 
 class Dependency:
     """A class of infrastructure dependencies.
@@ -168,7 +170,14 @@ def get_power_type(compon_name):
     for char in compon_name[0:2]:
         if char.isalpha():
             power_type = "".join([power_type, char])
-    return power_dict[power_type]
+    return power_type, power_dict[power_type][0], power_dict[power_type][1]
+
+def get_near_node_field(compon_name):
+    power_type = ""
+    for char in compon_name[0:2]:
+        if char.isalpha():
+            power_type = "".join([power_type, char])
+    return power_dict[power_type][2]
 
 def get_infra_type(compon_name):
     type = ""
@@ -182,7 +191,7 @@ def get_infra_type(compon_name):
     else:
         print("Component does not belong to either water or power component dictionary.")
 
-def get_nearest_node(integrated_graph, origin_node, target_type):
+def get_nearest_node(integrated_graph, connected_node, target_type):
     """Finds the nearest node belonging to a specific family from a given node and the distance between the two.
 
     Arguments:
@@ -190,7 +199,7 @@ def get_nearest_node(integrated_graph, origin_node, target_type):
         origin_node {string/integer} -- Name of the node for which the nearest node has to be identified.
         target_type {string} -- The type of the target node (power_node, transpo_node, water_node)
     """
-    curr_node_loc = integrated_graph.nodes[origin_node]['coord']
+    curr_node_loc = integrated_graph.nodes[connected_node]['coord']
     nodes_of_interest = [x for x, y in integrated_graph.nodes(
         data=True) if y['type'] == target_type]
     coords_of_interest = [y['coord'] for x, y in integrated_graph.nodes(
@@ -201,3 +210,15 @@ def get_nearest_node(integrated_graph, origin_node, target_type):
     nearest_node = nodes_of_interest[tree.query([curr_node_loc])[1][0]]
 
     return nearest_node, round(dist_nearest, 2)
+
+def find_connected_power_node(origin_node, pn):
+    origin_code, origin_type, origin_name = get_power_type(origin_node)
+    near_node_field = power_dict[origin_code][2]
+    near_node_field = get_near_node_field(origin_node)
+    bus_index = pn[origin_type].query('name == "{}"'.format(origin_node))[
+        near_node_field].item()
+    connected_bus = pn.bus.iloc[bus_index]['name']
+    return connected_bus
+
+def find_connected_water_node(origin_node, pn):
+    pass

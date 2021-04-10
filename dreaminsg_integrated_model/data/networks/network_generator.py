@@ -147,7 +147,7 @@ def generate_powern(file_name):
     #print(pn.motor)
 
     #Generator
-    G = pp.create_gen(pn, bus8, p_mw=4, vm_pu=1.02)
+    #G = pp.create_gen(pn, bus8, p_mw=0.25, vm_pu=1.02)
     #save to directory
     pp.to_json(pn, file_name)
     print('Power systems network successfully saved to directory!')

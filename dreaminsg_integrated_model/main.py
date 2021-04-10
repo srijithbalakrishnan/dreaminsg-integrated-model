@@ -9,6 +9,8 @@ import dreaminsg_integrated_model.network_sim_models.water.water_network_model a
 import dreaminsg_integrated_model.network_sim_models.power.power_system_model as power
 import dreaminsg_integrated_model.network_sim_models.transportation.network as transpo
 
+import dreaminsg_integrated_model.results.figures.plots as plots
+
 def main():
     os.system('cls')
 
@@ -41,41 +43,41 @@ def main():
         pw_dep_table, name='G2R1', water_id='R1', power_id='G3', gen_mw=1, gr_efficiency=1.0)
     print(pw_dep_table)
 
-    # #SIMULATION
-    # # creating test case dataframe
-    # disrupt_points = pd.read_csv('dreaminsg_integrated_model/data/disruptive_scenarios/test1/motor_failure.csv')
-    # test = pd.DataFrame(columns=['time', 'motor_pw_factor'])
-    # test.time = np.arange(0, 100)
-    # test.motor_pw_factor = np.interp(
-    #     np.arange(100), disrupt_points.time_stamp, disrupt_points.motor1_break)
-    # #print(test.motor_pw_factor.values)
+    #SIMULATION
+    # creating test case dataframe
+    disrupt_points = pd.read_csv('dreaminsg_integrated_model/data/disruptive_scenarios/test1/motor_failure.csv')
+    test = pd.DataFrame(columns=['time', 'motor_pw_factor'])
+    test.time = np.arange(0, 100)
+    test.motor_pw_factor = np.interp(
+        np.arange(100), disrupt_points.time_stamp, disrupt_points.motor1_break)
+    #print(test.motor_pw_factor.values)
 
-    # #simulating the netwokwide impacts
-    # for index, row in test.iterrows():
-    #     #Set motor power level in the power systems model
-    #     pn.motor.pn_mech_mw = test.motor_pw_factor[index]*0.23
+    #simulating the netwokwide impacts
+    for index, row in test.iterrows():
+        #Set motor power level in the power systems model
+        pn.motor.pn_mech_mw = test.motor_pw_factor[index]*0.23
 
-    #     #run power systems model
-    #     power.run_power_simulation(pn)
+        #run power systems model
+        power.run_power_simulation(pn)
 
-    #     #Fix the time until which the wntr model should run in this iteration
-    #     wn.options.time.duration = 864*(index)
+        #Fix the time until which the wntr model should run in this iteration
+        wn.options.time.duration = 864*(index)
 
-    #     #set the pump power value based on motor power value
-    #     # pump_power = pn.res_bus.iloc[0, 2]*1000
-    #     # wn.get_link('WP1').power = pump_power
-    #     #print(pw_dep_table)
+        #set the pump power value based on motor power value
+        # pump_power = pn.res_bus.iloc[0, 2]*1000
+        # wn.get_link('WP1').power = pump_power
+        #print(pw_dep_table)
 
-    #     #run water distribution model and save current status
-    #     wn_results = water.run_water_simulation(wn, 864)
-    #     #print(wn_results.link['flowrate'])
-    #     #print(wn_results.node['pressure'])
-    #     # wn_plot = plots.water_net_plots(wn, wn_results)
-    #     # wn_plot.savefig('disruptive_scenarios/test1/water_plots/time{}.jpg'.format(index))
-    #     # wn_plot.close()
+        #run water distribution model and save current status
+        wn_results = water.run_water_simulation(wn, 864)
+        #print(wn_results.link['flowrate'])
+        #print(wn_results.node['pressure'])
+        # wn_plot = plots.water_net_plots(wn, wn_results)
+        # wn_plot.savefig('disruptive_scenarios/test1/water_plots/time{}.jpg'.format(index))
+        # wn_plot.close()
 
-    #     #transportation.dta_matlab_model(transp_folder)
-    #     #print('Iteration {} completed successfully!'.format(index))
+        #transportation.dta_matlab_model(transp_folder)
+        #print('Iteration {} completed successfully!'.format(index))
 
 
 if __name__ == '__main__':

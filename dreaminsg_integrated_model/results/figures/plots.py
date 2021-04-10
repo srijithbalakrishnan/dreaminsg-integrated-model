@@ -190,3 +190,31 @@ def plot_integrated_network(pn, wn, tn):
     plt.legend(scatterpoints=1, loc="upper right", framealpha=0.5)
 
     return G
+
+def plot_repair_curves(disrupt_recovery_object):
+    plt.figure(figsize=(10, 7))
+    l_h = []
+    for component in disrupt_recovery_object.distrupted_components:
+        h, = plt.plot(disrupt_recovery_object.event_table["time_stamp"]/60,
+                      disrupt_recovery_object.event_table[component], 
+                      label=component,
+                      linewidth=2,
+                      alpha = 1)
+        l_h.append(h)
+    plt.legend(handles=l_h)
+    plt.xlabel('Time (minutes)')
+    plt.ylabel('Component performance level (%)')
+    plt.show()
+
+
+def plot_interdependent_effects(power_consump_tracker, water_consump_tracker, time_tracker):
+    plt.figure(1, figsize=(10, 7))
+    plt.plot(time_tracker, power_consump_tracker, label = "Power")
+    plt.plot(time_tracker, water_consump_tracker, label="Water")
+    plt.xlabel('Time (seconds)')
+    plt.ylabel('Consumption ratio')
+    plt.xlim(0, max(time_tracker))
+    plt.ylim(0, 1.05)
+    plt.legend()
+    plt.title('Infrastructure resilience curves')
+    plt.show()
