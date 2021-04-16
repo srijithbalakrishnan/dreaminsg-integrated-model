@@ -2,7 +2,7 @@
 
 [JUNCTIONS]
 ;ID                      Elevation       Demand Pattern                 
- J1                      49.212598425    79.251615707                            ;
+ J1                        65.6167979    79.251615707                            ;
  J2                                 0    79.251615707                            ;
  J3                                 0    31.700646283                            ;
  J4                                 0    126.80258513                            ;
@@ -20,7 +20,6 @@
 
 [PIPES]
 ;ID                   Node1                Node2                              Length             Diameter            Roughness           Minor Loss               Status
- P1                   R1                   J1                       3280.839895     7.874015748             100               0                 Open   ;
  P3                   J1                   J2                       3280.839895     7.874015748             100               0                 Open   ;
  P4                   J2                   T1                       3280.839895     7.874015748             100               0                 Open   ;
  P5                   J1                   J3                       3280.839895     7.874015748             100               0                 Open   ;

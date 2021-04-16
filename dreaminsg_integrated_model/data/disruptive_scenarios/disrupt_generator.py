@@ -63,3 +63,10 @@ class DisruptionAndRecovery():
                     pn[compon_type].at[compon_index, 'in_service'] = False
                 else:
                     pn[compon_type].at[compon_index, 'in_service'] = True
+            elif compon_infra == "water":
+                compon_type == interdependencies.get_water_type(component)
+                if compon_type == "Pipe":
+                    if (self.event_table.loc[time_index, component] < 100):
+                        wn.get_link(component).status = 'Closed'
+                    else:
+                        wn.get_link(component).status = 'Open'

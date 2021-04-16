@@ -30,7 +30,7 @@ def generate_watern(file_name):
 
     #Add juntions
     wn.add_junction('J1', base_demand=0.005, demand_pattern='pd_1',
-                    elevation=15, coordinates=(200, 600))
+                    elevation=20, coordinates=(200, 600))
     wn.add_junction('J2', base_demand=0.005, demand_pattern='pd_1',
                     elevation=0, coordinates=(300, 450))
     wn.add_junction('J3', base_demand=0.002, demand_pattern='pd_1',
@@ -45,8 +45,8 @@ def generate_watern(file_name):
                     elevation=0, coordinates=(500, 0))
 
     #Add pipes
-    wn.add_pipe('P1', 'R1', 'J1', length=1000, diameter=0.20,
-                roughness=100, minor_loss=0, status='OPEN')
+    #wn.add_pipe('P1', 'R1', 'J1', length=1000, diameter=0.20,
+    #            roughness=100, minor_loss=0, status='OPEN')
     wn.add_pipe('P3', 'J1', 'J2', length=1000, diameter=0.20,
                 roughness=100, minor_loss=0, status='OPEN')
     wn.add_pipe('P4', 'J2', 'T1', length=1000, diameter=0.20,

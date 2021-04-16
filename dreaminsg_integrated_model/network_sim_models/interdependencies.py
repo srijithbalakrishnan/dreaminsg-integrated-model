@@ -37,7 +37,7 @@ class DependencyTable:
         Returns:
             pandas dataframe -- The modified power-water dependency table.
         """
-        water_type = get_water_type(water_id)
+        water_code, water_type = get_water_type(water_id)
         power_code, power_type, power_name = get_power_type(power_id)
         #PumpOnMotorDep(name, water_id, power_id, motor_mw, pm_efficiency)
         self.wp_table = self.wp_table.append({
@@ -57,7 +57,7 @@ class DependencyTable:
             gen_mw {float} -- The generator capacity in megawatts.
             gr_efficiency {float} -- Generator efficiency in fractions.
         """
-        water_type = get_water_type(water_id)
+        water_code, water_type = get_water_type(water_id)
         power_code,power_type, power_name = get_power_type(power_id)
         #GeneratorOnReservoirDep(name = name, water_id, pump_id, gen_mw, gr_efficiency)
         self.wp_table = self.wp_table.append({
@@ -85,14 +85,17 @@ class DependencyTable:
                 'origin_id': node, 
                 'transp_id': near_node, 
                 'origin_cat': compon_cat, 
-                'origin_type': compon_type, 
+                'origin_type': compon_type[1], 
                 'access_dist': near_dist},
             ignore_index = True)
     
     def update_dependencies(self, pn, wn):
         for index, row in self.wp_table.iterrows():
             if (row.water_type == "Pump") & (row.power_type == "Motor"):
-                wn.get_link(row.water_id).power = pn.motor.index[pn.motor.name == row.power_id].item()*1000
+                if (pn.motor[pn.motor.name == row.power_id].in_service.item() == True):
+                    wn.get_link(row.water_id).power = pn.res_motor.p_mw[pn.motor.index[pn.motor.name == row.power_id].item()]*1000
+                else:
+                    wn.get_link(row.water_id).power = 0
 
 #-------------------------------------------------------------------------------------------------#
 #                                           DEPENDENCY CLASSES                                    #
@@ -154,7 +157,7 @@ def get_water_type(compon_name):
     for char in compon_name[0:2]:
         if char.isalpha():
             water_type = "".join([water_type, char])
-    return water_dict[water_type]
+    return water_type, water_dict[water_type][0]
 
 
 def get_power_type(compon_name):
@@ -220,5 +223,11 @@ def find_connected_power_node(origin_node, pn):
     connected_bus = pn.bus.iloc[bus_index]['name']
     return connected_bus
 
-def find_connected_water_node(origin_node, pn):
-    pass
+def find_connected_water_node(origin_node, wn):
+    origin_code, origin_name = get_water_type(origin_node)
+    near_node_field = water_dict[origin_code][1]
+    if origin_code in ['WP', 'P']:
+        connected_node = getattr(wn.get_link(origin_node), near_node_field)
+    elif origin_code in ["R", "J", "T"]:
+        connected_node = getattr(wn.get_node(origin_node), near_node_field)
+    return connected_node

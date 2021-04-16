@@ -8,11 +8,11 @@ def get_water_dict():
         [dictionary of string: string] -- Mapping of infrastructure component abbreviations to names.
     """
     water_dict = {
-        "WP": "Pump",
-        "R": "Reservoir",
-        "P": "Pipe",
-        "J": "Juntion",
-        "T": "Tank"
+        "WP": ["Pump", "start_node_name"],
+        "R": ["Reservoir", "name"],
+        "P": ["Pipe", "start_node_name"],
+        "J": ["Juntion", "name"],
+        "T": ["Tank", "name"]
     }
     return water_dict
 

@@ -187,6 +187,7 @@ def plot_integrated_network(pn, wn, tn):
     nx.draw_networkx_nodes(G, water_junc_coords, nodelist=water_junc_list,
                            node_color='blue', alpha=0.25, node_size=node_size, label='water network')
     nx.draw_networkx_labels(G, water_junc_coords, {node:node for node in water_junc_list}, font_size=10, font_color='black')
+    plt.title('Interdependent Water-Power-Transportation Network')
     plt.legend(scatterpoints=1, loc="upper right", framealpha=0.5)
 
     return G
@@ -204,17 +205,18 @@ def plot_repair_curves(disrupt_recovery_object):
     plt.legend(handles=l_h)
     plt.xlabel('Time (minutes)')
     plt.ylabel('Component performance level (%)')
+    plt.title('Direct impact and recovery')
     plt.show()
 
 
 def plot_interdependent_effects(power_consump_tracker, water_consump_tracker, time_tracker):
     plt.figure(1, figsize=(10, 7))
-    plt.plot(time_tracker, power_consump_tracker, label = "Power")
-    plt.plot(time_tracker, water_consump_tracker, label="Water")
-    plt.xlabel('Time (seconds)')
+    plt.plot(time_tracker, power_consump_tracker, label="Power", linewidth=2)
+    plt.plot(time_tracker, water_consump_tracker, label="Water", linewidth=2)
+    plt.xlabel('Time (minutes)')
     plt.ylabel('Consumption ratio')
     plt.xlim(0, max(time_tracker))
     plt.ylim(0, 1.05)
     plt.legend()
-    plt.title('Infrastructure resilience curves')
+    plt.title('Network-wide effects and recovery')
     plt.show()
