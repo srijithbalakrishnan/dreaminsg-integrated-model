@@ -66,6 +66,15 @@ def load_networks(water_file, power_file, transp_folder):
 
 
 def build_power_water_dependencies(dependency_table, dependency_file):
+    """[summary]
+
+    Arguments:
+        dependency_table {[type]} -- [description]
+        dependency_file {[type]} -- [description]
+
+    Returns:
+        [type] -- [description]
+    """
     try:
         dependency_data = pd.read_csv(dependency_file, sep=",")
         for index, row in dependency_data.iterrows():
@@ -98,131 +107,135 @@ def build_power_water_dependencies(dependency_table, dependency_file):
 
 
 def build_transportation_access(dependency_table, integrated_graph):
+    """[summary]
+
+    Arguments:
+        dependency_table {[type]} -- [description]
+        integrated_graph {[type]} -- [description]
+
+    Returns:
+        [type] -- [description]
+    """
     dependency_table.add_transpo_access(integrated_graph)
     return dependency_table
 
 
 def schedule_component_repair(disaster_recovery_object, integrated_graph, pn, wn, tn):
+    """[summary]
+
+    Arguments:
+        disaster_recovery_object {[type]} -- [description]
+        integrated_graph {[type]} -- [description]
+        pn {[type]} -- [description]
+        wn {[type]} -- [description]
+        tn {[type]} -- [description]
+    """
     repair_order = disaster_recovery_object.optimze_recovery_strategy()
     print(
         f"The optimised repair strategy is to schedule repair of failed components in the following order: {repair_order}\n"
     )
+    disaster_recovery_object.schedule_recovery(
+        integrated_graph, wn, pn, tn, repair_order
+    )
 
-    if len(repair_order) > 0:
-        for index, node in enumerate(repair_order):
-            origin_node = node
-            (
-                compon_infra,
-                compon_notation,
-                compon_code,
-                compon_full,
-            ) = interdependencies.get_compon_details(origin_node)
 
-            if compon_infra == "power":
-                recovery_time = power_dict[compon_notation]["repair_time"] * 3600
-                connected_bus = find_connected_power_node(origin_node, pn)
-                nearest_node, near_dist = get_nearest_node(
-                    integrated_graph, connected_bus, "transpo_node"
+def expand_event_table(disaster_recovery_object, initial_sim_step, add_points):
+    """[summary]
+
+    Arguments:
+        disaster_recovery_object {[type]} -- [description]
+        initial_sim_step {[type]} -- [description]
+        add_points {[type]} -- [description]
+    """
+    compon_list = disaster_recovery_object.event_table.components.unique()
+    full_time_list = disaster_recovery_object.event_table.time_stamp.unique()
+    interval_approx = (full_time_list[-1] - full_time_list[0]) / add_points
+    act_interval = int(initial_sim_step * round(interval_approx / initial_sim_step))
+
+    new_range = range(full_time_list[0], full_time_list[-1], act_interval)
+    new_time_stamps = [time_stamp for time_stamp in new_range]
+
+    for time in full_time_list:
+        disrupt_components = list(disaster_recovery_object.disrupted_components)
+        curr_components = list(
+            disaster_recovery_object.event_table[
+                disaster_recovery_object.event_table.time_stamp == time
+            ].components
+        )
+        components_to_add = [
+            i
+            for i in disrupt_components + curr_components
+            if i not in disrupt_components or i not in curr_components
+        ]
+        for i, compon in enumerate(components_to_add):
+            compon_time_list = disaster_recovery_object.event_table[
+                disaster_recovery_object.event_table.components == compon
+            ].time_stamp.unique()
+            maxless = max(compon_time_list[compon_time_list <= time])
+            perf_level = disaster_recovery_object.event_table[
+                (disaster_recovery_object.event_table.components == compon)
+                & (disaster_recovery_object.event_table.time_stamp == maxless)
+            ].perf_level.values[0]
+            perf_state = disaster_recovery_object.event_table[
+                (disaster_recovery_object.event_table.components == compon)
+                & (disaster_recovery_object.event_table.time_stamp == maxless)
+            ].component_state.values[0]
+            disaster_recovery_object.event_table = (
+                disaster_recovery_object.event_table.append(
+                    {
+                        "time_stamp": time,
+                        "components": compon,
+                        "perf_level": perf_level,
+                        "component_state": perf_state,
+                    },
+                    ignore_index=True,
                 )
-                travel_time = int(
-                    round(
-                        tn.calculateShortestTravelTime(
-                            disaster_recovery_object.curr_loc_crew, nearest_node
-                        ),
-                        0,
+            )
+
+    for compon in compon_list:
+        compon_time_list = disaster_recovery_object.event_table[
+            disaster_recovery_object.event_table.components == compon
+        ].time_stamp.unique()
+        for time in new_time_stamps:
+            if time not in compon_time_list:
+                maxless = max(compon_time_list[compon_time_list <= time])
+                perf_level = disaster_recovery_object.event_table[
+                    (disaster_recovery_object.event_table.components == compon)
+                    & (disaster_recovery_object.event_table.time_stamp == maxless)
+                ].perf_level.values[0]
+                perf_state = disaster_recovery_object.event_table[
+                    (disaster_recovery_object.event_table.components == compon)
+                    & (disaster_recovery_object.event_table.time_stamp == maxless)
+                ].component_state.values[0]
+                disaster_recovery_object.event_table = (
+                    disaster_recovery_object.event_table.append(
+                        {
+                            "time_stamp": time,
+                            "components": compon,
+                            "perf_level": perf_level,
+                            "component_state": perf_state,
+                        },
+                        ignore_index=True,
                     )
                 )
-            elif compon_infra == "water":
-                recovery_time = water_dict[compon_notation]["repair_time"] * 3600
-                connected_node = find_connected_water_node(origin_node, wn)
-                nearest_node, near_dist = get_nearest_node(
-                    disaster_recovery_object, connected_node, "transpo_node"
-                )
-                travel_time = int(
-                    round(
-                        tn.calculateShortestTravelTime(
-                            disaster_recovery_object.curr_loc_crew, nearest_node
-                        ),
-                        0,
-                    )
-                )
-
-            print(
-                f"The crew is at {disaster_recovery_object.curr_loc_crew} at t = {disaster_recovery_object.next_crew_trip_start / disaster_recovery_object.sim_step} minutes. It takes {travel_time} minutes to reach nearest node {nearest_node}, the nearest transportation node from {node}."
-            )
-            recovery_start = (
-                disaster_recovery_object.next_crew_trip_start + travel_time * 60
-            )
-
-            # Schedule the recovery action
-            recovery_start = (
-                disaster_recovery_object.next_crew_trip_start + travel_time * 60
-            )
-            disaster_recovery_object.event_table = (
-                disaster_recovery_object.event_table.append(
-                    {
-                        "time_stamp": recovery_start,
-                        "components": node,
-                        "perf_level": 100
-                        - disaster_recovery_object.disruptive_events[
-                            disaster_recovery_object.disruptive_events.components
-                            == node
-                        ].fail_perc.item(),
-                    },
-                    ignore_index=True,
-                )
-            )
-            disaster_recovery_object.event_table = (
-                disaster_recovery_object.event_table.append(
-                    {
-                        "time_stamp": recovery_start + recovery_time - 60,
-                        "components": node,
-                        "perf_level": 100
-                        - disaster_recovery_object.disruptive_events[
-                            disaster_recovery_object.disruptive_events.components
-                            == node
-                        ].fail_perc.item(),
-                    },
-                    ignore_index=True,
-                )
-            )
-            disaster_recovery_object.event_table = (
-                disaster_recovery_object.event_table.append(
-                    {
-                        "time_stamp": recovery_start + recovery_time,
-                        "components": node,
-                        "perf_level": 100,
-                    },
-                    ignore_index=True,
-                )
-            )
-            disaster_recovery_object.event_table = (
-                disaster_recovery_object.event_table.append(
-                    {
-                        "time_stamp": recovery_start + recovery_time + 7200,
-                        "components": node,
-                        "perf_level": 100,
-                    },
-                    ignore_index=True,
-                )
-            )
-
-            disaster_recovery_object.event_table.sort_values(
-                by=["time_stamp"], inplace=True
-            )
-            # motor_failure.schedule_recovery(origin_node, recovery_start, recovery_rate)
-            disaster_recovery_object.curr_loc_crew = nearest_node
-            disaster_recovery_object.next_crew_trip_start = (
-                recovery_start + recovery_time
-            )
-        print("All restoration actions are successfully scheduled.")
-    else:
-        print("No repair action to schedule. All components functioning perfectly.")
+    disaster_recovery_object.event_table.sort_values(by=["time_stamp"], inplace=True)
 
 
 def simulate_interdependent_effects(
     disaster_recovery_object, dependency_table, pn, wn, tn
 ):
+    """[summary]
+
+    Arguments:
+        disaster_recovery_object {[type]} -- [description]
+        dependency_table {[type]} -- [description]
+        pn {[type]} -- [description]
+        wn {[type]} -- [description]
+        tn {[type]} -- [description]
+
+    Returns:
+        [type] -- [description]
+    """
     power_consump_tracker = []
     water_consump_tracker = []
     time_tracker = []
@@ -318,6 +331,17 @@ def simulate_interdependent_effects(
 def write_results(
     time_tracker, power_consump_tracker, water_consump_tracker, location, plotting=False
 ):
+    """[summary]
+
+    Arguments:
+        time_tracker {[type]} -- [description]
+        power_consump_tracker {[type]} -- [description]
+        water_consump_tracker {[type]} -- [description]
+        location {[type]} -- [description]
+
+    Keyword Arguments:
+        plotting {bool} -- [description] (default: {False})
+    """
     results_df = pd.DataFrame(
         {
             "time_min": time_tracker,

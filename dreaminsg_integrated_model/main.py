@@ -57,7 +57,9 @@ def main():
     curr_loc_crew = 8
 
     # Setting simulation parameters
-    sim_step = wn.options.time.hydraulic_timestep  # initial_sim_step
+    sim_step = (
+        wn.options.time.hydraulic_timestep
+    )  # initial_sim_step which will be updated during the simulation
 
     # creating test case dataframe
     scenario_file = "dreaminsg_integrated_model/data/disruptive_scenarios/test1/motor_failure_net1.csv"
@@ -65,11 +67,11 @@ def main():
 
     # Simulating repair curves
     simulation.schedule_component_repair(motor_failure, integrated_graph, pn, wn, tn)
+    simulation.expand_event_table(motor_failure, sim_step, 50)
 
     # ------------------------------------------#
     #   SIMULATION OF INTERDEPENDENT EFFECTS    #
     # ------------------------------------------#
-
     (
         time_tracker,
         power_consump_tracker,
