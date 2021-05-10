@@ -1,0 +1,17 @@
+key	code	name	connect_field	repair_time
+B	bus	Bus	name	3
+L	load	Load	bus	5
+SG	sgen	Static Generator	bus	24
+MP	motor	Motor	bus	24
+AL	asymmetric_load	Asymmetric Load	bus	10
+AS	asymmetric_sgen	Asymmetric StaticGenerator	bus	10
+ST	storage	Storage	bus	5
+G	gen	Generator	bus	24
+SW	switch	Switch	bus	4
+SH	shunt	Shunt	bus	3
+EG	ext_grid	External Grid	bus	10
+LI	line	Line	from_bus	3
+TF	trafo	Transformer	hv_bus	10
+TH	trafo3w	Three Phase Transformer	hv_bus	10
+I	impedance	Impedance	from_bus	5
+DL	dcline	DCLine	from_bus	3

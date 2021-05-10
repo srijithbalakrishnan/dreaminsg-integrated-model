@@ -65,8 +65,7 @@ wall reactions are included.
  1               	1500        	250         
 
 [CONTROLS]
- LINK 9 OPEN IF NODE 2 BELOW 110
- LINK 9 CLOSED IF NODE 2 ABOVE 140
+ 
 
 
 

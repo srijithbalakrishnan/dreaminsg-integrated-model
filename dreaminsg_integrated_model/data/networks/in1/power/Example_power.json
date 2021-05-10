@@ -5,7 +5,7 @@
     "bus": {
       "_module": "pandas.core.frame",
       "_class": "DataFrame",
-      "_object": "{\"columns\":[\"name\",\"vn_kv\",\"type\",\"zone\",\"in_service\"],\"index\":[0,1,2,3,4,5,6,7,8],\"data\":[[\"B8\",10.0,\"b\",\"NW\",true],[\"B7\",110.0,\"b\",\"NE\",true],[\"B5\",10.0,\"b\",\"SE\",true],[\"B4\",10.0,\"b\",\"SW\",true],[\"B6\",110.0,\"b\",\"C\",true],[\"B2\",110.0,\"b\",\"NE\",true],[\"B3\",10.0,\"b\",\"NE\",true],[\"B1\",110.0,\"b\",\"NE\",true],[\"B9\",110.0,\"b\",\"NE\",true]]}",
+      "_object": "{\"columns\":[\"name\",\"vn_kv\",\"type\",\"zone\",\"in_service\"],\"index\":[0,1,2,3,4,5,6,7,8],\"data\":[[\"P_B8\",10.0,\"b\",\"NW\",true],[\"P_B7\",110.0,\"b\",\"NE\",true],[\"P_B5\",10.0,\"b\",\"SE\",true],[\"P_B4\",10.0,\"b\",\"SW\",true],[\"P_B6\",110.0,\"b\",\"C\",true],[\"P_B2\",110.0,\"b\",\"NE\",true],[\"P_B3\",10.0,\"b\",\"NE\",true],[\"P_B1\",110.0,\"b\",\"NE\",true],[\"P_B9\",110.0,\"b\",\"NE\",true]]}",
       "orient": "split",
       "dtype": {
         "name": "object",
@@ -18,7 +18,7 @@
     "load": {
       "_module": "pandas.core.frame",
       "_class": "DataFrame",
-      "_object": "{\"columns\":[\"name\",\"bus\",\"p_mw\",\"q_mvar\",\"const_z_percent\",\"const_i_percent\",\"sn_mva\",\"scaling\",\"in_service\",\"type\"],\"index\":[0,1,2],\"data\":[[\"L1\",2,2.0,4.0,0.0,0.0,null,0.6,true,\"wye\"],[\"L2\",3,2.0,4.0,0.0,0.0,null,0.6,true,\"wye\"],[\"L3\",4,2.0,4.0,0.0,0.0,null,0.6,true,\"wye\"]]}",
+      "_object": "{\"columns\":[\"name\",\"bus\",\"p_mw\",\"q_mvar\",\"const_z_percent\",\"const_i_percent\",\"sn_mva\",\"scaling\",\"in_service\",\"type\"],\"index\":[0,1,2],\"data\":[[\"P_LO1\",2,2.0,4.0,0.0,0.0,null,0.6,true,\"wye\"],[\"P_LO2\",3,2.0,4.0,0.0,0.0,null,0.6,true,\"wye\"],[\"P_LO3\",4,2.0,4.0,0.0,0.0,null,0.6,true,\"wye\"]]}",
       "orient": "split",
       "dtype": {
         "name": "object",
@@ -53,7 +53,7 @@
     "motor": {
       "_module": "pandas.core.frame",
       "_class": "DataFrame",
-      "_object": "{\"columns\":[\"name\",\"bus\",\"pn_mech_mw\",\"loading_percent\",\"cos_phi\",\"cos_phi_n\",\"efficiency_percent\",\"efficiency_n_percent\",\"lrc_pu\",\"vn_kv\",\"scaling\",\"in_service\",\"rx\"],\"index\":[0],\"data\":[[\"MP1\",0,0.23,100.0,0.8,null,100.0,null,null,null,1.0,true,null]]}",
+      "_object": "{\"columns\":[\"name\",\"bus\",\"pn_mech_mw\",\"loading_percent\",\"cos_phi\",\"cos_phi_n\",\"efficiency_percent\",\"efficiency_n_percent\",\"lrc_pu\",\"vn_kv\",\"scaling\",\"in_service\",\"rx\"],\"index\":[0],\"data\":[[\"P_MP1\",0,0.23,100.0,0.8,null,100.0,null,null,null,1.0,true,null]]}",
       "orient": "split",
       "dtype": {
         "name": "object",
@@ -153,7 +153,7 @@
     "switch": {
       "_module": "pandas.core.frame",
       "_class": "DataFrame",
-      "_object": "{\"columns\":[\"bus\",\"element\",\"et\",\"type\",\"closed\",\"name\",\"z_ohm\"],\"index\":[0],\"data\":[[1,8,\"b\",\"CB\",true,\"S1\",0.0]]}",
+      "_object": "{\"columns\":[\"bus\",\"element\",\"et\",\"type\",\"closed\",\"name\",\"z_ohm\"],\"index\":[0],\"data\":[[1,8,\"b\",\"CB\",true,\"P_S1\",0.0]]}",
       "orient": "split",
       "dtype": {
         "bus": "int64",
@@ -184,7 +184,7 @@
     "ext_grid": {
       "_module": "pandas.core.frame",
       "_class": "DataFrame",
-      "_object": "{\"columns\":[\"name\",\"bus\",\"vm_pu\",\"va_degree\",\"in_service\"],\"index\":[0],\"data\":[[\"EG1\",7,1.02,50.0,true]]}",
+      "_object": "{\"columns\":[\"name\",\"bus\",\"vm_pu\",\"va_degree\",\"in_service\"],\"index\":[0],\"data\":[[\"P_EG1\",7,1.02,50.0,true]]}",
       "orient": "split",
       "dtype": {
         "name": "object",
@@ -197,7 +197,7 @@
     "line": {
       "_module": "pandas.core.frame",
       "_class": "DataFrame",
-      "_object": "{\"columns\":[\"name\",\"std_type\",\"from_bus\",\"to_bus\",\"length_km\",\"r_ohm_per_km\",\"x_ohm_per_km\",\"c_nf_per_km\",\"g_us_per_km\",\"max_i_ka\",\"df\",\"parallel\",\"type\",\"in_service\"],\"index\":[0,1,2,3,4],\"data\":[[\"L1\",\"N2XS(FL)2Y 1x120 RM\\/35 64\\/110 kV\",7,5,5.0,0.153,0.166,112.0,0.0,0.366,1.0,1,\"cs\",true],[\"L2\",\"NA2XS2Y 1x70 RM\\/25 6\\/10 kV\",6,3,2.0,0.443,0.123,280.0,0.0,0.217,1.0,1,\"cs\",true],[\"L3\",\"NA2XS2Y 1x70 RM\\/25 6\\/10 kV\",3,2,5.0,0.443,0.123,280.0,0.0,0.217,1.0,1,\"cs\",true],[\"L4\",\"N2XS(FL)2Y 1x120 RM\\/35 64\\/110 kV\",7,4,5.0,0.153,0.166,112.0,0.0,0.366,1.0,1,\"cs\",true],[\"L5\",\"N2XS(FL)2Y 1x120 RM\\/35 64\\/110 kV\",4,1,5.0,0.153,0.166,112.0,0.0,0.366,1.0,1,\"cs\",true]]}",
+      "_object": "{\"columns\":[\"name\",\"std_type\",\"from_bus\",\"to_bus\",\"length_km\",\"r_ohm_per_km\",\"x_ohm_per_km\",\"c_nf_per_km\",\"g_us_per_km\",\"max_i_ka\",\"df\",\"parallel\",\"type\",\"in_service\"],\"index\":[0,1,2,3,4],\"data\":[[\"P_L1\",\"N2XS(FL)2Y 1x120 RM\\/35 64\\/110 kV\",7,5,5.0,0.153,0.166,112.0,0.0,0.366,1.0,1,\"cs\",true],[\"P_L2\",\"NA2XS2Y 1x70 RM\\/25 6\\/10 kV\",6,3,2.0,0.443,0.123,280.0,0.0,0.217,1.0,1,\"cs\",true],[\"P_L3\",\"NA2XS2Y 1x70 RM\\/25 6\\/10 kV\",3,2,5.0,0.443,0.123,280.0,0.0,0.217,1.0,1,\"cs\",true],[\"P_L4\",\"N2XS(FL)2Y 1x120 RM\\/35 64\\/110 kV\",7,4,5.0,0.153,0.166,112.0,0.0,0.366,1.0,1,\"cs\",true],[\"P_L5\",\"N2XS(FL)2Y 1x120 RM\\/35 64\\/110 kV\",4,1,5.0,0.153,0.166,112.0,0.0,0.366,1.0,1,\"cs\",true]]}",
       "orient": "split",
       "dtype": {
         "name": "object",
@@ -219,7 +219,7 @@
     "trafo": {
       "_module": "pandas.core.frame",
       "_class": "DataFrame",
-      "_object": "{\"columns\":[\"name\",\"std_type\",\"hv_bus\",\"lv_bus\",\"sn_mva\",\"vn_hv_kv\",\"vn_lv_kv\",\"vk_percent\",\"vkr_percent\",\"pfe_kw\",\"i0_percent\",\"shift_degree\",\"tap_side\",\"tap_neutral\",\"tap_min\",\"tap_max\",\"tap_step_percent\",\"tap_step_degree\",\"tap_pos\",\"tap_phase_shifter\",\"parallel\",\"df\",\"in_service\"],\"index\":[0,1],\"data\":[[\"TF1\",\"63 MVA 110\\/10 kV\",8,0,63.0,110.0,10.0,18.0,0.32,22.0,0.04,150.0,\"hv\",0,-9,9,1.5,0.0,0,false,1,1.0,true],[\"TF2\",\"63 MVA 110\\/10 kV\",5,6,63.0,110.0,10.0,18.0,0.32,22.0,0.04,150.0,\"hv\",0,-9,9,1.5,0.0,0,false,1,1.0,true]]}",
+      "_object": "{\"columns\":[\"name\",\"std_type\",\"hv_bus\",\"lv_bus\",\"sn_mva\",\"vn_hv_kv\",\"vn_lv_kv\",\"vk_percent\",\"vkr_percent\",\"pfe_kw\",\"i0_percent\",\"shift_degree\",\"tap_side\",\"tap_neutral\",\"tap_min\",\"tap_max\",\"tap_step_percent\",\"tap_step_degree\",\"tap_pos\",\"tap_phase_shifter\",\"parallel\",\"df\",\"in_service\"],\"index\":[0,1],\"data\":[[\"P_TF1\",\"63 MVA 110\\/10 kV\",8,0,63.0,110.0,10.0,18.0,0.32,22.0,0.04,150.0,\"hv\",0,-9,9,1.5,0.0,0,false,1,1.0,true],[\"P_TF2\",\"63 MVA 110\\/10 kV\",5,6,63.0,110.0,10.0,18.0,0.32,22.0,0.04,150.0,\"hv\",0,-9,9,1.5,0.0,0,false,1,1.0,true]]}",
       "orient": "split",
       "dtype": {
         "name": "object",
