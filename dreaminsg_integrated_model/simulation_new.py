@@ -1,3 +1,4 @@
+from pandapower.toolbox import next_bus
 import pandas as pd
 from pathlib import Path
 import os
@@ -67,14 +68,14 @@ def load_networks(water_file, power_file, transp_folder):
 
 
 def build_power_water_dependencies(dependency_table, dependency_file):
-    """[summary]
+    """Adds the power-water dependency table to the DependencyTable object.
 
     Arguments:
-        dependency_table {[type]} -- [description]
-        dependency_file {[type]} -- [description]
+        dependency_table {DependencyTable object} -- The object that contains information related to the dependencies in the network.
+        dependency_file {string} -- The location of the dependency file containing dependency information.
 
     Returns:
-        [type] -- [description]
+        DependencyTable object -- The modified dependency table object.
     """
     try:
         dependency_data = pd.read_csv(dependency_file, sep=",")
@@ -114,28 +115,28 @@ def build_power_water_dependencies(dependency_table, dependency_file):
 
 
 def build_transportation_access(dependency_table, integrated_graph):
-    """[summary]
+    """Adds the transportatio naccess table to the DependencyTabl object.
 
     Arguments:
-        dependency_table {[type]} -- [description]
-        integrated_graph {[type]} -- [description]
+        dependency_table {DependencyTable object} -- The object that contains information related to the dependencies in the network.
+        integrated_graph {nextworkx object} -- The integrated network as networkx object.
 
     Returns:
-        [type] -- [description]
+        DependencyTable object -- The modified dependency table object.
     """
     dependency_table.add_transpo_access(integrated_graph)
     return dependency_table
 
 
 def schedule_component_repair(disaster_recovery_object, integrated_graph, pn, wn, tn):
-    """[summary]
+    """Optimizes the repair action order and schedules the actions in the event table.
 
     Arguments:
-        disaster_recovery_object {[type]} -- [description]
-        integrated_graph {[type]} -- [description]
-        pn {[type]} -- [description]
-        wn {[type]} -- [description]
-        tn {[type]} -- [description]
+        disaster_recovery_object {DisasterAndRecovery object} -- The object that consists of information related to disruptions and repair actions.
+        integrated_graph {nextworkx object} -- The integrated network as networkx object.
+        pn {pandapower network object} -- Power systems object.
+        wn {wntr network object} -- Water network object.
+        tn {traffic network object} -- Transportation network object.
     """
     repair_order = disaster_recovery_object.optimze_recovery_strategy()
     print(
@@ -147,12 +148,12 @@ def schedule_component_repair(disaster_recovery_object, integrated_graph, pn, wn
 
 
 def expand_event_table(disaster_recovery_object, initial_sim_step, add_points):
-    """[summary]
+    """Expands the event table with additional time_stamps for simulation.
 
     Arguments:
-        disaster_recovery_object {[type]} -- [description]
-        initial_sim_step {[type]} -- [description]
-        add_points {[type]} -- [description]
+        disaster_recovery_object {DisasterAndRecovery object} -- The object that consists of information related to disruptions and repair actions.
+        initial_sim_step {integer} -- The initial size of time_step in seconds.
+        add_points {integer} -- An positive integer denoting the number of extra time-stamps to be added to the simulation.
     """
     compon_list = disaster_recovery_object.event_table.components.unique()
     full_time_list = disaster_recovery_object.event_table.time_stamp.unique()
@@ -226,22 +227,26 @@ def expand_event_table(disaster_recovery_object, initial_sim_step, add_points):
                     )
                 )
     disaster_recovery_object.event_table.sort_values(by=["time_stamp"], inplace=True)
+    disaster_recovery_object.event_table["time_stamp"] = (
+        disaster_recovery_object.event_table["time_stamp"]
+        + disaster_recovery_object.sim_step
+    )
 
 
 def simulate_interdependent_effects(
     disaster_recovery_object, dependency_table, pn, wn, tn
 ):
-    """[summary]
+    """Simulates the interdependent effect based on the initial disruptions and subsequent repair actions.
 
     Arguments:
-        disaster_recovery_object {[type]} -- [description]
-        dependency_table {[type]} -- [description]
-        pn {[type]} -- [description]
-        wn {[type]} -- [description]
-        tn {[type]} -- [description]
+        disaster_recovery_object {DisasterAndRecovery object} -- The object that consists of information related to disruptions and repair actions.
+        dependency_table {DependencyTable object} -- The object that contains information related to the dependencies in the network.
+        pn {pandapower network object} -- Power systems object.
+        wn {wntr network object} -- Water network object.
+        tn {traffic network object} -- Transportation network object.
 
     Returns:
-        [type] -- [description]
+        lists -- lists of time stamps and resilience values of power and water supply.
     """
     # modify water network to induce leaks
     wn = disrupt_generator.pipe_leak_node_generator(wn, disaster_recovery_object)
@@ -253,22 +258,14 @@ def simulate_interdependent_effects(
     unique_time_stamps = sorted(
         list(disaster_recovery_object.event_table.time_stamp.unique())
     )
-
-    unique_time_diferences = [
-        x - unique_time_stamps[i - 1] for i, x in enumerate(unique_time_stamps)
-    ][1:]
     print(unique_time_stamps)
 
-    for index, time_stamp in enumerate(unique_time_stamps):
+    unique_time_differences = [
+        x - unique_time_stamps[i - 1] for i, x in enumerate(unique_time_stamps)
+    ][1:]
+
+    for index, time_stamp in enumerate(unique_time_stamps[:-1]):
         print(f"\nSimulating network conditions at {time_stamp} s")
-
-        curr_event_table = disaster_recovery_object.event_table[
-            disaster_recovery_object.event_table.time_stamp == time_stamp
-        ]
-        print(curr_event_table)
-
-        if index < len(unique_time_stamps) - 1:
-            next_time_stamp = unique_time_stamps[index + 1]
 
         print(
             "Simulation time: ",
@@ -279,35 +276,30 @@ def simulate_interdependent_effects(
             wn.options.time.report_timestep,
         )
 
-        print("Current time step: ", time_stamp, "; Next time step: ", next_time_stamp)
-
-        # pn, wn = disaster_recovery_object.update_directly_affected_components(
-        #     pn, wn, curr_event_table, next_time_stamp
-        # )
-
-        pn, wn = disaster_recovery_object.update_directly_affected_components(
-            pn, wn, curr_event_table, next_time_stamp
+        # update performance of directly affected components
+        disaster_recovery_object.update_directly_affected_components(
+            pn,
+            wn,
+            wn.options.time.duration,
+            wn.options.time.duration + unique_time_differences[index],
         )
 
         # run power systems model
         power.run_power_simulation(pn)
 
-        # update all dependencies
-        # pn, wn = dependency_table.update_dependencies(
-        #     pn, wn, time_stamp, next_time_stamp
-        # )
-        pn, wn = dependency_table.update_dependencies(
+        # update networkwide effects
+        dependency_table.update_dependencies(
             pn,
             wn,
             wn.options.time.duration,
-            wn.options.time.duration + unique_time_diferences[index],
+            wn.options.time.duration + unique_time_differences[index],
         )
-        # run water network model
-        wn_results = water.run_water_simulation(wn)
 
-        print(wn_results.link["flowrate"])
-        # print(wn_results.node["demand"])
-        # print(wn_results.node["leak_demand"])
+        # run water network model and print results
+        wn_results = water.run_water_simulation(wn)
+        print(wn_results.link["status"])
+        print(wn_results.node["demand"])
+        print(wn_results.node["leak_demand"])
 
         print(
             "Pump: ",
@@ -333,7 +325,7 @@ def simulate_interdependent_effects(
         print("******************\n")
 
         # track results
-        time_tracker.append(time_stamp / 60)  # minutes
+        time_tracker.append((time_stamp) / 60)  # minutes
         power_consump_tracker.append(
             (pn.res_load.p_mw.sum() + pn.res_motor.p_mw.sum())
             / pn.total_base_power_demand
@@ -350,8 +342,8 @@ def simulate_interdependent_effects(
 
         # Fix the time until which the wntr model should run in this iteration
         if index < len(unique_time_stamps) - 1:
-            wn.options.time.duration += unique_time_diferences[index]
-            wn.options.time.report_timestep += unique_time_diferences[index]
+            wn.options.time.duration += unique_time_differences[index]
+            wn.options.time.report_timestep += unique_time_differences[index]
 
         print(f"Simulation for time {time_stamp / 60} minutes completed successfully")
     return time_tracker, power_consump_tracker, water_consump_tracker
@@ -360,16 +352,16 @@ def simulate_interdependent_effects(
 def write_results(
     time_tracker, power_consump_tracker, water_consump_tracker, location, plotting=False
 ):
-    """[summary]
+    """Writes the result to local directory.
 
     Arguments:
-        time_tracker {[type]} -- [description]
-        power_consump_tracker {[type]} -- [description]
-        water_consump_tracker {[type]} -- [description]
-        location {[type]} -- [description]
+        time_tracker {list of integers} -- List of time stamps.
+        power_consump_tracker {list of floats} -- List of corresponding power resilience metric value.
+        water_consump_tracker {list of floats} -- List of corresponding water resilience metric value.
+        location {string} -- The location to which the results are to be saved.
 
     Keyword Arguments:
-        plotting {bool} -- [description] (default: {False})
+        plotting {bool} -- True if the plots are to be generated (default: {False}).
     """
     results_df = pd.DataFrame(
         {

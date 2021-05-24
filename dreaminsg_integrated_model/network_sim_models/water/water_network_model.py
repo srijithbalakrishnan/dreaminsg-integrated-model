@@ -1,11 +1,6 @@
 import wntr
 
 
-# ---------------------------------------------------------#
-#              Water network simulation functions         #
-# ---------------------------------------------------------#
-
-
 def get_water_dict():
     """Creates a dictionary of major water distribution system components.
     Used for naming automatically generated networks.

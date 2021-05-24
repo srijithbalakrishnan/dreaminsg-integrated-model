@@ -1,17 +1,17 @@
 import networkx as nx
 import pandas as pd
-
 import wntr
 import pandapower as pp
 import pandapower.plotting as pandaplot
-
 import matplotlib.pyplot as plt
 import re
 
+# plt.style.use("seaborn-deep")
 
-#############################################################
+
+# -----------------------------------------------------------#
 #                      NETWORK PLOTS                        #
-#############################################################
+# -----------------------------------------------------------#
 
 
 def plot_transpo_net(transpo_folder):
@@ -333,15 +333,16 @@ def plot_repair_curves(disrupt_recovery_object, scatter=False):
                     disrupt_recovery_object.event_table.components == name
                 ].perf_level,
             )
-    plt.xlabel("Time (minutes")
+    plt.xlabel("Time (minutes)")
     plt.xlim(0, disrupt_recovery_object.event_table.time_stamp.max() / 60)
     plt.ylabel("Damage level (%)")
+    plt.ylim(0, 102)
     plt.legend(loc="best")
     plt.show()
 
 
 def plot_interdependent_effects(
-    power_consump_tracker, water_consump_tracker, time_tracker
+    power_consump_tracker, water_consump_tracker, time_tracker, scatter=True
 ):
     """Generates the network-level performance plots.
 
@@ -369,15 +370,17 @@ def plot_interdependent_effects(
                 linewidth=3,
             )
         else:
-            plt.plot(
+            plt.step(
                 time_tracker,
                 tracker_list[index],
                 color_list[index],
                 alpha=0.7,
+                where="pre",
                 label=infra_list[index],
                 linewidth=3,
             )
-        # plt.scatter(time_tracker, tracker_list[index])
+        if scatter == True:
+            plt.scatter(time_tracker, tracker_list[index])
         plt.xlabel("Time (minutes)")
         plt.ylabel("Consumption ratio")
         plt.xlim(0, max(time_tracker))

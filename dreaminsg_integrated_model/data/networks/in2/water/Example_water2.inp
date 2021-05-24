@@ -57,8 +57,8 @@ wall reactions are included.
 ;ID              	Multipliers
 ;Demand Pattern
  1               	1.0         	1.0         	1.0        	1.0         	1.0         	1.0         
- 1               	1.0         	0.8         	0.6         	0.4         	0.6         	0.8         
-
+ 1               	1.0         	1.0         	1.0        	1.0         	1.0         	1.0     
+ 
 [CURVES]
 ;ID              	X-Value     	Y-Value
 ;PUMP: PUMP: Pump Curve for Pump W_WP9

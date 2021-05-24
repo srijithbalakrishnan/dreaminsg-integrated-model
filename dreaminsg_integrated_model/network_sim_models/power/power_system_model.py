@@ -1,6 +1,5 @@
 from dreaminsg_integrated_model.network_sim_models.interdependencies import *
 import pandapower as pp
-import pandas as pd
 
 
 def get_power_dict():

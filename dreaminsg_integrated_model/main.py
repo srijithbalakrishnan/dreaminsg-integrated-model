@@ -1,13 +1,9 @@
 """This is the main module of the integrated infrastructure model where the simulations are performed."""
 
 import os
-from pathlib import Path
-
-from dreaminsg_integrated_model.network_sim_models.interdependencies import *
-from dreaminsg_integrated_model.data.disruptive_scenarios.disrupt_generator_discrete import *
-import dreaminsg_integrated_model.results.figures.plots as plots
+import dreaminsg_integrated_model.data.disruptive_scenarios.disrupt_generator_discrete as disrupt_generator
 import dreaminsg_integrated_model.simulation as simulation
-
+import dreaminsg_integrated_model.plots as model_plots
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -33,13 +29,13 @@ def main():
     wn, pn, tn = simulation.load_networks(water_file, power_file, transp_folder)
 
     # create a networkx object of the integrated network
-    integrated_graph = plots.plot_integrated_network(pn, wn, tn, plotting=False)
+    integrated_graph = model_plots.plot_integrated_network(pn, wn, tn, plotting=False)
 
     # -------------------------------------------#
     #          BUILD INTERDEPENDENCIES           #
     # -------------------------------------------#
     dependency_file = "dreaminsg_integrated_model/data/networks/in2/dependecies.csv"
-    dependency_table = DependencyTable()
+    dependency_table = disrupt_generator.DependencyTable()
 
     # power-water dependencies
     dependency_table = simulation.build_power_water_dependencies(
@@ -63,7 +59,9 @@ def main():
 
     # creating test case dataframe
     scenario_file = "dreaminsg_integrated_model/data/disruptive_scenarios/test1/motor_failure_net1.csv"
-    motor_failure = DisruptionAndRecovery(scenario_file, sim_step, curr_loc_crew)
+    motor_failure = disrupt_generator.DisruptionAndRecovery(
+        scenario_file, sim_step, curr_loc_crew
+    )
 
     # Simulating repair curves
     simulation.schedule_component_repair(motor_failure, integrated_graph, pn, wn, tn)
