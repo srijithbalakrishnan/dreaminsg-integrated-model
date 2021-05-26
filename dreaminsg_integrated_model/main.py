@@ -1,9 +1,9 @@
 """This is the main module of the integrated infrastructure model where the simulations are performed."""
 
 import os
-import dreaminsg_integrated_model.data.disruptive_scenarios.disrupt_generator_discrete as disrupt_generator
-import dreaminsg_integrated_model.simulation as simulation
-import dreaminsg_integrated_model.plots as model_plots
+import dreaminsg_integrated_model.src.disrupt_generator as disrupt_generator
+import dreaminsg_integrated_model.src.simulation as simulation
+import dreaminsg_integrated_model.src.plots as model_plots
 import warnings
 
 warnings.filterwarnings("ignore")
