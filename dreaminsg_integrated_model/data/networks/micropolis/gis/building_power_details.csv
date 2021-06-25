@@ -1,0 +1,53 @@
+building,type,Pabc,Qabc,voltage,phases
+Apartment,Residential,90,0,120,1
+Auto Parts Resel,Industrial,30,0,208,3
+Bar,CBD,30,0,208,3
+Bookstore,CBD,30,0,208,3
+Church,Church,250,0,208,3
+City Hall,CBD,250,0,208,3
+Clothing Store,CBD,30,0,208,3
+Community Center,CBD,45,0,208,3
+Dairy Queen,Industrial,150,0,3300,3
+Day Care,CBD,30,0,208,3
+Dentist,CBD,30,0,208,3
+Doctor's Office,CBD,30,0,208,3
+Elem. School,School,300,0,208,3
+Elsie's Cafe,Residential,30,0,208,3
+Farm Supply Stor,Industrial,75,0,208,3
+Farmer's Market,CBD,30,0,208,3
+Feed store,Industrial,75,0,208,3
+Feed Store,Industrial,75,0,208,3
+Fire Station,CBD,45,0,208,3
+Flour mill,Industrial,225,0,3300,3
+Gas Station,CBD,30,0,208,3
+Grocery Store,CBD,30,0,208,3
+Gym,CBD,30,0,208,3
+Hardware store,CBD,30,0,208,3
+High School,School,300,0,208,3
+Industrial Park,Industrial,75,0,3300,3
+Laundromat,CBD,30,0,208,3
+Law Firm,CBD,30,0,208,3
+Library,CBD,45,0,208,3
+Lumber Yard,Industrial,30,0,3300,3
+Lumber yard,Industrial,30,0,3300,3
+Middle School,School,300,0,208,3
+Movie Theater,CBD,150,0,208,3
+Pawnshop,CBD,30,0,208,3
+Pet Store,CBD,30,0,208,3
+Pharmacy,CBD,30,0,208,3
+Plant nursery,Industrial,30,0,208,3
+Police Station,CBD,45,0,208,3
+Post Office,CBD,150,0,208,3
+Printing Plant,Industrial,75,0,3300,3
+Rail Depot,CBD,45,0,208,3
+Recycling Plant,Industrial,75,0,3300,3
+Restaurant,CBD,30,0,208,3
+Salon,CBD,30,0,208,3
+Single Family Re,Residential,20,0,120,1
+STARBUCKS,CBD,30,0,208,3
+Textile Mill,Industrial,225,0,3300,3
+Trailer Park,Residential,10,0,1200,1
+Video/Bookstore,CBD,30,0,208,3
+Warehouse,Industrial,75,0,3300,3
+WTP,Industrial,250,0,3300,3
+WWTP,Industrial,250,0,3300,3

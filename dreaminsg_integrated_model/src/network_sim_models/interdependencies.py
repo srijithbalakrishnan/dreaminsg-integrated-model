@@ -30,7 +30,51 @@ class DependencyTable:
             ]
         )
 
-    # Water-Power interdependencies
+    def build_power_water_dependencies(self, dependency_file):
+        """Adds the power-water dependency table to the DependencyTable object.
+
+        :param dependency_file: The location of the dependency file containing dependency information.
+        :type dependency_file: string
+        """
+        try:
+            dependency_data = pd.read_csv(dependency_file, sep=",")
+            for index, row in dependency_data.iterrows():
+                water_id = row["water_id"]
+                power_id = row["power_id"]
+                (
+                    water_infra,
+                    water_notation,
+                    water_code,
+                    water_full,
+                ) = get_compon_details(water_id)
+                (
+                    power_infra,
+                    power_notation,
+                    power_code,
+                    power_full,
+                ) = get_compon_details(power_id)
+                if (water_full == "Pump") & (power_full == "Motor"):
+                    self.add_pump_motor_coupling(water_id=water_id, power_id=power_id)
+                elif (water_full == "Reservoir") & (power_full == "Generator"):
+                    self.add_gen_reserv_coupling(water_id=water_id, power_id=power_id)
+                else:
+                    print(
+                        f"Cannot create dependency between {water_id} and {power_id}. Check the component names and types."
+                    )
+        except FileNotFoundError:
+            print(
+                "Error: The infrastructure dependency data file does not exist. No such file or directory: ",
+                dependency_file,
+            )
+
+    def build_transportation_access(self, integrated_graph):
+        """Adds the transportatio naccess table to the DependencyTable object.
+
+        :param integrated_graph: The integrated network as Networkx object.
+        :type integrated_graph: Nextworkx object
+        """
+        self.add_transpo_access(integrated_graph)
+
     def add_pump_motor_coupling(self, water_id, power_id):
         """Creates a pump-on-motor dependency entry in the dependency table.
 
@@ -67,7 +111,6 @@ class DependencyTable:
             ignore_index=True,
         )
 
-    # Power-Transportation and  Interdependencies
     def add_transpo_access(self, integrated_graph):
         """Creates a mapping to nearest road link from every water/power network component.
 
@@ -101,13 +144,11 @@ class DependencyTable:
                 ignore_index=True,
             )
 
-    def update_dependencies(self, pn, wn, time_stamp, next_time_stamp):
+    def update_dependencies(self, network, time_stamp, next_time_stamp):
         """Updates the operational performance of all the dependent components in the integrated network.
 
-        :param pn: Power systems model.
-        :type pn: pandapower network object
-        :param wn: Water network model.
-        :type wn: wntr network model
+        :param network: The integrated infrastructure network object.
+        :type network: An IntegratedNetwork object
         :param time_stamp: The start time of the current iteration in seconds.
         :type time_stamp: integer
         :param next_time_stamp: The end tiem of the iteration.
@@ -115,18 +156,25 @@ class DependencyTable:
         """
         for index, row in self.wp_table.iterrows():
             if (row.water_type == "Pump") & (row.power_type == "Motor"):
-                print(
-                    "Motor operational status: ",
-                    pn.motor[pn.motor.name == row.power_id].in_service.item(),
-                )
-                if pn.motor[pn.motor.name == row.power_id].in_service.item() == False:
-                    pump = wn.get_link(row.water_id)
-                    pump.add_outage(wn, time_stamp, next_time_stamp)
-                    print(
-                        f"Pump outage resulting from electrical motor failure is added between {time_stamp} s and {next_time_stamp} s"
-                    )
+                # print(
+                #     "Motor operational status: ",
+                #     network.pn.motor[
+                #         network.pn.motor.name == row.power_id
+                #     ].in_service.item(),
+                # )
+                if (
+                    network.pn.motor[
+                        network.pn.motor.name == row.power_id
+                    ].in_service.item()
+                    == False
+                ):
+                    pump = network.wn.get_link(row.water_id)
+                    pump.add_outage(network.wn, time_stamp, next_time_stamp)
+                    # print(
+                    #     f"Pump outage resulting from electrical motor failure is added between {time_stamp} s and {next_time_stamp} s"
+                    # )
                 else:
-                    pump = wn.get_link(row.water_id)
+                    pump = network.wn.get_link(row.water_id)
                     pump.status = 1
 
 

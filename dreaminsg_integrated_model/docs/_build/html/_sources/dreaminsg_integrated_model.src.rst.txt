@@ -4,10 +4,10 @@ dreaminsg\_integrated\_model.src package
 Submodules
 ----------
 
-dreaminsg\_integrated\_model.src.disrupt\_generator module
+dreaminsg\_integrated\_model.src.network\_recovery module
 --------------------------------------------------------------------
 
-.. automodule:: dreaminsg_integrated_model.src.disrupt_generator
+.. automodule:: dreaminsg_integrated_model.src.network_recovery
    :members:
    :undoc-members:
    :show-inheritance:
@@ -36,7 +36,7 @@ dreaminsg\_integrated\_model.src.plots module
    :undoc-members:
    :show-inheritance:
 
-dreaminsg\_integrated\_model.src.simulation\_new module
+dreaminsg\_integrated\_model.src.simulation module
 -------------------------------------------------------
 
 .. automodule:: dreaminsg_integrated_model.src.simulation

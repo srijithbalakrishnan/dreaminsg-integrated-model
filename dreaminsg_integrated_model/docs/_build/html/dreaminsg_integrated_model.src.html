@@ -89,11 +89,11 @@
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">dreaminsg_integrated_model.src package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-dreaminsg_integrated_model.src.disrupt_generator">dreaminsg_integrated_model.src.disrupt_generator module</a></li>
+<li><a class="reference internal" href="#module-dreaminsg_integrated_model.src.network_recovery">dreaminsg_integrated_model.src.network_recovery module</a></li>
 <li><a class="reference internal" href="#module-dreaminsg_integrated_model.src.resilience_metrics">dreaminsg_integrated_model.src.metrics module</a></li>
 <li><a class="reference internal" href="#module-dreaminsg_integrated_model.src.network_generator">dreaminsg_integrated_model.src.network_generator module</a></li>
 <li><a class="reference internal" href="#module-dreaminsg_integrated_model.src.plots">dreaminsg_integrated_model.src.plots module</a></li>
-<li><a class="reference internal" href="#module-dreaminsg_integrated_model.src.simulation">dreaminsg_integrated_model.src.simulation_new module</a></li>
+<li><a class="reference internal" href="#module-dreaminsg_integrated_model.src.simulation">dreaminsg_integrated_model.src.simulation module</a></li>
 <li><a class="reference internal" href="#module-dreaminsg_integrated_model.src">Module contents</a></li>
 </ul>
 </li>
@@ -169,54 +169,61 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-dreaminsg_integrated_model.src.disrupt_generator">
-<span id="dreaminsg-integrated-model-src-disrupt-generator-module"></span><h2>dreaminsg_integrated_model.src.disrupt_generator module<a class="headerlink" href="#module-dreaminsg_integrated_model.src.disrupt_generator" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-dreaminsg_integrated_model.src.network_recovery">
+<span id="dreaminsg-integrated-model-src-network-recovery-module"></span><h2>dreaminsg_integrated_model.src.network_recovery module<a class="headerlink" href="#module-dreaminsg_integrated_model.src.network_recovery" title="Permalink to this headline">¶</a></h2>
 <p>Functions to generate and save disruptive scenarios.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.disrupt_generator.DisruptionAndRecovery">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.disrupt_generator.</span></span><span class="sig-name descname"><span class="pre">DisruptionAndRecovery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scenario_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curr_loc_crew</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.disrupt_generator.DisruptionAndRecovery" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.network_recovery.NetworkRecovery">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.network_recovery.</span></span><span class="sig-name descname"><span class="pre">NetworkRecovery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_step</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.network_recovery.NetworkRecovery" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Generate a disaster and recovery object for storing simulation-related information and settings.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.disrupt_generator.DisruptionAndRecovery.optimze_recovery_strategy">
-<span class="sig-name descname"><span class="pre">optimze_recovery_strategy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.disrupt_generator.DisruptionAndRecovery.optimze_recovery_strategy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Identifies the optimal repair strategy.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The order in which the repair actions must be executed.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list of strings</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.get_event_table">
+<span class="sig-name descname"><span class="pre">get_event_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.get_event_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the event table.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.disrupt_generator.DisruptionAndRecovery.schedule_recovery">
-<span class="sig-name descname"><span class="pre">schedule_recovery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">integrated_graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repair_order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.disrupt_generator.DisruptionAndRecovery.schedule_recovery" title="Permalink to this definition">¶</a></dt>
-<dd><p>Schedules the recovery actions in the event table of the DisasterAndRecovery object.</p>
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.initiate_next_recov_scheduled">
+<span class="sig-name descname"><span class="pre">initiate_next_recov_scheduled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.initiate_next_recov_scheduled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flag to identify when the crew must stop at a point and schedule next recovery</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.reset_networks">
+<span class="sig-name descname"><span class="pre">reset_networks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.reset_networks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rests the IntegratedNetwork object within NetworkRecovery object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.schedule_recovery">
+<span class="sig-name descname"><span class="pre">schedule_recovery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repair_order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.schedule_recovery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates the unexpanded event table consisting of disruptions and repair actions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>integrated_graph</strong> (<em>nextworkx object</em>) – The integrated network as networkx object.</p></li>
-<li><p><strong>wn</strong> (<em>wntr network object</em>) – Water network object.</p></li>
-<li><p><strong>pn</strong> (<em>pandapower network object</em>) – Power systems object.</p></li>
-<li><p><strong>tn</strong> (<em>traffic network object</em>) – Transportation network object.</p></li>
-<li><p><strong>repair_order</strong> (<em>list of strings</em>) – The order in which the disrupted components are to be repaired.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>repair_order</strong> (<em>list of strings.</em>) – The repair order considered in the current simulation.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.disrupt_generator.DisruptionAndRecovery.update_directly_affected_components">
-<span class="sig-name descname"><span class="pre">update_directly_affected_components</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_sim_time</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.disrupt_generator.DisruptionAndRecovery.update_directly_affected_components" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.set_initial_crew_start">
+<span class="sig-name descname"><span class="pre">set_initial_crew_start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repair_order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.set_initial_crew_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the initial start times at which the respective infrastructure crews start from their locations post-disaster.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>repair_order</strong> (<em>list of strings.</em>) – The repair order considered in the current simulation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.update_directly_affected_components">
+<span class="sig-name descname"><span class="pre">update_directly_affected_components</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_sim_time</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.update_directly_affected_components" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates the operational performance of directly impacted infrastructure components by the external event.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pn</strong> (<em>pandapower network object</em>) – Power network object.</p></li>
-<li><p><strong>wn</strong> (<em>wntr network object</em>) – Water network object.</p></li>
 <li><p><strong>time_stamp</strong> (<em>integer</em>) – Current time stamp in the event table in seconds.</p></li>
 <li><p><strong>next_sim_time</strong> (<em>integer</em>) – Next time stamp in the event table in seconds.</p></li>
 </ul>
@@ -227,8 +234,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.disrupt_generator.link_close_event">
-<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.disrupt_generator.</span></span><span class="sig-name descname"><span class="pre">link_close_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipe_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.disrupt_generator.link_close_event" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.network_recovery.link_close_event">
+<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.network_recovery.</span></span><span class="sig-name descname"><span class="pre">link_close_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipe_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.network_recovery.link_close_event" title="Permalink to this definition">¶</a></dt>
 <dd><p>Closes a pipe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -249,8 +256,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.disrupt_generator.link_open_event">
-<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.disrupt_generator.</span></span><span class="sig-name descname"><span class="pre">link_open_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipe_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.disrupt_generator.link_open_event" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.network_recovery.link_open_event">
+<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.network_recovery.</span></span><span class="sig-name descname"><span class="pre">link_open_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipe_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.network_recovery.link_open_event" title="Permalink to this definition">¶</a></dt>
 <dd><p>Opens a pipe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -271,8 +278,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.disrupt_generator.pipe_leak_node_generator">
-<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.disrupt_generator.</span></span><span class="sig-name descname"><span class="pre">pipe_leak_node_generator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disaster_recovery_object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.disrupt_generator.pipe_leak_node_generator" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.network_recovery.pipe_leak_node_generator">
+<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.network_recovery.</span></span><span class="sig-name descname"><span class="pre">pipe_leak_node_generator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.network_recovery.pipe_leak_node_generator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Splits the directly affected pipes to induce leak during simulations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -296,7 +303,7 @@
 <p>Functions to calculate the resilience metrics used for optimizing recovery actions.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="dreaminsg_integrated_model.src.resilience_metrics.calculate_base_demand_metrics">
-<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.resilience_metrics.</span></span><span class="sig-name descname"><span class="pre">calculate_base_demand_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.resilience_metrics.calculate_base_demand_metrics" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.resilience_metrics.</span></span><span class="sig-name descname"><span class="pre">calculate_base_demand_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.resilience_metrics.calculate_base_demand_metrics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the base netwok demands for water, power and traffic.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -432,114 +439,58 @@
 
 </div>
 <div class="section" id="module-dreaminsg_integrated_model.src.simulation">
-<span id="dreaminsg-integrated-model-src-simulation-new-module"></span><h2>dreaminsg_integrated_model.src.simulation_new module<a class="headerlink" href="#module-dreaminsg_integrated_model.src.simulation" title="Permalink to this headline">¶</a></h2>
+<span id="dreaminsg-integrated-model-src-simulation-module"></span><h2>dreaminsg_integrated_model.src.simulation module<a class="headerlink" href="#module-dreaminsg_integrated_model.src.simulation" title="Permalink to this headline">¶</a></h2>
 <p>Functions to implement the various steps of the interdependent infrastructure network simulations.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.simulation.build_power_water_dependencies">
-<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.simulation.</span></span><span class="sig-name descname"><span class="pre">build_power_water_dependencies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dependency_table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependency_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.simulation.build_power_water_dependencies" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds the power-water dependency table to the DependencyTable object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dependency_table</strong> (<em>DependencyTable object</em>) – The object that contains information related to the dependencies in the network.</p></li>
-<li><p><strong>dependency_file</strong> (<em>string</em>) – The location of the dependency file containing dependency information.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The modified dependency table object.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>DependencyTable object</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.simulation.build_transportation_access">
-<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.simulation.</span></span><span class="sig-name descname"><span class="pre">build_transportation_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dependency_table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integrated_graph</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.simulation.build_transportation_access" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds the transportatio naccess table to the DependencyTabl object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dependency_table</strong> (<em>DependencyTable object</em>) – The object that contains information related to the dependencies in the network.</p></li>
-<li><p><strong>integrated_graph</strong> (<em>nextworkx object</em>) – The integrated network as networkx object.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The modified dependency table object.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>DependencyTable object</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.simulation.expand_event_table">
-<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.simulation.</span></span><span class="sig-name descname"><span class="pre">expand_event_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">disaster_recovery_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_sim_step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_points</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.simulation.expand_event_table" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.simulation.NetworkSimulation">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.simulation.</span></span><span class="sig-name descname"><span class="pre">NetworkSimulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network_recovery</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_step</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.simulation.NetworkSimulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.simulation.NetworkSimulation.expand_event_table">
+<span class="sig-name descname"><span class="pre">expand_event_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">add_points</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.simulation.NetworkSimulation.expand_event_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Expands the event table with additional time_stamps for simulation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>disaster_recovery_object</strong> (<em>DisasterAndRecovery object</em>) – The object that consists of information related to disruptions and repair actions.</p></li>
-<li><p><strong>initial_sim_step</strong> (<em>integer</em>) – The initial size of time_step in seconds.</p></li>
-<li><p><strong>add_points</strong> (<em>integer</em>) – A positive integer denoting the number of extra time-stamps to be added to the simulation.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>add_points</strong> (<em>integer</em>) – A positive integer denoting the number of extra time-stamps to be added to the simulation.</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.simulation.load_networks">
-<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.simulation.</span></span><span class="sig-name descname"><span class="pre">load_networks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">water_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transp_folder</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.simulation.load_networks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads the water, power and transportation networks.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.simulation.NetworkSimulation.get_components_repaired">
+<span class="sig-name descname"><span class="pre">get_components_repaired</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.simulation.NetworkSimulation.get_components_repaired" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of components that are already repaired.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>water_file</strong> (<em>string</em>) – The water network file (<a href="#id5"><span class="problematic" id="id6">*</span></a>.inp).</p></li>
-<li><p><strong>power_file</strong> (<em>string</em>) – The power systems file (<a href="#id7"><span class="problematic" id="id8">*</span></a>.json).</p></li>
-<li><p><strong>transp_folder</strong> (<em>string</em>) – The local directory that consists of required transportation network files.</p></li>
-</ul>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of components which are already repaired.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The water, powrr and transportation networks ready for simulation.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>objects</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list of strings</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.simulation.schedule_component_repair">
-<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.simulation.</span></span><span class="sig-name descname"><span class="pre">schedule_component_repair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">disaster_recovery_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integrated_graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.simulation.schedule_component_repair" title="Permalink to this definition">¶</a></dt>
-<dd><p>Optimizes the repair action order and schedules the actions in the event table.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.simulation.NetworkSimulation.get_components_to_repair">
+<span class="sig-name descname"><span class="pre">get_components_to_repair</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.simulation.NetworkSimulation.get_components_to_repair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rturns the remaining components to be repaired.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>disaster_recovery_object</strong> (<em>DisasterAndRecovery object</em>) – The object that consists of information related to disruptions and repair actions.</p></li>
-<li><p><strong>integrated_graph</strong> (<em>nextworkx object</em>) – The integrated network as networkx object.</p></li>
-<li><p><strong>pn</strong> (<em>pandapower network object</em>) – Power systems object.</p></li>
-<li><p><strong>wn</strong> (<em>wntr network object</em>) – Water network object.</p></li>
-<li><p><strong>tn</strong> (<em>traffic network object</em>) – Transportation network object.</p></li>
-</ul>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The list of components</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list of strings</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.simulation.simulate_interdependent_effects">
-<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.simulation.</span></span><span class="sig-name descname"><span class="pre">simulate_interdependent_effects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">disaster_recovery_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependency_table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.simulation.simulate_interdependent_effects" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.simulation.NetworkSimulation.simulate_interdependent_effects">
+<span class="sig-name descname"><span class="pre">simulate_interdependent_effects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network_recovery</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.simulation.NetworkSimulation.simulate_interdependent_effects" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simulates the interdependent effect based on the initial disruptions and subsequent repair actions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>disaster_recovery_object</strong> (<em>DisasterAndRecovery object</em>) – The object that consists of information related to disruptions and repair actions.</p></li>
-<li><p><strong>dependency_table</strong> (<em>DependencyTable object</em>) – The object that contains information related to the dependencies in the network.</p></li>
-<li><p><strong>pn</strong> (<em>pandapower network object</em>) – Power systems object.</p></li>
-<li><p><strong>wn</strong> (<em>wntr network object</em>) – Water network object.</p></li>
-<li><p><strong>tn</strong> (<em>traffic network object</em>) – Transportation network object.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>network_recovery</strong> (<em>NetworkRecovery object</em>) – A integrated infrastructure network recovery object.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>lists of time stamps and resilience values of power and water supply.</p>
@@ -550,9 +501,20 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.simulation.write_results">
-<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.simulation.</span></span><span class="sig-name descname"><span class="pre">write_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_tracker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power_consump_tracker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">water_consump_tracker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.simulation.write_results" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.simulation.NetworkSimulation.update_repaired_components">
+<span class="sig-name descname"><span class="pre">update_repaired_components</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.simulation.NetworkSimulation.update_repaired_components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the lists of repaired and to be repaired components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>component</strong> (<em>string</em>) – The name of the component that was recently repaired.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.simulation.NetworkSimulation.write_results">
+<span class="sig-name descname"><span class="pre">write_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">power_consump_tracker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">water_consump_tracker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.simulation.NetworkSimulation.write_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write the results to local directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -565,6 +527,8 @@
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
 </dd></dl>
 
 </div>

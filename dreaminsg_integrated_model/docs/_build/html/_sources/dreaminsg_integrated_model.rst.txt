@@ -12,14 +12,6 @@ Subpackages
 Submodules
 ----------
 
-dreaminsg\_integrated\_model.cli module
----------------------------------------
-
-.. automodule:: dreaminsg_integrated_model.cli
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 dreaminsg\_integrated\_model.main module
 ----------------------------------------
 
