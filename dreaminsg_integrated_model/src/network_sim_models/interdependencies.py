@@ -168,6 +168,8 @@ class DependencyTable:
                     ].in_service.item()
                     == False
                 ):
+                    # if '{}_outage'.format(row.water_id) in network.wn.control_name_list:
+                    #     network.wn.remove_control('{}_outage'.format(row.water_id))
                     pump = network.wn.get_link(row.water_id)
                     pump.add_outage(network.wn, time_stamp, next_time_stamp)
                     # print(

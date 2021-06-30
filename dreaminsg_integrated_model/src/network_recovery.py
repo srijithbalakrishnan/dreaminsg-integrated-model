@@ -363,7 +363,7 @@ class NetworkRecovery:
                             self.network.wn.get_link(pipe_name).status = 1
 
     def reset_networks(self):
-        """Rests the IntegratedNetwork object within NetworkRecovery object."""
+        """Resets the IntegratedNetwork object within NetworkRecovery object."""
         self.network = copy.deepcopy(self.base_network)
 
 

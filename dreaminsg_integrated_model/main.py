@@ -3,7 +3,7 @@
 import os
 from dreaminsg_integrated_model.src.network_recovery import *
 import dreaminsg_integrated_model.src.simulation as simulation
-from dreaminsg_integrated_model.src.network_sim_models.integrated_network_abc import *
+from dreaminsg_integrated_model.src.network_sim_models.integrated_network import *
 from dreaminsg_integrated_model.src.optimizer import *
 
 import warnings
@@ -28,6 +28,7 @@ def main():
     simple_network.load_networks(water_file, power_file, transp_folder)
 
     simple_network.generate_integrated_graph(plotting=False)
+    simple_network.integrated_graph
 
     dependency_file = "dreaminsg_integrated_model/data/networks/in2/dependecies.csv"
     simple_network.generate_dependency_table(dependency_file=dependency_file)
@@ -40,12 +41,12 @@ def main():
     )
 
     network_recovery = NetworkRecovery(simple_network, 60)
-    bf_optimizer = Brute_Force_Optimizer(prediction_horizon=2)
+    bf_optimizer = BruteForceOptimizer(prediction_horizon=2)
 
     sim_step = (
         simple_network.wn.options.time.hydraulic_timestep
     )  # initial_sim_step which will be updated during the simulation
-    bf_simulation = simulation.Simulation(network_recovery, sim_step)
+    bf_simulation = simulation.NetworkSimulation(network_recovery, sim_step)
 
     bf_optimizer.find_optimal_recovery(bf_simulation)
 

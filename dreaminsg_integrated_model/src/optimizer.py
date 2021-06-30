@@ -71,7 +71,7 @@ class BruteForceOptimizer(Optimizer):
             print("PREDICTION HORIZON {}".format(counter))
             print("*" * 50)
             print(
-                "Components to repair: ",
+                "Components to repair: ", 
                 simulation.get_components_to_repair(),
                 "Components repaired: ",
                 simulation.get_components_repaired(),
@@ -106,7 +106,7 @@ class BruteForceOptimizer(Optimizer):
                 )
 
                 ilos_dict = {
-                    "water": water_consump_tracker,
+                    "water": water_consump_tracker, 
                     "power": power_consump_tracker,
                     "time": time_tracker,
                 }
@@ -132,7 +132,7 @@ class BruteForceOptimizer(Optimizer):
                     "Water AUC: ",
                     round(water_auc, 3),
                     "\t",
-                    "Power AUC: ",
+                    "Power AUC: ", 
                     round(power_auc, 3),
                     "\t",
                     "Weighted AUC: ",
@@ -140,7 +140,7 @@ class BruteForceOptimizer(Optimizer):
                 )
                 self.auc_log = self.auc_log.append(
                     {
-                        "repair_order": cum_repair_order,
+                        "repair_order": cum_repair_order, 
                         "water_auc": round(water_auc, 3),
                         "power_auc": round(power_auc, 3),
                         "auc": round(auc, 3),

@@ -1,0 +1,10 @@
+name: dreaminsg_test
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - anaconda
+  - wntr
+  - pandapower
+  - depfinder
+prefix: C:\Users\srijith\anaconda3\envs\dreaminsg_test
