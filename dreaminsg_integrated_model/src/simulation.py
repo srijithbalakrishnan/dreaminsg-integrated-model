@@ -33,10 +33,16 @@ class NetworkSimulation:
         """
         compon_list = list(self.network_recovery.event_table.components.unique())
         full_time_list = self.network_recovery.event_table.time_stamp.unique()
+
+        # print("Prior to expansion: ", full_time_list)  ###
+
         interval_approx = (full_time_list[-1] - full_time_list[0]) / add_points
         act_interval = int(self.sim_step * round(interval_approx / self.sim_step))
 
         new_range = range(full_time_list[0], full_time_list[-1], act_interval)
+
+        # print("Additional points that might be added: ", [i for i in new_range])
+
         new_time_stamps = [time_stamp for time_stamp in new_range]
 
         for time in full_time_list:
@@ -50,7 +56,7 @@ class NetworkSimulation:
                 for i in compon_list + curr_components
                 if i not in compon_list or i not in curr_components
             ]
-            # print(components_to_add)
+            # print("Components to add at {}".format(time), components_to_add)
             for _, compon in enumerate(components_to_add):
                 compon_time_list = self.network_recovery.event_table[
                     self.network_recovery.event_table.components == compon
@@ -87,33 +93,34 @@ class NetworkSimulation:
 
             for time in new_time_stamps:
                 if time not in compon_time_list:
-                    maxless = max(compon_time_list[compon_time_list <= time])
+                    if time not in [compon_time - 60 for compon_time in compon_time_list]:
+                        if time not in [compon_time + 60 for compon_time in compon_time_list]:
+                            maxless = max(compon_time_list[compon_time_list <= time])
 
-                    perf_level = self.network_recovery.event_table[
-                        (self.network_recovery.event_table.components == compon)
-                        & (self.network_recovery.event_table.time_stamp == maxless)
-                    ].perf_level.values[0]
+                            perf_level = self.network_recovery.event_table[
+                                (self.network_recovery.event_table.components == compon)
+                                & (self.network_recovery.event_table.time_stamp == maxless)
+                            ].perf_level.values[0]
 
-                    perf_state = self.network_recovery.event_table[
-                        (self.network_recovery.event_table.components == compon)
-                        & (self.network_recovery.event_table.time_stamp == maxless)
-                    ].component_state.values[0]
+                            perf_state = self.network_recovery.event_table[
+                                (self.network_recovery.event_table.components == compon)
+                                & (self.network_recovery.event_table.time_stamp == maxless)
+                            ].component_state.values[0]
 
-                    self.network_recovery.event_table = (
-                        self.network_recovery.event_table.append(
-                            {
-                                "time_stamp": time,
-                                "components": compon,
-                                "perf_level": perf_level,
-                                "component_state": perf_state,
-                            },
-                            ignore_index=True,
-                        )
-                    )
+                            self.network_recovery.event_table = (
+                                self.network_recovery.event_table.append(
+                                    {
+                                        "time_stamp": time,
+                                        "components": compon,
+                                        "perf_level": perf_level,
+                                        "component_state": perf_state,
+                                    },
+                                    ignore_index=True,
+                                )
+                            )
         self.network_recovery.event_table.sort_values(by=["time_stamp"], inplace=True)
         self.network_recovery.event_table["time_stamp"] = (
-            self.network_recovery.event_table["time_stamp"]
-            + self.network_recovery.sim_step
+            self.network_recovery.event_table["time_stamp"] + 60
         )
 
     def get_components_to_repair(self):
@@ -167,14 +174,14 @@ class NetworkSimulation:
             # print(self.network_recovery.network.wn.control_name_list)
             print(f"\nSimulating network conditions at {time_stamp} s")
 
-            # print(
-            #     "Simulation time: ",
-            #     network_recovery.network.wn.options.time.duration,
-            #     "; Hydraulic time step: ",
-            #     network_recovery.network.wn.options.time.hydraulic_timestep,
-            #     "; Report time step: ",
-            #     network_recovery.network.wn.options.time.report_timestep,
-            # )
+            print(
+                "Simulation time: ",
+                network_recovery.network.wn.options.time.duration,
+                "; Hydraulic time step: ",
+                network_recovery.network.wn.options.time.hydraulic_timestep,
+                "; Report time step: ",
+                network_recovery.network.wn.options.time.report_timestep,
+            )
 
             # update performance of directly affected components
             network_recovery.update_directly_affected_components(
@@ -200,28 +207,28 @@ class NetworkSimulation:
             # print(wn_results.node["demand"])
             # print(wn_results.node["leak_demand"])
 
-            # print(
-            #     "Pump: ",
-            #     "\t\tstatus = ",
-            #     wn_results.link["status"]["W_WP9"].values,
-            #     "\tflowrate = ",
-            #     wn_results.link["flowrate"]["W_WP9"].values,
-            # )
-            # print(
-            #     "Tank: ",
-            #     "\t\tdemand",
-            #     wn_results.node["demand"]["W_T2"].values,
-            #     "\thead = ",
-            #     wn_results.node["head"]["W_T2"].values,
-            # )
-            # print(
-            #     "Pipe from Tank: ",
-            #     "status",
-            #     wn_results.link["status"]["W_P110"].values,
-            #     "\tflowrate = ",
-            #     wn_results.link["flowrate"]["W_P110"].values,
-            # )
-            # print("******************\n")
+            print(
+                "Pump: ",
+                "\t\tstatus = ",
+                wn_results.link["status"]["W_WP9"].values,
+                "\tflowrate = ",
+                wn_results.link["flowrate"]["W_WP9"].values,
+            )
+            print(
+                "Tank: ",
+                "\t\tdemand",
+                wn_results.node["demand"]["W_T2"].values,
+                "\thead = ",
+                wn_results.node["head"]["W_T2"].values,
+            )
+            print(
+                "Pipe from Tank: ",
+                "status",
+                wn_results.link["status"]["W_P110"].values,
+                "\tflowrate = ",
+                wn_results.link["flowrate"]["W_P110"].values,
+            )
+            print("******************\n")
 
             # track results
 
