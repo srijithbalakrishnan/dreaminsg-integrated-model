@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99d
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: dreaminsg.aux
+Reallocating 'name_of_file' (item size: 1) to 5 items.
+The style file: iitm.bst
+Reallocating 'name_of_file' (item size: 1) to 7 items.
+Database file #1: sample.bib
+Warning--missing publisher in Boyles2020
+You've used 5 entries,
+            2930 wiz_defined-function locations,
+            639 strings with 6016 characters,
+and the built_in function-call counts, 3847 in all, are:
+= -- 268
+> -- 218
+< -- 3
++ -- 71
+- -- 66
+* -- 348
+:= -- 548
+add.period$ -- 16
+call.type$ -- 5
+change.case$ -- 50
+chr.to.int$ -- 5
+cite$ -- 6
+duplicate$ -- 309
+empty$ -- 279
+format.name$ -- 85
+if$ -- 750
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 62
+newline$ -- 32
+num.names$ -- 20
+pop$ -- 132
+preamble$ -- 1
+purify$ -- 42
+quote$ -- 0
+skip$ -- 77
+stack$ -- 0
+substring$ -- 136
+swap$ -- 176
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 42
+warning$ -- 1
+while$ -- 22
+width$ -- 0
+write$ -- 74
+(There was 1 warning)

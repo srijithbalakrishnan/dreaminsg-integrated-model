@@ -8,6 +8,7 @@ import dreaminsg_integrated_model.src.network_sim_models.water.water_network_mod
 import dreaminsg_integrated_model.src.network_sim_models.power.power_system_model as power
 import dreaminsg_integrated_model.src.network_sim_models.transportation.network as transpo
 import dreaminsg_integrated_model.src.plots as model_plots
+import dreaminsg_integrated_model.src.resilience_metrics as resm
 
 
 class NetworkSimulation:
@@ -39,9 +40,6 @@ class NetworkSimulation:
         new_time_stamps = [time_stamp for time_stamp in new_range]
 
         for time in full_time_list:
-            # disrupt_components = list(
-            #     self.network_recovery.network.get_disrupted_components()
-            # )
             curr_components = list(
                 self.network_recovery.event_table[
                     self.network_recovery.event_table.time_stamp == time
@@ -53,19 +51,23 @@ class NetworkSimulation:
                 if i not in compon_list or i not in curr_components
             ]
             # print(components_to_add)
-            for i, compon in enumerate(components_to_add):
+            for _, compon in enumerate(components_to_add):
                 compon_time_list = self.network_recovery.event_table[
                     self.network_recovery.event_table.components == compon
                 ].time_stamp.unique()
+
                 maxless = max(compon_time_list[compon_time_list <= time])
+
                 perf_level = self.network_recovery.event_table[
                     (self.network_recovery.event_table.components == compon)
                     & (self.network_recovery.event_table.time_stamp == maxless)
                 ].perf_level.values[0]
+
                 perf_state = self.network_recovery.event_table[
                     (self.network_recovery.event_table.components == compon)
                     & (self.network_recovery.event_table.time_stamp == maxless)
                 ].component_state.values[0]
+
                 self.network_recovery.event_table = (
                     self.network_recovery.event_table.append(
                         {
@@ -82,17 +84,21 @@ class NetworkSimulation:
             compon_time_list = self.network_recovery.event_table[
                 self.network_recovery.event_table.components == compon
             ].time_stamp.unique()
+
             for time in new_time_stamps:
                 if time not in compon_time_list:
                     maxless = max(compon_time_list[compon_time_list <= time])
+
                     perf_level = self.network_recovery.event_table[
                         (self.network_recovery.event_table.components == compon)
                         & (self.network_recovery.event_table.time_stamp == maxless)
                     ].perf_level.values[0]
+
                     perf_state = self.network_recovery.event_table[
                         (self.network_recovery.event_table.components == compon)
                         & (self.network_recovery.event_table.time_stamp == maxless)
                     ].component_state.values[0]
+
                     self.network_recovery.event_table = (
                         self.network_recovery.event_table.append(
                             {
@@ -111,7 +117,7 @@ class NetworkSimulation:
         )
 
     def get_components_to_repair(self):
-        """Rturns the remaining components to be repaired.
+        """Returns the remaining components to be repaired.
 
         :return: The list of components
         :rtype: list of strings
@@ -143,9 +149,10 @@ class NetworkSimulation:
         :return: lists of time stamps and resilience values of power and water supply.
         :rtype: lists
         """
-        power_consump_tracker = []
-        water_consump_tracker = []
-        time_tracker = []
+        # power_consump_tracker = []
+        # water_consump_tracker = []
+        # time_tracker = []
+        resilience_metrics = resm.WeightedResilienceMetric()
 
         unique_time_stamps = sorted(
             list(network_recovery.event_table.time_stamp.unique())
@@ -157,7 +164,8 @@ class NetworkSimulation:
         ][1:]
 
         for index, time_stamp in enumerate(unique_time_stamps[:-1]):
-            # print(f"\nSimulating network conditions at {time_stamp} s")
+            # print(self.network_recovery.network.wn.control_name_list)
+            print(f"\nSimulating network conditions at {time_stamp} s")
 
             # print(
             #     "Simulation time: ",
@@ -216,22 +224,21 @@ class NetworkSimulation:
             # print("******************\n")
 
             # track results
-            time_tracker.append((time_stamp) / 60)  # minutes
-            power_consump_tracker.append(
-                (
-                    network_recovery.network.pn.res_load.p_mw.sum()
-                    + network_recovery.network.pn.res_motor.p_mw.sum()
+
+            # time_tracker.append((time_stamp) / 60)  # minutes
+            resilience_metrics.time_tracker.append((time_stamp) / 60)  # minutes
+
+            resilience_metrics.power_consump_tracker.append(
+                resilience_metrics.calculate_power_resmetric(
+                    network_recovery,
                 )
-                / network_recovery.network.total_base_power_demand
             )
-            water_consump_tracker.append(
-                sum(
-                    [
-                        list(wn_results.node["demand"][node])[0]
-                        for node in network_recovery.network.wn.junction_name_list
-                    ]
+
+            resilience_metrics.water_consump_tracker.append(
+                resilience_metrics.calculate_water_resmetric(
+                    network_recovery,
+                    wn_results,
                 )
-                / network_recovery.network.total_base_water_demand
             )
 
             # Fix the time until which the wntr model should run in this iteration
@@ -246,9 +253,10 @@ class NetworkSimulation:
             # print(
             #      f"Simulation for time {time_stamp / 60} minutes completed successfully"
             # )
-        return time_tracker, power_consump_tracker, water_consump_tracker
+        return resilience_metrics
 
     def write_results(
+        self,
         time_tracker,
         power_consump_tracker,
         water_consump_tracker,

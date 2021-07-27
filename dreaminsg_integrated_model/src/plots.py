@@ -7,8 +7,7 @@ import pandapower as pp
 import pandapower.plotting as pandaplot
 import matplotlib.pyplot as plt
 import re
-
-# plt.style.use("seaborn-deep")
+import seaborn as sns
 
 
 # -----------------------------------------------------------#
@@ -96,13 +95,13 @@ def plot_power_net(power_net):
     pandaplot.simple_plot(net, **options)
 
 
-def plot_water_net(water_net):
+def plot_water_net(wn):
     """Generates the water network plot.
 
     :param water_net: The location of the water network .inp file.
     :type water_net: string
     """
-    wn = wntr.network.WaterNetworkModel(water_net)
+    # wn = wntr.network.WaterNetworkModel(water_net)
 
     coord_list = list(wn.query_node_attribute("coordinates"))
     node_coords = [list(ele) for ele in coord_list]
@@ -171,19 +170,19 @@ def plot_integrated_network(pn, wn, tn, plotting=False):
     power_bus_coords = dict()
     for index, bus in enumerate(power_bus_list):
         power_bus_coords[bus] = list(zip(pn.bus_geodata.x, pn.bus_geodata.y))[index]
-    node_type = {bus: "power_node" for i, bus in enumerate(power_bus_list)}
+    node_type = {bus: "power_node" for _, bus in enumerate(power_bus_list)}
 
     b2b_edge_list = [
         [pn.bus.name.values[row.from_bus], pn.bus.name.values[row.to_bus]]
-        for index, row in pn.line.iterrows()
+        for _, row in pn.line.iterrows()
     ]
     transfo_edge_list = [
         [pn.bus.name.values[row.hv_bus], pn.bus.name.values[row.lv_bus]]
-        for index, row in pn.trafo.iterrows()
+        for _, row in pn.trafo.iterrows()
     ]
     switch_edge_list = [
         [pn.bus.name.values[row.bus], pn.bus.name.values[row.element]]
-        for index, row in pn.switch[pn.switch.et == "b"].iterrows()
+        for _, row in pn.switch[pn.switch.et == "b"].iterrows()
     ]
 
     G.add_nodes_from(power_bus_list)
@@ -226,16 +225,24 @@ def plot_integrated_network(pn, wn, tn, plotting=False):
         water_junc_coords[junc] = list(wn.get_node(junc).coordinates)
 
     water_pipe_list = []
-    for index, pipe in enumerate(wn.pipe_name_list):
-        start_node = wn.get_link(wn.pipe_name_list[index]).start_node_name
-        end_node = wn.get_link(wn.pipe_name_list[index]).end_node_name
+    for index, _ in enumerate(water_pipe_name_list):
+        start_node = wn.get_link(water_pipe_name_list[index]).start_node_name
+        end_node = wn.get_link(water_pipe_name_list[index]).end_node_name
         water_pipe_list.append((start_node, end_node))
 
-    node_type = {node: "water_node" for i, node in enumerate(water_junc_list)}
+    node_type = {node: "water_node" for _, node in enumerate(water_junc_list)}
 
     G.add_nodes_from(water_junc_list)
-    nx.set_node_attributes(G, water_junc_coords, "coord")
-    nx.set_node_attributes(G, node_type, "type")
+    nx.set_node_attributes(
+        G,
+        water_junc_coords,
+        "coord",
+    )
+    nx.set_node_attributes(
+        G,
+        node_type,
+        "type",
+    )
 
     nx.draw_networkx_edges(
         G,
@@ -318,35 +325,40 @@ def plot_repair_curves(disrupt_recovery_object, scatter=False):
     :type scatter: bool, optional
     """
     plt.figure(figsize=(10, 7))
-    # fig,ax = plt.subplots()
+    sns.set_style("white")
+    sns.set_context("talk")
+    sns.set_palette(sns.color_palette("Set1"))
 
-    for name in disrupt_recovery_object.disrupted_components:
-        plt.step(
+    for name in disrupt_recovery_object.network.get_disrupted_components():
+        time_tracker = (
             disrupt_recovery_object.event_table[
                 disrupt_recovery_object.event_table.components == name
             ].time_stamp
-            / 60,
-            disrupt_recovery_object.event_table[
-                disrupt_recovery_object.event_table.components == name
-            ].perf_level,
-            where="post",
+            / 60
+        )
+        # print(time_tracker)
+        damage_tracker = disrupt_recovery_object.event_table[
+            disrupt_recovery_object.event_table.components == name
+        ].perf_level
+        # print(damage_tracker)
+
+        sns.lineplot(
+            x=time_tracker,
+            y=damage_tracker,
             label=name,
-            linewidth=3,
+            drawstyle="steps-post",
         )
         if scatter == True:
-            plt.scatter(
-                disrupt_recovery_object.event_table[
-                    disrupt_recovery_object.event_table.components == name
-                ].time_stamp
-                / 60,
-                disrupt_recovery_object.event_table[
-                    disrupt_recovery_object.event_table.components == name
-                ].perf_level,
+            sns.scatterplot(
+                x=time_tracker,
+                y=damage_tracker,
+                alpha=0.5,
             )
     plt.xlabel("Time (minutes)")
-    plt.xlim(0, disrupt_recovery_object.event_table.time_stamp.max() / 60)
+    plt.xlim(0, 1.01 * (disrupt_recovery_object.event_table.time_stamp.max() / 60))
     plt.ylabel("Damage level (%)")
     plt.ylim(0, 102)
+    plt.title("Disrupted components and their restoration")
     plt.legend(loc="best")
     plt.show()
 
@@ -365,39 +377,36 @@ def plot_interdependent_effects(
     :param scatter: scatter plot, defaults to True
     :type scatter: bool, optional
     """
-    infra_list = ["Power", "Water"]
-    color_list = ["tab:blue", "tab:orange"]
-    tracker_list = [power_consump_tracker, water_consump_tracker]
+    sns.set_style("white")
+    sns.set_context("talk")
+    sns.set_palette(sns.color_palette("Set1"))
 
     plt.figure(figsize=(10, 7))
-    plt.suptitle("Network-wide effects and recovery")
-    for index, column in enumerate([1, 2]):
-        plt.subplot(1, 1, 1)  # row 1, column 2, count 1
-        if infra_list[index] == "Power":
-            plt.step(
-                time_tracker,
-                tracker_list[index],
-                color_list[index],
-                alpha=0.7,
-                where="post",
-                label=infra_list[index],
-                linewidth=3,
-            )
-        else:
-            plt.step(
-                time_tracker,
-                tracker_list[index],
-                color_list[index],
-                alpha=0.7,
-                where="pre",
-                label=infra_list[index],
-                linewidth=3,
-            )
-        if scatter == True:
-            plt.scatter(time_tracker, tracker_list[index])
-        plt.xlabel("Time (minutes)")
-        plt.ylabel("Consumption ratio")
-        plt.xlim(0, max(time_tracker))
-        plt.ylim(0, 1.05)
-        plt.legend(loc="lower right")
+    plt.title("Network-wide effects and recovery")
+    sns.lineplot(
+        x=time_tracker,
+        y=water_consump_tracker,
+        label="Water",
+    )
+    sns.lineplot(
+        x=time_tracker,
+        y=power_consump_tracker,
+        label="Power",
+    )
+    if scatter == True:
+        sns.scatterplot(
+            x=time_tracker,
+            y=water_consump_tracker,
+            alpha=0.5,
+        )
+        sns.scatterplot(
+            x=time_tracker,
+            y=power_consump_tracker,
+            alpha=0.5,
+        )
+    plt.xlabel("Time (minutes)")
+    plt.ylabel("Consumption ratio")
+    plt.xlim(0, 1.01 * max(time_tracker))
+    plt.ylim(-0.01, 1.05)
+    plt.legend(loc="best")
     plt.show()

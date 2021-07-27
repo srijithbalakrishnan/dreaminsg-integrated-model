@@ -22,6 +22,7 @@ class NetworkRecovery:
         self.base_network = network
         self.network = copy.deepcopy(self.base_network)
         self.sim_step = sim_step
+        self._tn_update_flag = True
 
     def set_initial_crew_start(self, repair_order):
         """Sets the initial start times at which the respective infrastructure crews start from their locations post-disaster.
@@ -38,8 +39,8 @@ class NetworkRecovery:
         disrupt_events_power = disruptive_events[
             disruptive_events.components.isin(disrupted_infra_dict["power"])
         ]
-        print(disrupt_events_power)
         if disrupt_events_power.shape[0] > 0:
+            # print(disrupt_events_power)
             self.next_power_crew_trip_start = list(disrupt_events_power.time_stamp)[0]
             # print("First power failure at ", self.next_power_crew_trip_start)
 
@@ -47,8 +48,8 @@ class NetworkRecovery:
         disrupt_events_water = disruptive_events[
             disruptive_events.components.isin(disrupted_infra_dict["water"])
         ]
-        print(disrupt_events_water)
         if disrupt_events_water.shape[0] > 0:
+            # print(disrupt_events_water)
             self.next_water_crew_trip_start = list(disrupt_events_water.time_stamp)[0]
             # print("First water failure at ", self.next_water_crew_trip_start)
 
@@ -56,8 +57,8 @@ class NetworkRecovery:
         disrupt_events_transpo = disruptive_events[
             disruptive_events.components.isin(disrupted_infra_dict["transpo"])
         ]
-        print(disrupt_events_transpo)
         if disrupt_events_transpo.shape[0] > 0:
+            # print(disrupt_events_transpo)
             self.next_transpo_crew_trip_start = list(disrupt_events_transpo.time_stamp)[
                 0
             ]
@@ -77,11 +78,7 @@ class NetworkRecovery:
             column_list = ["time_stamp", "components", "perf_level", "component_state"]
             self.event_table = pd.DataFrame(columns=column_list)
 
-            # disuptive_events_permut = self.network.disruptive_events[
-            #     self.network.disruptive_events.components.isin(repair_order)
-            # ]
-
-            for index, component in enumerate(self.network.get_disrupted_components()):
+            for _, component in enumerate(self.network.get_disrupted_components()):
                 self.event_table = self.event_table.append(
                     {
                         "time_stamp": 0,
@@ -92,7 +89,8 @@ class NetworkRecovery:
                     ignore_index=True,
                 )
 
-            for index, row in self.network.disruptive_events.iterrows():
+            for _, row in self.network.disruptive_events.iterrows():
+                compon_details = interdependencies.get_compon_details(row[1])
                 self.event_table = self.event_table.append(
                     {
                         "time_stamp": row[0],
@@ -102,32 +100,33 @@ class NetworkRecovery:
                     },
                     ignore_index=True,
                 )
+                if compon_details[0] == "transpo":
+                    self.fail_transpo_link(row[1])
+                    self.update_traffic_model()
 
-            for index, node in enumerate(repair_order):
-                origin_node = node
-                (
-                    compon_infra,
-                    compon_notation,
-                    compon_code,
-                    compon_full,
-                ) = interdependencies.get_compon_details(origin_node)
+            for _, component in enumerate(repair_order):
+                compon_details = interdependencies.get_compon_details(component)
                 # print(compon_infra, compon_notation, compon_code, compon_full)
 
-                if compon_infra == "power":
+                if compon_details[0] == "power":
                     recovery_time = (
-                        interdependencies.power_dict[compon_notation]["repair_time"]
+                        interdependencies.power_dict[compon_details[1]]["repair_time"]
                         * 3600
                     )
                     connected_bus = interdependencies.find_connected_power_node(
-                        origin_node, self.network.pn
+                        component,
+                        self.network.pn,
                     )
-                    nearest_node, near_dist = interdependencies.get_nearest_node(
-                        self.network.integrated_graph, connected_bus, "transpo_node"
+                    nearest_node, _ = interdependencies.get_nearest_node(
+                        self.network.integrated_graph,
+                        connected_bus,
+                        "transpo_node",
                     )
                     travel_time = int(
                         round(
                             self.network.tn.calculateShortestTravelTime(
-                                self.network.get_power_crew_loc(), nearest_node
+                                self.network.get_power_crew_loc(),
+                                nearest_node,
                             ),
                             0,
                         )
@@ -139,23 +138,27 @@ class NetworkRecovery:
                     self.network.set_power_crew_loc(nearest_node)
                     self.next_power_crew_trip_start = recovery_start + recovery_time
 
-                elif compon_infra == "water":
+                elif compon_details[0] == "water":
                     recovery_time = (
-                        interdependencies.water_dict[compon_notation]["repair_time"]
+                        interdependencies.water_dict[compon_details[1]]["repair_time"]
                         * 3600
                     )
                     connected_node = interdependencies.find_connected_water_node(
-                        origin_node, self.network.wn
+                        component,
+                        self.network.wn,
                     )
                     # print(f"Connected node: {connected_node}")
-                    nearest_node, near_dist = interdependencies.get_nearest_node(
-                        self.network.integrated_graph, connected_node, "transpo_node"
+                    nearest_node, _ = interdependencies.get_nearest_node(
+                        self.network.integrated_graph,
+                        connected_node,
+                        "transpo_node",
                     )
                     # print(f"Nearest node: {nearest_node}")
                     travel_time = int(
                         round(
                             self.network.tn.calculateShortestTravelTime(
-                                self.network.get_power_crew_loc(), nearest_node
+                                self.network.get_power_crew_loc(),
+                                nearest_node,
                             ),
                             0,
                         )
@@ -163,33 +166,38 @@ class NetworkRecovery:
                     # print(
                     #     f"The water crew is at {self.network.get_water_crew_loc()} at t = {self.next_water_crew_trip_start / 60} minutes. It takes {travel_time} minutes to reach nearest node {nearest_node}, the nearest transportation node from {node}."
                     # )
-                    recovery_start = self.next_power_crew_trip_start + travel_time * 60
+                    recovery_start = self.next_water_crew_trip_start + travel_time * 60
                     self.network.set_water_crew_loc(nearest_node)
                     self.next_water_crew_trip_start = recovery_start + recovery_time
 
-                elif compon_infra == "transpo":
+                elif compon_details[0] == "transpo":
+                    self.restore_transpo_link(component)
+                    self.update_traffic_model()
                     recovery_time = (
-                        interdependencies.transpo_dict[compon_notation]["repair_time"]
+                        interdependencies.transpo_dict[compon_details[1]]["repair_time"]
                         * 3600
                     )
-                    connected_bus = interdependencies.find_connected_power_node(
-                        origin_node, self.network.pn
+                    connected_junction = interdependencies.find_connected_transpo_node(
+                        component,
+                        self.network.tn,
                     )
-                    nearest_node, near_dist = interdependencies.get_nearest_node(
-                        self.network.integrated_graph, connected_bus, "transpo_node"
-                    )
+                    nearest_node = connected_junction
+
                     travel_time = int(
                         round(
                             self.network.tn.calculateShortestTravelTime(
-                                self.network.get_power_crew_loc(), nearest_node
+                                self.network.get_transpo_crew_loc(),
+                                nearest_node,
                             ),
                             0,
                         )
                     )
                     # print(
-                    #     f"The power crew is at {self.network.get_power_crew_loc()} at t = {self.next_power_crew_trip_start / 60} minutes. It takes {travel_time} minutes to reach nearest node {nearest_node}, the nearest transportation node from {node}."
+                    #     f"The transpo crew is at {self.network.get_transpo_crew_loc()} at t = {self.next_power_crew_trip_start / 60} minutes. It takes {travel_time} minutes to reach nearest node {nearest_node}, the nearest transportation node from {node}."
                     # )
-                    recovery_start = self.next_power_crew_trip_start + travel_time * 60
+                    recovery_start = (
+                        self.next_transpo_crew_trip_start + travel_time * 60
+                    )
                     self.network.set_transpo_crew_loc(nearest_node)
                     self.next_transpo_crew_trip_start = recovery_start + recovery_time
 
@@ -197,10 +205,10 @@ class NetworkRecovery:
                 self.event_table = self.event_table.append(
                     {
                         "time_stamp": recovery_start,
-                        "components": node,
+                        "components": component,
                         "perf_level": 100
                         - self.network.disruptive_events[
-                            self.network.disruptive_events.components == node
+                            self.network.disruptive_events.components == component
                         ].fail_perc.item(),
                         "component_state": "Repairing",
                     },
@@ -211,10 +219,10 @@ class NetworkRecovery:
                         "time_stamp": recovery_start
                         + recovery_time
                         - self.sim_step * 2,
-                        "components": node,
+                        "components": component,
                         "perf_level": 100
                         - self.network.disruptive_events[
-                            self.network.disruptive_events.components == node
+                            self.network.disruptive_events.components == component
                         ].fail_perc.item(),
                         "component_state": "Repairing",
                     },
@@ -223,21 +231,30 @@ class NetworkRecovery:
                 self.event_table = self.event_table.append(
                     {
                         "time_stamp": recovery_start + recovery_time,
-                        "components": node,
+                        "components": component,
                         "perf_level": 100,
                         "component_state": "Service Restored",
                     },
                     ignore_index=True,
                 )
-                # self.event_table = self.event_table.append(
-                #     {
-                #         "time_stamp": recovery_start + recovery_time + 7200,
-                #         "components": node,
-                #         "perf_level": 100,
-                #         "component_state": "Service Restored",
-                #     },
-                #     ignore_index=True,
-                # )
+                self.event_table = self.event_table.append(
+                    {
+                        "time_stamp": recovery_start + recovery_time + 120,
+                        "components": component,
+                        "perf_level": 100,
+                        "component_state": "Service Restored",
+                    },
+                    ignore_index=True,
+                )
+                self.event_table = self.event_table.append(
+                    {
+                        "time_stamp": recovery_start + recovery_time + 240,
+                        "components": component,
+                        "perf_level": 100,
+                        "component_state": "Service Restored",
+                    },
+                    ignore_index=True,
+                )
 
                 self.event_table.sort_values(by=["time_stamp"], inplace=True)
             self.network.reset_crew_locs()
@@ -267,41 +284,40 @@ class NetworkRecovery:
         """
         curr_event_table = self.event_table[self.event_table.time_stamp == time_stamp]
         # print(curr_event_table)
-        for i, row in curr_event_table.iterrows():
+        for _, row in curr_event_table.iterrows():
             component = row["components"]
             time_stamp = row["time_stamp"]
             perf_level = row["perf_level"]
             component_state = row["component_state"]
-            (
-                compon_infra,
-                compon_notation,
-                compon_code,
-                compon_full,
-            ) = interdependencies.get_compon_details(component)
+            compon_details = interdependencies.get_compon_details(component)
 
-            if compon_infra == "power":
+            if compon_details[0] == "power":
                 compon_index = (
-                    self.network.pn[compon_code]
+                    self.network.pn[compon_details[2]]
                     .query('name == "{}"'.format(component))
                     .index.item()
                 )
                 if perf_level < 100:
-                    self.network.pn[compon_code].at[compon_index, "in_service"] = False
+                    self.network.pn[compon_details[2]].at[
+                        compon_index, "in_service"
+                    ] = False
                 else:
-                    self.network.pn[compon_code].at[compon_index, "in_service"] = True
+                    self.network.pn[compon_details[2]].at[
+                        compon_index, "in_service"
+                    ] = True
 
-            elif compon_infra == "water":
+            elif compon_details[0] == "water":
 
-                if compon_full == "Pump":
+                if compon_details[3] == "Pump":
                     if perf_level < 100:
-                        self.networkwn.get_link(component).add_outage(
-                            self.networkwn, time_stamp, next_sim_time
+                        self.network.wn.get_link(component).add_outage(
+                            self.network.wn, time_stamp, next_sim_time
                         )
                         # print(
                         #     f"The pump outage is added between {time_stamp} s and {next_sim_time} s"
                         # )
 
-                if compon_full == "Pipe":
+                if compon_details[3] == "Pipe":
                     if component_state == "Service Disrupted":
                         leak_node = self.network.wn.get_node(f"{component}_leak_node")
                         leak_node.remove_leak(self.network.wn)
@@ -326,7 +342,7 @@ class NetworkRecovery:
                     elif component_state == "Service Restored":
                         self.network.wn.get_link(f"{component}_B").status = 1
 
-                if compon_full == "Tank":
+                if compon_details[3] == "Tank":
                     if perf_level < 100:
                         pipes_to_tank = self.network.wn.get_links_for_node(component)
                         for pipe_name in pipes_to_tank:
@@ -366,6 +382,33 @@ class NetworkRecovery:
         """Resets the IntegratedNetwork object within NetworkRecovery object."""
         self.network = copy.deepcopy(self.base_network)
 
+    def update_traffic_model(self):
+        """Updates the static traffic assignment model based on current network conditions."""
+        self.network.tn.userEquilibrium(
+            "FW",
+            400,
+            1e-4,
+            self.network.tn.averageExcessCost,
+        )
+
+    def fail_transpo_link(self, link_compon):
+        """Fails the given transportation link by changing the free-flow travel time to a very large value.
+
+        Args:
+            link_compon (string): Name of the transportation link.
+        """
+        self.network.tn.link[link_compon].freeFlowTime = 99999
+
+    def restore_transpo_link(self, link_compon):
+        """Restores the disrupted transportation link by changing the free flow travel time to the original value.
+
+        Args:
+            link_compon (string): Name of the transportation link.
+        """
+        self.network.tn.link[link_compon].freeFlowTime = self.network.tn.link[
+            link_compon
+        ].fft_base
+
 
 def pipe_leak_node_generator(network):
     """Splits the directly affected pipes to induce leak during simulations.
@@ -377,14 +420,9 @@ def pipe_leak_node_generator(network):
     :return: The modified wntr network object after pipe splits.
     :rtype: wntr network object
     """
-    for index, component in enumerate(network.get_disrupted_components()):
-        (
-            compon_infra,
-            compon_notation,
-            compon_code,
-            compon_full,
-        ) = interdependencies.get_compon_details(component)
-        if compon_full == "Pipe":
+    for _, component in enumerate(network.get_disrupted_components()):
+        compon_details = interdependencies.get_compon_details(component)
+        if compon_details[3] == "Pipe":
             network.wn = wntr.morph.split_pipe(
                 network.wn, component, f"{component}_B", f"{component}_leak_node"
             )

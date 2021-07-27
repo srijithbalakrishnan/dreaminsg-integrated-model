@@ -4,8 +4,6 @@ from sklearn import metrics
 import pandas as pd
 import timeit
 
-import dreaminsg_integrated_model.src.plots as model_plots
-
 
 class Optimizer(ABC):
     "The Optimizer class defines an interface to a discrete optimizer or can be implemented as such. This optimizer takes a network object and a prediction horizon and should compute the best steps of the length of the prediction_horizon"
@@ -13,6 +11,18 @@ class Optimizer(ABC):
 
     @abstractmethod
     def __init__(self, prediction_horizon=None):
+        pass
+
+    @abstractmethod
+    def find_optimal_recovery(self, simulation):
+        pass
+
+    @abstractmethod
+    def get_trackers(self):
+        pass
+
+    @abstractmethod
+    def get_optimization_log(self):
         pass
 
 
@@ -40,6 +50,7 @@ class BruteForceOptimizer(Optimizer):
         self.auc_log = pd.DataFrame(
             columns=["repair_order", "water_auc", "power_auc", "auc"]
         )
+        self.trackers = None
 
         # self.set_auc_temp_log()
 
@@ -71,7 +82,7 @@ class BruteForceOptimizer(Optimizer):
             print("PREDICTION HORIZON {}".format(counter))
             print("*" * 50)
             print(
-                "Components to repair: ", 
+                "Components to repair: ",
                 simulation.get_components_to_repair(),
                 "Components repaired: ",
                 simulation.get_components_repaired(),
@@ -84,7 +95,7 @@ class BruteForceOptimizer(Optimizer):
             )
 
             print("-" * 50)
-            for index, repair_order in enumerate(repair_orders):
+            for repair_order in repair_orders:
                 cum_repair_order = simulation.get_components_repaired() + repair_order
                 print(
                     "Simulating the current cumulative repair order",
@@ -97,42 +108,27 @@ class BruteForceOptimizer(Optimizer):
                 simulation.expand_event_table(30)
                 # print(simulation.network_recovery.get_event_table())
 
-                (
-                    time_tracker,
-                    power_consump_tracker,
-                    water_consump_tracker,
-                ) = simulation.simulate_interdependent_effects(
+                # (
+                #     time_tracker,
+                #     power_consump_tracker,
+                #     water_consump_tracker,
+                # ) 
+                resilience_metrics = simulation.simulate_interdependent_effects(
                     simulation.network_recovery
                 )
 
-                ilos_dict = {
-                    "water": water_consump_tracker, 
-                    "power": power_consump_tracker,
-                    "time": time_tracker,
-                }
-
-                model_plots.plot_interdependent_effects(
-                    power_consump_tracker,
-                    water_consump_tracker,
-                    time_tracker,
-                    scatter=True,
+                water_auc = metrics.auc(resilience_metrics.time_tracker, resilience_metrics.water_consump_tracker) / max(
+                    resilience_metrics.time_tracker
                 )
-                # plt.savefig("{}.csv".format(cum_repair_order))
-
-                # pd.DataFrame(ilos_dict).to_csv("{}.csv".format(cum_repair_order))
-
-                water_auc = metrics.auc(time_tracker, water_consump_tracker) / max(
-                    time_tracker
-                )
-                power_auc = metrics.auc(time_tracker, power_consump_tracker) / max(
-                    time_tracker
+                power_auc = metrics.auc(resilience_metrics.time_tracker, resilience_metrics.power_consump_tracker) / max(
+                    resilience_metrics.time_tracker
                 )
                 auc = 0.5 * water_auc + 0.5 * power_auc
                 print(
                     "Water AUC: ",
                     round(water_auc, 3),
                     "\t",
-                    "Power AUC: ", 
+                    "Power AUC: ",
                     round(power_auc, 3),
                     "\t",
                     "Weighted AUC: ",
@@ -140,7 +136,7 @@ class BruteForceOptimizer(Optimizer):
                 )
                 self.auc_log = self.auc_log.append(
                     {
-                        "repair_order": cum_repair_order, 
+                        "repair_order": cum_repair_order,
                         "water_auc": round(water_auc, 3),
                         "power_auc": round(power_auc, 3),
                         "auc": round(auc, 3),
@@ -150,6 +146,11 @@ class BruteForceOptimizer(Optimizer):
                 if (self.auc == None) or (auc >= self.auc):
                     self.auc = auc
                     self.best_repair_strategy = cum_repair_order
+                    self.trackers = [
+                        resilience_metrics.time_tracker,
+                        resilience_metrics.power_consump_tracker,
+                        resilience_metrics.water_consump_tracker,
+                    ]
 
                 simulation.network_recovery.reset_networks()
 
@@ -161,7 +162,7 @@ class BruteForceOptimizer(Optimizer):
 
             print(
                 "\n{} is identified as the next best repair action in the current prediction horizon. The repair order {} produced the highest AUC of {}".format(
-                    best_repair_component, self.best_repair_strategy, self.auc
+                    best_repair_component, self.best_repair_strategy, round(self.auc, 3)
                 )
             )
             print("-" * 50)
@@ -180,6 +181,14 @@ class BruteForceOptimizer(Optimizer):
 
         stop = timeit.default_timer()
         print("Process completed in ", round(stop - start, 0), " seconds")
+
+    def get_trackers(self):
+        """Returns the time, power consumption ratio and water consumption ratio values.
+
+        Returns:
+            lists: lists of lists
+        """
+        return self.trackers
 
     def get_optimization_log(self):
         """Returns the optimization log.

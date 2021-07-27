@@ -26,9 +26,57 @@ def get_water_dict():
             "connect_field": "start_node_name",
             "repair_time": 12,
         },
+        "PSC": {
+            "code": "pipes",
+            "name": "Service Connection Pipe",
+            "connect_field": "start_node_name",
+            "repair_time": 12,
+        },
+        "PMA": {
+            "code": "pipes",
+            "name": "Main Pipe",
+            "connect_field": "start_node_name",
+            "repair_time": 12,
+        },
+        "PHC": {
+            "code": "pipes",
+            "name": "Hydrant Connection Pipe",
+            "connect_field": "start_node_name",
+            "repair_time": 12,
+        },
+        "PV": {
+            "code": "pipes",
+            "name": "Valve converted to Pipe",
+            "connect_field": "start_node_name",
+            "repair_time": 12,
+        },
         "J": {
             "code": "junctions",
             "name": "Junction",
+            "connect_field": "name",
+            "repair_time": 5,
+        },
+        "JIN": {
+            "code": "junctions",
+            "name": "Intermmediate Junction",
+            "connect_field": "name",
+            "repair_time": 5,
+        },
+        "JVN": {
+            "code": "junctions",
+            "name": "Valve Junction",
+            "connect_field": "name",
+            "repair_time": 5,
+        },
+        "JTN": {
+            "code": "junctions",
+            "name": "Terminal Junction",
+            "connect_field": "name",
+            "repair_time": 5,
+        },
+        "JHY": {
+            "code": "junctions",
+            "name": "Hydrant Junction",
             "connect_field": "name",
             "repair_time": 5,
         },
@@ -41,6 +89,10 @@ def get_water_dict():
     }
     return water_dict
 
+def generate_pattern_interval_dict(wn):
+    pattern_intervals = dict()
+    for pattern in wn.pattern_name_list:
+        pattern_intervals[pattern] = len(wn.get_pattern(pattern).multipliers)
 
 def load_water_network(network_inp, initial_sim_step):
     """Loads the water network model from an *.inp file.

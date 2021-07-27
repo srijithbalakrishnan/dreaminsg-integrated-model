@@ -5,13 +5,15 @@ from scipy import spatial
 
 import dreaminsg_integrated_model.src.network_sim_models.water.water_network_model as water
 import dreaminsg_integrated_model.src.network_sim_models.power.power_system_model as power
+import dreaminsg_integrated_model.src.network_sim_models.transportation.transpo_compons as transpo
 
 water_dict = water.get_water_dict()
 power_dict = power.get_power_dict()
+transpo_dict = transpo.get_transpo_dict()
 
-# -------------------------------------------------------------------------------------------------#
-#                               DEPENDENCY TABLE CLASS AND METHODS                                 #
-# -------------------------------------------------------------------------------------------------#
+# ---------------------------------------------------------------------------- #
+#                      DEPENDENCY TABLE CLASS AND METHODS                      #
+# ---------------------------------------------------------------------------- #
 class DependencyTable:
     """A class to store information related to dependencies among power, water and transportation networks."""
 
@@ -38,25 +40,25 @@ class DependencyTable:
         """
         try:
             dependency_data = pd.read_csv(dependency_file, sep=",")
-            for index, row in dependency_data.iterrows():
+            for _, row in dependency_data.iterrows():
                 water_id = row["water_id"]
                 power_id = row["power_id"]
-                (
-                    water_infra,
-                    water_notation,
-                    water_code,
-                    water_full,
-                ) = get_compon_details(water_id)
-                (
-                    power_infra,
-                    power_notation,
-                    power_code,
-                    power_full,
-                ) = get_compon_details(power_id)
-                if (water_full == "Pump") & (power_full == "Motor"):
-                    self.add_pump_motor_coupling(water_id=water_id, power_id=power_id)
-                elif (water_full == "Reservoir") & (power_full == "Generator"):
-                    self.add_gen_reserv_coupling(water_id=water_id, power_id=power_id)
+
+                water_details = get_compon_details(water_id)
+                power_details = get_compon_details(power_id)
+
+                if (power_details[3] == "Motor") & (water_details[3] == "Pump"):
+                    self.add_pump_motor_coupling(
+                        water_id=water_id,
+                        power_id=power_id,
+                    )
+                elif (water_details[3] == "Reservoir") & (
+                    power_details[3] == "Generator"
+                ):
+                    self.add_gen_reserv_coupling(
+                        water_id=water_id,
+                        power_id=power_id,
+                    )
                 else:
                     print(
                         f"Cannot create dependency between {water_id} and {power_id}. Check the component names and types."
@@ -123,22 +125,18 @@ class DependencyTable:
             if y["type"] == "power_node" or y["type"] == "water_node"
         ]
         for node in nodes_of_interest:
-            name = "{}"
-            (
-                compon_infra,
-                compon_notation,
-                compon_code,
-                compon_full,
-            ) = get_compon_details(node)
+            comp_details = get_compon_details(node)
             near_node, near_dist = get_nearest_node(
-                integrated_graph, node, "transpo_node"
+                integrated_graph,
+                node,
+                "transpo_node",
             )
             self.access_table = self.access_table.append(
                 {
                     "origin_id": node,
                     "transp_id": near_node,
-                    "origin_cat": compon_infra,
-                    "origin_type": compon_full,
+                    "origin_cat": comp_details[0],
+                    "origin_type": comp_details[3],
                     "access_dist": near_dist,
                 },
                 ignore_index=True,
@@ -154,7 +152,8 @@ class DependencyTable:
         :param next_time_stamp: The end tiem of the iteration.
         :type next_time_stamp: integer
         """
-        for index, row in self.wp_table.iterrows():
+        # print(network.wn.control_name_list)
+        for _, row in self.wp_table.iterrows():
             if (row.water_type == "Pump") & (row.power_type == "Motor"):
                 # print(
                 #     "Motor operational status: ",
@@ -168,10 +167,27 @@ class DependencyTable:
                     ].in_service.item()
                     == False
                 ):
-                    # if '{}_outage'.format(row.water_id) in network.wn.control_name_list:
-                    #     network.wn.remove_control('{}_outage'.format(row.water_id))
+
+                    if (
+                        f"{row.water_id}_power_off_{time_stamp}"
+                        in network.wn.control_name_list
+                    ):
+                        network.wn.remove_control(
+                            f"{row.water_id}_power_off_{time_stamp}"
+                        )
+                    if (
+                        f"{row.water_id}_power_on_{next_time_stamp}"
+                        in network.wn.control_name_list
+                    ):
+                        network.wn.remove_control(
+                            f"{row.water_id}_power_on_{next_time_stamp}"
+                        )
                     pump = network.wn.get_link(row.water_id)
-                    pump.add_outage(network.wn, time_stamp, next_time_stamp)
+                    pump.add_outage(
+                        network.wn,
+                        time_stamp,
+                        next_time_stamp,
+                    )
                     # print(
                     #     f"Pump outage resulting from electrical motor failure is added between {time_stamp} s and {next_time_stamp} s"
                     # )
@@ -180,11 +196,9 @@ class DependencyTable:
                     pump.status = 1
 
 
-# -------------------------------------------------------------------------------------------------#
-#                                   MISCELLANEOUS FUNCTIONS                                        #
-# -------------------------------------------------------------------------------------------------#
-
-
+# ---------------------------------------------------------------------------- #
+#                            MISCELLANEOUS FUNCTIONS                           #
+# ---------------------------------------------------------------------------- #
 def get_compon_details(compon_name):
     """Fetches the infrastructure type, component type, component code and component actual name.
 
@@ -194,8 +208,9 @@ def get_compon_details(compon_name):
     :rtype: list of strings
     """
     compon_infra, compon_id = compon_name.split("_")
+    # print(compon_infra, compon_id)
     compon_type = ""
-    for char in compon_id[0:2]:
+    for char in compon_id:
         if char.isalpha():
             compon_type = "".join([compon_type, char])
     if compon_infra == "P":
@@ -209,10 +224,11 @@ def get_compon_details(compon_name):
         else:
             print(
                 "The naming convention suggests that {} belongs to power netwok. However, the element {} does not exist in the power component dictionary.".format(
-                    compon_name, compon_type
+                    compon_name,
+                    compon_type,
                 )
             )
-    elif compon_name.split("_")[0] == "W":
+    elif compon_infra == "W":
         if compon_type in water_dict.keys():
             return (
                 "water",
@@ -223,12 +239,21 @@ def get_compon_details(compon_name):
         else:
             print(
                 "The naming convention suggests that {} belongs to water netwok. However, the element {} does not exist in the water component dictionary.".format(
-                    compon_name, compon_type
+                    compon_name,
+                    compon_type,
                 )
+            )
+    elif compon_infra == "T":
+        if compon_type in transpo_dict.keys():
+            return (
+                "transpo",
+                compon_type,
+                transpo_dict[compon_type]["code"],
+                transpo_dict[compon_type]["name"],
             )
     else:
         print(
-            "Component does not belong to either water or power network. Please check the name."
+            "Component does not belong to water, power, or transportation networks. Please check the name."
         )
 
 
@@ -261,24 +286,21 @@ def get_nearest_node(integrated_graph, connected_node, target_type):
     return nearest_node, round(dist_nearest, 2)
 
 
-def find_connected_power_node(origin_node, pn):
+def find_connected_power_node(component, pn):
     """Finds the bus to which the given power systems component is connected to. For elements which are connected to two buses, the start bus is returned.
 
-    :param origin_node: Name of the power systems component.
-    :type origin_node: string
+    :param component: Name of the power systems component.
+    :type component: string
     :param pn: The power network the origin node belongs to.
     :type pn: pandapower network object
     :return: Name of the connected bus.
     :rtype: string
     """
-    origin_infra, origin_notation, origin_code, origin_full = get_compon_details(
-        origin_node
-    )
-
-    near_node_field = power_dict[origin_notation]["connect_field"]
+    origin_details = get_compon_details(component)
+    near_node_field = power_dict[origin_details[1]]["connect_field"]
     bus_index = (
-        pn[origin_code]
-        .query('name == "{}"'.format(origin_node))[near_node_field]
+        pn[origin_details[2]]
+        .query('name == "{}"'.format(component))[near_node_field]
         .item()
     )
 
@@ -286,19 +308,36 @@ def find_connected_power_node(origin_node, pn):
     return connected_bus
 
 
-def find_connected_water_node(origin_node, wn):
+def find_connected_water_node(component, wn):
     """Finds the water network node to which the water component is connected to.
 
-    :param origin_node: Name of the water network component.
-    :type origin_node: string
+    :param component: Name of the water network component.
+    :type component: string
     :param wn: The water distribution network the origin node belongs to.
     :type wn: wntr network object
     :return: Name of the water network node.
     :rtype: string
     """
-    origin_infra, origin_notation, origin_code, origin_full = get_compon_details(
-        origin_node
-    )
-    near_node_field = water_dict[origin_notation]["connect_field"]
-    connected_node = getattr(wn.get_link(origin_node), near_node_field)
+    origin_details = get_compon_details(component)
+    near_node_field = water_dict[origin_details[1]]["connect_field"]
+    connected_node = getattr(wn.get_link(component), near_node_field)
     return connected_node
+
+
+def find_connected_transpo_node(component, tn):
+    """Finds the bus to which the given power systems component is connected to. For elements which are connected to two buses, the start bus is returned.
+
+    :param component: Name of the power systems component.
+    :type component: string
+    :param pn: The power network the origin node belongs to.
+    :type pn: pandapower network object
+    :return: Name of the connected bus.
+    :rtype: string
+    """
+    origin_details = get_compon_details(component)
+    near_node_field = transpo_dict[origin_details[1]]["connect_field"]
+    if origin_details[1] == "J":
+        connected_junction = getattr(tn.node[component], near_node_field)
+    elif origin_details[1] == "L":
+        connected_junction = getattr(tn.link[component], near_node_field)
+    return connected_junction

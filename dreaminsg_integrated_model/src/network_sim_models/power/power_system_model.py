@@ -16,9 +16,34 @@ def get_power_dict():
             "connect_field": "name",
             "repair_time": 3,
         },
+        "BL": {
+            "code": "bus",
+            "name": "Bus connected to load",
+            "connect_field": "name",
+            "repair_time": 3,
+        },
+        "BS": {
+            "code": "bus",
+            "name": "Bus connected to switch",
+            "connect_field": "name",
+            "repair_time": 3,
+        },
         "LO": {
             "code": "load",
             "name": "Load",
+            "connect_field": "bus",
+            "repair_time": 3,
+        },
+        "LOA": {
+            "code": "asymmetric_load",
+            "name": "Asymmetric Load",
+            "connect_field": "bus",
+            "repair_time": 3,
+        },
+        # Three phase electric motor is not compatible with pandapower, hence it is modeled as a load
+        "LOMP": {
+            "code": "load",
+            "name": "Motor",
             "connect_field": "bus",
             "repair_time": 3,
         },

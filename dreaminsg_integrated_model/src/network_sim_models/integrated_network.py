@@ -77,17 +77,17 @@ class IntegratedNetwork(Network):
                 power_file,
             )
 
-        # load dynamic traffic assignment model
+        # load static traffic assignment network
         try:
             tn = transpo.Network(
-                f"{transp_folder}/example_net.tntp",
-                f"{transp_folder}/example_trips.tntp",
-                f"{transp_folder}/example_node.tntp",
+                f"{transp_folder}/transpo_net.tntp",
+                f"{transp_folder}/transpo_trips.tntp",
+                f"{transp_folder}/transpo_node.tntp",
             )
             print(
                 f"Transportation network successfully loaded from {transp_folder}. Static traffic assignment method will be used to calculate travel times."
             )
-            tn.userEquilibrium("FW", 400, 1e-4, tn.averageExcessCost)
+            # tn.userEquilibrium("FW", 400, 1e-4, tn.averageExcessCost)
             self.tn = tn
         except FileNotFoundError:
             print(
@@ -96,7 +96,14 @@ class IntegratedNetwork(Network):
         except AttributeError:
             print("Error: Some required network files not found.")
 
-    def generate_integrated_graph(self, plotting=False):
+    def generate_integrated_graph(
+        self,
+        plotting=False,
+        legend_size=12,
+        font_size=8,
+        figsize=(10, 7),
+        line_width=2,
+    ):
         """Generates the integrated Networkx object.
 
         :param plotting: Generates plots, defaults to False.
@@ -109,13 +116,16 @@ class IntegratedNetwork(Network):
         transpo_node_list = list(self.tn.node.keys())
         transpo_link_list = []
         for link in self.tn.link.keys():
-            txt = re.sub(r"[^,,A-Za-z0-9]+", "", link).split(",")
-            transpo_link_list.append((int(txt[0]), int(txt[1])))
+            transpo_link_list.append((self.tn.link[link].tail, self.tn.link[link].head))
+        # print(transpo_link_list)
+
         transpo_node_coords = dict()
-        for index, node in enumerate(list(self.tn.node.keys())):
+        for index, node in enumerate(list(self.tn.node_coords.Node)):
             transpo_node_coords[node] = list(
                 zip(self.tn.node_coords.X, self.tn.node_coords.Y)
             )[index]
+
+        # print(transpo_node_coords.keys())
 
         node_type = {node: "transpo_node" for i, node in enumerate(transpo_node_list)}
 
@@ -124,13 +134,13 @@ class IntegratedNetwork(Network):
         nx.set_node_attributes(G, node_type, "type")
 
         if plotting == True:
-            plt.figure(1, figsize=(10, 7))
+            plt.figure(1, figsize=figsize)
         nx.draw_networkx_edges(
             G,
             transpo_node_coords,
             edgelist=transpo_link_list,
             edge_color="green",
-            width=5,
+            width=line_width,
             alpha=0.25,
         )
 
@@ -165,7 +175,7 @@ class IntegratedNetwork(Network):
             power_bus_coords,
             edgelist=b2b_edge_list,
             edge_color="red",
-            width=3,
+            width=line_width,
             alpha=0.5,
             style="dotted",
         )
@@ -174,7 +184,7 @@ class IntegratedNetwork(Network):
             power_bus_coords,
             edgelist=transfo_edge_list,
             edge_color="red",
-            width=3,
+            width=line_width,
             alpha=0.5,
             style="dotted",
         )
@@ -183,7 +193,7 @@ class IntegratedNetwork(Network):
             power_bus_coords,
             edgelist=switch_edge_list,
             edge_color="red",
-            width=3,
+            width=line_width,
             alpha=0.5,
             style="dotted",
         )
@@ -196,9 +206,9 @@ class IntegratedNetwork(Network):
             water_junc_coords[junc] = list(self.wn.get_node(junc).coordinates)
 
         water_pipe_list = []
-        for index, pipe in enumerate(self.wn.pipe_name_list):
-            start_node = self.wn.get_link(self.wn.pipe_name_list[index]).start_node_name
-            end_node = self.wn.get_link(self.wn.pipe_name_list[index]).end_node_name
+        for index, _ in enumerate(water_pipe_name_list):
+            start_node = self.wn.get_link(water_pipe_name_list[index]).start_node_name
+            end_node = self.wn.get_link(water_pipe_name_list[index]).end_node_name
             water_pipe_list.append((start_node, end_node))
 
         node_type = {node: "water_node" for i, node in enumerate(water_junc_list)}
@@ -212,7 +222,7 @@ class IntegratedNetwork(Network):
             water_junc_coords,
             edgelist=water_pipe_list,
             edge_color="blue",
-            width=1,
+            width=line_width,
             alpha=0.5,
             style="solid",
         )
@@ -231,7 +241,7 @@ class IntegratedNetwork(Network):
             G,
             transpo_node_coords,
             {node: node for node in transpo_node_list},
-            font_size=10,
+            font_size=font_size,
             font_color="black",
         )
 
@@ -248,7 +258,7 @@ class IntegratedNetwork(Network):
             G,
             power_bus_coords,
             {node: node for node in power_bus_list},
-            font_size=10,
+            font_size=font_size,
             font_color="black",
         )
 
@@ -265,11 +275,11 @@ class IntegratedNetwork(Network):
             G,
             water_junc_coords,
             {node: node for node in water_junc_list},
-            font_size=10,
+            font_size=font_size,
             font_color="black",
         )
         plt.title("Interdependent Water-Power-Transportation Network")
-        plt.legend(scatterpoints=1, loc="upper right", framealpha=0.5)
+        plt.legend(scatterpoints=1, loc="best", framealpha=0.5, fontsize=legend_size)
 
         self.integrated_graph = G
 
@@ -306,6 +316,14 @@ class IntegratedNetwork(Network):
         self.disrupted_components = self.disruptive_events.components
         self.set_disrupted_infra_dict()
 
+    def get_disruptive_events(self):
+        """Returns the disruptive event data
+
+        Returns:
+            pandas dataframe: The table with details of disrupted components and the respective damage levels.
+        """
+        return self.disruptive_events
+
     def get_disrupted_components(self):
         """Returns the list of disrupted components.
 
@@ -326,16 +344,16 @@ class IntegratedNetwork(Network):
         """
         self.init_power_crew_loc = init_power_loc
         self.init_water_crew_loc = init_water_loc
-        self.init_water_crew_loc = init_transpo_loc
+        self.init_transpo_crew_loc = init_transpo_loc
         self.power_crew_loc = self.init_power_crew_loc
         self.water_crew_loc = self.init_water_crew_loc
-        self.water_crew_loc = self.init_water_crew_loc
+        self.transpo_crew_loc = self.init_transpo_crew_loc
 
     def reset_crew_locs(self):
         """Resets the location of infrastructure crews."""
         self.power_crew_loc = self.init_power_crew_loc
         self.water_crew_loc = self.init_water_crew_loc
-        self.water_crew_loc = self.init_water_crew_loc
+        self.transpo_crew_loc = self.init_transpo_crew_loc
 
     def set_power_crew_loc(self, power_crew_loc):
         """Sets the location of the power crew.
@@ -388,19 +406,16 @@ class IntegratedNetwork(Network):
     def set_disrupted_infra_dict(self):
         """Sets the disrupted infrastructure components dictionary with infrastructure type as keys."""
         disrupted_infra_dict = {"power": [], "water": [], "transpo": []}
-        for index, component in enumerate(self.disrupted_components):
-            (
-                compon_infra,
-                compon_notation,
-                compon_code,
-                compon_full,
-            ) = interdependencies.get_compon_details(component)
+        for _, component in enumerate(self.disrupted_components):
+            # print(component)
+            compon_details = interdependencies.get_compon_details(component)
+            # print(compon_details)
 
-            if compon_infra == "power":
+            if compon_details[0] == "power":
                 disrupted_infra_dict["power"].append(component)
-            elif compon_infra == "water":
+            elif compon_details[0] == "water":
                 disrupted_infra_dict["water"].append(component)
-            elif compon_infra == "transpo":
+            elif compon_details[0] == "transpo":
                 disrupted_infra_dict["transpo"].append(component)
         self.disrupted_infra_dict = disrupted_infra_dict
 
@@ -414,14 +429,12 @@ class IntegratedNetwork(Network):
 
     def pipe_leak_node_generator(self):
         """Splits the directly affected pipes to induce leak during simulations."""
-        for index, component in enumerate(self.get_disrupted_components()):
-            (
-                compon_infra,
-                compon_notation,
-                compon_code,
-                compon_full,
-            ) = interdependencies.get_compon_details(component)
-            if compon_full == "Pipe":
+        for _, component in enumerate(self.get_disrupted_components()):
+            compon_details = interdependencies.get_compon_details(component)
+            if compon_details[3] == "Pipe":
                 self.wn = wntr.morph.split_pipe(
-                    self.wn, component, f"{component}_B", f"{component}_leak_node"
+                    self.wn,
+                    component,
+                    f"{component}_B",
+                    f"{component}_leak_node",
                 )

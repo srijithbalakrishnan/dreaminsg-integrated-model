@@ -1,0 +1,43 @@
+\begin{thebibliography}{5}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{{\tt #1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+
+\bibitem[{Boyles {\em et~al.\/} (2020)}]{Boyles2020}
+{\bf Boyles, S.~D.}, {\bf N.~E. Lownes}, and {\bf A.~Unnikrishnan}, {\em
+  Transportation Network Analysis\/}, volume~1.
+\newblock 2020, 0.85 edition.
+
+\bibitem[{Camacho and Bordons (2007)}]{Camacho2007}
+{\bf Camacho, E.~F.} and {\bf C.~Bordons}, {Introduction to model predictive
+  control}.
+\newblock {\em In\/} {\em Advanced Textbooks in Control and Signal
+  Processing\/}, 9781852336943. Springer International Publishing, 2007, 1--11.
+
+\bibitem[{Klise {\em et~al.\/} (2020)}]{Klise2020}
+{\bf Klise, K.}, {\bf D.~Hart}, {\bf M.~Bynum}, {\bf J.~Hogge}, {\bf
+  T.~Haxton}, {\bf R.~Murray}, and {\bf J.~Burkhardt} (2020).
+\newblock Water network tool for resilience (wntr) user manual.
+\newblock Technical report, Sandia National Lab.(SNL-NM), Albuquerque, NM
+  (United States).
+
+\bibitem[{Nissen and Ulbrich (2017)}]{Nissen2017}
+{\bf Nissen, K.~M.} and {\bf U.~Ulbrich} (2017).
+\newblock {Increasing frequencies and changing characteristics of heavy
+  precipitation events threatening infrastructure in Europe under climate
+  change}.
+\newblock {\em Natural Hazards and Earth System Sciences\/}, {\bf 17}(7),
+  1177--1190.
+\newblock ISSN 16849981.
+
+\bibitem[{Thurner {\em et~al.\/} (2018)}]{Thurner2018}
+{\bf Thurner, L.}, {\bf A.~Scheidler}, {\bf F.~Schafer}, {\bf J.~H. Menke},
+  {\bf J.~Dollichon}, {\bf F.~Meier}, {\bf S.~Meinecke}, and {\bf M.~Braun}
+  (2018).
+\newblock {Pandapower - An open-source Python tool for convenient modeling,
+  analysis, and optimization of electric power systems}.
+\newblock {\em IEEE Transactions on Power Systems\/}, {\bf 33}(6), 6510--6521.
+\newblock ISSN 08858950.
+
+\end{thebibliography}

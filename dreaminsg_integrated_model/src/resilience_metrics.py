@@ -1,32 +1,78 @@
-"""Functions to calculate the resilience metrics used for optimizing recovery actions."""
+"""Resilience metric classes to be used for optimizing recovery actions."""
 
-from dreaminsg_integrated_model.src.network_sim_models.interdependencies import *
-from dreaminsg_integrated_model.src.network_recovery import *
+from abc import ABC, abstractmethod
+import math
 
-
-def calculate_base_demand_metrics(network):
-    """Calculates the base netwok demands for water, power and traffic.
-
-    :param wn: Water network object.
-    :type wn: wntr network object.
-    :param pn: Power network object.
-    :type pn: pandapower network object.
-    :param tn: Traffic network object.
-    :type tn: STA object
-    :return: list of total base water demand, total base power demand, and total base system travel time.
-    :rtype: list of floats.
-    """
-    total_base_water_demand = sum(
-        [network.wn.get_node(node).base_demand for node in network.wn.junction_name_list]
-    )
-
-    total_base_power_demand = network.pn.res_load.p_mw.sum() + network.pn.res_motor.p_mw.sum()
-
-    total_base_travel_time = 0
-    total_base_travel_time = sum(
-        total_base_travel_time + network.tn.link[i].flow * network.tn.link[i].cost
-        for i in network.tn.link
-    )
+# from dreaminsg_integrated_model.src.network_sim_models.interdependencies import *
+# from dreaminsg_integrated_model.src.network_recovery import *
 
 
-    return total_base_water_demand, total_base_power_demand, total_base_travel_time
+class ResilienceMetric(ABC):
+    """The ResilienceMetric class defines an interface to a resilience metric."""
+
+    @abstractmethod
+    def __init__(self):
+        pass
+
+    @abstractmethod
+    def calculate_water_resmetric(self, wn, wn_results):
+        pass
+
+    @abstractmethod
+    def calculate_power_resmetric(self, pn):
+        pass
+
+    @abstractmethod
+    def calculate_transpo_resmetric(self, tn):
+        pass
+
+
+class WeightedResilienceMetric(ResilienceMetric):
+    def __init__(self):
+        self.time_tracker = []
+        self.power_consump_tracker = []
+        self.water_consump_tracker = []
+        self.transpo_tracker = []
+
+    def calculate_water_resmetric(self, network_recovery, wn_results):
+        sim_time = network_recovery.network.wn.options.time.duration
+        node_results = wn_results.node["demand"].iloc[-1]
+
+        water_supplied_at_t = sum(
+            [
+                node_results[junc]
+                for junc in network_recovery.network.wn.junction_name_list
+            ]
+        )
+
+        base_demands_at_t = []
+
+        for junc in network_recovery.network.wn.junction_name_list:
+            base_demand = network_recovery.network.wn.get_node(junc).base_demand
+
+            if base_demand != 0:
+                pattern = (
+                    network_recovery.network.wn.get_node(junc)
+                    .demand_timeseries_list[0]
+                    .pattern.multipliers
+                )
+                pattern_size = len(pattern)
+                pattern_interval = 24 / pattern_size
+                pattern_index = math.ceil(((sim_time / 3600) % 24) / pattern_interval)
+
+                multiplier = pattern[pattern_index - 1]
+                base_demands_at_t.append(multiplier * base_demand)
+
+        water_resmetric = water_supplied_at_t / sum(base_demands_at_t)
+        return water_resmetric
+
+    def calculate_power_resmetric(self, network_recovery):
+        power_resmetric = (
+            network_recovery.network.pn.res_load.p_mw.sum()
+            + network_recovery.network.pn.res_motor.p_mw.sum()
+        ) / network_recovery.network.total_base_power_demand
+
+        return power_resmetric
+
+    def calculate_transpo_resmetric(self, tn):
+        pass

@@ -1,16 +1,14 @@
-from dreaminsg_integrated_model.src.network_sim_models.transportation.link import Link
-from dreaminsg_integrated_model.src.network_sim_models.transportation.node import Node
-from dreaminsg_integrated_model.src.network_sim_models.transportation.path import Path
-from dreaminsg_integrated_model.src.network_sim_models.transportation.od import OD
+import dreaminsg_integrated_model.src.network_sim_models.transportation.utils as utils
+import dreaminsg_integrated_model.src.network_sim_models.transportation.transpo_compons as transpo_compons
+
 import copy
 import datetime
-import math
 
 import pandas as pd
 
 import sys
 import traceback
-import dreaminsg_integrated_model.src.network_sim_models.transportation.utils as utils
+import re
 
 FRANK_WOLFE_STEPSIZE_PRECISION = 1e-4
 
@@ -355,7 +353,6 @@ class Network:
             backlink[i] = utils.NO_PATH_EXISTS
             cost[i] = utils.INFINITY
         cost[origin] = 0
-
         scanList = [self.link[ij].head for ij in self.node[origin].forwardStar]
 
         while len(scanList) > 0:
@@ -403,8 +400,8 @@ class Network:
         for ij in self.link:
             allOrNothing[ij] = 0
 
-        for origin in range(1, self.numZones + 1):
-            (backlink, cost) = self.shortestPath(origin)
+        for origin in self.node.keys():
+            (backlink, _) = self.shortestPath(origin)
             for OD in [OD for OD in self.ODpair if self.ODpair[OD].origin == origin]:
                 curnode = self.ODpair[OD].destination
                 while curnode != self.ODpair[OD].origin:
@@ -568,7 +565,7 @@ class Network:
                             raise utils.BadFileFormatException
                     else:
                         self.numZones = int(metadata["NUMBER OF ZONES"])
-                    self.firstThroughNode = int(metadata["FIRST THRU NODE"])
+                    self.firstThroughNode = metadata["FIRST THRU NODE"]
                 except KeyError:  # KeyError
                     print(
                         "Warning: Not all metadata present, error checking will be limited and code will proceed as though all nodes are through nodes."
@@ -576,6 +573,7 @@ class Network:
                 self.tollFactor = float(metadata.setdefault("TOLL FACTOR", 0))
                 self.distanceFactor = float(metadata.setdefault("DISTANCE FACTOR", 0))
 
+                linkID = 1
                 for line in fileLines[metadata["END OF METADATA"] :]:
                     # Ignore comments and blank lines
                     line = line.strip()
@@ -592,17 +590,18 @@ class Network:
                         raise utils.BadFileFormatException
 
                     # Create link
-                    linkID = (
-                        "(" + str(data[0]).strip() + "," + str(data[1]).strip() + ")"
-                    )
+                    # linkID = (
+                    #     "(" + str(data[0]).strip() + "," + str(data[1]).strip() + ")"
+                    # )
 
-                    self.link[linkID] = Link(
+                    self.link["T_L{}".format(linkID)] = transpo_compons.Link(
                         self,
-                        int(data[0]),
-                        int(data[1]),  # head and tail
+                        data[0],
+                        data[1],  # head and tail
                         float(data[2]),  # capacity
                         float(data[3]),  # length
                         float(data[4]),  # free-flow time
+                        float(data[4]),  # base free flow travel time
                         float(data[5]),  # BPR alpha
                         float(data[6]),  # BPR beta
                         float(data[7]),  # Speed limit
@@ -612,13 +611,19 @@ class Network:
 
                     # Create nodes if necessary
                     if data[0] not in self.node:  # tail
-                        self.node[int(data[0])] = Node(
-                            True if int(data[0]) <= self.numZones else False
+                        node_index = int(re.findall("\d+", data[0])[0])
+                        self.node[data[0]] = transpo_compons.Node(
+                            True if int(node_index) <= self.numZones else False
                         )
+                        self.node[data[0]].name = data[0]
                     if data[1] not in self.node:  # head
-                        self.node[int(data[1])] = Node(
-                            True if int(data[1]) <= self.numZones else False
+                        node_index = int(re.findall("\d+", data[1])[0])
+                        self.node[data[1]] = transpo_compons.Node(
+                            True if int(node_index) <= self.numZones else False
                         )
+                        self.node[data[1]].name = data[1]
+
+                    linkID += 1
 
         except IOError:
             print("\nError reading network file %s" % networkFileName)
@@ -665,7 +670,7 @@ class Network:
                     data = line.split()
 
                     if data[0] == "Origin":
-                        origin = int(data[1])
+                        origin = data[1]
                         continue
 
                     # Two possibilities, either semicolons are directly after values or there is an intervening space
@@ -674,7 +679,7 @@ class Network:
                         raise utils.BadFileFormatException
 
                     for i in range(int(len(data) // 3)):
-                        destination = int(data[i * 3])
+                        destination = data[i * 3]
                         check = data[i * 3 + 1]
                         demand = data[i * 3 + 2]
                         demand = float(demand[: len(demand) - 1])
@@ -684,7 +689,9 @@ class Network:
                             )
                             raise utils.BadFileFormatException
                         ODID = str(origin) + "->" + str(destination)
-                        self.ODpair[ODID] = OD(origin, destination, demand)
+                        self.ODpair[ODID] = transpo_compons.OD(
+                            origin, destination, demand
+                        )
                         self.totalDemand += demand
 
         except IOError:
@@ -799,5 +806,5 @@ class Network:
             self.ODpair[OD].leastCost = 0
 
     def calculateShortestTravelTime(self, origin, destination):
-        back_link, cost = self.shortestPath(origin)
+        _, cost = self.shortestPath(origin)
         return cost[destination]

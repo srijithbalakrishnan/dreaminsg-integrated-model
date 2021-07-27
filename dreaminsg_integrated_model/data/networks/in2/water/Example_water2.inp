@@ -56,7 +56,7 @@ wall reactions are included.
 [PATTERNS]
 ;ID              	Multipliers
 ;Demand Pattern
- 1               	1.0         	1.0         	1.0        	1.0         	1.0         	1.0         
+ 1               	1.0         	1.2         	1.3        	0.8         	1.0         	1.2         
  1               	1.0         	1.0         	1.0        	1.0         	1.0         	1.0     
  
 [CURVES]

@@ -178,6 +178,16 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Generate a disaster and recovery object for storing simulation-related information and settings.</p>
 <dl class="py method">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.fail_transpo_link">
+<span class="sig-name descname"><span class="pre">fail_transpo_link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link_compon</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.fail_transpo_link" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fails the given transportation link by changing the free-flow travel time to a very large value.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>link_compon (string): Name of the transportation link.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.get_event_table">
 <span class="sig-name descname"><span class="pre">get_event_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.get_event_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the event table.</p>
@@ -192,7 +202,17 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.reset_networks">
 <span class="sig-name descname"><span class="pre">reset_networks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.reset_networks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rests the IntegratedNetwork object within NetworkRecovery object.</p>
+<dd><p>Resets the IntegratedNetwork object within NetworkRecovery object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.restore_transpo_link">
+<span class="sig-name descname"><span class="pre">restore_transpo_link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">link_compon</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.restore_transpo_link" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restores the disrupted transportation link by changing the free flow travel time to the original value.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>link_compon (string): Name of the transportation link.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -229,6 +249,12 @@
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.update_traffic_model">
+<span class="sig-name descname"><span class="pre">update_traffic_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.network_recovery.NetworkRecovery.update_traffic_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the static traffic assignment model based on current network conditions.</p>
 </dd></dl>
 
 </dd></dl>
@@ -514,7 +540,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="dreaminsg_integrated_model.src.simulation.NetworkSimulation.write_results">
-<span class="sig-name descname"><span class="pre">write_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">power_consump_tracker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">water_consump_tracker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.simulation.NetworkSimulation.write_results" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">write_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_tracker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power_consump_tracker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">water_consump_tracker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.simulation.NetworkSimulation.write_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write the results to local directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
