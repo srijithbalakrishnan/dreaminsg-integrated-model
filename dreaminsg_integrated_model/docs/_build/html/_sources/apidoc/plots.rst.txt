@@ -1,0 +1,7 @@
+dreaminsg_integrated_model.src.network\_recovery
+------------------------------------------------
+
+.. automodule:: dreaminsg_integrated_model.src.network_recovery
+    :members:
+    :no-undoc-members:
+    :show-inheritance:

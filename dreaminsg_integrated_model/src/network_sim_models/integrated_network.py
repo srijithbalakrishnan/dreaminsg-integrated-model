@@ -106,8 +106,16 @@ class IntegratedNetwork(Network):
     ):
         """Generates the integrated Networkx object.
 
-        :param plotting: Generates plots, defaults to False.
+        :param plotting: Generates plots, defaults to False., defaults to False
         :type plotting: bool, optional
+        :param legend_size: Legend font size, defaults to 12
+        :type legend_size: int, optional
+        :param font_size: Text font size, defaults to 8
+        :type font_size: int, optional
+        :param figsize: Size of final figure, defaults to (10, 7)
+        :type figsize: tuple, optional
+        :param line_width: Width of lines, defaults to 2
+        :type line_width: int, optional
         """
         G = nx.Graph()
         node_size = 200

@@ -1,4 +1,4 @@
-"""Functions to implement water network simulations."""
+"""Functions to implement power systems simulations."""
 
 import pandapower as pp
 

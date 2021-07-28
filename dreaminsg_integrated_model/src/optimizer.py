@@ -112,16 +112,24 @@ class BruteForceOptimizer(Optimizer):
                 #     time_tracker,
                 #     power_consump_tracker,
                 #     water_consump_tracker,
-                # ) 
+                # )
                 resilience_metrics = simulation.simulate_interdependent_effects(
                     simulation.network_recovery
                 )
 
-                water_auc = metrics.auc(resilience_metrics.time_tracker, resilience_metrics.water_consump_tracker) / max(
-                    resilience_metrics.time_tracker
+                water_auc = (
+                    metrics.auc(
+                        resilience_metrics.time_tracker,
+                        resilience_metrics.water_consump_tracker,
+                    )
+                    / max(resilience_metrics.time_tracker)
                 )
-                power_auc = metrics.auc(resilience_metrics.time_tracker, resilience_metrics.power_consump_tracker) / max(
-                    resilience_metrics.time_tracker
+                power_auc = (
+                    metrics.auc(
+                        resilience_metrics.time_tracker,
+                        resilience_metrics.power_consump_tracker,
+                    )
+                    / max(resilience_metrics.time_tracker)
                 )
                 auc = 0.5 * water_auc + 0.5 * power_auc
                 print(

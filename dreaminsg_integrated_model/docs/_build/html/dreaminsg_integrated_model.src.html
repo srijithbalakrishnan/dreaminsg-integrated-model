@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>dreaminsg_integrated_model.src package &mdash; DREAMIN&#39;SG  documentation</title>
+  <title>dreaminsg_integrated_model.src package &mdash; DREAMIN&#39;SG Integrated Simulation Platform  documentation</title>
   
 
   
@@ -54,7 +54,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> DREAMIN'SG
+            <a href="index.html" class="icon icon-home"> DREAMIN'SG Integrated Simulation Platform
           
 
           
@@ -85,20 +85,16 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">dreaminsg_integrated_model.src package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-dreaminsg_integrated_model.src.network_recovery">dreaminsg_integrated_model.src.network_recovery module</a></li>
-<li><a class="reference internal" href="#module-dreaminsg_integrated_model.src.resilience_metrics">dreaminsg_integrated_model.src.metrics module</a></li>
-<li><a class="reference internal" href="#module-dreaminsg_integrated_model.src.network_generator">dreaminsg_integrated_model.src.network_generator module</a></li>
-<li><a class="reference internal" href="#module-dreaminsg_integrated_model.src.plots">dreaminsg_integrated_model.src.plots module</a></li>
-<li><a class="reference internal" href="#module-dreaminsg_integrated_model.src.simulation">dreaminsg_integrated_model.src.simulation module</a></li>
-<li><a class="reference internal" href="#module-dreaminsg_integrated_model.src">Module contents</a></li>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">DREAMIN’SG Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Integrated Simulation Platform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_req.html">Data requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apidoc.html">API documentation</a></li>
 </ul>
-</li>
-</ul>
-</div>
+
             
           
         </div>
@@ -112,7 +108,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">DREAMIN'SG</a>
+          <a href="index.html">DREAMIN'SG Integrated Simulation Platform</a>
         
       </nav>
 
@@ -326,26 +322,76 @@
 </div>
 <div class="section" id="module-dreaminsg_integrated_model.src.resilience_metrics">
 <span id="dreaminsg-integrated-model-src-metrics-module"></span><h2>dreaminsg_integrated_model.src.metrics module<a class="headerlink" href="#module-dreaminsg_integrated_model.src.resilience_metrics" title="Permalink to this headline">¶</a></h2>
-<p>Functions to calculate the resilience metrics used for optimizing recovery actions.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.resilience_metrics.calculate_base_demand_metrics">
-<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.resilience_metrics.</span></span><span class="sig-name descname"><span class="pre">calculate_base_demand_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.resilience_metrics.calculate_base_demand_metrics" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the base netwok demands for water, power and traffic.</p>
+<p>Resilience metric classes to be used for optimizing recovery actions.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.resilience_metrics.ResilienceMetric">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.resilience_metrics.</span></span><span class="sig-name descname"><span class="pre">ResilienceMetric</span></span><a class="headerlink" href="#dreaminsg_integrated_model.src.resilience_metrics.ResilienceMetric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>The ResilienceMetric class defines an interface to a resilience metric.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.resilience_metrics.ResilienceMetric.calculate_power_resmetric">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">calculate_power_resmetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.resilience_metrics.ResilienceMetric.calculate_power_resmetric" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.resilience_metrics.ResilienceMetric.calculate_transpo_resmetric">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">calculate_transpo_resmetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.resilience_metrics.ResilienceMetric.calculate_transpo_resmetric" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.resilience_metrics.ResilienceMetric.calculate_water_resmetric">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">calculate_water_resmetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wn_results</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.resilience_metrics.ResilienceMetric.calculate_water_resmetric" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.resilience_metrics.WeightedResilienceMetric">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.resilience_metrics.</span></span><span class="sig-name descname"><span class="pre">WeightedResilienceMetric</span></span><a class="headerlink" href="#dreaminsg_integrated_model.src.resilience_metrics.WeightedResilienceMetric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dreaminsg_integrated_model.src.resilience_metrics.ResilienceMetric" title="dreaminsg_integrated_model.src.resilience_metrics.ResilienceMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">dreaminsg_integrated_model.src.resilience_metrics.ResilienceMetric</span></code></a></p>
+<p>Methods to calculated the weighted ILOS estimates without normalization.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.resilience_metrics.WeightedResilienceMetric.calculate_power_resmetric">
+<span class="sig-name descname"><span class="pre">calculate_power_resmetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network_recovery</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.resilience_metrics.WeightedResilienceMetric.calculate_power_resmetric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calcualtes the power resilience metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>network_recovery</strong> (<em>NetworkRecovery object</em>) – The network recovery object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Power resilience metric value</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.resilience_metrics.WeightedResilienceMetric.calculate_transpo_resmetric">
+<span class="sig-name descname"><span class="pre">calculate_transpo_resmetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.resilience_metrics.WeightedResilienceMetric.calculate_transpo_resmetric" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dreaminsg_integrated_model.src.resilience_metrics.WeightedResilienceMetric.calculate_water_resmetric">
+<span class="sig-name descname"><span class="pre">calculate_water_resmetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network_recovery</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wn_results</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.resilience_metrics.WeightedResilienceMetric.calculate_water_resmetric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates and returns the water resilience metric.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>wn</strong> (<em>wntr network object.</em>) – Water network object.</p></li>
-<li><p><strong>pn</strong> (<em>pandapower network object.</em>) – Power network object.</p></li>
-<li><p><strong>tn</strong> (<em>STA object</em>) – Traffic network object.</p></li>
+<li><p><strong>network_recovery</strong> (<em>NetworkRecovery object</em>) – The network recovery object</p></li>
+<li><p><strong>wn_results</strong> (<em>wntr object</em>) – The water network simulation results for the current time interval</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>list of total base water demand, total base power demand, and total base system travel time.</p>
+<dd class="field-even"><p>water resilience metric value</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list of floats.</p>
+<dd class="field-odd"><p>float</p>
 </dd>
 </dl>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -418,11 +464,11 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="dreaminsg_integrated_model.src.plots.plot_power_net">
-<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.plots.</span></span><span class="sig-name descname"><span class="pre">plot_power_net</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">power_net</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.plots.plot_power_net" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.plots.</span></span><span class="sig-name descname"><span class="pre">plot_power_net</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">net</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.plots.plot_power_net" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates the power systems plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>power_net</strong> (<em>string</em>) – The location of the power network .json file.</p>
+<dd class="field-odd"><p><strong>net</strong> (<em>pandapower network object.</em>) – The power systems network.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -454,11 +500,11 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="dreaminsg_integrated_model.src.plots.plot_water_net">
-<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.plots.</span></span><span class="sig-name descname"><span class="pre">plot_water_net</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">water_net</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.plots.plot_water_net" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.plots.</span></span><span class="sig-name descname"><span class="pre">plot_water_net</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.plots.plot_water_net" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates the water network plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>water_net</strong> (<em>string</em>) – The location of the water network .inp file.</p>
+<dd class="field-odd"><p><strong>wn</strong> (<em>wntr network object.</em>) – The water network.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -471,6 +517,7 @@
 <dt class="sig sig-object py" id="dreaminsg_integrated_model.src.simulation.NetworkSimulation">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">dreaminsg_integrated_model.src.simulation.</span></span><span class="sig-name descname"><span class="pre">NetworkSimulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network_recovery</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_step</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.simulation.NetworkSimulation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Methods to perform simulation of interdependent effects.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dreaminsg_integrated_model.src.simulation.NetworkSimulation.expand_event_table">
 <span class="sig-name descname"><span class="pre">expand_event_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">add_points</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.simulation.NetworkSimulation.expand_event_table" title="Permalink to this definition">¶</a></dt>
@@ -499,7 +546,7 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="dreaminsg_integrated_model.src.simulation.NetworkSimulation.get_components_to_repair">
 <span class="sig-name descname"><span class="pre">get_components_to_repair</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dreaminsg_integrated_model.src.simulation.NetworkSimulation.get_components_to_repair" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rturns the remaining components to be repaired.</p>
+<dd><p>Returns the remaining components to be repaired.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>The list of components</p>

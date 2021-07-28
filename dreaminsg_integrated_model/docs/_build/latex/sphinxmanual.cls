@@ -64,7 +64,7 @@
       {\itshape\LARGE \py@release\releaseinfo \par}
       \vfill
       {\LARGE
-        \begin{tabular}[t]{r}
+        \begin{tabular}[t]{c}
           \@author
         \end{tabular}\kern-\tabcolsep
         \par}

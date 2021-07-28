@@ -1,3 +1,5 @@
+"""Functions to implement water network simulations."""
+
 import wntr
 
 
@@ -89,10 +91,12 @@ def get_water_dict():
     }
     return water_dict
 
+
 def generate_pattern_interval_dict(wn):
     pattern_intervals = dict()
     for pattern in wn.pattern_name_list:
         pattern_intervals[pattern] = len(wn.get_pattern(pattern).multipliers)
+
 
 def load_water_network(network_inp, initial_sim_step):
     """Loads the water network model from an *.inp file.

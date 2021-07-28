@@ -3,7 +3,6 @@
 import pandas as pd
 from pathlib import Path
 import os
-
 import dreaminsg_integrated_model.src.network_sim_models.water.water_network_model as water
 import dreaminsg_integrated_model.src.network_sim_models.power.power_system_model as power
 import dreaminsg_integrated_model.src.network_sim_models.transportation.network as transpo
@@ -12,6 +11,8 @@ import dreaminsg_integrated_model.src.resilience_metrics as resm
 
 
 class NetworkSimulation:
+    """Methods to perform simulation of interdependent effects."""
+
     def __init__(self, network_recovery, sim_step):
         """Initates a NetworkSimulation object
 
@@ -93,18 +94,28 @@ class NetworkSimulation:
 
             for time in new_time_stamps:
                 if time not in compon_time_list:
-                    if time not in [compon_time - 60 for compon_time in compon_time_list]:
-                        if time not in [compon_time + 60 for compon_time in compon_time_list]:
+                    if time not in [
+                        compon_time - 60 for compon_time in compon_time_list
+                    ]:
+                        if time not in [
+                            compon_time + 60 for compon_time in compon_time_list
+                        ]:
                             maxless = max(compon_time_list[compon_time_list <= time])
 
                             perf_level = self.network_recovery.event_table[
                                 (self.network_recovery.event_table.components == compon)
-                                & (self.network_recovery.event_table.time_stamp == maxless)
+                                & (
+                                    self.network_recovery.event_table.time_stamp
+                                    == maxless
+                                )
                             ].perf_level.values[0]
 
                             perf_state = self.network_recovery.event_table[
                                 (self.network_recovery.event_table.components == compon)
-                                & (self.network_recovery.event_table.time_stamp == maxless)
+                                & (
+                                    self.network_recovery.event_table.time_stamp
+                                    == maxless
+                                )
                             ].component_state.values[0]
 
                             self.network_recovery.event_table = (
@@ -156,9 +167,6 @@ class NetworkSimulation:
         :return: lists of time stamps and resilience values of power and water supply.
         :rtype: lists
         """
-        # power_consump_tracker = []
-        # water_consump_tracker = []
-        # time_tracker = []
         resilience_metrics = resm.WeightedResilienceMetric()
 
         unique_time_stamps = sorted(
@@ -171,17 +179,16 @@ class NetworkSimulation:
         ][1:]
 
         for index, time_stamp in enumerate(unique_time_stamps[:-1]):
-            # print(self.network_recovery.network.wn.control_name_list)
-            print(f"\nSimulating network conditions at {time_stamp} s")
+            # print(f"\nSimulating network conditions at {time_stamp} s")
 
-            print(
-                "Simulation time: ",
-                network_recovery.network.wn.options.time.duration,
-                "; Hydraulic time step: ",
-                network_recovery.network.wn.options.time.hydraulic_timestep,
-                "; Report time step: ",
-                network_recovery.network.wn.options.time.report_timestep,
-            )
+            # print(
+            #     "Simulation time: ",
+            #     network_recovery.network.wn.options.time.duration,
+            #     "; Hydraulic time step: ",
+            #     network_recovery.network.wn.options.time.hydraulic_timestep,
+            #     "; Report time step: ",
+            #     network_recovery.network.wn.options.time.report_timestep,
+            # )
 
             # update performance of directly affected components
             network_recovery.update_directly_affected_components(
@@ -207,28 +214,28 @@ class NetworkSimulation:
             # print(wn_results.node["demand"])
             # print(wn_results.node["leak_demand"])
 
-            print(
-                "Pump: ",
-                "\t\tstatus = ",
-                wn_results.link["status"]["W_WP9"].values,
-                "\tflowrate = ",
-                wn_results.link["flowrate"]["W_WP9"].values,
-            )
-            print(
-                "Tank: ",
-                "\t\tdemand",
-                wn_results.node["demand"]["W_T2"].values,
-                "\thead = ",
-                wn_results.node["head"]["W_T2"].values,
-            )
-            print(
-                "Pipe from Tank: ",
-                "status",
-                wn_results.link["status"]["W_P110"].values,
-                "\tflowrate = ",
-                wn_results.link["flowrate"]["W_P110"].values,
-            )
-            print("******************\n")
+            # print(
+            #     "Pump: ",
+            #     "\t\tstatus = ",
+            #     wn_results.link["status"]["W_WP9"].values,
+            #     "\tflowrate = ",
+            #     wn_results.link["flowrate"]["W_WP9"].values,
+            # )
+            # print(
+            #     "Tank: ",
+            #     "\t\tdemand",
+            #     wn_results.node["demand"]["W_T2"].values,
+            #     "\thead = ",
+            #     wn_results.node["head"]["W_T2"].values,
+            # )
+            # print(
+            #     "Pipe from Tank: ",
+            #     "status",
+            #     wn_results.link["status"]["W_P110"].values,
+            #     "\tflowrate = ",
+            #     wn_results.link["flowrate"]["W_P110"].values,
+            # )
+            # print("******************\n")
 
             # track results
 

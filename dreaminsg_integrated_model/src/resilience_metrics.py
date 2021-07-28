@@ -28,13 +28,25 @@ class ResilienceMetric(ABC):
 
 
 class WeightedResilienceMetric(ResilienceMetric):
+    """Methods to calculated the weighted ILOS estimates without normalization."""
+
     def __init__(self):
+        """Initiates the WeightedResilienceMetric object."""
         self.time_tracker = []
         self.power_consump_tracker = []
         self.water_consump_tracker = []
         self.transpo_tracker = []
 
     def calculate_water_resmetric(self, network_recovery, wn_results):
+        """Calculates and returns the water resilience metric.
+
+        :param network_recovery: The network recovery object
+        :type network_recovery: NetworkRecovery object
+        :param wn_results: The water network simulation results for the current time interval
+        :type wn_results: wntr object
+        :return: water resilience metric value
+        :rtype: float
+        """
         sim_time = network_recovery.network.wn.options.time.duration
         node_results = wn_results.node["demand"].iloc[-1]
 
@@ -67,6 +79,13 @@ class WeightedResilienceMetric(ResilienceMetric):
         return water_resmetric
 
     def calculate_power_resmetric(self, network_recovery):
+        """Calcualtes the power resilience metric.
+
+        :param network_recovery: The network recovery object
+        :type network_recovery: NetworkRecovery object
+        :return: Power resilience metric value
+        :rtype: float
+        """
         power_resmetric = (
             network_recovery.network.pn.res_load.p_mw.sum()
             + network_recovery.network.pn.res_motor.p_mw.sum()

@@ -76,13 +76,12 @@ def plot_transpo_net(transpo_folder):
     nx.draw(G, pos, with_labels=True, **options)
 
 
-def plot_power_net(power_net):
+def plot_power_net(net):
     """Generates the power systems plot.
 
-    :param power_net: The location of the power network .json file.
-    :type power_net: string
+    :param net: The power systems network.
+    :type net: pandapower network object.
     """
-    net = pp.from_json(power_net)
     options = {
         "bus_size": 1.5,
         "plot_loads": True,
@@ -98,8 +97,8 @@ def plot_power_net(power_net):
 def plot_water_net(wn):
     """Generates the water network plot.
 
-    :param water_net: The location of the water network .inp file.
-    :type water_net: string
+    :param wn: The water network.
+    :type wn: wntr network object.
     """
     # wn = wntr.network.WaterNetworkModel(water_net)
 

@@ -270,11 +270,6 @@
 \input{sphinxlatexshadowbox.sty}
 
 
-%% CONTAINERS
-%
-\input{sphinxlatexcontainers.sty}
-
-
 %% PYGMENTS
 % stylesheet for highlighting with pygments
 \RequirePackage{sphinxhighlight}
@@ -300,7 +295,7 @@
 % Support scopes for footnote numbering
 \newcounter{sphinxscope}
 \newcommand{\sphinxstepscope}{\stepcounter{sphinxscope}}
-% Explicitly numbered footnotes may be referred to, and for this to be
+% Explictly numbered footnotes may be referred to, and for this to be
 % clickable we need to have only one target. So we will step this at each
 % explicit footnote and let \thesphinxscope take it into account
 \newcounter{sphinxexplicit}

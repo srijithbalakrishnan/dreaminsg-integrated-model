@@ -3,6 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+DREAMIN'SG Integrated Simulation Documentation
+==============================================
+
 .. toctree::
    :maxdepth: 1
 
@@ -12,7 +15,8 @@
    installation
    use
    support
-   API Documentation <apidoc/dreaminsg_integrated_model>
+   apidoc
+
 
 SEC Disclaimer
 ==============
