@@ -10,7 +10,7 @@ os.system("cls")
 def generate_watern(file_name):
     """Generates a water network using the wntr package and saves it to local directory.
 
-    :param file_name: Name of the *.inp file to be saved including path.
+    :param file_name: Name of the inp file to be saved including path
     :type file_name: string
     """
     wn = wntr.network.WaterNetworkModel()
@@ -222,7 +222,7 @@ def generate_watern(file_name):
 def generate_powern(file_name):
     """Generates a power system network using the pandapower package and saves it to local directory.
 
-    :param file_name: Name of the *.json file to be saved including path.
+    :param file_name: Name of the json file to be saved including path.
     :type file_name: string
     """
     pn = pp.create_empty_network(
@@ -311,9 +311,9 @@ def generate_powern(file_name):
     )
 
     # Loads
-    pp.create_load(pn, bus5, p_mw=2, q_mvar=4, scaling=0.6, name="P_LO1")
-    pp.create_load(pn, bus4, p_mw=2, q_mvar=4, scaling=0.6, name="P_LO2")
-    pp.create_load(pn, bus6, p_mw=2, q_mvar=4, scaling=0.6, name="P_LO3")
+    pp.create_load(pn, bus5, p_mw=2, q_mvar=4, scaling=1, name="P_LO1")
+    pp.create_load(pn, bus4, p_mw=2, q_mvar=4, scaling=1, name="P_LO2")
+    pp.create_load(pn, bus6, p_mw=2, q_mvar=4, scaling=1, name="P_LO3")
     # print(pn.load)
 
     # Pump
@@ -331,4 +331,4 @@ def generate_powern(file_name):
 
 # generate networks one by one
 # generate_watern("dreaminsg_integrated_model/data/networks/water/Example_water.inp")
-# generate_powern("dreaminsg_integrated_model/data/networks/power/Example_power.json")
+generate_powern("dreaminsg_integrated_model/data/networks/in2/power/power.json")

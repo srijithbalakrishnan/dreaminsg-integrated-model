@@ -117,21 +117,29 @@ class BruteForceOptimizer(Optimizer):
                     simulation.network_recovery
                 )
 
-                water_auc = (
-                    metrics.auc(
-                        resilience_metrics.time_tracker,
-                        resilience_metrics.water_consump_tracker,
-                    )
-                    / max(resilience_metrics.time_tracker)
-                )
-                power_auc = (
-                    metrics.auc(
-                        resilience_metrics.time_tracker,
-                        resilience_metrics.power_consump_tracker,
-                    )
-                    / max(resilience_metrics.time_tracker)
-                )
-                auc = 0.5 * water_auc + 0.5 * power_auc
+                # water_auc = (
+                #     metrics.auc(
+                #         resilience_metrics.time_tracker,
+                #         resilience_metrics.water_consump_tracker,
+                #     )
+                #     / max(resilience_metrics.time_tracker)
+                # )
+                # power_auc = (
+                #     metrics.auc(
+                #         resilience_metrics.time_tracker,
+                #         resilience_metrics.power_consump_tracker,
+                #     )
+                #     / max(resilience_metrics.time_tracker)
+                # )
+                # auc = 0.5 * water_auc + 0.5 * power_auc
+
+                resilience_metrics.set_weighted_auc_metrics()
+                (
+                    power_auc,
+                    water_auc,
+                    weighted_auc,
+                ) = resilience_metrics.get_weighted_auc_metrics()
+
                 print(
                     "Water AUC: ",
                     round(water_auc, 3),
@@ -140,24 +148,24 @@ class BruteForceOptimizer(Optimizer):
                     round(power_auc, 3),
                     "\t",
                     "Weighted AUC: ",
-                    round(auc, 3),
+                    round(weighted_auc, 3),
                 )
                 self.auc_log = self.auc_log.append(
                     {
                         "repair_order": cum_repair_order,
                         "water_auc": round(water_auc, 3),
                         "power_auc": round(power_auc, 3),
-                        "auc": round(auc, 3),
+                        "auc": round(weighted_auc, 3),
                     },
                     ignore_index=True,
                 )
-                if (self.auc == None) or (auc >= self.auc):
-                    self.auc = auc
+                if (self.auc == None) or (resilience_metrics.weighted_auc >= self.auc):
+                    self.auc = weighted_auc
                     self.best_repair_strategy = cum_repair_order
                     self.trackers = [
-                        resilience_metrics.time_tracker,
-                        resilience_metrics.power_consump_tracker,
-                        resilience_metrics.water_consump_tracker,
+                        resilience_metrics.get_time_tracker(),
+                        resilience_metrics.get_power_consump_tracker(),
+                        resilience_metrics.get_water_consump_tracker(),
                     ]
 
                 simulation.network_recovery.reset_networks()

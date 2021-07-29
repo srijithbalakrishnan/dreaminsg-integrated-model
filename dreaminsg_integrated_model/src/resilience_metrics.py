@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 import math
+from sklearn import metrics
 
 # from dreaminsg_integrated_model.src.network_sim_models.interdependencies import *
 # from dreaminsg_integrated_model.src.network_recovery import *
@@ -28,7 +29,7 @@ class ResilienceMetric(ABC):
 
 
 class WeightedResilienceMetric(ResilienceMetric):
-    """Methods to calculated the weighted ILOS estimates without normalization."""
+    """A class that consists of methods to calculate and store weighted ILOS estimates without"""
 
     def __init__(self):
         """Initiates the WeightedResilienceMetric object."""
@@ -75,6 +76,7 @@ class WeightedResilienceMetric(ResilienceMetric):
                 multiplier = pattern[pattern_index - 1]
                 base_demands_at_t.append(multiplier * base_demand)
 
+        print("Supply: ", water_supplied_at_t, "Base demand: ", sum(base_demands_at_t))
         water_resmetric = water_supplied_at_t / sum(base_demands_at_t)
         return water_resmetric
 
@@ -86,12 +88,72 @@ class WeightedResilienceMetric(ResilienceMetric):
         :return: Power resilience metric value
         :rtype: float
         """
-        power_resmetric = (
-            network_recovery.network.pn.res_load.p_mw.sum()
-            + network_recovery.network.pn.res_motor.p_mw.sum()
-        ) / network_recovery.network.total_base_power_demand
+        if network_recovery.network.pn.sim_type == "1ph":
+            base_demand = (
+                network_recovery.network.pn.load["p_mw"].sum()
+                + network_recovery.network.pn.motor["pn_mech_mw"].sum()
+            )
+            power_resmetric = (
+                network_recovery.network.pn.res_load["p_mw"].sum()
+                + network_recovery.network.pn.res_motor["p_mw"].sum()
+            ) / base_demand
+
+        elif network_recovery.network.pn.sim_type == "3ph":
+            base_demand = (
+                network_recovery.network.pn.asymmetric_load[
+                    ["p_a_mw", "p_b_mw", "p_c_mw"]
+                ]
+                .sum()
+                .sum()
+            )
+            power_resmetric = (
+                network_recovery.network.pn.res_asymmetric_load_3ph.sum().sum()
+            ) / base_demand
 
         return power_resmetric
 
     def calculate_transpo_resmetric(self, tn):
         pass
+
+    def set_weighted_auc_metrics(self):
+        """Calculates the water, power, and weighted auc values."""
+        self.water_auc = metrics.auc(
+            self.time_tracker, self.water_consump_tracker
+        ) / max(self.time_tracker)
+        self.power_auc = metrics.auc(
+            self.time_tracker, self.power_consump_tracker
+        ) / max(self.time_tracker)
+
+        self.weighed_auc = 0.5 * self.water_auc + 0.5 * self.power_auc
+
+    def get_weighted_auc_metrics(self):
+        """Returns the weighted auc metrics.
+
+        :return: list of power, water and weighted auc values
+        :rtype: list
+        """
+        return self.power_auc, self.water_auc, self.weighed_auc
+
+    def get_time_tracker(self):
+        """Returns the time tracker list with time in minutes.
+
+        :return: time tracker
+        :rtype: list
+        """
+        return self.time_tracker
+
+    def get_power_consump_tracker(self):
+        """Returns the power consumption ratio list.
+
+        :return: power consumption ratio values
+        :rtype: list
+        """
+        return self.power_consump_tracker
+
+    def get_water_consump_tracker(self):
+        """Returns the water consumption ratio list.
+
+        :return: water consumption ratio values
+        :rtype: list
+        """
+        return self.water_consump_tracker

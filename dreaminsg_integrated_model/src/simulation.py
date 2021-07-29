@@ -179,16 +179,16 @@ class NetworkSimulation:
         ][1:]
 
         for index, time_stamp in enumerate(unique_time_stamps[:-1]):
-            # print(f"\nSimulating network conditions at {time_stamp} s")
+            print(f"\nSimulating network conditions at {time_stamp} s")
 
-            # print(
-            #     "Simulation time: ",
-            #     network_recovery.network.wn.options.time.duration,
-            #     "; Hydraulic time step: ",
-            #     network_recovery.network.wn.options.time.hydraulic_timestep,
-            #     "; Report time step: ",
-            #     network_recovery.network.wn.options.time.report_timestep,
-            # )
+            print(
+                "Simulation time: ",
+                network_recovery.network.wn.options.time.duration,
+                "; Hydraulic time step: ",
+                network_recovery.network.wn.options.time.hydraulic_timestep,
+                "; Report time step: ",
+                network_recovery.network.wn.options.time.report_timestep,
+            )
 
             # update performance of directly affected components
             network_recovery.update_directly_affected_components(
@@ -214,28 +214,35 @@ class NetworkSimulation:
             # print(wn_results.node["demand"])
             # print(wn_results.node["leak_demand"])
 
-            # print(
-            #     "Pump: ",
-            #     "\t\tstatus = ",
-            #     wn_results.link["status"]["W_WP9"].values,
-            #     "\tflowrate = ",
-            #     wn_results.link["flowrate"]["W_WP9"].values,
-            # )
-            # print(
-            #     "Tank: ",
-            #     "\t\tdemand",
-            #     wn_results.node["demand"]["W_T2"].values,
-            #     "\thead = ",
-            #     wn_results.node["head"]["W_T2"].values,
-            # )
-            # print(
-            #     "Pipe from Tank: ",
-            #     "status",
-            #     wn_results.link["status"]["W_P110"].values,
-            #     "\tflowrate = ",
-            #     wn_results.link["flowrate"]["W_P110"].values,
-            # )
-            # print("******************\n")
+            print(
+                "Pump: ",
+                "\t\tstatus = ",
+                wn_results.link["status"]["W_WP1"].values,
+                "\tflowrate = ",
+                wn_results.link["flowrate"]["W_WP1"].values,
+            )
+            print(
+                "Failed pipe: ",
+                "\t\tstatus = ",
+                wn_results.link["status"]["W_PMA1007"].values,
+                "\tflowrate = ",
+                wn_results.link["flowrate"]["W_PMA1007"].values,
+            )
+            print(
+                "Tank: ",
+                "\t\tdemand",
+                wn_results.node["demand"]["W_T1"].values,
+                "\thead = ",
+                wn_results.node["head"]["W_T1"].values,
+            )
+            print(
+                "Pipe from Tank: ",
+                "status",
+                wn_results.link["status"]["W_PMA2000"].values,
+                "\tflowrate = ",
+                wn_results.link["flowrate"]["W_PMA2000"].values,
+            )
+            print("******************\n")
 
             # track results
 

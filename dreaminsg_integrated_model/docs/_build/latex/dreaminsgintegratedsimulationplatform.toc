@@ -26,4 +26,4 @@
 \contentsline {chapter}{\numberline {8}SEC Disclaimer}{27}{chapter.8}%
 \contentsline {chapter}{\numberline {9}Funding Statement}{29}{chapter.9}%
 \contentsline {section}{\numberline {9.1}Indices and tables}{29}{section.9.1}%
-\contentsline {chapter}{Python Module Index}{31}{section*.86}%
+\contentsline {chapter}{Index}{31}{section*.86}%

@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import pandas as pd
 import wntr
-import re
 
 import dreaminsg_integrated_model.src.network_sim_models.interdependencies as interdependencies
 import dreaminsg_integrated_model.src.network_sim_models.water.water_network_model as water
@@ -39,37 +38,63 @@ class Network(ABC):
 class IntegratedNetwork(Network):
     """An integrated infrastructure network class"""
 
-    def load_networks(self, water_file, power_file, transp_folder):
-        """Loads the water, power and transportation networks.
+    def __init__(
+        self, power_sim_type="1ph", water_file=None, power_file=None, transp_folder=None
+    ):
+        """Initiates the IntegratedNetwork object.
 
-        :param water_file: The water network file (*.inp).
+        :param water_file: The water network file in inp format
         :type water_file: string
-        :param power_file: The power systems file (*.json).
+        :param power_file: The power systems file in json format
         :type power_file: string
-        :param transp_folder: The local directory that consists of required transportation network files.
+        :param transp_folder: The local directory that consists of required transportation network files
         :type transp_folder: string
         """
+        if water_file == None:
+            self.wn = None
+        else:
+            self.load_water_network(water_file)
+
+        if power_file == None:
+            self.pn = None
+        else:
+            self.load_power_network(power_file, power_sim_type)
+
+        if transp_folder == None:
+            self.tn = None
+        else:
+            self.load_transpo_network(transp_folder)
+
+    def load_networks(self, water_file, power_file, transp_folder, power_sim_type):
+        """Loads the water, power and transportation networks.
+
+        :param water_file: The water network file in inp format
+        :type water_file: string
+        :param power_file: The power systems file in json format
+        :type power_file: string
+        :param transp_folder: The local directory that consists of required transportation network files
+        :type transp_folder: string
+        :param power_sim_type: Type of power flow simulation: '1ph': single phase, '3ph': three phase.
+        :type power_sim_type: string
+        """
         # load water_network model
-        try:
-            initial_sim_step = 60
-            wn = water.load_water_network(water_file, initial_sim_step)
-            self.total_base_water_demand = sum(
-                [wn.get_node(node).base_demand for node in wn.junction_name_list]
-            )
-            self.wn = wn
-        except FileNotFoundError:
-            print(
-                "Error: The water network file does not exist. No such file or directory: ",
-                water_file,
-            )
+        self.load_water_network(water_file)
 
         # load power systems network
+        self.load_power_network(power_file, power_sim_type)
+
+        # load static traffic assignment network
+        self.load_transpo_network(transp_folder)
+
+    def load_power_network(self, power_file, power_sim_type):
+        """Loads the power network.
+
+        :param power_file: The power systems file in json format
+        :type power_file: string
+        """
         try:
-            pn = power.load_power_network(power_file)
+            pn = power.load_power_network(power_file, sim_type=power_sim_type)
             power.run_power_simulation(pn)
-            self.total_base_power_demand = (
-                pn.res_load.p_mw.sum() + pn.res_motor.p_mw.sum()
-            )
             self.pn = pn
         except UserWarning:
             print(
@@ -77,7 +102,28 @@ class IntegratedNetwork(Network):
                 power_file,
             )
 
-        # load static traffic assignment network
+    def load_water_network(self, water_file):
+        """Loads the water network.
+
+        :param water_file: The water network file in inp format
+        :type water_file: string
+        """
+        try:
+            initial_sim_step = 60
+            wn = water.load_water_network(water_file, initial_sim_step)
+            self.wn = wn
+        except FileNotFoundError:
+            print(
+                "Error: The water network file does not exist. No such file or directory: ",
+                water_file,
+            )
+
+    def load_transpo_network(self, transp_folder):
+        """Loads the transportation network.
+
+        :param transp_folder: The local directory that consists of required transportation network files
+        :type transp_folder: string
+        """
         try:
             tn = transpo.Network(
                 f"{transp_folder}/transpo_net.tntp",
@@ -340,6 +386,30 @@ class IntegratedNetwork(Network):
         """
         return list(self.disrupted_components)
 
+    def set_disrupted_infra_dict(self):
+        """Sets the disrupted infrastructure components dictionary with infrastructure type as keys."""
+        disrupted_infra_dict = {"power": [], "water": [], "transpo": []}
+        for _, component in enumerate(self.disrupted_components):
+            # print(component)
+            compon_details = interdependencies.get_compon_details(component)
+            # print(compon_details)
+
+            if compon_details[0] == "power":
+                disrupted_infra_dict["power"].append(component)
+            elif compon_details[0] == "water":
+                disrupted_infra_dict["water"].append(component)
+            elif compon_details[0] == "transpo":
+                disrupted_infra_dict["transpo"].append(component)
+        self.disrupted_infra_dict = disrupted_infra_dict
+
+    def get_disrupted_infra_dict(self):
+        """Returns the  disrupted infrastructure components dictionary.
+
+        :return: The disrupted infrastructure components dictionary.
+        :rtype: dictionary
+        """
+        return self.disrupted_infra_dict
+
     def set_init_crew_locs(self, init_power_loc, init_water_loc, init_transpo_loc):
         """Sets the intial location of the infrastructure crews. Assign the locations of the respective offices.
 
@@ -411,35 +481,17 @@ class IntegratedNetwork(Network):
         """
         return self.transpo_crew_loc
 
-    def set_disrupted_infra_dict(self):
-        """Sets the disrupted infrastructure components dictionary with infrastructure type as keys."""
-        disrupted_infra_dict = {"power": [], "water": [], "transpo": []}
-        for _, component in enumerate(self.disrupted_components):
-            # print(component)
-            compon_details = interdependencies.get_compon_details(component)
-            # print(compon_details)
-
-            if compon_details[0] == "power":
-                disrupted_infra_dict["power"].append(component)
-            elif compon_details[0] == "water":
-                disrupted_infra_dict["water"].append(component)
-            elif compon_details[0] == "transpo":
-                disrupted_infra_dict["transpo"].append(component)
-        self.disrupted_infra_dict = disrupted_infra_dict
-
-    def get_disrupted_infra_dict(self):
-        """Returns the  disrupted infrastructure components dictionary.
-
-        :return: The disrupted infrastructure components dictionary.
-        :rtype: dictionary
-        """
-        return self.disrupted_infra_dict
-
     def pipe_leak_node_generator(self):
         """Splits the directly affected pipes to induce leak during simulations."""
         for _, component in enumerate(self.get_disrupted_components()):
             compon_details = interdependencies.get_compon_details(component)
-            if compon_details[3] == "Pipe":
+            if compon_details[3] in [
+                "Pipe",
+                "Service Connection Pipe",
+                "Main Pipe",
+                "Hydrant Connection Pipe",
+                "Valve converted to Pipe",
+            ]:
                 self.wn = wntr.morph.split_pipe(
                     self.wn,
                     component,

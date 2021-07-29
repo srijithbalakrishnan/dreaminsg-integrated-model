@@ -51,6 +51,13 @@ class DependencyTable:
                         water_id=water_id,
                         power_id=power_id,
                     )
+                elif (power_details[3] == "Motor as Load") & (
+                    water_details[3] == "Pump"
+                ):
+                    self.add_pump_loadmotor_coupling(
+                        water_id=water_id,
+                        power_id=power_id,
+                    )
                 elif (water_details[3] == "Reservoir") & (
                     power_details[3] == "Generator"
                 ):
@@ -90,6 +97,24 @@ class DependencyTable:
                 "power_id": power_id,
                 "water_type": "Pump",
                 "power_type": "Motor",
+            },
+            ignore_index=True,
+        )
+
+    def add_pump_loadmotor_coupling(self, water_id, power_id):
+        """Creates a pump-on-motor dependency entry in the dependency table.
+
+        :param water_id: The name of the pump in the water network model.
+        :type water_id: string
+        :param power_id: The name of the motor (modeled as load in three phase pandapower networks) in the power systems model.
+        :type power_id: string
+        """
+        self.wp_table = self.wp_table.append(
+            {
+                "water_id": water_id,
+                "power_id": power_id,
+                "water_type": "Pump",
+                "power_type": "Motor as Load",
             },
             ignore_index=True,
         )
@@ -163,6 +188,46 @@ class DependencyTable:
                 if (
                     network.pn.motor[
                         network.pn.motor.name == row.power_id
+                    ].in_service.item()
+                    == False
+                ):
+
+                    if (
+                        f"{row.water_id}_power_off_{time_stamp}"
+                        in network.wn.control_name_list
+                    ):
+                        network.wn.remove_control(
+                            f"{row.water_id}_power_off_{time_stamp}"
+                        )
+                    if (
+                        f"{row.water_id}_power_on_{next_time_stamp}"
+                        in network.wn.control_name_list
+                    ):
+                        network.wn.remove_control(
+                            f"{row.water_id}_power_on_{next_time_stamp}"
+                        )
+                    pump = network.wn.get_link(row.water_id)
+                    pump.add_outage(
+                        network.wn,
+                        time_stamp,
+                        next_time_stamp,
+                    )
+                    # print(
+                    #     f"Pump outage resulting from electrical motor failure is added between {time_stamp} s and {next_time_stamp} s"
+                    # )
+                else:
+                    pump = network.wn.get_link(row.water_id)
+                    pump.status = 1
+            elif (row.water_type == "Pump") & (row.power_type == "Motor as Load"):
+                # print(
+                #     "Motor operational status: ",
+                #     network.pn.asymmetric_load[
+                #         network.pn.asymmetric_load.name == row.power_id
+                #     ].in_service.item(),
+                # )
+                if (
+                    network.pn.asymmetric_load[
+                        network.pn.asymmetric_load.name == row.power_id
                     ].in_service.item()
                     == False
                 ):

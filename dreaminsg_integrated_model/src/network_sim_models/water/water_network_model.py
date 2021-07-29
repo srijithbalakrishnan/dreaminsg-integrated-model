@@ -99,9 +99,9 @@ def generate_pattern_interval_dict(wn):
 
 
 def load_water_network(network_inp, initial_sim_step):
-    """Loads the water network model from an *.inp file.
+    """Loads the water network model from an inp file.
 
-    :param network_inp: Location of the *.inp water network file.
+    :param network_inp: Location of the inp water network file.
     :type network_inp: string
     :param initial_sim_step: The initial iteration step size in seconds.
     :type initial_sim_step: integer
@@ -130,7 +130,7 @@ def run_water_simulation(wn):
     """Runs the simulation for one time step.
 
     :param wn: Water network model object.
-    :type wn: [type]
+    :type wn: wntr water network object
     :return: Simulation results in pandas tables.
     :rtype: ordered dictionary of string: pandas table
     """

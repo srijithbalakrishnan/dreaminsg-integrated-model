@@ -1,5 +1,5 @@
 API documentation
-=================
+==================
 
 dreaminsg_integrated_model.main module
 ---------------------------------------
@@ -10,10 +10,10 @@ dreaminsg_integrated_model.main module
     :show-inheritance:
     
 dreaminsg\_integrated\_model.src package
----------------------------------------
+-----------------------------------------
 
 dreaminsg\_integrated\_model.src.network\_recovery
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: dreaminsg_integrated_model.src.network_recovery
     :members:
@@ -22,7 +22,7 @@ dreaminsg\_integrated\_model.src.network\_recovery
 
 
 dreaminsg\_integrated\_model.src.network\_generator
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: dreaminsg_integrated_model.src.network_generator
     :members:
@@ -31,7 +31,7 @@ dreaminsg\_integrated\_model.src.network\_generator
 
 
 dreaminsg\_integrated\_model.src.simulation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: dreaminsg_integrated_model.src.simulation
     :members:
@@ -40,7 +40,7 @@ dreaminsg\_integrated\_model.src.simulation
 
 
 dreaminsg\_integrated\_model.src.optimizer
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: dreaminsg_integrated_model.src.optimizer
     :members:
@@ -49,7 +49,7 @@ dreaminsg\_integrated\_model.src.optimizer
 
 
 dreaminsg\_integrated\_model.src.resilience\_metrics
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: dreaminsg_integrated_model.src.resilience_metrics
     :members:
@@ -58,7 +58,7 @@ dreaminsg\_integrated\_model.src.resilience\_metrics
 
 
 dreaminsg\_integrated\_model.src.plots
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: dreaminsg_integrated_model.src.plots
     :members:
@@ -67,7 +67,7 @@ dreaminsg\_integrated\_model.src.plots
 
 
 dreaminsg\_integrated\_model.src.network\_sim\_models.integrated\_network
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: dreaminsg_integrated_model.src.network_sim_models.integrated_network
     :members:
@@ -76,7 +76,7 @@ dreaminsg\_integrated\_model.src.network\_sim\_models.integrated\_network
 
 
 dreaminsg\_integrated\_model.src.network\_sim\_models.interdependencies
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: dreaminsg_integrated_model.src.network_sim_models.interdependencies
     :members:
@@ -85,7 +85,7 @@ dreaminsg\_integrated\_model.src.network\_sim\_models.interdependencies
 
 
 dreaminsg\_integrated\_model.src.network\_sim\_models.power.power\_system\_model
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: dreaminsg_integrated_model.src.network_sim_models.power.power_system_model
     :members:
@@ -94,7 +94,7 @@ dreaminsg\_integrated\_model.src.network\_sim\_models.power.power\_system\_model
 
 
 dreaminsg\_integrated\_model.src.network\_sim\_models.water.water\_network\_model
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: dreaminsg_integrated_model.src.network_sim_models.water.water_network_model
     :members:

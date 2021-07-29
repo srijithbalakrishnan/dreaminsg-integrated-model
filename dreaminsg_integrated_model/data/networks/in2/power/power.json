@@ -18,7 +18,7 @@
     "load": {
       "_module": "pandas.core.frame",
       "_class": "DataFrame",
-      "_object": "{\"columns\":[\"name\",\"bus\",\"p_mw\",\"q_mvar\",\"const_z_percent\",\"const_i_percent\",\"sn_mva\",\"scaling\",\"in_service\",\"type\"],\"index\":[0,1,2],\"data\":[[\"P_LO1\",2,2.0,4.0,0.0,0.0,null,0.6,true,\"wye\"],[\"P_LO2\",3,2.0,4.0,0.0,0.0,null,0.6,true,\"wye\"],[\"P_LO3\",4,2.0,4.0,0.0,0.0,null,0.6,true,\"wye\"]]}",
+      "_object": "{\"columns\":[\"name\",\"bus\",\"p_mw\",\"q_mvar\",\"const_z_percent\",\"const_i_percent\",\"sn_mva\",\"scaling\",\"in_service\",\"type\"],\"index\":[0,1,2],\"data\":[[\"P_LO1\",2,2.0,4.0,0.0,0.0,null,1.0,true,\"wye\"],[\"P_LO2\",3,2.0,4.0,0.0,0.0,null,1.0,true,\"wye\"],[\"P_LO3\",4,2.0,4.0,0.0,0.0,null,1.0,true,\"wye\"]]}",
       "orient": "split",
       "dtype": {
         "name": "object",
@@ -411,7 +411,7 @@
         "order": "float64",
         "level": "object",
         "initial_run": "bool",
-        "recycle": "bool"
+        "recycle": "object"
       }
     },
     "line_geodata": {
@@ -434,7 +434,7 @@
         "coords": "object"
       }
     },
-    "version": "2.5.0",
+    "version": "2.6.0",
     "converged": false,
     "name": "sample_network",
     "f_hz": 50.0,

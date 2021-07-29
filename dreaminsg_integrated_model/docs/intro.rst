@@ -6,7 +6,7 @@ Modelling, and INno-vation Singapore (DREAMIN’SG) project at the Future
 Resilient Systems of the Singapore-ETH Centre. The DREAMIN'SG project is 
 funded by the National Research Foundation, Singapore under the Intra-CREATE 
 grant program. In the wake of increasing threats posed by climate change 
-on urban infrastructure [Nissen and Ulbrich (2017)], this project aims at 
+on urban infrastructure [#]_, this project aims at 
 studying the effects of policy interventions and network characteristics on 
 the resilience of urban infrastructure networks. Given the critical nature of 
 the above infrastructure systems, their interdependencies need to be 
@@ -49,3 +49,5 @@ For further information and updates on the project, please visit the
 In the rest of the documentation, the details of the interdependent infrastructure 
 simulation platform,including its modeling, installation, and usage are 
 discussed.
+
+.. [#] Nissen, K. M. and U. Ulbrich (2017). Increasing frequencies and changing characteristics of heavy precipitation events threatening infrastructure in Europe under climate change. Natural Hazards and Earth System Sciences, 17(7), 1177–1190. ISSN 16849981.

@@ -122,7 +122,7 @@ class NetworkRecovery:
                         connected_bus,
                         "transpo_node",
                     )
-                    travel_time = int(
+                    travel_time = 10 + int(
                         round(
                             self.network.tn.calculateShortestTravelTime(
                                 self.network.get_power_crew_loc(),
@@ -154,7 +154,7 @@ class NetworkRecovery:
                         "transpo_node",
                     )
                     # print(f"Nearest node: {nearest_node}")
-                    travel_time = int(
+                    travel_time = 10 + int(
                         round(
                             self.network.tn.calculateShortestTravelTime(
                                 self.network.get_power_crew_loc(),
@@ -183,7 +183,7 @@ class NetworkRecovery:
                     )
                     nearest_node = connected_junction
 
-                    travel_time = int(
+                    travel_time = 10 + int(
                         round(
                             self.network.tn.calculateShortestTravelTime(
                                 self.network.get_transpo_crew_loc(),
@@ -196,7 +196,8 @@ class NetworkRecovery:
                     #     f"The transpo crew is at {self.network.get_transpo_crew_loc()} at t = {self.next_power_crew_trip_start / 60} minutes. It takes {travel_time} minutes to reach nearest node {nearest_node}, the nearest transportation node from {node}."
                     # )
                     recovery_start = (
-                        self.next_transpo_crew_trip_start + travel_time * 60
+                        self.next_transpo_crew_trip_start + travel_time * 60,
+                        120,
                     )
                     self.network.set_transpo_crew_loc(nearest_node)
                     self.next_transpo_crew_trip_start = recovery_start + recovery_time
@@ -317,7 +318,13 @@ class NetworkRecovery:
                         #     f"The pump outage is added between {time_stamp} s and {next_sim_time} s"
                         # )
 
-                if compon_details[3] == "Pipe":
+                if compon_details[3] in [
+                    "Pipe",
+                    "Service Connection Pipe",
+                    "Main Pipe",
+                    "Hydrant Connection Pipe",
+                    "Valve converted to Pipe",
+                ]:
                     if component_state == "Service Disrupted":
                         leak_node = self.network.wn.get_node(f"{component}_leak_node")
                         leak_node.remove_leak(self.network.wn)
