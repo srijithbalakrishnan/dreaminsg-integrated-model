@@ -341,9 +341,9 @@ class NetworkRecovery:
                             start_time=time_stamp,
                             end_time=next_sim_time,
                         )
-                        # print(
-                        #     f"The pipe leak control is added between {time_stamp} s and {next_sim_time} s"
-                        # )
+                        print(
+                            f"The pipe leak control is added between {time_stamp} s and {next_sim_time} s"
+                        )
                     elif component_state == "Repairing":
                         self.network.wn.get_link(f"{component}_B").status = 0
                     elif component_state == "Service Restored":

@@ -362,14 +362,18 @@ def find_connected_power_node(component, pn):
     """
     origin_details = get_compon_details(component)
     print(component, origin_details)
-    near_node_field = power_dict[origin_details[1]]["connect_field"]
-    bus_index = (
-        pn[origin_details[2]]
-        .query('name == "{}"'.format(component))[near_node_field]
-        .item()
-    )
 
-    connected_bus = pn.bus.iloc[bus_index]["name"]
+    if origin_details[2] == "bus":
+        connected_bus = component
+    else:
+        near_node_field = power_dict[origin_details[1]]["connect_field"]
+        bus_index = (
+            pn[origin_details[2]]
+            .query('name == "{}"'.format(component))[near_node_field]
+            .item()
+        )
+        connected_bus = pn.bus.iloc[bus_index]["name"]
+
     return connected_bus
 
 

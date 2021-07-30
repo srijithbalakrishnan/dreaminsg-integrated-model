@@ -224,9 +224,16 @@ class NetworkSimulation:
             print(
                 "Failed pipe: ",
                 "\t\tstatus = ",
-                wn_results.link["status"]["W_PMA1007"].values,
+                wn_results.link["status"]["W_PMA729"].values,
                 "\tflowrate = ",
-                wn_results.link["flowrate"]["W_PMA1007"].values,
+                wn_results.link["flowrate"]["W_PMA729"].values,
+            )
+            print(
+                "Leaking pipe: ",
+                "\t\tstatus = ",
+                wn_results.link["status"]["W_PMA729_B"].values,
+                "\tflowrate = ",
+                wn_results.link["flowrate"]["W_PMA729_B"].values,
             )
             print(
                 "Tank: ",
