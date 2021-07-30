@@ -361,6 +361,7 @@ def find_connected_power_node(component, pn):
     :rtype: string
     """
     origin_details = get_compon_details(component)
+    print(component, origin_details)
     near_node_field = power_dict[origin_details[1]]["connect_field"]
     bus_index = (
         pn[origin_details[2]]
