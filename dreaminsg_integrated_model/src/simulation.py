@@ -190,6 +190,14 @@ class NetworkSimulation:
                 network_recovery.network.wn.options.time.report_timestep,
             )
 
+            # print(
+            #     "Pump status before updating direct effects: ",
+            #     [
+            #         network_recovery.network.wn.get_link(pump).status
+            #         for pump in network_recovery.network.wn.pump_name_list
+            #     ],
+            # )
+
             # update performance of directly affected components
             network_recovery.update_directly_affected_components(
                 network_recovery.network.wn.options.time.duration,
@@ -200,6 +208,14 @@ class NetworkSimulation:
             # run power systems model
             power.run_power_simulation(network_recovery.network.pn)
 
+            # print(
+            #     "Pump status before updating interdependent effects: ",
+            #     [
+            #         network_recovery.network.wn.get_link(pump).status
+            #         for pump in network_recovery.network.wn.pump_name_list
+            #     ],
+            # )
+
             # update networkwide effects
             network_recovery.network.dependency_table.update_dependencies(
                 network_recovery.network,
@@ -209,32 +225,46 @@ class NetworkSimulation:
             )
 
             # run water network model and print results
+
+            # print(
+            #     "Pump status before simulation: ",
+            #     [
+            #         network_recovery.network.wn.get_link(pump).status
+            #         for pump in network_recovery.network.wn.pump_name_list
+            #     ],
+            # )
             wn_results = water.run_water_simulation(network_recovery.network.wn)
             # print(wn_results.link["status"])
             # print(wn_results.node["demand"])
             # print(wn_results.node["leak_demand"])
-
+            failed_pipe = "W_PMA505"
             print(
-                "Pump: ",
+                "Pumps: ",
                 "\t\tstatus = ",
-                wn_results.link["status"]["W_WP1"].values,
+                wn_results.link["status"][
+                    network_recovery.network.wn.pump_name_list
+                ].values,
                 "\tflowrate = ",
-                wn_results.link["flowrate"]["W_WP1"].values,
+                wn_results.link["flowrate"][
+                    network_recovery.network.wn.pump_name_list
+                ].values,
             )
-            print(
-                "Failed pipe: ",
-                "\t\tstatus = ",
-                wn_results.link["status"]["W_PMA729"].values,
-                "\tflowrate = ",
-                wn_results.link["flowrate"]["W_PMA729"].values,
-            )
-            print(
-                "Leaking pipe: ",
-                "\t\tstatus = ",
-                wn_results.link["status"]["W_PMA729_B"].values,
-                "\tflowrate = ",
-                wn_results.link["flowrate"]["W_PMA729_B"].values,
-            )
+            # print(
+            #     "Failed pipe: ",
+            #     "\t\tstatus = ",
+            #     wn_results.link["status"][failed_pipe].values,
+            #     "\tflowrate = ",
+            #     wn_results.link["flowrate"][failed_pipe].values,
+            # )
+            # print(
+            #     "Leaking pipe: ",
+            #     "\t\tstatus = ",
+            #     wn_results.link["status"][f"{failed_pipe}_B"].values,
+            #     "\tflowrate = ",
+            #     wn_results.link["flowrate"][f"{failed_pipe}_B"].values,
+            #     "\tleak demand = ",
+            #     wn_results.node["leak_demand"][f"{failed_pipe}_leak_node"].values,
+            # )
             print(
                 "Tank: ",
                 "\t\tdemand",

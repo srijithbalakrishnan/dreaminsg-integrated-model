@@ -284,7 +284,8 @@ class NetworkRecovery:
         :type next_sim_time: integer
         """
         curr_event_table = self.event_table[self.event_table.time_stamp == time_stamp]
-        # print(curr_event_table)
+        print(self.network.wn.control_name_list)  ###
+
         for _, row in curr_event_table.iterrows():
             component = row["components"]
             time_stamp = row["time_stamp"]
@@ -314,9 +315,9 @@ class NetworkRecovery:
                         self.network.wn.get_link(component).add_outage(
                             self.network.wn, time_stamp, next_sim_time
                         )
-                        # print(
-                        #     f"The pump outage is added between {time_stamp} s and {next_sim_time} s"
-                        # )
+                        print(
+                            f"The pump outage is added between {time_stamp} s and {next_sim_time} s"
+                        )
 
                 if compon_details[3] in [
                     "Pipe",
@@ -330,8 +331,7 @@ class NetworkRecovery:
                         leak_node.remove_leak(self.network.wn)
                         leak_node.add_leak(
                             self.network.wn,
-                            area=0.005
-                            * (100 - perf_level)
+                            area=((100 - perf_level) / 100)
                             * (
                                 math.pi
                                 * (self.network.wn.get_link(f"{component}_B").diameter)

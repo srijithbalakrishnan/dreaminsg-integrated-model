@@ -216,8 +216,9 @@ class DependencyTable:
                     #     f"Pump outage resulting from electrical motor failure is added between {time_stamp} s and {next_time_stamp} s"
                     # )
                 else:
-                    pump = network.wn.get_link(row.water_id)
-                    pump.status = 1
+                    # pump = network.wn.get_link(row.water_id)
+                    # pump.status = 1
+                    pass
             elif (row.water_type == "Pump") & (row.power_type == "Motor as Load"):
                 # print(
                 #     "Motor operational status: ",
@@ -256,8 +257,9 @@ class DependencyTable:
                     #     f"Pump outage resulting from electrical motor failure is added between {time_stamp} s and {next_time_stamp} s"
                     # )
                 else:
-                    pump = network.wn.get_link(row.water_id)
-                    pump.status = 1
+                    # pump = network.wn.get_link(row.water_id)
+                    # pump.status = 1
+                    pass
 
 
 # ---------------------------------------------------------------------------- #

@@ -134,7 +134,11 @@ class WeightedResilienceMetric(ResilienceMetric):
         :return: list of power, water and weighted auc values
         :rtype: list
         """
-        return self.power_auc, self.water_auc, self.weighed_auc
+        return (
+            round(self.power_auc, 3),
+            round(self.water_auc, 3),
+            round(self.weighed_auc, 3),
+        )
 
     def get_time_tracker(self):
         """Returns the time tracker list with time in minutes.
