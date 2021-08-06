@@ -171,7 +171,6 @@ class IntegratedNetwork(Network):
         transpo_link_list = []
         for link in self.tn.link.keys():
             transpo_link_list.append((self.tn.link[link].tail, self.tn.link[link].head))
-        # print(transpo_link_list)
 
         transpo_node_coords = dict()
         for index, node in enumerate(list(self.tn.node_coords.Node)):
@@ -179,9 +178,7 @@ class IntegratedNetwork(Network):
                 zip(self.tn.node_coords.X, self.tn.node_coords.Y)
             )[index]
 
-        # print(transpo_node_coords.keys())
-
-        node_type = {node: "transpo_node" for i, node in enumerate(transpo_node_list)}
+        node_type = {node: "transpo_node" for _, node in enumerate(transpo_node_list)}
 
         G.add_nodes_from(transpo_node_list)
         nx.set_node_attributes(G, transpo_node_coords, "coord")
@@ -189,14 +186,14 @@ class IntegratedNetwork(Network):
 
         if plotting == True:
             plt.figure(1, figsize=figsize)
-        nx.draw_networkx_edges(
-            G,
-            transpo_node_coords,
-            edgelist=transpo_link_list,
-            edge_color="green",
-            width=line_width,
-            alpha=0.25,
-        )
+            nx.draw_networkx_edges(
+                G,
+                transpo_node_coords,
+                edgelist=transpo_link_list,
+                edge_color="green",
+                width=line_width,
+                alpha=0.25,
+            )
 
         # power network edges
         power_bus_list = self.pn.bus.name
