@@ -146,7 +146,7 @@ class DependencyTable:
         nodes_of_interest = [
             x
             for x, y in integrated_graph.nodes(data=True)
-            if y["type"] == "power_node" or y["type"] == "water_node"
+            if y["node_type"] == "power_node" or y["node_type"] == "water_node"
         ]
         for node in nodes_of_interest:
             comp_details = get_compon_details(node)
@@ -337,12 +337,12 @@ def get_nearest_node(integrated_graph, connected_node, target_type):
     """
     curr_node_loc = integrated_graph.nodes[connected_node]["coord"]
     nodes_of_interest = [
-        x for x, y in integrated_graph.nodes(data=True) if y["type"] == target_type
+        x for x, y in integrated_graph.nodes(data=True) if y["node_type"] == target_type
     ]
     coords_of_interest = [
         y["coord"]
         for x, y in integrated_graph.nodes(data=True)
-        if y["type"] == target_type
+        if y["node_type"] == target_type
     ]
 
     tree = spatial.KDTree(coords_of_interest)
