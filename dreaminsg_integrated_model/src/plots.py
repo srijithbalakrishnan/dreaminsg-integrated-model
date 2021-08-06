@@ -2,12 +2,15 @@
 
 import networkx as nx
 import pandas as pd
-import wntr
-import pandapower as pp
-import pandapower.plotting as pandaplot
 import matplotlib.pyplot as plt
-import re
-import seaborn as sns
+
+import pandapower.plotting as pandaplot
+
+from bokeh.io import show, output_notebook
+from bokeh.plotting import figure
+from bokeh.models import ColumnDataSource, HoverTool
+from bokeh.transform import factor_cmap
+import numpy as np
 
 
 # -----------------------------------------------------------#
@@ -118,6 +121,89 @@ def plot_water_net(wn):
     plt.figure(1, figsize=(10, 7))
     nx.draw(G, pos, with_labels=True, **options)
     # nodes, edges = wntr.graphics.plot_network(water_net, node_cmap='lightsteelblue', **options)
+
+
+def plot_bokeh_from_integrated_graph(G, title, extent=[(1000, 8000), (1000, 6600)]):
+    output_notebook()
+    p = figure(
+        background_fill_color="white",
+        plot_width=700,
+        height=400,
+        title=title,
+        x_range=extent[0],
+        y_range=extent[1],
+    )
+
+    # nodes
+    x, y, node_type, node_category, id = [], [], [], [], []
+
+    for _, node in enumerate(G.nodes.keys()):
+        x.append(G.nodes[node]["coord"][0])
+        y.append(G.nodes[node]["coord"][1])
+        node_type.append(G.nodes[node]["node_type"])
+        node_category.append(G.nodes[node]["node_category"])
+        id.append(node)
+
+    plot_nodes = p.square(
+        "x",
+        "y",
+        source=ColumnDataSource(
+            dict(x=x, y=y, node_type=node_type, node_category=node_category, id=id)
+        ),
+        color="gainsboro",
+        alpha=0.6,
+        muted_color="gainsboro",
+        muted_alpha=0.2,
+        size=5,
+    )
+
+    # links
+    x, y, link_layer, link_category, id = [], [], [], [], []
+    for index, link in enumerate(G.edges.keys()):
+        x.append([G.nodes[link[0]]["coord"][0], G.nodes[link[1]]["coord"][0]])
+        y.append([G.nodes[link[0]]["coord"][1], G.nodes[link[1]]["coord"][1]])
+        link_layer.append(G.edges[link]["link_type"])
+        link_category.append(G.edges[link]["link_category"])
+        id.append(link)
+
+    plot_links = p.multi_line(
+        "x",
+        "y",
+        source=ColumnDataSource(
+            dict(x=x, y=y, link_layer=link_layer, link_category=link_category, id=id)
+        ),
+        line_color=factor_cmap(
+            "link_layer", "Category10_3", np.unique(np.array(link_layer))
+        ),
+        line_alpha=1,
+        line_width=1.5,
+        muted_color=factor_cmap(
+            "link_layer", "Category10_3", np.unique(np.array(link_layer))
+        ),
+        muted_alpha=0.2,
+        legend_field="link_layer",
+    )
+
+    # hover tools
+    node_hover = HoverTool(renderers=[plot_nodes])
+    node_hover.tooltips = [
+        ("Node ID", "@id"),
+        ("Infrastructure", "@node_type"),
+        ("Node category", "@node_category"),
+    ]
+    p.add_tools(node_hover)
+
+    link_hover = HoverTool(renderers=[plot_links])
+    link_hover.tooltips = [
+        ("Link ID", "@id"),
+        ("Infrastructure", "@link_layer"),
+        ("Link category", "@link_category"),
+    ]
+    p.add_tools(link_hover)
+
+    p.legend.location = "top_left"
+    p.legend.click_policy = "mute"
+    show(p)
 
 
 #############################################################

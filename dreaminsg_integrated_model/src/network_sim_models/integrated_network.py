@@ -9,6 +9,7 @@ import dreaminsg_integrated_model.src.network_sim_models.interdependencies as in
 import dreaminsg_integrated_model.src.network_sim_models.water.water_network_model as water
 import dreaminsg_integrated_model.src.network_sim_models.power.power_system_model as power
 import dreaminsg_integrated_model.src.network_sim_models.transportation.network as transpo
+import dreaminsg_integrated_model.src.plots as model_plots
 
 
 class Network(ABC):
@@ -142,197 +143,257 @@ class IntegratedNetwork(Network):
         except AttributeError:
             print("Error: Some required network files not found.")
 
-    def generate_integrated_graph(
-        self,
-        plotting=False,
-        legend_size=12,
-        font_size=8,
-        figsize=(10, 7),
-        line_width=2,
-    ):
-        """Generates the integrated Networkx object.
+    def generate_integrated_graph(self, plot_title):
+        G_power = self.generate_power_networkx_graph()
+        print("Successfully added power network to the integrated graph...")
+        G_water = self.generate_water_networkx_graph()
+        print("Successfully added water network to the integrated graph...")
+        G_transpo = self.generate_transpo_networkx_graph()
+        print("Successfully added transportation network to the integrated graph...")
 
-        :param plotting: Generates plots, defaults to False., defaults to False
-        :type plotting: bool, optional
-        :param legend_size: Legend font size, defaults to 12
-        :type legend_size: int, optional
-        :param font_size: Text font size, defaults to 8
-        :type font_size: int, optional
-        :param figsize: Size of final figure, defaults to (10, 7)
-        :type figsize: tuple, optional
-        :param line_width: Width of lines, defaults to 2
-        :type line_width: int, optional
-        """
-        G = nx.Graph()
-        node_size = 200
-
-        # transportation network edges
-        transpo_node_list = list(self.tn.node.keys())
-        transpo_link_list = []
-        for link in self.tn.link.keys():
-            transpo_link_list.append((self.tn.link[link].tail, self.tn.link[link].head))
-
-        transpo_node_coords = dict()
-        for index, node in enumerate(list(self.tn.node_coords.Node)):
-            transpo_node_coords[node] = list(
-                zip(self.tn.node_coords.X, self.tn.node_coords.Y)
-            )[index]
-
-        node_type = {node: "transpo_node" for _, node in enumerate(transpo_node_list)}
-
-        G.add_nodes_from(transpo_node_list)
-        nx.set_node_attributes(G, transpo_node_coords, "coord")
-        nx.set_node_attributes(G, node_type, "type")
-
-        if plotting == True:
-            plt.figure(1, figsize=figsize)
-            nx.draw_networkx_edges(
-                G,
-                transpo_node_coords,
-                edgelist=transpo_link_list,
-                edge_color="green",
-                width=line_width,
-                alpha=0.25,
-            )
-
-        # power network edges
-        power_bus_list = self.pn.bus.name
-        power_bus_coords = dict()
-        for index, bus in enumerate(power_bus_list):
-            power_bus_coords[bus] = list(
-                zip(self.pn.bus_geodata.x, self.pn.bus_geodata.y)
-            )[index]
-        node_type = {bus: "power_node" for i, bus in enumerate(power_bus_list)}
-
-        b2b_edge_list = [
-            [self.pn.bus.name.values[row.from_bus], self.pn.bus.name.values[row.to_bus]]
-            for index, row in self.pn.line.iterrows()
-        ]
-        transfo_edge_list = [
-            [self.pn.bus.name.values[row.hv_bus], self.pn.bus.name.values[row.lv_bus]]
-            for index, row in self.pn.trafo.iterrows()
-        ]
-        switch_edge_list = [
-            [self.pn.bus.name.values[row.bus], self.pn.bus.name.values[row.element]]
-            for index, row in self.pn.switch[self.pn.switch.et == "b"].iterrows()
-        ]
-
-        G.add_nodes_from(power_bus_list)
-        nx.set_node_attributes(G, power_bus_coords, "coord")
-        nx.set_node_attributes(G, node_type, "type")
-
-        nx.draw_networkx_edges(
-            G,
-            power_bus_coords,
-            edgelist=b2b_edge_list,
-            edge_color="red",
-            width=line_width,
-            alpha=0.5,
-            style="dotted",
-        )
-        nx.draw_networkx_edges(
-            G,
-            power_bus_coords,
-            edgelist=transfo_edge_list,
-            edge_color="red",
-            width=line_width,
-            alpha=0.5,
-            style="dotted",
-        )
-        nx.draw_networkx_edges(
-            G,
-            power_bus_coords,
-            edgelist=switch_edge_list,
-            edge_color="red",
-            width=line_width,
-            alpha=0.5,
-            style="dotted",
-        )
-
-        # water network edges
-        water_junc_list = self.wn.node_name_list
-        water_pipe_name_list = self.wn.pipe_name_list
-        water_junc_coords = dict()
-        for index, junc in enumerate(water_junc_list):
-            water_junc_coords[junc] = list(self.wn.get_node(junc).coordinates)
-
-        water_pipe_list = []
-        for index, _ in enumerate(water_pipe_name_list):
-            start_node = self.wn.get_link(water_pipe_name_list[index]).start_node_name
-            end_node = self.wn.get_link(water_pipe_name_list[index]).end_node_name
-            water_pipe_list.append((start_node, end_node))
-
-        node_type = {node: "water_node" for i, node in enumerate(water_junc_list)}
-
-        G.add_nodes_from(water_junc_list)
-        nx.set_node_attributes(G, water_junc_coords, "coord")
-        nx.set_node_attributes(G, node_type, "type")
-
-        nx.draw_networkx_edges(
-            G,
-            water_junc_coords,
-            edgelist=water_pipe_list,
-            edge_color="blue",
-            width=line_width,
-            alpha=0.5,
-            style="solid",
-        )
-
-        # plot all nodes
-        nx.draw_networkx_nodes(
-            G,
-            transpo_node_coords,
-            nodelist=transpo_node_list,
-            node_color="green",
-            alpha=0.25,
-            node_size=node_size,
-            label="transportation network",
-        )
-        nx.draw_networkx_labels(
-            G,
-            transpo_node_coords,
-            {node: node for node in transpo_node_list},
-            font_size=font_size,
-            font_color="black",
-        )
-
-        nx.draw_networkx_nodes(
-            G,
-            power_bus_coords,
-            nodelist=power_bus_list,
-            node_color="red",
-            alpha=0.25,
-            node_size=node_size,
-            label="power system",
-        )
-        nx.draw_networkx_labels(
-            G,
-            power_bus_coords,
-            {node: node for node in power_bus_list},
-            font_size=font_size,
-            font_color="black",
-        )
-
-        nx.draw_networkx_nodes(
-            G,
-            water_junc_coords,
-            nodelist=water_junc_list,
-            node_color="blue",
-            alpha=0.25,
-            node_size=node_size,
-            label="water network",
-        )
-        nx.draw_networkx_labels(
-            G,
-            water_junc_coords,
-            {node: node for node in water_junc_list},
-            font_size=font_size,
-            font_color="black",
-        )
-        plt.title("Interdependent Water-Power-Transportation Network")
-        plt.legend(scatterpoints=1, loc="best", framealpha=0.5, fontsize=legend_size)
+        G = nx.compose(G_power, nx.compose(G_water, G_transpo))
 
         self.integrated_graph = G
+        print("Integrated graph successffully created.")
+
+        model_plots.plot_bokeh_from_integrated_graph(G, title=plot_title)
+
+    def generate_power_networkx_graph(self, plot=False):
+        G_power = nx.Graph()
+
+        # power network nodes
+        power_nodes = pd.DataFrame(
+            columns=["id", "node_type", "node_category", "x", "y"]
+        )
+
+        for index, row in self.pn.bus.iterrows():
+            power_nodes = power_nodes.append(
+                {
+                    "id": row["name"],
+                    "node_type": "power_node",
+                    "node_category": "Bus",
+                    "x": self.pn.bus_geodata.x[index],
+                    "y": self.pn.bus_geodata.x[index],
+                },
+                ignore_index=True,
+            )
+
+        # power network links
+        power_links = pd.DataFrame(
+            columns=["id", "link_type", "link_category", "from", "to"]
+        )
+
+        for index, row in self.pn.line.iterrows():
+            power_links = power_links.append(
+                {
+                    "id": row["name"],
+                    "link_type": "Power",
+                    "link_category": "Power line",
+                    "from": self.pn.bus.name.values[row["from_bus"]],
+                    "to": self.pn.bus.name.values[row["to_bus"]],
+                },
+                ignore_index=True,
+            )
+
+        for index, row in self.pn.trafo.iterrows():
+            power_links = power_links.append(
+                {
+                    "id": row["name"],
+                    "link_type": "Power",
+                    "link_category": "Transformer",
+                    "from": self.pn.bus.name.values[row["hv_bus"]],
+                    "to": self.pn.bus.name.values[row["lv_bus"]],
+                },
+                ignore_index=True,
+            )
+
+        for index, row in self.pn.switch[self.pn.switch.et == "b"].iterrows():
+            power_links = power_links.append(
+                {
+                    "id": row["name"],
+                    "link_type": "Power",
+                    "link_category": "Switch",
+                    "from": self.pn.bus.name.values[row["bus"]],
+                    "to": self.pn.bus.name.values[row["element"]],
+                },
+                ignore_index=True,
+            )
+
+        G_power = nx.from_pandas_edgelist(
+            power_links,
+            source="from",
+            target="to",
+            edge_attr=True,
+        )
+
+        for index, row in power_nodes.iterrows():
+            G_power.nodes[row["id"]]["node_type"] = row["node_type"]
+            G_power.nodes[row["id"]]["node_category"] = row["node_category"]
+            G_power.nodes[row["id"]]["coord"] = list(
+                zip(self.pn.bus_geodata.x, self.pn.bus_geodata.y)
+            )[index]
+
+        if plot == True:
+            pos = {node: G_power.nodes[node]["coord"] for node in power_nodes.id}
+            nx.draw(G_power, pos, node_size=1)
+
+        return G_power
+
+    def generate_water_networkx_graph(self, plot=False):
+        G_water = nx.Graph()
+
+        # water network nodes
+        water_nodes = pd.DataFrame(
+            columns=["id", "node_type", "node_category", "x", "y"]
+        )
+
+        water_junc_list = self.wn.junction_name_list
+        water_tank_list = self.wn.tank_name_list
+        water_reserv_list = self.wn.reservoir_name_list
+
+        for index, node_name in enumerate(water_junc_list):
+            water_nodes = water_nodes.append(
+                {
+                    "id": node_name,
+                    "node_type": "water_node",
+                    "node_category": "Junction",
+                    "x": list(self.wn.get_node(node_name).coordinates)[0],
+                    "y": list(self.wn.get_node(node_name).coordinates)[1],
+                },
+                ignore_index=True,
+            )
+        for index, node_name in enumerate(water_tank_list):
+            water_nodes = water_nodes.append(
+                {
+                    "id": node_name,
+                    "node_type": "water_node",
+                    "node_category": "Tank",
+                    "x": list(self.wn.get_node(node_name).coordinates)[0],
+                    "y": list(self.wn.get_node(node_name).coordinates)[1],
+                },
+                ignore_index=True,
+            )
+        for index, node_name in enumerate(water_reserv_list):
+            water_nodes = water_nodes.append(
+                {
+                    "id": node_name,
+                    "node_type": "water_node",
+                    "node_category": "Reservoir",
+                    "x": list(self.wn.get_node(node_name).coordinates)[0],
+                    "y": list(self.wn.get_node(node_name).coordinates)[1],
+                },
+                ignore_index=True,
+            )
+
+        # water network links
+        water_links = pd.DataFrame(
+            columns=["id", "link_type", "link_category", "from", "to"]
+        )
+
+        water_pipe_name_list = self.wn.pipe_name_list
+        water_pump_name_list = self.wn.pump_name_list
+
+        for index, link_name in enumerate(water_pipe_name_list):
+            water_links = water_links.append(
+                {
+                    "id": link_name,
+                    "link_type": "Water",
+                    "link_category": "Water pipe",
+                    "from": self.wn.get_link(link_name).start_node_name,
+                    "to": self.wn.get_link(link_name).end_node_name,
+                },
+                ignore_index=True,
+            )
+        for index, link_name in enumerate(water_pump_name_list):
+            water_links = water_links.append(
+                {
+                    "id": link_name,
+                    "link_type": "Water",
+                    "link_category": "Water pump",
+                    "from": self.wn.get_link(link_name).start_node_name,
+                    "to": self.wn.get_link(link_name).end_node_name,
+                },
+                ignore_index=True,
+            )
+
+        G_water = nx.from_pandas_edgelist(
+            water_links,
+            source="from",
+            target="to",
+            edge_attr=True,
+        )
+
+        for index, row in water_nodes.iterrows():
+            G_water.nodes[row["id"]]["node_type"] = row["node_type"]
+            G_water.nodes[row["id"]]["node_category"] = row["node_category"]
+            G_water.nodes[row["id"]]["coord"] = self.wn.get_node(row["id"]).coordinates
+
+        if plot == True:
+            pos = {node: G_water.nodes[node]["coord"] for node in water_nodes.id}
+            nx.draw(G_water, pos, node_size=1)
+
+        return G_water
+
+    def generate_transpo_networkx_graph(self, plot=False):
+        G_transpo = nx.Graph()
+
+        # transportation network nodes
+        transpo_nodes = pd.DataFrame(
+            columns=["id", "node_type", "node_category", "x", "y"]
+        )
+
+        transpo_node_list = list(self.tn.node.keys())
+        for index, node_name in enumerate(list(transpo_node_list)):
+            transpo_nodes = transpo_nodes.append(
+                {
+                    "id": node_name,
+                    "node_type": "transpo_node",
+                    "node_category": "Junction",
+                    "x": self.tn.node_coords[self.tn.node_coords.Node == node_name].X,
+                    "y": self.tn.node_coords[self.tn.node_coords.Node == node_name].Y,
+                },
+                ignore_index=True,
+            )
+
+        # transportation network links
+        transpo_links = pd.DataFrame(
+            columns=["id", "link_type", "link_category", "from", "to"]
+        )
+        transpo_link_list = list(self.tn.link.keys())
+        for index, link_name in enumerate(list(transpo_link_list)):
+            transpo_links = transpo_links.append(
+                {
+                    "id": link_name,
+                    "link_type": "Transportation",
+                    "link_category": "Road link",
+                    "from": self.tn.link[link_name].tail,
+                    "to": self.tn.link[link_name].head,
+                },
+                ignore_index=True,
+            )
+
+        G_transpo = nx.from_pandas_edgelist(
+            transpo_links,
+            source="from",
+            target="to",
+            edge_attr=True,
+        )
+
+        for index, node_name in enumerate(transpo_node_list):
+            G_transpo.nodes[node_name]["node_type"] = "transpo_node"
+            G_transpo.nodes[node_name]["node_category"] = transpo_nodes[
+                transpo_nodes.id == node_name
+            ]["node_category"].item()
+            G_transpo.nodes[node_name]["coord"] = [
+                self.tn.node_coords[self.tn.node_coords["Node"] == node_name].X.item(),
+                self.tn.node_coords[self.tn.node_coords["Node"] == node_name].Y.item(),
+            ]
+
+        if plot == True:
+            pos = {node: G_transpo.nodes[node]["coord"] for node in transpo_nodes.id}
+            nx.draw(G_transpo, pos, node_size=1)
+
+        return G_transpo
 
     def generate_dependency_table(self, dependency_file):
         """Generates the dependency table from an input file.
