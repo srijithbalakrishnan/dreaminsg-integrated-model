@@ -1,10 +1,13 @@
 import scipy.spatial as spatial
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 
 import networkx as nx
 from shapely.geometry import LineString
 from shapely.geometry import Point
+
+from pathlib import Path
 
 # from networkx.algorithms.distance_measures import radius
 
@@ -12,7 +15,9 @@ from shapely.geometry import Point
 class RadialDisruption:
     """Class of disaster where the probability of failure of components reduces with distance from the point of occurrence"""
 
-    def __init__(self, point_of_occurrence=None, radius_of_impact=None):
+    def __init__(
+        self, point_of_occurrence=None, radius_of_impact=None, time_of_occurrence=6000
+    ):
         """Initiates a RadialDisruption object.
 
         :param point_of_occurrence: The central point (represented by a tuple of longitude and latitude) of the disruptive event, defaults to None
@@ -31,6 +36,9 @@ class RadialDisruption:
         else:
             self.set_radius_of_impact(radius_of_impact)
             print(f"The radius of impact is set to {radius_of_impact}.")
+
+        self.set_time_of_occurrence(time_of_occurrence)
+        print(f"The time of the disruptive event is set to {time_of_occurrence}.")
 
     def set_point_of_occurrence(self, point_of_occurrence):
         """Sets the point of occurrence of the radial disruption.
@@ -56,6 +64,14 @@ class RadialDisruption:
         else:
             print(
                 "Radius of impact was not set. Radius of impact needs to be a float or integer."
+            )
+
+    def set_time_of_occurrence(self, time_of_occurrence):
+        if isinstance(time_of_occurrence, int):
+            self.time_of_occurrence = time_of_occurrence
+        else:
+            print(
+                "Time of diruptive event wasnot set. Time of occurrence needs to be an integer in seconds and multiple of 60 (integer)."
             )
 
     def get_affected_components(self, integrated_network, plot_components=True):
@@ -124,4 +140,39 @@ class RadialDisruption:
                 edge_color=link_color,
             )
 
-        return affected_nodes, affected_links
+        self.affected_nodes = affected_nodes
+        self.affected_links = affected_links
+
+    def generate_disruption_file(self, location):
+        disrupt_file = pd.DataFrame(
+            columns=[
+                "time_stamp",
+                "components",
+                "fail_perc",
+            ]
+        )
+
+        # add failed nodes
+        for _, node in enumerate(self.affected_nodes):
+            disrupt_file = disrupt_file.append(
+                {
+                    "time_stamp": self.time_of_occurrence,
+                    "components": node,
+                    "fail_perc": 50,
+                },
+                ignore_index=True,
+            )
+
+        # add failed links
+        for _, link in enumerate(self.affected_links):
+            disrupt_file = disrupt_file.append(
+                {
+                    "time_stamp": self.time_of_occurrence,
+                    "components": link,
+                    "fail_perc": 50,
+                },
+                ignore_index=True,
+            )
+
+        disrupt_file.to_csv(Path(location) / "disrupt_file.csv", index=False, sep=",")
+        print(f"Successfully saved the disruption file to {location}")
