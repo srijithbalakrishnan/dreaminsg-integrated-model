@@ -237,18 +237,18 @@ class NetworkSimulation:
             # print(wn_results.link["status"])
             # print(wn_results.node["demand"])
             # print(wn_results.node["leak_demand"])
-            failed_pipe = "W_PMA505"
-            print(
-                "Pumps: ",
-                "\t\tstatus = ",
-                wn_results.link["status"][
-                    network_recovery.network.wn.pump_name_list
-                ].values,
-                "\tflowrate = ",
-                wn_results.link["flowrate"][
-                    network_recovery.network.wn.pump_name_list
-                ].values,
-            )
+            # failed_pipe = "W_PMA505"
+            # print(
+            #     "Pumps: ",
+            #     "\t\tstatus = ",
+            #     wn_results.link["status"][
+            #         network_recovery.network.wn.pump_name_list
+            #     ].values,
+            #     "\tflowrate = ",
+            #     wn_results.link["flowrate"][
+            #         network_recovery.network.wn.pump_name_list
+            #     ].values,
+            # )
             # print(
             #     "Failed pipe: ",
             #     "\t\tstatus = ",
@@ -265,21 +265,21 @@ class NetworkSimulation:
             #     "\tleak demand = ",
             #     wn_results.node["leak_demand"][f"{failed_pipe}_leak_node"].values,
             # )
-            print(
-                "Tank: ",
-                "\t\tdemand",
-                wn_results.node["demand"]["W_T1"].values,
-                "\thead = ",
-                wn_results.node["head"]["W_T1"].values,
-            )
-            print(
-                "Pipe from Tank: ",
-                "status",
-                wn_results.link["status"]["W_PMA2000"].values,
-                "\tflowrate = ",
-                wn_results.link["flowrate"]["W_PMA2000"].values,
-            )
-            print("******************\n")
+            # print(
+            #     "Tank: ",
+            #     "\t\tdemand",
+            #     wn_results.node["demand"]["W_T1"].values,
+            #     "\thead = ",
+            #     wn_results.node["head"]["W_T1"].values,
+            # )
+            # print(
+            #     "Pipe from Tank: ",
+            #     "status",
+            #     wn_results.link["status"]["W_PMA2000"].values,
+            #     "\tflowrate = ",
+            #     wn_results.link["flowrate"]["W_PMA2000"].values,
+            # )
+            # print("******************\n")
 
             # track results
 

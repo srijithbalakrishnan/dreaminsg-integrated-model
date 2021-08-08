@@ -1,6 +1,4 @@
 from abc import ABC, abstractmethod
-
-import matplotlib.pyplot as plt
 import networkx as nx
 import pandas as pd
 import wntr
@@ -10,6 +8,8 @@ import dreaminsg_integrated_model.src.network_sim_models.water.water_network_mod
 import dreaminsg_integrated_model.src.network_sim_models.power.power_system_model as power
 import dreaminsg_integrated_model.src.network_sim_models.transportation.network as transpo
 import dreaminsg_integrated_model.src.plots as model_plots
+
+import geopandas as gpd
 
 
 class Network(ABC):
@@ -40,17 +40,28 @@ class IntegratedNetwork(Network):
     """An integrated infrastructure network class"""
 
     def __init__(
-        self, power_sim_type="1ph", water_file=None, power_file=None, transp_folder=None
+        self,
+        name,
+        power_sim_type="1ph",
+        water_file=None,
+        power_file=None,
+        transp_folder=None,
     ):
         """Initiates the IntegratedNetwork object.
 
-        :param water_file: The water network file in inp format
-        :type water_file: string
-        :param power_file: The power systems file in json format
-        :type power_file: string
-        :param transp_folder: The local directory that consists of required transportation network files
-        :type transp_folder: string
+        :param name: The name of the network.
+        :type name: string
+        :param power_sim_type: Power simulation type ("1ph" for single phase networks, "3ph" for three phase networks), defaults to "1ph"
+        :type power_sim_type: string, optional
+        :param water_file: The water network file in inp format, defaults to None
+        :type water_file: string, optional
+        :param power_file: The power systems file in json format, defaults to None
+        :type power_file: string, optional
+        :param transp_folder: The local directory that consists of required transportation network files, defaults to None
+        :type transp_folder: string, optional
         """
+        self.name = name
+
         if water_file == None:
             self.wn = None
         else:
@@ -143,7 +154,8 @@ class IntegratedNetwork(Network):
         except AttributeError:
             print("Error: Some required network files not found.")
 
-    def generate_integrated_graph(self, plot_title):
+    def generate_integrated_graph(self):
+        """Generates the integrated network as a Networkx graph."""
         G_power = self.generate_power_networkx_graph()
         print("Successfully added power network to the integrated graph...")
         G_water = self.generate_water_networkx_graph()
@@ -156,9 +168,17 @@ class IntegratedNetwork(Network):
         self.integrated_graph = G
         print("Integrated graph successffully created.")
 
-        model_plots.plot_bokeh_from_integrated_graph(G, title=plot_title)
+        title = f"{self.name} integrated network"
+        model_plots.plot_bokeh_from_integrated_graph(G, title=title)
 
     def generate_power_networkx_graph(self, plot=False):
+        """Generates the power network as a networkx object.
+
+        :param plot: To generate the network plot, defaults to False.
+        :type plot: bool, optional
+        :return: The power network as a networkx object.
+        :rtype: Networkx object
+        """
         G_power = nx.Graph()
 
         # power network nodes
@@ -173,17 +193,29 @@ class IntegratedNetwork(Network):
                     "node_type": "power_node",
                     "node_category": "Bus",
                     "x": self.pn.bus_geodata.x[index],
-                    "y": self.pn.bus_geodata.x[index],
+                    "y": self.pn.bus_geodata.y[index],
                 },
                 ignore_index=True,
             )
+
+        # for index, row in self.pn.asymmetric_load.iterrows():
+        #     power_nodes = power_nodes.append(
+        #         {
+        #             "id": row["name"],
+        #             "node_type": "power_node",
+        #             "node_category": "Load",
+        #             "x": self.pn.asymmetric_loads_geodata.x[index],
+        #             "y": self.pn.asymmetric_loads_geodata.y[index],
+        #         },
+        #         ignore_index=True,
+        #     )
 
         # power network links
         power_links = pd.DataFrame(
             columns=["id", "link_type", "link_category", "from", "to"]
         )
 
-        for index, row in self.pn.line.iterrows():
+        for _, row in self.pn.line.iterrows():
             power_links = power_links.append(
                 {
                     "id": row["name"],
@@ -195,7 +227,7 @@ class IntegratedNetwork(Network):
                 ignore_index=True,
             )
 
-        for index, row in self.pn.trafo.iterrows():
+        for _, row in self.pn.trafo.iterrows():
             power_links = power_links.append(
                 {
                     "id": row["name"],
@@ -207,7 +239,7 @@ class IntegratedNetwork(Network):
                 ignore_index=True,
             )
 
-        for index, row in self.pn.switch[self.pn.switch.et == "b"].iterrows():
+        for _, row in self.pn.switch[self.pn.switch.et == "b"].iterrows():
             power_links = power_links.append(
                 {
                     "id": row["name"],
@@ -219,6 +251,19 @@ class IntegratedNetwork(Network):
                 ignore_index=True,
             )
 
+        # for _, row in self.pn.asymmetric_load.iterrows():
+        #     print(row["name"], self.pn.bus.name.values[row["bus"]])
+        #     power_links = power_links.append(
+        #         {
+        #             "id": "P_TF" + "".join(list(filter(str.isdigit, row["name"]))),
+        #             "link_type": "Power",
+        #             "link_category": "Load transformer",
+        #             "from": self.pn.bus.name.values[row["bus"]],
+        #             "to": row["name"],
+        #         },
+        #         ignore_index=True,
+        #     )
+
         G_power = nx.from_pandas_edgelist(
             power_links,
             source="from",
@@ -229,9 +274,7 @@ class IntegratedNetwork(Network):
         for index, row in power_nodes.iterrows():
             G_power.nodes[row["id"]]["node_type"] = row["node_type"]
             G_power.nodes[row["id"]]["node_category"] = row["node_category"]
-            G_power.nodes[row["id"]]["coord"] = list(
-                zip(self.pn.bus_geodata.x, self.pn.bus_geodata.y)
-            )[index]
+            G_power.nodes[row["id"]]["coord"] = (row["x"], row["y"])
 
         if plot == True:
             pos = {node: G_power.nodes[node]["coord"] for node in power_nodes.id}
@@ -240,6 +283,13 @@ class IntegratedNetwork(Network):
         return G_power
 
     def generate_water_networkx_graph(self, plot=False):
+        """Generates the water network as a networkx object.
+
+        :param plot: To generate the network plot, defaults to False., defaults to False.
+        :type plot: bool, optional
+        :return: The water network as a networkx object.
+        :rtype: Networkx object
+        """
         G_water = nx.Graph()
 
         # water network nodes
@@ -251,7 +301,7 @@ class IntegratedNetwork(Network):
         water_tank_list = self.wn.tank_name_list
         water_reserv_list = self.wn.reservoir_name_list
 
-        for index, node_name in enumerate(water_junc_list):
+        for _, node_name in enumerate(water_junc_list):
             water_nodes = water_nodes.append(
                 {
                     "id": node_name,
@@ -262,7 +312,7 @@ class IntegratedNetwork(Network):
                 },
                 ignore_index=True,
             )
-        for index, node_name in enumerate(water_tank_list):
+        for _, node_name in enumerate(water_tank_list):
             water_nodes = water_nodes.append(
                 {
                     "id": node_name,
@@ -273,7 +323,7 @@ class IntegratedNetwork(Network):
                 },
                 ignore_index=True,
             )
-        for index, node_name in enumerate(water_reserv_list):
+        for _, node_name in enumerate(water_reserv_list):
             water_nodes = water_nodes.append(
                 {
                     "id": node_name,
@@ -293,7 +343,7 @@ class IntegratedNetwork(Network):
         water_pipe_name_list = self.wn.pipe_name_list
         water_pump_name_list = self.wn.pump_name_list
 
-        for index, link_name in enumerate(water_pipe_name_list):
+        for _, link_name in enumerate(water_pipe_name_list):
             water_links = water_links.append(
                 {
                     "id": link_name,
@@ -304,7 +354,7 @@ class IntegratedNetwork(Network):
                 },
                 ignore_index=True,
             )
-        for index, link_name in enumerate(water_pump_name_list):
+        for _, link_name in enumerate(water_pump_name_list):
             water_links = water_links.append(
                 {
                     "id": link_name,
@@ -317,13 +367,10 @@ class IntegratedNetwork(Network):
             )
 
         G_water = nx.from_pandas_edgelist(
-            water_links,
-            source="from",
-            target="to",
-            edge_attr=True,
+            water_links, source="from", target="to", edge_attr=True
         )
 
-        for index, row in water_nodes.iterrows():
+        for _, row in water_nodes.iterrows():
             G_water.nodes[row["id"]]["node_type"] = row["node_type"]
             G_water.nodes[row["id"]]["node_category"] = row["node_category"]
             G_water.nodes[row["id"]]["coord"] = self.wn.get_node(row["id"]).coordinates
@@ -335,6 +382,13 @@ class IntegratedNetwork(Network):
         return G_water
 
     def generate_transpo_networkx_graph(self, plot=False):
+        """Generates the transportation network as a networkx object.
+
+        :param plot: To generate the network plot, defaults to False., defaults to False.
+        :type plot: bool, optional
+        :return: The transportation network as a networkx object.
+        :rtype: Networkx object
+        """
         G_transpo = nx.Graph()
 
         # transportation network nodes
@@ -343,14 +397,18 @@ class IntegratedNetwork(Network):
         )
 
         transpo_node_list = list(self.tn.node.keys())
-        for index, node_name in enumerate(list(transpo_node_list)):
+        for _, node_name in enumerate(list(transpo_node_list)):
             transpo_nodes = transpo_nodes.append(
                 {
                     "id": node_name,
                     "node_type": "transpo_node",
                     "node_category": "Junction",
-                    "x": self.tn.node_coords[self.tn.node_coords.Node == node_name].X,
-                    "y": self.tn.node_coords[self.tn.node_coords.Node == node_name].Y,
+                    "x": self.tn.node_coords[
+                        self.tn.node_coords["Node"] == node_name
+                    ].X,
+                    "y": self.tn.node_coords[
+                        self.tn.node_coords["Node"] == node_name
+                    ].Y,
                 },
                 ignore_index=True,
             )
@@ -360,7 +418,7 @@ class IntegratedNetwork(Network):
             columns=["id", "link_type", "link_category", "from", "to"]
         )
         transpo_link_list = list(self.tn.link.keys())
-        for index, link_name in enumerate(list(transpo_link_list)):
+        for _, link_name in enumerate(list(transpo_link_list)):
             transpo_links = transpo_links.append(
                 {
                     "id": link_name,
@@ -379,7 +437,7 @@ class IntegratedNetwork(Network):
             edge_attr=True,
         )
 
-        for index, node_name in enumerate(transpo_node_list):
+        for _, node_name in enumerate(transpo_node_list):
             G_transpo.nodes[node_name]["node_type"] = "transpo_node"
             G_transpo.nodes[node_name]["node_category"] = transpo_nodes[
                 transpo_nodes.id == node_name

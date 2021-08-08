@@ -1,17 +1,20 @@
 """Functions to generate infrastructure network plots and result plots."""
 
+from datetime import time
 import networkx as nx
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 import pandapower.plotting as pandaplot
 
-from bokeh.io import show, output_notebook
+from bokeh.io import show, output_notebook, curdoc
 from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource, HoverTool
 from bokeh.transform import factor_cmap
-import numpy as np
+from bokeh.palettes import *
 
+import numpy as np
 
 # -----------------------------------------------------------#
 #                      NETWORK PLOTS                        #
@@ -124,7 +127,17 @@ def plot_water_net(wn):
 
 
 def plot_bokeh_from_integrated_graph(G, title, extent=[(1000, 8000), (1000, 6600)]):
+    """Converts the integrated network into a Bokeh interactive plot.
+
+    :param G: Integrated network on which the simulation is to be performed.
+    :type G: networkx object
+    :param title: Title of the plot.
+    :type title: string
+    :param extent: Extent of the plot as a list of tuple in the format [(xmin, xmax), (ymin, ymax)], defaults to [(1000, 8000), (1000, 6600)]
+    :type extent: list, optional
+    """
     output_notebook()
+
     p = figure(
         background_fill_color="white",
         plot_width=700,
@@ -154,17 +167,17 @@ def plot_bokeh_from_integrated_graph(G, title, extent=[(1000, 8000), (1000, 6600
         alpha=0.6,
         muted_color="gainsboro",
         muted_alpha=0.2,
-        size=5,
+        size=10,
     )
 
     # links
     x, y, link_layer, link_category, id = [], [], [], [], []
-    for index, link in enumerate(G.edges.keys()):
+    for _, link in enumerate(G.edges.keys()):
         x.append([G.nodes[link[0]]["coord"][0], G.nodes[link[1]]["coord"][0]])
         y.append([G.nodes[link[0]]["coord"][1], G.nodes[link[1]]["coord"][1]])
         link_layer.append(G.edges[link]["link_type"])
         link_category.append(G.edges[link]["link_category"])
-        id.append(link)
+        id.append(G.edges[link]["id"])
 
     plot_links = p.multi_line(
         "x",
@@ -219,89 +232,151 @@ def plot_repair_curves(disrupt_recovery_object, scatter=False):
     :param scatter: scatter plot, defaults to False
     :type scatter: bool, optional
     """
-    plt.figure(figsize=(10, 7))
-    sns.set_style("white")
-    sns.set_context("talk")
-    sns.set_palette(sns.color_palette("Set1"))
+    palette = Paired[12]
+    line_width = 2.5
+    mode = "after"
 
-    for name in disrupt_recovery_object.network.get_disrupted_components():
+    curdoc().theme = "light_minimal"
+    p = figure(
+        plot_width=750,
+        plot_height=450,
+        title="Disrupted components and their restoration",
+        x_axis_label="Time (min)",
+        y_axis_label="Damage level (%)",
+        toolbar_location="above",
+    )
+
+    for index, name in enumerate(
+        disrupt_recovery_object.network.get_disrupted_components()
+    ):
         time_tracker = (
             disrupt_recovery_object.event_table[
                 disrupt_recovery_object.event_table.components == name
             ].time_stamp
             / 60
         )
-        # print(time_tracker)
+
         damage_tracker = disrupt_recovery_object.event_table[
             disrupt_recovery_object.event_table.components == name
         ].perf_level
-        # print(damage_tracker)
 
-        sns.lineplot(
-            x=time_tracker,
-            y=damage_tracker,
-            label=name,
-            drawstyle="steps-post",
-        )
         if scatter == True:
-            sns.scatterplot(
+            p.scatter(
                 x=time_tracker,
                 y=damage_tracker,
-                alpha=0.5,
+                size=5,
+                color=palette[index],
+                alpha=0.2,
             )
-    plt.xlabel("Time (minutes)")
-    plt.xlim(0, 1.01 * (disrupt_recovery_object.event_table.time_stamp.max() / 60))
-    plt.ylabel("Damage level (%)")
-    plt.ylim(0, 102)
-    plt.title("Disrupted components and their restoration")
-    plt.legend(loc="best")
-    plt.show()
+        p.step(
+            x=time_tracker,
+            y=damage_tracker,
+            alpha=1,
+            line_width=line_width,
+            color=palette[index],
+            muted_alpha=0.1,
+            mode=mode,
+            legend_label=name,
+        )
+    # p.legend.location = (0, 0)  # "bottom_right"
+    p.add_layout(p.legend[0], "right")
+    p.legend.background_fill_color = "gainsboro"
+    p.legend.background_fill_alpha = 0.1
+    p.legend.click_policy = "mute"
+    show(p)
 
 
 def plot_interdependent_effects(
-    power_consump_tracker, water_consump_tracker, time_tracker, scatter=True
+    time_tracker,
+    power_consump_tracker=None,
+    water_consump_tracker=None,
+    transpo_access_tracker=None,
+    scatter=True,
 ):
     """Generates the network-level performance plots.
 
-    :param power_consump_tracker: A list of power consumption resilience metric values.
-    :type power_consump_tracker: list of floats
-    :param water_consump_tracker: A list of water consumption resilience metric values.
-    :type water_consump_tracker: list of floats
     :param time_tracker: A list of time-stamps from the similation.
     :type time_tracker: list of floats
+    :param power_consump_tracker: A list of power consumption resilience metric values., defaults to None
+    :type power_consump_tracker: list of floats, optional
+    :param water_consump_tracker: A list of water consumption resilience metric values., defaults to None
+    :type water_consump_tracker: list of floats, optional
+    :param transpo_access_tracker: A list of transportation access resilience metric values., defaults to None
+    :type transpo_access_tracker: list of floats, optional
     :param scatter: scatter plot, defaults to True
     :type scatter: bool, optional
     """
-    sns.set_style("white")
-    sns.set_context("talk")
-    sns.set_palette(sns.color_palette("Set1"))
+    # settings
+    curdoc().theme = "light_minimal"
+    palette = Category10[3]
+    line_width = 2.5
 
-    plt.figure(figsize=(10, 7))
-    plt.title("Network-wide effects and recovery")
-    sns.lineplot(
-        x=time_tracker,
-        y=water_consump_tracker,
-        label="Water",
+    # plot
+    p = figure(
+        plot_width=750,
+        plot_height=450,
+        title="Network-wide effects and recovery",
+        x_axis_label="Time (min)",
+        y_axis_label="Supply-to-demand ratio",
+        toolbar_location="above",
     )
-    sns.lineplot(
-        x=time_tracker,
-        y=power_consump_tracker,
-        label="Power",
-    )
-    if scatter == True:
-        sns.scatterplot(
-            x=time_tracker,
-            y=water_consump_tracker,
-            alpha=0.5,
+
+    if water_consump_tracker != None:
+        p.line(
+            time_tracker,
+            water_consump_tracker,
+            line_width=line_width,
+            color=palette[0],
+            muted_alpha=0.2,
+            legend_label="Water",
         )
-        sns.scatterplot(
-            x=time_tracker,
-            y=power_consump_tracker,
-            alpha=0.5,
+        if scatter == True:
+            p.scatter(
+                time_tracker,
+                water_consump_tracker,
+                size=5,
+                color=palette[0],
+                alpha=0.2,
+            )
+
+    if power_consump_tracker != None:
+        p.line(
+            time_tracker,
+            power_consump_tracker,
+            line_width=line_width,
+            color=palette[1],
+            muted_alpha=0.2,
+            legend_label="Power",
         )
-    plt.xlabel("Time (minutes)")
-    plt.ylabel("Consumption ratio")
-    plt.xlim(0, 1.01 * max(time_tracker))
-    plt.ylim(-0.01, 1.05)
-    plt.legend(loc="best")
-    plt.show()
+        if scatter == True:
+            p.scatter(
+                time_tracker,
+                power_consump_tracker,
+                size=5,
+                color=palette[1],
+                alpha=0.2,
+            )
+
+    if transpo_access_tracker != None:
+        p.line(
+            time_tracker,
+            transpo_access_tracker,
+            line_width=line_width,
+            color=palette[2],
+            muted_alpha=0.2,
+            legend_label="Transportation",
+        )
+        if scatter == True:
+            p.scatter(
+                time_tracker,
+                transpo_access_tracker,
+                size=5,
+                color=palette[2],
+                alpha=0.2,
+            )
+
+    p.add_layout(p.legend[0], "right")
+    p.legend.background_fill_color = "gainsboro"
+    p.legend.background_fill_alpha = 0.1
+    p.legend.click_policy = "mute"
+    show(p)
