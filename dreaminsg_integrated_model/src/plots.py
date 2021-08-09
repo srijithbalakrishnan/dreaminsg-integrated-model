@@ -1,10 +1,8 @@
 """Functions to generate infrastructure network plots and result plots."""
 
-from datetime import time
 import networkx as nx
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 
 import pandapower.plotting as pandaplot
 
@@ -12,7 +10,7 @@ from bokeh.io import show, output_notebook, curdoc
 from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource, HoverTool
 from bokeh.transform import factor_cmap
-from bokeh.palettes import *
+from bokeh.palettes import Category10, Paired
 
 import numpy as np
 
