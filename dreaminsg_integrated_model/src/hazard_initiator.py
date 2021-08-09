@@ -13,6 +13,7 @@ from shapely.geometry import LineString, Point
 
 from pathlib import Path
 
+
 class RadialDisruption:
     """Class of disaster where the probability of failure of components reduces with distance from the point of occurrence of the event."""
 
@@ -161,15 +162,16 @@ class RadialDisruption:
                 x=self.point_of_occurrence[0],
                 y=self.point_of_occurrence[1],
                 radius=self.radius_of_impact,
-                color="red",
-                alpha=0.3,
+                color="silver",
+                alpha=1,
+                legend_label="Affected area",
             )
             p.scatter(
                 x=self.point_of_occurrence[0],
                 y=self.point_of_occurrence[1],
                 # radius=self.radius_of_impact,
                 marker="plus",
-                color="black",
+                color="grey",
                 alpha=1,
                 size=10,
             )
@@ -261,6 +263,9 @@ class RadialDisruption:
 
             p.legend.location = "top_left"
             show(p)
+
+    def set_failure_probability(self, G):
+        pass
 
     def generate_disruption_file(self, location=None):
         """Generates the disruption file consisting of the list of failed components, time of occurrence, and failure percentage (damage extent).
@@ -450,10 +455,11 @@ class TrackDisruption:
                     "x",
                     "y",
                     source=ColumnDataSource(dict(x=x, y=y)),
-                    fill_color="red",
-                    fill_alpha=0.3,
-                    line_color="red",
-                    line_alpha=0.3,
+                    fill_color="silver",
+                    fill_alpha=1,
+                    line_color="silver",
+                    line_alpha=1,
+                    legend_label="Affected area",
                 )
 
             # nodes
