@@ -9,13 +9,9 @@ from bokeh.transform import factor_cmap
 from bokeh.palettes import RdYlGn
 from bokeh.tile_providers import get_provider, Vendors
 
-from shapely.geometry import LineString
-from shapely.geometry import Point
+from shapely.geometry import LineString, Point
 
 from pathlib import Path
-
-# from networkx.algorithms.distance_measures import radius
-
 
 class RadialDisruption:
     """Class of disaster where the probability of failure of components reduces with distance from the point of occurrence of the event."""
@@ -330,6 +326,11 @@ class TrackDisruption:
         print(f"The time of the disruptive event is set to {time_of_occurrence}.")
 
     def set_hazard_tracks(self, hazard_tracks):
+        """Sets the tracks of the track-based hazard from a shapefile.
+
+        :param hazard_tracks: A shapefile that has tracks of the event as LineString objects.
+        :type hazard_tracks: shapefile
+        """
         self.hazard_tracks = []
         for _, linestring in enumerate(hazard_tracks.geometry):
             if linestring.geom_type == "LineString":
@@ -338,10 +339,10 @@ class TrackDisruption:
                 print("The entry is not a LineString object and hence ignored.")
 
     def set_buffer_of_impact(self, buffer_of_impact):
-        """Sets the time of occurrence of the disruptive event.
+        """Sets the impact buffer distance in meters.
 
-        :param time_of_occurrence: Time in seconds and multiple of 60.
-        :type time_of_occurrence: integer
+        :param buffer_of_impact: Impact buffer distance in meters.
+        :type buffer_of_impact: interger or float
         """
         if (isinstance(buffer_of_impact, float)) or (isinstance(buffer_of_impact, int)):
             self.buffer_of_impact = buffer_of_impact
@@ -364,7 +365,13 @@ class TrackDisruption:
             )
 
     def set_affected_components(self, G, plot_components=True):
+        """Set the affected components (nodes and link)
 
+        :param G: The infrastructure network as a networkx graph.
+        :type G: Networkx object
+        :param plot_components: plots affected components, defaults to True
+        :type plot_components: bool, optional
+        """
         # nodes
         affected_nodes = []
         for _, track in enumerate(self.hazard_tracks):
