@@ -13,17 +13,18 @@
 \contentsline {chapter}{\numberline {7}API documentation}{15}{chapter.7}%
 \contentsline {section}{\numberline {7.1}dreaminsg\_integrated\_model.main module}{15}{section.7.1}%
 \contentsline {section}{\numberline {7.2}dreaminsg\_integrated\_model.src package}{15}{section.7.2}%
-\contentsline {subsection}{\numberline {7.2.1}dreaminsg\_integrated\_model.src.network\_recovery}{15}{subsection.7.2.1}%
-\contentsline {subsection}{\numberline {7.2.2}dreaminsg\_integrated\_model.src.network\_generator}{17}{subsection.7.2.2}%
-\contentsline {subsection}{\numberline {7.2.3}dreaminsg\_integrated\_model.src.simulation}{17}{subsection.7.2.3}%
-\contentsline {subsection}{\numberline {7.2.4}dreaminsg\_integrated\_model.src.optimizer}{18}{subsection.7.2.4}%
-\contentsline {subsection}{\numberline {7.2.5}dreaminsg\_integrated\_model.src.resilience\_metrics}{19}{subsection.7.2.5}%
-\contentsline {subsection}{\numberline {7.2.6}dreaminsg\_integrated\_model.src.plots}{19}{subsection.7.2.6}%
-\contentsline {subsection}{\numberline {7.2.7}dreaminsg\_integrated\_model.src.network\_sim\_models.integrated\_network}{20}{subsection.7.2.7}%
-\contentsline {subsection}{\numberline {7.2.8}dreaminsg\_integrated\_model.src.network\_sim\_models.interdependencies}{22}{subsection.7.2.8}%
-\contentsline {subsection}{\numberline {7.2.9}dreaminsg\_integrated\_model.src.network\_sim\_models.power.power\_system\_model}{24}{subsection.7.2.9}%
-\contentsline {subsection}{\numberline {7.2.10}dreaminsg\_integrated\_model.src.network\_sim\_models.water.water\_network\_model}{24}{subsection.7.2.10}%
-\contentsline {chapter}{\numberline {8}SEC Disclaimer}{27}{chapter.8}%
-\contentsline {chapter}{\numberline {9}Funding Statement}{29}{chapter.9}%
-\contentsline {section}{\numberline {9.1}Indices and tables}{29}{section.9.1}%
-\contentsline {chapter}{Index}{31}{section*.86}%
+\contentsline {subsection}{\numberline {7.2.1}dreaminsg\_integrated\_model.src.hazard\_initiator}{15}{subsection.7.2.1}%
+\contentsline {subsection}{\numberline {7.2.2}dreaminsg\_integrated\_model.src.network\_generator}{16}{subsection.7.2.2}%
+\contentsline {subsection}{\numberline {7.2.3}dreaminsg\_integrated\_model.src.network\_recovery}{17}{subsection.7.2.3}%
+\contentsline {subsection}{\numberline {7.2.4}dreaminsg\_integrated\_model.src.simulation}{18}{subsection.7.2.4}%
+\contentsline {subsection}{\numberline {7.2.5}dreaminsg\_integrated\_model.src.optimizer}{19}{subsection.7.2.5}%
+\contentsline {subsection}{\numberline {7.2.6}dreaminsg\_integrated\_model.src.resilience\_metrics}{20}{subsection.7.2.6}%
+\contentsline {subsection}{\numberline {7.2.7}dreaminsg\_integrated\_model.src.plots}{21}{subsection.7.2.7}%
+\contentsline {subsection}{\numberline {7.2.8}dreaminsg\_integrated\_model.src.network\_sim\_models.integrated\_network}{22}{subsection.7.2.8}%
+\contentsline {subsection}{\numberline {7.2.9}dreaminsg\_integrated\_model.src.network\_sim\_models.interdependencies}{24}{subsection.7.2.9}%
+\contentsline {subsection}{\numberline {7.2.10}dreaminsg\_integrated\_model.src.network\_sim\_models.power.power\_system\_model}{26}{subsection.7.2.10}%
+\contentsline {subsection}{\numberline {7.2.11}dreaminsg\_integrated\_model.src.network\_sim\_models.water.water\_network\_model}{27}{subsection.7.2.11}%
+\contentsline {chapter}{\numberline {8}SEC Disclaimer}{29}{chapter.8}%
+\contentsline {chapter}{\numberline {9}Funding Statement}{31}{chapter.9}%
+\contentsline {chapter}{\numberline {10}Indices and tables}{33}{chapter.10}%
+\contentsline {chapter}{Python Module Index}{35}{section*.103}%

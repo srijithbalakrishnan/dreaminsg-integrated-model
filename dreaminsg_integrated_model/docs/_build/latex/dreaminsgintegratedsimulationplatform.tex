@@ -60,7 +60,7 @@
 
 
 \title{DREAMIN\textquotesingle{}SG Integrated Simulation Platform}
-\date{Jul 28, 2021}
+\date{Aug 09, 2021}
 \release{}
 \author{Srijith Balakrishnan}
 \newcommand{\sphinxlogo}{\vbox{}}
@@ -85,7 +85,11 @@ Modelling, and INno\sphinxhyphen{}vation Singapore (DREAMIN’SG) project at the
 Resilient Systems of the Singapore\sphinxhyphen{}ETH Centre. The DREAMIN’SG project is
 funded by the National Research Foundation, Singapore under the Intra\sphinxhyphen{}CREATE
 grant program. In the wake of increasing threats posed by climate change
-on urban infrastructure {[}Nissen and Ulbrich (2017){]}, this project aims at
+on urban infrastructure %
+\begin{footnote}[1]\sphinxAtStartFootnote
+Nissen, K. M. and U. Ulbrich (2017). Increasing frequencies and changing characteristics of heavy precipitation events threatening infrastructure in Europe under climate change. Natural Hazards and Earth System Sciences, 17(7), 1177\textendash{}1190. ISSN 16849981.
+%
+\end{footnote}, this project aims at
 studying the effects of policy interventions and network characteristics on
 the resilience of urban infrastructure networks. Given the critical nature of
 the above infrastructure systems, their interdependencies need to be
@@ -115,7 +119,7 @@ The methodology adopted in the study is presented in Fig. 1.
 \capstart
 
 \noindent\sphinxincludegraphics[scale=0.5]{{methodology}.PNG}
-\caption{Figure 1. Methodological framework of DREAMIN’SG project}\label{\detokenize{intro:id1}}\end{figure}
+\caption{Figure 1. Methodological framework of DREAMIN’SG project}\label{\detokenize{intro:id3}}\end{figure}
 
 \sphinxAtStartPar
 The steps of the project are summarized as follows:
@@ -337,8 +341,235 @@ This is the main function that contains the whole simulation workflow.
 \section{dreaminsg\_integrated\_model.src package}
 \label{\detokenize{apidoc:dreaminsg-integrated-model-src-package}}
 
+\subsection{dreaminsg\_integrated\_model.src.hazard\_initiator}
+\label{\detokenize{apidoc:module-dreaminsg_integrated_model.src.hazard_initiator}}\label{\detokenize{apidoc:dreaminsg-integrated-model-src-hazard-initiator}}\index{module@\spxentry{module}!dreaminsg\_integrated\_model.src.hazard\_initiator@\spxentry{dreaminsg\_integrated\_model.src.hazard\_initiator}}\index{dreaminsg\_integrated\_model.src.hazard\_initiator@\spxentry{dreaminsg\_integrated\_model.src.hazard\_initiator}!module@\spxentry{module}}\index{RadialDisruption (class in dreaminsg\_integrated\_model.src.hazard\_initiator)@\spxentry{RadialDisruption}\spxextra{class in dreaminsg\_integrated\_model.src.hazard\_initiator}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.hazard_initiator.RadialDisruption}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class }}\sphinxbfcode{\sphinxupquote{RadialDisruption}}}{\emph{\DUrole{n}{name}\DUrole{o}{=}\DUrole{default_value}{\textquotesingle{}Radial disruption\textquotesingle{}}}, \emph{\DUrole{n}{point\_of\_occurrence}\DUrole{o}{=}\DUrole{default_value}{None}}, \emph{\DUrole{n}{radius\_of\_impact}\DUrole{o}{=}\DUrole{default_value}{100}}, \emph{\DUrole{n}{time\_of\_occurrence}\DUrole{o}{=}\DUrole{default_value}{6000}}}{}
+\sphinxAtStartPar
+Bases: \sphinxcode{\sphinxupquote{object}}
+
+\sphinxAtStartPar
+Class of disaster where the probability of failure of components reduces with distance from the point of occurrence of the event.
+\index{generate\_disruption\_file() (RadialDisruption method)@\spxentry{generate\_disruption\_file()}\spxextra{RadialDisruption method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.hazard_initiator.RadialDisruption.generate_disruption_file}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{generate\_disruption\_file}}}{\emph{\DUrole{n}{location}\DUrole{o}{=}\DUrole{default_value}{None}}}{}
+\sphinxAtStartPar
+Generates the disruption file consisting of the list of failed components, time of occurrence, and failure percentage (damage extent).
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{location}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} The location of the file to be saved.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{set\_affected\_components() (RadialDisruption method)@\spxentry{set\_affected\_components()}\spxextra{RadialDisruption method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.hazard_initiator.RadialDisruption.set_affected_components}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{set\_affected\_components}}}{\emph{\DUrole{n}{G}}, \emph{\DUrole{n}{plot\_components}\DUrole{o}{=}\DUrole{default_value}{True}}}{}
+\sphinxAtStartPar
+Set the affected components (nodes and link)
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{G}} (\sphinxstyleliteralemphasis{\sphinxupquote{Networkx object}}) \textendash{} The infrastructure network as a networkx graph.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{plot\_components}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{optional}}) \textendash{} plots affected components, defaults to True
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{set\_point\_of\_occurrence() (RadialDisruption method)@\spxentry{set\_point\_of\_occurrence()}\spxextra{RadialDisruption method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.hazard_initiator.RadialDisruption.set_point_of_occurrence}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{set\_point\_of\_occurrence}}}{\emph{\DUrole{n}{point\_of\_occurrence}}}{}
+\sphinxAtStartPar
+Sets the point of occurrence of the radial disruption.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{point\_of\_occurrence}} (\sphinxstyleliteralemphasis{\sphinxupquote{tuple}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{optional}}) \textendash{} The central point (represented by a tuple of longitude and latitude) of the disruptive event, defaults to None
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{set\_radius\_of\_impact() (RadialDisruption method)@\spxentry{set\_radius\_of\_impact()}\spxextra{RadialDisruption method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.hazard_initiator.RadialDisruption.set_radius_of_impact}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{set\_radius\_of\_impact}}}{\emph{\DUrole{n}{radius\_of\_impact}}}{}
+\sphinxAtStartPar
+Sets the radius of the radial disruption.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{radius\_of\_impact}} (\sphinxstyleliteralemphasis{\sphinxupquote{float}}\sphinxstyleliteralemphasis{\sphinxupquote{ or }}\sphinxstyleliteralemphasis{\sphinxupquote{integer}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{optional}}) \textendash{} The radius of the impact (he probability of failure at the curcumferance reacher zero) in metres., defaults to None
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{set\_time\_of\_occurrence() (RadialDisruption method)@\spxentry{set\_time\_of\_occurrence()}\spxextra{RadialDisruption method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.hazard_initiator.RadialDisruption.set_time_of_occurrence}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{set\_time\_of\_occurrence}}}{\emph{\DUrole{n}{time\_of\_occurrence}}}{}
+\sphinxAtStartPar
+Stes the time of occurrence of the disruptive event.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{time\_of\_occurrence}} (\sphinxstyleliteralemphasis{\sphinxupquote{integer}}) \textendash{} Time in seconds and multiple of 60.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{TrackDisruption (class in dreaminsg\_integrated\_model.src.hazard\_initiator)@\spxentry{TrackDisruption}\spxextra{class in dreaminsg\_integrated\_model.src.hazard\_initiator}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.hazard_initiator.TrackDisruption}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class }}\sphinxbfcode{\sphinxupquote{TrackDisruption}}}{\emph{\DUrole{n}{hazard\_tracks}\DUrole{o}{=}\DUrole{default_value}{None}}, \emph{\DUrole{n}{buffer\_of\_impact}\DUrole{o}{=}\DUrole{default_value}{25}}, \emph{\DUrole{n}{time\_of\_occurrence}\DUrole{o}{=}\DUrole{default_value}{6000}}, \emph{\DUrole{n}{name}\DUrole{o}{=}\DUrole{default_value}{\textquotesingle{}Track disruption\textquotesingle{}}}}{}
+\sphinxAtStartPar
+Bases: \sphinxcode{\sphinxupquote{object}}
+
+\sphinxAtStartPar
+Class of flood disaster where the probability of failure of components reduces with the longitudinal distance from the track of the event.
+\index{generate\_disruption\_file() (TrackDisruption method)@\spxentry{generate\_disruption\_file()}\spxextra{TrackDisruption method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.hazard_initiator.TrackDisruption.generate_disruption_file}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{generate\_disruption\_file}}}{\emph{\DUrole{n}{location}\DUrole{o}{=}\DUrole{default_value}{None}}}{}
+\sphinxAtStartPar
+Generates the disruption file consisting of the list of failed components, time of occurrence, and failure percentage (damage extent).
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{location}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} The location of the file to be saved.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{set\_affected\_components() (TrackDisruption method)@\spxentry{set\_affected\_components()}\spxextra{TrackDisruption method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.hazard_initiator.TrackDisruption.set_affected_components}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{set\_affected\_components}}}{\emph{\DUrole{n}{G}}, \emph{\DUrole{n}{plot\_components}\DUrole{o}{=}\DUrole{default_value}{True}}}{}
+\sphinxAtStartPar
+Set the affected components (nodes and link)
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{G}} (\sphinxstyleliteralemphasis{\sphinxupquote{Networkx object}}) \textendash{} The infrastructure network as a networkx graph.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{plot\_components}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{optional}}) \textendash{} plots affected components, defaults to True
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{set\_buffer\_of\_impact() (TrackDisruption method)@\spxentry{set\_buffer\_of\_impact()}\spxextra{TrackDisruption method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.hazard_initiator.TrackDisruption.set_buffer_of_impact}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{set\_buffer\_of\_impact}}}{\emph{\DUrole{n}{buffer\_of\_impact}}}{}
+\sphinxAtStartPar
+Sets the impact buffer distance in meters.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{buffer\_of\_impact}} (\sphinxstyleliteralemphasis{\sphinxupquote{interger}}\sphinxstyleliteralemphasis{\sphinxupquote{ or }}\sphinxstyleliteralemphasis{\sphinxupquote{float}}) \textendash{} Impact buffer distance in meters.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{set\_hazard\_tracks() (TrackDisruption method)@\spxentry{set\_hazard\_tracks()}\spxextra{TrackDisruption method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.hazard_initiator.TrackDisruption.set_hazard_tracks}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{set\_hazard\_tracks}}}{\emph{\DUrole{n}{hazard\_tracks}}}{}
+\sphinxAtStartPar
+Sets the tracks of the track\sphinxhyphen{}based hazard from a shapefile.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{hazard\_tracks}} (\sphinxstyleliteralemphasis{\sphinxupquote{shapefile}}) \textendash{} A shapefile that has tracks of the event as LineString objects.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{set\_time\_of\_occurrence() (TrackDisruption method)@\spxentry{set\_time\_of\_occurrence()}\spxextra{TrackDisruption method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.hazard_initiator.TrackDisruption.set_time_of_occurrence}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{set\_time\_of\_occurrence}}}{\emph{\DUrole{n}{time\_of\_occurrence}}}{}
+\sphinxAtStartPar
+Sets the time of occurrence of the disruptive event.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{time\_of\_occurrence}} (\sphinxstyleliteralemphasis{\sphinxupquote{integer}}) \textendash{} Time in seconds and multiple of 60.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+
+
+\subsection{dreaminsg\_integrated\_model.src.network\_generator}
+\label{\detokenize{apidoc:module-dreaminsg_integrated_model.src.network_generator}}\label{\detokenize{apidoc:dreaminsg-integrated-model-src-network-generator}}\index{module@\spxentry{module}!dreaminsg\_integrated\_model.src.network\_generator@\spxentry{dreaminsg\_integrated\_model.src.network\_generator}}\index{dreaminsg\_integrated\_model.src.network\_generator@\spxentry{dreaminsg\_integrated\_model.src.network\_generator}!module@\spxentry{module}}
+\sphinxAtStartPar
+Functions to generate the infrastructure networks used for simulation.
+\index{generate\_powern() (in module dreaminsg\_integrated\_model.src.network\_generator)@\spxentry{generate\_powern()}\spxextra{in module dreaminsg\_integrated\_model.src.network\_generator}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_generator.generate_powern}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{generate\_powern}}}{\emph{\DUrole{n}{file\_name}}}{}
+\sphinxAtStartPar
+Generates a power system network using the pandapower package and saves it to local directory.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{file\_name}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} Name of the json file to be saved including path.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{generate\_watern() (in module dreaminsg\_integrated\_model.src.network\_generator)@\spxentry{generate\_watern()}\spxextra{in module dreaminsg\_integrated\_model.src.network\_generator}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_generator.generate_watern}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{generate\_watern}}}{\emph{\DUrole{n}{file\_name}}}{}
+\sphinxAtStartPar
+Generates a water network using the wntr package and saves it to local directory.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{file\_name}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} Name of the inp file to be saved including path
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+
 \subsection{dreaminsg\_integrated\_model.src.network\_recovery}
-\label{\detokenize{apidoc:dreaminsg-integrated-model-src-network-recovery}}\phantomsection\label{\detokenize{apidoc:module-dreaminsg_integrated_model.src.network_recovery}}\index{module@\spxentry{module}!dreaminsg\_integrated\_model.src.network\_recovery@\spxentry{dreaminsg\_integrated\_model.src.network\_recovery}}\index{dreaminsg\_integrated\_model.src.network\_recovery@\spxentry{dreaminsg\_integrated\_model.src.network\_recovery}!module@\spxentry{module}}
+\label{\detokenize{apidoc:module-dreaminsg_integrated_model.src.network_recovery}}\label{\detokenize{apidoc:dreaminsg-integrated-model-src-network-recovery}}\index{module@\spxentry{module}!dreaminsg\_integrated\_model.src.network\_recovery@\spxentry{dreaminsg\_integrated\_model.src.network\_recovery}}\index{dreaminsg\_integrated\_model.src.network\_recovery@\spxentry{dreaminsg\_integrated\_model.src.network\_recovery}!module@\spxentry{module}}
 \sphinxAtStartPar
 Functions to generate and save disruptive scenarios.
 \index{NetworkRecovery (class in dreaminsg\_integrated\_model.src.network\_recovery)@\spxentry{NetworkRecovery}\spxextra{class in dreaminsg\_integrated\_model.src.network\_recovery}}
@@ -572,42 +803,6 @@ The modified wntr network object after pipe splits.
 \item[{Return type}] \leavevmode
 \sphinxAtStartPar
 wntr network object
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-
-
-\subsection{dreaminsg\_integrated\_model.src.network\_generator}
-\label{\detokenize{apidoc:dreaminsg-integrated-model-src-network-generator}}\phantomsection\label{\detokenize{apidoc:module-dreaminsg_integrated_model.src.network_generator}}\index{module@\spxentry{module}!dreaminsg\_integrated\_model.src.network\_generator@\spxentry{dreaminsg\_integrated\_model.src.network\_generator}}\index{dreaminsg\_integrated\_model.src.network\_generator@\spxentry{dreaminsg\_integrated\_model.src.network\_generator}!module@\spxentry{module}}
-\sphinxAtStartPar
-Functions to generate the infrastructure networks used for simulation.
-\index{generate\_powern() (in module dreaminsg\_integrated\_model.src.network\_generator)@\spxentry{generate\_powern()}\spxextra{in module dreaminsg\_integrated\_model.src.network\_generator}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_generator.generate_powern}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{generate\_powern}}}{\emph{\DUrole{n}{file\_name}}}{}
-\sphinxAtStartPar
-Generates a power system network using the pandapower package and saves it to local directory.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{file\_name}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} Name of the {\color{red}\bfseries{}*}.json file to be saved including path.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{generate\_watern() (in module dreaminsg\_integrated\_model.src.network\_generator)@\spxentry{generate\_watern()}\spxextra{in module dreaminsg\_integrated\_model.src.network\_generator}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_generator.generate_watern}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{generate\_watern}}}{\emph{\DUrole{n}{file\_name}}}{}
-\sphinxAtStartPar
-Generates a water network using the wntr package and saves it to local directory.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{file\_name}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} Name of the {\color{red}\bfseries{}*}.inp file to be saved including path.
 
 \end{description}\end{quote}
 
@@ -864,7 +1059,7 @@ The Optimizer class defines an interface to a discrete optimizer or can be imple
 
 
 \subsection{dreaminsg\_integrated\_model.src.resilience\_metrics}
-\label{\detokenize{apidoc:dreaminsg-integrated-model-src-resilience-metrics}}\phantomsection\label{\detokenize{apidoc:module-dreaminsg_integrated_model.src.resilience_metrics}}\index{module@\spxentry{module}!dreaminsg\_integrated\_model.src.resilience\_metrics@\spxentry{dreaminsg\_integrated\_model.src.resilience\_metrics}}\index{dreaminsg\_integrated\_model.src.resilience\_metrics@\spxentry{dreaminsg\_integrated\_model.src.resilience\_metrics}!module@\spxentry{module}}
+\label{\detokenize{apidoc:module-dreaminsg_integrated_model.src.resilience_metrics}}\label{\detokenize{apidoc:dreaminsg-integrated-model-src-resilience-metrics}}\index{module@\spxentry{module}!dreaminsg\_integrated\_model.src.resilience\_metrics@\spxentry{dreaminsg\_integrated\_model.src.resilience\_metrics}}\index{dreaminsg\_integrated\_model.src.resilience\_metrics@\spxentry{dreaminsg\_integrated\_model.src.resilience\_metrics}!module@\spxentry{module}}
 \sphinxAtStartPar
 Resilience metric classes to be used for optimizing recovery actions.
 \index{ResilienceMetric (class in dreaminsg\_integrated\_model.src.resilience\_metrics)@\spxentry{ResilienceMetric}\spxextra{class in dreaminsg\_integrated\_model.src.resilience\_metrics}}
@@ -884,10 +1079,10 @@ The ResilienceMetric class defines an interface to a resilience metric.
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.resilience_metrics.WeightedResilienceMetric}}\pysigline{\sphinxbfcode{\sphinxupquote{class }}\sphinxbfcode{\sphinxupquote{WeightedResilienceMetric}}}
 \sphinxAtStartPar
-Bases: \sphinxcode{\sphinxupquote{dreaminsg\_integrated\_model.src.resilience\_metrics.ResilienceMetric}}
+Bases: {\hyperref[\detokenize{apidoc:dreaminsg_integrated_model.src.resilience_metrics.ResilienceMetric}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{dreaminsg\_integrated\_model.src.resilience\_metrics.ResilienceMetric}}}}}
 
 \sphinxAtStartPar
-Methods to calculated the weighted ILOS estimates without normalization.
+A class that consists of methods to calculate and store weighted ILOS estimates without
 \index{calculate\_power\_resmetric() (WeightedResilienceMetric method)@\spxentry{calculate\_power\_resmetric()}\spxextra{WeightedResilienceMetric method}}
 
 \begin{fulllineitems}
@@ -941,6 +1136,91 @@ float
 
 \end{fulllineitems}
 
+\index{get\_power\_consump\_tracker() (WeightedResilienceMetric method)@\spxentry{get\_power\_consump\_tracker()}\spxextra{WeightedResilienceMetric method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.resilience_metrics.WeightedResilienceMetric.get_power_consump_tracker}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{get\_power\_consump\_tracker}}}{}{}
+\sphinxAtStartPar
+Returns the power consumption ratio list.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+\sphinxAtStartPar
+power consumption ratio values
+
+\item[{Return type}] \leavevmode
+\sphinxAtStartPar
+list
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{get\_time\_tracker() (WeightedResilienceMetric method)@\spxentry{get\_time\_tracker()}\spxextra{WeightedResilienceMetric method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.resilience_metrics.WeightedResilienceMetric.get_time_tracker}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{get\_time\_tracker}}}{}{}
+\sphinxAtStartPar
+Returns the time tracker list with time in minutes.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+\sphinxAtStartPar
+time tracker
+
+\item[{Return type}] \leavevmode
+\sphinxAtStartPar
+list
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{get\_water\_consump\_tracker() (WeightedResilienceMetric method)@\spxentry{get\_water\_consump\_tracker()}\spxextra{WeightedResilienceMetric method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.resilience_metrics.WeightedResilienceMetric.get_water_consump_tracker}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{get\_water\_consump\_tracker}}}{}{}
+\sphinxAtStartPar
+Returns the water consumption ratio list.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+\sphinxAtStartPar
+water consumption ratio values
+
+\item[{Return type}] \leavevmode
+\sphinxAtStartPar
+list
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{get\_weighted\_auc\_metrics() (WeightedResilienceMetric method)@\spxentry{get\_weighted\_auc\_metrics()}\spxextra{WeightedResilienceMetric method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.resilience_metrics.WeightedResilienceMetric.get_weighted_auc_metrics}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{get\_weighted\_auc\_metrics}}}{}{}
+\sphinxAtStartPar
+Returns the weighted auc metrics.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+\sphinxAtStartPar
+list of power, water and weighted auc values
+
+\item[{Return type}] \leavevmode
+\sphinxAtStartPar
+list
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{set\_weighted\_auc\_metrics() (WeightedResilienceMetric method)@\spxentry{set\_weighted\_auc\_metrics()}\spxextra{WeightedResilienceMetric method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.resilience_metrics.WeightedResilienceMetric.set_weighted_auc_metrics}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{set\_weighted\_auc\_metrics}}}{}{}
+\sphinxAtStartPar
+Calculates the water, power, and weighted auc values.
+
+\end{fulllineitems}
+
 
 \end{fulllineitems}
 
@@ -950,39 +1230,27 @@ float
 \label{\detokenize{apidoc:module-dreaminsg_integrated_model.src.plots}}\label{\detokenize{apidoc:dreaminsg-integrated-model-src-plots}}\index{module@\spxentry{module}!dreaminsg\_integrated\_model.src.plots@\spxentry{dreaminsg\_integrated\_model.src.plots}}\index{dreaminsg\_integrated\_model.src.plots@\spxentry{dreaminsg\_integrated\_model.src.plots}!module@\spxentry{module}}
 \sphinxAtStartPar
 Functions to generate infrastructure network plots and result plots.
-\index{plot\_integrated\_network() (in module dreaminsg\_integrated\_model.src.plots)@\spxentry{plot\_integrated\_network()}\spxextra{in module dreaminsg\_integrated\_model.src.plots}}
+\index{plot\_bokeh\_from\_integrated\_graph() (in module dreaminsg\_integrated\_model.src.plots)@\spxentry{plot\_bokeh\_from\_integrated\_graph()}\spxextra{in module dreaminsg\_integrated\_model.src.plots}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.plots.plot_integrated_network}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{plot\_integrated\_network}}}{\emph{\DUrole{n}{pn}}, \emph{\DUrole{n}{wn}}, \emph{\DUrole{n}{tn}}, \emph{\DUrole{n}{plotting}\DUrole{o}{=}\DUrole{default_value}{False}}}{}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.plots.plot_bokeh_from_integrated_graph}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{plot\_bokeh\_from\_integrated\_graph}}}{\emph{\DUrole{n}{G}}, \emph{\DUrole{n}{title}}, \emph{\DUrole{n}{extent}\DUrole{o}{=}\DUrole{default_value}{{[}(1000, 8000), (1000, 6600){]}}}}{}
 \sphinxAtStartPar
-Generates the integrated networkx object.
+Converts the integrated network into a Bokeh interactive plot.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{pn}} (\sphinxstyleliteralemphasis{\sphinxupquote{pandapower network object}}) \textendash{} Power network object.
+\sphinxstyleliteralstrong{\sphinxupquote{G}} (\sphinxstyleliteralemphasis{\sphinxupquote{networkx object}}) \textendash{} Integrated network on which the simulation is to be performed.
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{wn}} (\sphinxstyleliteralemphasis{\sphinxupquote{wntr network object}}) \textendash{} Water network object.
+\sphinxstyleliteralstrong{\sphinxupquote{title}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} Title of the plot.
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{tn}} (\sphinxstyleliteralemphasis{\sphinxupquote{STA network object}}) \textendash{} Traffic network object.
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{plotting}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{optional}}) \textendash{} Generates plots, defaults to False.
+\sphinxstyleliteralstrong{\sphinxupquote{extent}} (\sphinxstyleliteralemphasis{\sphinxupquote{list}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{optional}}) \textendash{} Extent of the plot as a list of tuple in the format {[}(xmin, xmax), (ymin, ymax){]}, defaults to {[}(1000, 8000), (1000, 6600){]}
 
 \end{itemize}
-
-\item[{Returns}] \leavevmode
-\sphinxAtStartPar
-The integrated infrastructure graph.
-
-\item[{Return type}] \leavevmode
-\sphinxAtStartPar
-networkx object
 
 \end{description}\end{quote}
 
@@ -991,22 +1259,26 @@ networkx object
 \index{plot\_interdependent\_effects() (in module dreaminsg\_integrated\_model.src.plots)@\spxentry{plot\_interdependent\_effects()}\spxextra{in module dreaminsg\_integrated\_model.src.plots}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.plots.plot_interdependent_effects}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{plot\_interdependent\_effects}}}{\emph{\DUrole{n}{power\_consump\_tracker}}, \emph{\DUrole{n}{water\_consump\_tracker}}, \emph{\DUrole{n}{time\_tracker}}, \emph{\DUrole{n}{scatter}\DUrole{o}{=}\DUrole{default_value}{True}}}{}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.plots.plot_interdependent_effects}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{plot\_interdependent\_effects}}}{\emph{\DUrole{n}{time\_tracker}}, \emph{\DUrole{n}{power\_consump\_tracker}\DUrole{o}{=}\DUrole{default_value}{None}}, \emph{\DUrole{n}{water\_consump\_tracker}\DUrole{o}{=}\DUrole{default_value}{None}}, \emph{\DUrole{n}{transpo\_access\_tracker}\DUrole{o}{=}\DUrole{default_value}{None}}, \emph{\DUrole{n}{scatter}\DUrole{o}{=}\DUrole{default_value}{True}}}{}
 \sphinxAtStartPar
 Generates the network\sphinxhyphen{}level performance plots.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{power\_consump\_tracker}} (\sphinxstyleliteralemphasis{\sphinxupquote{list of floats}}) \textendash{} A list of power consumption resilience metric values.
-
-\item {} 
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{water\_consump\_tracker}} (\sphinxstyleliteralemphasis{\sphinxupquote{list of floats}}) \textendash{} A list of water consumption resilience metric values.
-
-\item {} 
-\sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{time\_tracker}} (\sphinxstyleliteralemphasis{\sphinxupquote{list of floats}}) \textendash{} A list of time\sphinxhyphen{}stamps from the similation.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{power\_consump\_tracker}} (\sphinxstyleliteralemphasis{\sphinxupquote{list of floats}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{optional}}) \textendash{} A list of power consumption resilience metric values., defaults to None
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{water\_consump\_tracker}} (\sphinxstyleliteralemphasis{\sphinxupquote{list of floats}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{optional}}) \textendash{} A list of water consumption resilience metric values., defaults to None
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{transpo\_access\_tracker}} (\sphinxstyleliteralemphasis{\sphinxupquote{list of floats}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{optional}}) \textendash{} A list of transportation access resilience metric values., defaults to None
 
 \item {} 
 \sphinxAtStartPar
@@ -1027,7 +1299,7 @@ Generates the power systems plot.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{net}} (\sphinxstyleliteralemphasis{\sphinxupquote{pandapower network object.}}) \textendash{} The power systems network.
+\sphinxstyleliteralstrong{\sphinxupquote{net}} (\sphinxstyleliteralemphasis{\sphinxupquote{pandapower network object}}) \textendash{} The power systems network.
 
 \end{description}\end{quote}
 
@@ -1079,7 +1351,7 @@ Generates the water network plot.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{wn}} (\sphinxstyleliteralemphasis{\sphinxupquote{wntr network object.}}) \textendash{} The water network.
+\sphinxstyleliteralstrong{\sphinxupquote{wn}} (\sphinxstyleliteralemphasis{\sphinxupquote{wntr network object}}) \textendash{} The water network.
 
 \end{description}\end{quote}
 
@@ -1088,10 +1360,10 @@ Generates the water network plot.
 
 
 \subsection{dreaminsg\_integrated\_model.src.network\_sim\_models.integrated\_network}
-\label{\detokenize{apidoc:dreaminsg-integrated-model-src-network-sim-models-integrated-network}}\phantomsection\label{\detokenize{apidoc:module-dreaminsg_integrated_model.src.network_sim_models.integrated_network}}\index{module@\spxentry{module}!dreaminsg\_integrated\_model.src.network\_sim\_models.integrated\_network@\spxentry{dreaminsg\_integrated\_model.src.network\_sim\_models.integrated\_network}}\index{dreaminsg\_integrated\_model.src.network\_sim\_models.integrated\_network@\spxentry{dreaminsg\_integrated\_model.src.network\_sim\_models.integrated\_network}!module@\spxentry{module}}\index{IntegratedNetwork (class in dreaminsg\_integrated\_model.src.network\_sim\_models.integrated\_network)@\spxentry{IntegratedNetwork}\spxextra{class in dreaminsg\_integrated\_model.src.network\_sim\_models.integrated\_network}}
+\label{\detokenize{apidoc:module-dreaminsg_integrated_model.src.network_sim_models.integrated_network}}\label{\detokenize{apidoc:dreaminsg-integrated-model-src-network-sim-models-integrated-network}}\index{module@\spxentry{module}!dreaminsg\_integrated\_model.src.network\_sim\_models.integrated\_network@\spxentry{dreaminsg\_integrated\_model.src.network\_sim\_models.integrated\_network}}\index{dreaminsg\_integrated\_model.src.network\_sim\_models.integrated\_network@\spxentry{dreaminsg\_integrated\_model.src.network\_sim\_models.integrated\_network}!module@\spxentry{module}}\index{IntegratedNetwork (class in dreaminsg\_integrated\_model.src.network\_sim\_models.integrated\_network)@\spxentry{IntegratedNetwork}\spxextra{class in dreaminsg\_integrated\_model.src.network\_sim\_models.integrated\_network}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_sim_models.integrated_network.IntegratedNetwork}}\pysigline{\sphinxbfcode{\sphinxupquote{class }}\sphinxbfcode{\sphinxupquote{IntegratedNetwork}}}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_sim_models.integrated_network.IntegratedNetwork}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class }}\sphinxbfcode{\sphinxupquote{IntegratedNetwork}}}{\emph{\DUrole{n}{name}}, \emph{\DUrole{n}{power\_sim\_type}\DUrole{o}{=}\DUrole{default_value}{\textquotesingle{}1ph\textquotesingle{}}}, \emph{\DUrole{n}{water\_file}\DUrole{o}{=}\DUrole{default_value}{None}}, \emph{\DUrole{n}{power\_file}\DUrole{o}{=}\DUrole{default_value}{None}}, \emph{\DUrole{n}{transp\_folder}\DUrole{o}{=}\DUrole{default_value}{None}}}{}
 \sphinxAtStartPar
 Bases: {\hyperref[\detokenize{apidoc:dreaminsg_integrated_model.src.network_sim_models.integrated_network.Network}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{dreaminsg\_integrated\_model.src.network\_sim\_models.integrated\_network.Network}}}}}
 
@@ -1115,32 +1387,76 @@ Generates the dependency table from an input file.
 \index{generate\_integrated\_graph() (IntegratedNetwork method)@\spxentry{generate\_integrated\_graph()}\spxextra{IntegratedNetwork method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_sim_models.integrated_network.IntegratedNetwork.generate_integrated_graph}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{generate\_integrated\_graph}}}{\emph{\DUrole{n}{plotting}\DUrole{o}{=}\DUrole{default_value}{False}}, \emph{\DUrole{n}{legend\_size}\DUrole{o}{=}\DUrole{default_value}{12}}, \emph{\DUrole{n}{font\_size}\DUrole{o}{=}\DUrole{default_value}{8}}, \emph{\DUrole{n}{figsize}\DUrole{o}{=}\DUrole{default_value}{(10, 7)}}, \emph{\DUrole{n}{line\_width}\DUrole{o}{=}\DUrole{default_value}{2}}}{}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_sim_models.integrated_network.IntegratedNetwork.generate_integrated_graph}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{generate\_integrated\_graph}}}{}{}
 \sphinxAtStartPar
-Generates the integrated Networkx object.
+Generates the integrated network as a Networkx graph.
+
+\end{fulllineitems}
+
+\index{generate\_power\_networkx\_graph() (IntegratedNetwork method)@\spxentry{generate\_power\_networkx\_graph()}\spxextra{IntegratedNetwork method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_sim_models.integrated_network.IntegratedNetwork.generate_power_networkx_graph}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{generate\_power\_networkx\_graph}}}{\emph{\DUrole{n}{plot}\DUrole{o}{=}\DUrole{default_value}{False}}}{}
+\sphinxAtStartPar
+Generates the power network as a networkx object.
 \begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode\begin{itemize}
-\item {} 
+\item[{Parameters}] \leavevmode
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{plotting}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{optional}}) \textendash{} Generates plots, defaults to False., defaults to False
+\sphinxstyleliteralstrong{\sphinxupquote{plot}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{optional}}) \textendash{} To generate the network plot, defaults to False.
 
-\item {} 
+\item[{Returns}] \leavevmode
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{legend\_size}} (\sphinxstyleliteralemphasis{\sphinxupquote{int}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{optional}}) \textendash{} Legend font size, defaults to 12
+The power network as a networkx object.
 
-\item {} 
+\item[{Return type}] \leavevmode
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{font\_size}} (\sphinxstyleliteralemphasis{\sphinxupquote{int}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{optional}}) \textendash{} Text font size, defaults to 8
+Networkx object
 
-\item {} 
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{generate\_transpo\_networkx\_graph() (IntegratedNetwork method)@\spxentry{generate\_transpo\_networkx\_graph()}\spxextra{IntegratedNetwork method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_sim_models.integrated_network.IntegratedNetwork.generate_transpo_networkx_graph}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{generate\_transpo\_networkx\_graph}}}{\emph{\DUrole{n}{plot}\DUrole{o}{=}\DUrole{default_value}{False}}}{}
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{figsize}} (\sphinxstyleliteralemphasis{\sphinxupquote{tuple}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{optional}}) \textendash{} Size of final figure, defaults to (10, 7)
-
-\item {} 
+Generates the transportation network as a networkx object.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{line\_width}} (\sphinxstyleliteralemphasis{\sphinxupquote{int}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{optional}}) \textendash{} Width of lines, defaults to 2
+\sphinxstyleliteralstrong{\sphinxupquote{plot}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{optional}}) \textendash{} To generate the network plot, defaults to False., defaults to False.
 
-\end{itemize}
+\item[{Returns}] \leavevmode
+\sphinxAtStartPar
+The transportation network as a networkx object.
+
+\item[{Return type}] \leavevmode
+\sphinxAtStartPar
+Networkx object
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{generate\_water\_networkx\_graph() (IntegratedNetwork method)@\spxentry{generate\_water\_networkx\_graph()}\spxextra{IntegratedNetwork method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_sim_models.integrated_network.IntegratedNetwork.generate_water_networkx_graph}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{generate\_water\_networkx\_graph}}}{\emph{\DUrole{n}{plot}\DUrole{o}{=}\DUrole{default_value}{False}}}{}
+\sphinxAtStartPar
+Generates the water network as a networkx object.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{plot}} (\sphinxstyleliteralemphasis{\sphinxupquote{bool}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{optional}}) \textendash{} To generate the network plot, defaults to False., defaults to False.
+
+\item[{Returns}] \leavevmode
+\sphinxAtStartPar
+The water network as a networkx object.
+
+\item[{Return type}] \leavevmode
+\sphinxAtStartPar
+Networkx object
 
 \end{description}\end{quote}
 
@@ -1259,24 +1575,73 @@ string
 \index{load\_networks() (IntegratedNetwork method)@\spxentry{load\_networks()}\spxextra{IntegratedNetwork method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_sim_models.integrated_network.IntegratedNetwork.load_networks}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{load\_networks}}}{\emph{\DUrole{n}{water\_file}}, \emph{\DUrole{n}{power\_file}}, \emph{\DUrole{n}{transp\_folder}}}{}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_sim_models.integrated_network.IntegratedNetwork.load_networks}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{load\_networks}}}{\emph{\DUrole{n}{water\_file}}, \emph{\DUrole{n}{power\_file}}, \emph{\DUrole{n}{transp\_folder}}, \emph{\DUrole{n}{power\_sim\_type}}}{}
 \sphinxAtStartPar
 Loads the water, power and transportation networks.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{water\_file}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} The water network file ({\color{red}\bfseries{}*}.inp).
+\sphinxstyleliteralstrong{\sphinxupquote{water\_file}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} The water network file in inp format
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{power\_file}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} The power systems file ({\color{red}\bfseries{}*}.json).
+\sphinxstyleliteralstrong{\sphinxupquote{power\_file}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} The power systems file in json format
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{transp\_folder}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} The local directory that consists of required transportation network files.
+\sphinxstyleliteralstrong{\sphinxupquote{transp\_folder}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} The local directory that consists of required transportation network files
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{power\_sim\_type}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} Type of power flow simulation: ‘1ph’: single phase, ‘3ph’: three phase.
 
 \end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{load\_power\_network() (IntegratedNetwork method)@\spxentry{load\_power\_network()}\spxextra{IntegratedNetwork method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_sim_models.integrated_network.IntegratedNetwork.load_power_network}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{load\_power\_network}}}{\emph{\DUrole{n}{power\_file}}, \emph{\DUrole{n}{power\_sim\_type}}}{}
+\sphinxAtStartPar
+Loads the power network.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{power\_file}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} The power systems file in json format
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{load\_transpo\_network() (IntegratedNetwork method)@\spxentry{load\_transpo\_network()}\spxextra{IntegratedNetwork method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_sim_models.integrated_network.IntegratedNetwork.load_transpo_network}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{load\_transpo\_network}}}{\emph{\DUrole{n}{transp\_folder}}}{}
+\sphinxAtStartPar
+Loads the transportation network.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{transp\_folder}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} The local directory that consists of required transportation network files
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{load\_water\_network() (IntegratedNetwork method)@\spxentry{load\_water\_network()}\spxextra{IntegratedNetwork method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_sim_models.integrated_network.IntegratedNetwork.load_water_network}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{load\_water\_network}}}{\emph{\DUrole{n}{water\_file}}}{}
+\sphinxAtStartPar
+Loads the water network.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{water\_file}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} The water network file in inp format
 
 \end{description}\end{quote}
 
@@ -1413,7 +1778,7 @@ This is an abstract class of integrated infrastructure network, defining an inte
 
 
 \subsection{dreaminsg\_integrated\_model.src.network\_sim\_models.interdependencies}
-\label{\detokenize{apidoc:dreaminsg-integrated-model-src-network-sim-models-interdependencies}}\phantomsection\label{\detokenize{apidoc:module-dreaminsg_integrated_model.src.network_sim_models.interdependencies}}\index{module@\spxentry{module}!dreaminsg\_integrated\_model.src.network\_sim\_models.interdependencies@\spxentry{dreaminsg\_integrated\_model.src.network\_sim\_models.interdependencies}}\index{dreaminsg\_integrated\_model.src.network\_sim\_models.interdependencies@\spxentry{dreaminsg\_integrated\_model.src.network\_sim\_models.interdependencies}!module@\spxentry{module}}
+\label{\detokenize{apidoc:module-dreaminsg_integrated_model.src.network_sim_models.interdependencies}}\label{\detokenize{apidoc:dreaminsg-integrated-model-src-network-sim-models-interdependencies}}\index{module@\spxentry{module}!dreaminsg\_integrated\_model.src.network\_sim\_models.interdependencies@\spxentry{dreaminsg\_integrated\_model.src.network\_sim\_models.interdependencies}}\index{dreaminsg\_integrated\_model.src.network\_sim\_models.interdependencies@\spxentry{dreaminsg\_integrated\_model.src.network\_sim\_models.interdependencies}!module@\spxentry{module}}
 \sphinxAtStartPar
 Classes and functions to manage dependencies in the integrated infrastructure network.
 \index{DependencyTable (class in dreaminsg\_integrated\_model.src.network\_sim\_models.interdependencies)@\spxentry{DependencyTable}\spxextra{class in dreaminsg\_integrated\_model.src.network\_sim\_models.interdependencies}}
@@ -1440,6 +1805,28 @@ Creates a generator\sphinxhyphen{}on\sphinxhyphen{}reservoir dependency entry in
 \item {} 
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{power\_id}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} The name of the generator in the power systems model.
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{add\_pump\_loadmotor\_coupling() (DependencyTable method)@\spxentry{add\_pump\_loadmotor\_coupling()}\spxextra{DependencyTable method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_sim_models.interdependencies.DependencyTable.add_pump_loadmotor_coupling}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{add\_pump\_loadmotor\_coupling}}}{\emph{\DUrole{n}{water\_id}}, \emph{\DUrole{n}{power\_id}}}{}
+\sphinxAtStartPar
+Creates a pump\sphinxhyphen{}on\sphinxhyphen{}motor dependency entry in the dependency table.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{water\_id}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} The name of the pump in the water network model.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{power\_id}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} The name of the motor (modeled as load in three phase pandapower networks) in the power systems model.
 
 \end{itemize}
 
@@ -1693,7 +2080,7 @@ list
 
 
 \subsection{dreaminsg\_integrated\_model.src.network\_sim\_models.power.power\_system\_model}
-\label{\detokenize{apidoc:dreaminsg-integrated-model-src-network-sim-models-power-power-system-model}}\phantomsection\label{\detokenize{apidoc:module-dreaminsg_integrated_model.src.network_sim_models.power.power_system_model}}\index{module@\spxentry{module}!dreaminsg\_integrated\_model.src.network\_sim\_models.power.power\_system\_model@\spxentry{dreaminsg\_integrated\_model.src.network\_sim\_models.power.power\_system\_model}}\index{dreaminsg\_integrated\_model.src.network\_sim\_models.power.power\_system\_model@\spxentry{dreaminsg\_integrated\_model.src.network\_sim\_models.power.power\_system\_model}!module@\spxentry{module}}
+\label{\detokenize{apidoc:module-dreaminsg_integrated_model.src.network_sim_models.power.power_system_model}}\label{\detokenize{apidoc:dreaminsg-integrated-model-src-network-sim-models-power-power-system-model}}\index{module@\spxentry{module}!dreaminsg\_integrated\_model.src.network\_sim\_models.power.power\_system\_model@\spxentry{dreaminsg\_integrated\_model.src.network\_sim\_models.power.power\_system\_model}}\index{dreaminsg\_integrated\_model.src.network\_sim\_models.power.power\_system\_model@\spxentry{dreaminsg\_integrated\_model.src.network\_sim\_models.power.power\_system\_model}!module@\spxentry{module}}
 \sphinxAtStartPar
 Functions to implement power systems simulations.
 \index{get\_power\_dict() (in module dreaminsg\_integrated\_model.src.network\_sim\_models.power.power\_system\_model)@\spxentry{get\_power\_dict()}\spxextra{in module dreaminsg\_integrated\_model.src.network\_sim\_models.power.power\_system\_model}}
@@ -1718,13 +2105,20 @@ dictionary of string: dictionary of string: string
 \index{load\_power\_network() (in module dreaminsg\_integrated\_model.src.network\_sim\_models.power.power\_system\_model)@\spxentry{load\_power\_network()}\spxextra{in module dreaminsg\_integrated\_model.src.network\_sim\_models.power.power\_system\_model}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_sim_models.power.power_system_model.load_power_network}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{load\_power\_network}}}{\emph{\DUrole{n}{network\_json}}}{}
+\phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_sim_models.power.power_system_model.load_power_network}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{load\_power\_network}}}{\emph{\DUrole{n}{network\_json}}, \emph{\DUrole{n}{sim\_type}\DUrole{o}{=}\DUrole{default_value}{\textquotesingle{}1ph\textquotesingle{}}}}{}
 \sphinxAtStartPar
-Loads the power system model from a {\color{red}\bfseries{}*}.json file.
+Loads the power system model from a json file.
 \begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{network\_json}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} Location of the {\color{red}\bfseries{}*}.json power system file generated by pandapower package.
+\sphinxstyleliteralstrong{\sphinxupquote{network\_json}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} Location of the json power system file generated by pandapower package.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{sim\_type}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} Type of power flow simulation: ‘1ph’: single phase, ‘3ph’: three phase.
+
+\end{itemize}
 
 \item[{Returns}] \leavevmode
 \sphinxAtStartPar
@@ -1756,7 +2150,7 @@ Runs the power flow model for an instance.
 
 
 \subsection{dreaminsg\_integrated\_model.src.network\_sim\_models.water.water\_network\_model}
-\label{\detokenize{apidoc:dreaminsg-integrated-model-src-network-sim-models-water-water-network-model}}\phantomsection\label{\detokenize{apidoc:module-dreaminsg_integrated_model.src.network_sim_models.water.water_network_model}}\index{module@\spxentry{module}!dreaminsg\_integrated\_model.src.network\_sim\_models.water.water\_network\_model@\spxentry{dreaminsg\_integrated\_model.src.network\_sim\_models.water.water\_network\_model}}\index{dreaminsg\_integrated\_model.src.network\_sim\_models.water.water\_network\_model@\spxentry{dreaminsg\_integrated\_model.src.network\_sim\_models.water.water\_network\_model}!module@\spxentry{module}}
+\label{\detokenize{apidoc:module-dreaminsg_integrated_model.src.network_sim_models.water.water_network_model}}\label{\detokenize{apidoc:dreaminsg-integrated-model-src-network-sim-models-water-water-network-model}}\index{module@\spxentry{module}!dreaminsg\_integrated\_model.src.network\_sim\_models.water.water\_network\_model@\spxentry{dreaminsg\_integrated\_model.src.network\_sim\_models.water.water\_network\_model}}\index{dreaminsg\_integrated\_model.src.network\_sim\_models.water.water\_network\_model@\spxentry{dreaminsg\_integrated\_model.src.network\_sim\_models.water.water\_network\_model}!module@\spxentry{module}}
 \sphinxAtStartPar
 Functions to implement water network simulations.
 \index{get\_water\_dict() (in module dreaminsg\_integrated\_model.src.network\_sim\_models.water.water\_network\_model)@\spxentry{get\_water\_dict()}\spxextra{in module dreaminsg\_integrated\_model.src.network\_sim\_models.water.water\_network\_model}}
@@ -1783,12 +2177,12 @@ dictionary of string: string
 \begin{fulllineitems}
 \phantomsection\label{\detokenize{apidoc:dreaminsg_integrated_model.src.network_sim_models.water.water_network_model.load_water_network}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{load\_water\_network}}}{\emph{\DUrole{n}{network\_inp}}, \emph{\DUrole{n}{initial\_sim\_step}}}{}
 \sphinxAtStartPar
-Loads the water network model from an {\color{red}\bfseries{}*}.inp file.
+Loads the water network model from an inp file.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{network\_inp}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} Location of the {\color{red}\bfseries{}*}.inp water network file.
+\sphinxstyleliteralstrong{\sphinxupquote{network\_inp}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} Location of the inp water network file.
 
 \item {} 
 \sphinxAtStartPar
@@ -1817,7 +2211,7 @@ Runs the simulation for one time step.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{wn}} (\sphinxstyleliteralemphasis{\sphinxupquote{{[}}}\sphinxstyleliteralemphasis{\sphinxupquote{type}}\sphinxstyleliteralemphasis{\sphinxupquote{{]}}}) \textendash{} Water network model object.
+\sphinxstyleliteralstrong{\sphinxupquote{wn}} (\sphinxstyleliteralemphasis{\sphinxupquote{wntr water network object}}) \textendash{} Water network model object.
 
 \item[{Returns}] \leavevmode
 \sphinxAtStartPar
@@ -1848,7 +2242,7 @@ NRF approval, endorsement, or recommendation.
 The project is funded by the National Research Foundation Singapore through the Inter\sphinxhyphen{}CREATE program.
 
 
-\section{Indices and tables}
+\chapter{Indices and tables}
 \label{\detokenize{index:indices-and-tables}}
 \sphinxAtStartPar
 To read the various modules and methods in the package in the alphabetical order, click on Index. To read about the module\sphinxhyphen{}wise
@@ -1869,16 +2263,22 @@ details, click on Module index.
 \end{itemize}
 
 
-
-\begin{sphinxtheindex}
 \renewcommand{\indexname}{Python Module Index}
+\begin{sphinxtheindex}
 \let\bigletter\sphinxstyleindexlettergroup
 \bigletter{d}
+\item\relax\sphinxstyleindexentry{dreaminsg\_integrated\_model.main}\sphinxstyleindexpageref{apidoc:\detokenize{module-dreaminsg_integrated_model.main}}
+\item\relax\sphinxstyleindexentry{dreaminsg\_integrated\_model.src.hazard\_initiator}\sphinxstyleindexpageref{apidoc:\detokenize{module-dreaminsg_integrated_model.src.hazard_initiator}}
+\item\relax\sphinxstyleindexentry{dreaminsg\_integrated\_model.src.network\_generator}\sphinxstyleindexpageref{apidoc:\detokenize{module-dreaminsg_integrated_model.src.network_generator}}
+\item\relax\sphinxstyleindexentry{dreaminsg\_integrated\_model.src.network\_recovery}\sphinxstyleindexpageref{apidoc:\detokenize{module-dreaminsg_integrated_model.src.network_recovery}}
 \item\relax\sphinxstyleindexentry{dreaminsg\_integrated\_model.src.network\_sim\_models.integrated\_network}\sphinxstyleindexpageref{apidoc:\detokenize{module-dreaminsg_integrated_model.src.network_sim_models.integrated_network}}
 \item\relax\sphinxstyleindexentry{dreaminsg\_integrated\_model.src.network\_sim\_models.interdependencies}\sphinxstyleindexpageref{apidoc:\detokenize{module-dreaminsg_integrated_model.src.network_sim_models.interdependencies}}
 \item\relax\sphinxstyleindexentry{dreaminsg\_integrated\_model.src.network\_sim\_models.power.power\_system\_model}\sphinxstyleindexpageref{apidoc:\detokenize{module-dreaminsg_integrated_model.src.network_sim_models.power.power_system_model}}
 \item\relax\sphinxstyleindexentry{dreaminsg\_integrated\_model.src.network\_sim\_models.water.water\_network\_model}\sphinxstyleindexpageref{apidoc:\detokenize{module-dreaminsg_integrated_model.src.network_sim_models.water.water_network_model}}
 \item\relax\sphinxstyleindexentry{dreaminsg\_integrated\_model.src.optimizer}\sphinxstyleindexpageref{apidoc:\detokenize{module-dreaminsg_integrated_model.src.optimizer}}
+\item\relax\sphinxstyleindexentry{dreaminsg\_integrated\_model.src.plots}\sphinxstyleindexpageref{apidoc:\detokenize{module-dreaminsg_integrated_model.src.plots}}
+\item\relax\sphinxstyleindexentry{dreaminsg\_integrated\_model.src.resilience\_metrics}\sphinxstyleindexpageref{apidoc:\detokenize{module-dreaminsg_integrated_model.src.resilience_metrics}}
+\item\relax\sphinxstyleindexentry{dreaminsg\_integrated\_model.src.simulation}\sphinxstyleindexpageref{apidoc:\detokenize{module-dreaminsg_integrated_model.src.simulation}}
 \end{sphinxtheindex}
 
 \renewcommand{\indexname}{Index}

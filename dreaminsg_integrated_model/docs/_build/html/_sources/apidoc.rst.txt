@@ -12,14 +12,14 @@ dreaminsg_integrated_model.main module
 dreaminsg\_integrated\_model.src package
 -----------------------------------------
 
-dreaminsg\_integrated\_model.src.network\_recovery
+
+dreaminsg\_integrated\_model.src.hazard\_initiator
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. automodule:: dreaminsg_integrated_model.src.network_recovery
+.. automodule:: dreaminsg_integrated_model.src.hazard_initiator
     :members:
     :no-undoc-members:
     :show-inheritance:
-
 
 dreaminsg\_integrated\_model.src.network\_generator
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,6 +29,13 @@ dreaminsg\_integrated\_model.src.network\_generator
     :no-undoc-members:
     :show-inheritance:
 
+dreaminsg\_integrated\_model.src.network\_recovery
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: dreaminsg_integrated_model.src.network_recovery
+    :members:
+    :no-undoc-members:
+    :show-inheritance:
 
 dreaminsg\_integrated\_model.src.simulation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
