@@ -1,0 +1,1620 @@
+ID,from,to,category,diameter,roughness,material
+W_PSC0,W_JIN0,W_JTN1,Service connector,4,140,Copper
+W_PSC1,W_JIN2,W_JTN3,Service connector,4,140,Copper
+W_PSC2,W_JIN4,W_JTN5,Service connector,4,140,Copper
+W_PSC3,W_JIN6,W_JTN7,Service connector,4,140,Copper
+W_PSC4,W_JIN8,W_JTN9,Service connector,4,140,Copper
+W_PSC5,W_JIN10,W_JTN11,Service connector,4,140,Copper
+W_PSC6,W_JIN849,W_JTN13,Service connector,4,140,Copper
+W_PSC7,W_JIN848,W_JTN15,Service connector,4,140,Copper
+W_PSC8,W_JIN16,W_JTN17,Service connector,4,140,Copper
+W_PSC9,W_JIN853,W_JTN19,Service connector,4,140,Copper
+W_PSC10,W_JIN859,W_JTN21,Service connector,4,140,Copper
+W_PSC11,W_JIN858,W_JTN23,Service connector,4,140,Copper
+W_PSC12,W_JIN862,W_JTN25,Service connector,4,140,Copper
+W_PSC13,W_JIN864,W_JTN27,Service connector,4,140,Copper
+W_PSC14,W_JIN865,W_JTN29,Service connector,4,140,Copper
+W_PSC15,W_JIN110,W_JTN31,Service connector,0.8,150,Plastic
+W_PSC16,W_JIN110,W_JTN33,Service connector,0.8,150,Plastic
+W_PSC17,W_JIN34,W_JTN35,Service connector,0.8,150,Plastic
+W_PSC18,W_JIN34,W_JTN37,Service connector,0.8,150,Plastic
+W_PSC19,W_JIN118,W_JTN39,Service connector,0.8,150,Plastic
+W_PSC20,W_JIN118,W_JTN41,Service connector,0.8,150,Plastic
+W_PSC21,W_JIN44,W_JTN43,Service connector,0.8,150,Plastic
+W_PSC22,W_JIN44,W_JTN45,Service connector,0.8,150,Plastic
+W_PSC23,W_JVN1013,W_JTN47,Service connector,0.8,150,Plastic
+W_PSC24,W_JVN1013,W_JTN49,Service connector,0.8,150,Plastic
+W_PSC25,W_JIN52,W_JTN51,Service connector,0.8,150,Plastic
+W_PSC26,W_JIN52,W_JTN53,Service connector,0.8,150,Plastic
+W_PSC27,W_JIN74,W_JTN55,Service connector,0.8,150,Plastic
+W_PSC28,W_JIN74,W_JTN57,Service connector,0.8,150,Plastic
+W_PSC29,W_JIN58,W_JTN59,Service connector,0.8,150,Plastic
+W_PSC30,W_JIN58,W_JTN61,Service connector,0.8,150,Plastic
+W_PSC31,W_JIN44,W_JTN63,Service connector,0.8,150,Plastic
+W_PSC32,W_JIN64,W_JTN65,Service connector,0.8,150,Plastic
+W_PSC33,W_JVN1013,W_JTN67,Service connector,0.8,150,Plastic
+W_PSC34,W_JIN68,W_JTN69,Service connector,0.8,150,Plastic
+W_PSC35,W_JIN52,W_JTN71,Service connector,0.8,150,Plastic
+W_PSC36,W_JIN72,W_JTN73,Service connector,0.8,150,Plastic
+W_PSC37,W_JIN74,W_JTN75,Service connector,0.8,150,Plastic
+W_PSC38,W_JIN58,W_JTN77,Service connector,0.8,150,Plastic
+W_PSC39,W_JIN58,W_JTN79,Service connector,0.8,150,Plastic
+W_PSC40,W_JIN80,W_JTN81,Service connector,0.8,150,Plastic
+W_PSC41,W_JIN80,W_JTN83,Service connector,0.8,150,Plastic
+W_PSC42,W_JIN80,W_JTN85,Service connector,0.8,150,Plastic
+W_PSC43,W_JIN80,W_JTN87,Service connector,0.8,150,Plastic
+W_PSC44,W_JIN90,W_JTN89,Service connector,0.8,150,Plastic
+W_PSC45,W_JIN90,W_JTN91,Service connector,0.8,150,Plastic
+W_PSC46,W_JIN90,W_JTN93,Service connector,0.8,150,Plastic
+W_PSC47,W_JIN90,W_JTN95,Service connector,0.8,150,Plastic
+W_PSC48,W_JIN98,W_JTN97,Service connector,0.8,150,Plastic
+W_PSC49,W_JIN98,W_JTN99,Service connector,0.8,150,Plastic
+W_PSC50,W_JIN98,W_JTN101,Service connector,0.8,150,Plastic
+W_PSC51,W_JIN98,W_JTN103,Service connector,0.8,150,Plastic
+W_PSC52,W_JIN104,W_JTN105,Service connector,0.8,150,Plastic
+W_PSC53,W_JIN104,W_JTN107,Service connector,0.8,150,Plastic
+W_PSC54,W_JIN104,W_JTN109,Service connector,0.8,150,Plastic
+W_PSC55,W_JIN110,W_JTN111,Service connector,0.8,150,Plastic
+W_PSC56,W_JIN110,W_JTN113,Service connector,0.8,150,Plastic
+W_PSC57,W_JIN34,W_JTN115,Service connector,0.8,150,Plastic
+W_PSC58,W_JIN34,W_JTN117,Service connector,0.8,150,Plastic
+W_PSC59,W_JIN118,W_JTN119,Service connector,0.8,150,Plastic
+W_PSC60,W_JIN120,W_JTN121,Service connector,0.8,150,Plastic
+W_PSC61,W_JIN122,W_JTN123,Service connector,0.8,150,Plastic
+W_PSC62,W_JIN961,W_JTN125,Service connector,0.8,150,Plastic
+W_PSC63,W_JVN962,W_JTN127,Service connector,0.8,140,Copper
+W_PSC64,W_JVN962,W_JTN129,Service connector,0.8,150,Plastic
+W_PSC65,W_JVN962,W_JTN131,Service connector,0.8,150,Plastic
+W_PSC66,W_JVN962,W_JTN133,Service connector,0.8,140,Copper
+W_PSC67,W_JIN964,W_JTN135,Service connector,0.8,140,Copper
+W_PSC68,W_JIN964,W_JTN137,Service connector,0.8,150,Plastic
+W_PSC69,W_JIN964,W_JTN139,Service connector,0.8,150,Plastic
+W_PSC70,W_JIN140,W_JTN141,Service connector,0.8,150,Plastic
+W_PSC71,W_JIN140,W_JTN143,Service connector,0.8,140,Copper
+W_PSC72,W_JIN140,W_JTN145,Service connector,0.8,150,Plastic
+W_PSC73,W_JIN150,W_JTN147,Service connector,0.8,140,Copper
+W_PSC74,W_JIN150,W_JTN149,Service connector,0.8,140,Copper
+W_PSC75,W_JIN150,W_JTN151,Service connector,0.8,140,Copper
+W_PSC76,W_JIN152,W_JTN153,Service connector,0.8,140,Copper
+W_PSC77,W_JIN152,W_JTN155,Service connector,0.8,150,Plastic
+W_PSC78,W_JIN152,W_JTN157,Service connector,0.8,150,Plastic
+W_PSC79,W_JIN150,W_JTN159,Service connector,0.8,150,Plastic
+W_PSC80,W_JIN152,W_JTN161,Service connector,0.8,150,Plastic
+W_PSC81,W_JIN162,W_JTN163,Service connector,0.8,140,Copper
+W_PSC82,W_JIN164,W_JTN165,Service connector,0.8,150,Plastic
+W_PSC83,W_JIN162,W_JTN166,Service connector,0.8,150,Plastic
+W_PSC84,W_JIN162,W_JTN167,Service connector,0.8,150,Plastic
+W_PSC85,W_JIN974,W_JTN169,Service connector,0.8,150,Plastic
+W_PSC86,W_JIN974,W_JTN170,Service connector,0.8,150,Plastic
+W_PSC87,W_JIN974,W_JTN171,Service connector,0.8,150,Plastic
+W_PSC88,W_JIN172,W_JTN173,Service connector,0.8,150,Plastic
+W_PSC89,W_JIN174,W_JTN175,Service connector,0.8,150,Plastic
+W_PSC90,W_JIN176,W_JTN177,Service connector,0.8,150,Plastic
+W_PSC91,W_JIN178,W_JTN179,Service connector,0.8,150,Plastic
+W_PSC92,W_JIN978,W_JTN181,Service connector,0.8,150,Plastic
+W_PSC93,W_JIN978,W_JTN182,Service connector,0.8,150,Plastic
+W_PSC94,W_JIN978,W_JTN183,Service connector,0.8,150,Plastic
+W_PSC95,W_JIN978,W_JTN184,Service connector,0.8,150,Plastic
+W_PSC96,W_JIN981,W_JTN186,Service connector,0.8,150,Plastic
+W_PSC97,W_JIN981,W_JTN187,Service connector,0.8,150,Plastic
+W_PSC98,W_JIN981,W_JTN188,Service connector,0.8,150,Plastic
+W_PSC99,W_JIN981,W_JTN189,Service connector,0.8,150,Plastic
+W_PSC100,W_JIN934,W_JTN191,Service connector,0.8,150,Plastic
+W_PSC101,W_JIN934,W_JTN193,Service connector,0.8,150,Plastic
+W_PSC102,W_JVN1323,W_JTN195,Service connector,0.8,150,Plastic
+W_PSC103,W_JIN1325,W_JTN197,Service connector,0.8,150,Plastic
+W_PSC104,W_JIN1325,W_JTN199,Service connector,0.8,150,Plastic
+W_PSC105,W_JIN935,W_JTN201,Service connector,0.8,150,Plastic
+W_PSC106,W_JIN938,W_JTN203,Service connector,0.8,140,Copper
+W_PSC107,W_JIN937,W_JTN205,Service connector,0.8,150,Plastic
+W_PSC108,W_JIN938,W_JTN207,Service connector,0.8,150,Plastic
+W_PSC109,W_JIN938,W_JTN209,Service connector,0.8,140,Copper
+W_PSC110,W_JIN942,W_JTN211,Service connector,0.8,140,Copper
+W_PSC111,W_JIN942,W_JTN213,Service connector,0.8,140,Copper
+W_PSC112,W_JIN942,W_JTN215,Service connector,0.8,150,Plastic
+W_PSC113,W_JIN939,W_JTN217,Service connector,0.8,140,Copper
+W_PSC114,W_JIN945,W_JTN219,Service connector,0.8,140,Copper
+W_PSC115,W_JIN945,W_JTN221,Service connector,0.8,150,Plastic
+W_PSC116,W_JIN945,W_JTN222,Service connector,0.8,140,Copper
+W_PSC117,W_JIN944,W_JTN224,Service connector,0.8,150,Plastic
+W_PSC118,W_JIN949,W_JTN226,Service connector,0.8,140,Copper
+W_PSC119,W_JIN949,W_JTN227,Service connector,0.8,150,Plastic
+W_PSC120,W_JIN949,W_JTN228,Service connector,0.8,140,Copper
+W_PSC121,W_JIN948,W_JTN230,Service connector,0.8,150,Plastic
+W_PSC122,W_JIN953,W_JTN232,Service connector,0.8,150,Plastic
+W_PSC123,W_JIN953,W_JTN234,Service connector,0.8,150,Plastic
+W_PSC124,W_JIN953,W_JTN236,Service connector,0.8,150,Plastic
+W_PSC125,W_JIN954,W_JTN238,Service connector,0.8,140,Copper
+W_PSC126,W_JIN954,W_JTN239,Service connector,0.8,140,Copper
+W_PSC127,W_JIN954,W_JTN240,Service connector,0.8,150,Plastic
+W_PSC128,W_JIN957,W_JTN242,Service connector,0.8,150,Plastic
+W_PSC129,W_JIN957,W_JTN243,Service connector,0.8,140,Copper
+W_PSC130,W_JIN957,W_JTN244,Service connector,0.8,150,Plastic
+W_PSC131,W_JTN245,W_JIN246,Service connector,0.8,140,Copper
+W_PSC132,W_JIN246,W_JTN247,Service connector,0.8,140,Copper
+W_PSC133,W_JIN246,W_JTN248,Service connector,0.8,150,Plastic
+W_PSC134,W_JIN246,W_JTN249,Service connector,0.8,140,Copper
+W_PSC135,W_JIN250,W_JTN251,Service connector,0.8,150,Plastic
+W_PSC136,W_JIN250,W_JTN252,Service connector,0.8,150,Plastic
+W_PSC137,W_JIN250,W_JTN253,Service connector,0.8,150,Plastic
+W_PSC138,W_JIN250,W_JTN254,Service connector,0.8,140,Copper
+W_PSC139,W_JIN255,W_JTN256,Service connector,0.8,140,Copper
+W_PSC140,W_JIN255,W_JTN257,Service connector,0.8,140,Copper
+W_PSC141,W_JIN255,W_JTN258,Service connector,0.8,150,Plastic
+W_PSC142,W_JIN255,W_JTN259,Service connector,0.8,150,Plastic
+W_PSC143,W_JIN986,W_JTN261,Service connector,0.8,140,Copper
+W_PSC144,W_JIN986,W_JTN262,Service connector,0.8,140,Copper
+W_PSC145,W_JIN986,W_JTN263,Service connector,0.8,150,Plastic
+W_PSC146,W_JIN986,W_JTN264,Service connector,0.8,140,Copper
+W_PSC147,W_JIN265,W_JTN266,Service connector,0.8,140,Copper
+W_PSC148,W_JIN265,W_JTN267,Service connector,0.8,140,Copper
+W_PSC149,W_JIN265,W_JTN268,Service connector,0.8,150,Plastic
+W_PSC150,W_JIN265,W_JTN269,Service connector,0.8,150,Plastic
+W_PSC151,W_JIN985,W_JTN271,Service connector,0.8,140,Copper
+W_PSC152,W_JIN985,W_JTN272,Service connector,0.8,140,Copper
+W_PSC153,W_JIN985,W_JTN273,Service connector,0.8,150,Plastic
+W_PSC154,W_JIN985,W_JTN274,Service connector,0.8,140,Copper
+W_PSC155,W_JIN1341,W_JTN276,Service connector,0.8,150,Plastic
+W_PSC156,W_JIN1341,W_JTN278,Service connector,0.8,150,Plastic
+W_PSC157,W_JIN1341,W_JTN280,Service connector,0.8,150,Plastic
+W_PSC158,W_JIN1342,W_JTN282,Service connector,0.8,150,Plastic
+W_PSC159,W_JIN1342,W_JTN284,Service connector,0.8,150,Plastic
+W_PSC160,W_JIN1342,W_JTN286,Service connector,0.8,150,Plastic
+W_PSC161,W_JIN961,W_JTN288,Service connector,0.8,150,Plastic
+W_PSC162,W_JIN1330,W_JTN290,Service connector,0.8,140,Copper
+W_PSC163,W_JIN1330,W_JTN291,Service connector,0.8,150,Plastic
+W_PSC164,W_JIN1331,W_JTN293,Service connector,0.8,150,Plastic
+W_PSC165,W_JIN1331,W_JTN294,Service connector,0.8,150,Plastic
+W_PSC166,W_JIN1331,W_JTN295,Service connector,0.8,150,Plastic
+W_PSC167,W_JIN1333,W_JTN297,Service connector,0.8,150,Plastic
+W_PSC168,W_JIN1332,W_JTN299,Service connector,0.8,150,Plastic
+W_PSC169,W_JIN1332,W_JTN300,Service connector,0.8,150,Plastic
+W_PSC170,W_JIN1352,W_JTN302,Service connector,0.8,140,Copper
+W_PSC171,W_JIN1352,W_JTN303,Service connector,0.8,150,Plastic
+W_PSC172,W_JIN1352,W_JTN304,Service connector,0.8,150,Plastic
+W_PSC173,W_JIN1352,W_JTN305,Service connector,0.8,150,Plastic
+W_PSC174,W_JIN1349,W_JTN307,Service connector,0.8,150,Plastic
+W_PSC175,W_JIN1349,W_JTN308,Service connector,0.8,150,Plastic
+W_PSC176,W_JIN1349,W_JTN309,Service connector,0.8,150,Plastic
+W_PSC177,W_JIN1349,W_JTN310,Service connector,0.8,140,Copper
+W_PSC178,W_JIN311,W_JTN312,Service connector,0.8,150,Plastic
+W_PSC179,W_JIN311,W_JTN313,Service connector,0.8,150,Plastic
+W_PSC180,W_JIN311,W_JTN314,Service connector,0.8,150,Plastic
+W_PSC181,W_JIN311,W_JTN315,Service connector,0.8,150,Plastic
+W_PSC182,W_JIN316,W_JTN317,Service connector,0.8,150,Plastic
+W_PSC183,W_JIN316,W_JTN318,Service connector,0.8,150,Plastic
+W_PSC184,W_JIN316,W_JTN319,Service connector,0.8,150,Plastic
+W_PSC185,W_JIN316,W_JTN320,Service connector,0.8,150,Plastic
+W_PSC186,W_JIN321,W_JTN322,Service connector,0.8,150,Plastic
+W_PSC187,W_JIN321,W_JTN323,Service connector,0.8,150,Plastic
+W_PSC188,W_JIN321,W_JTN324,Service connector,0.8,150,Plastic
+W_PSC189,W_JIN321,W_JTN325,Service connector,0.8,150,Plastic
+W_PSC190,W_JIN326,W_JTN327,Service connector,0.8,150,Plastic
+W_PSC191,W_JIN326,W_JTN328,Service connector,0.8,150,Plastic
+W_PSC192,W_JIN326,W_JTN329,Service connector,0.8,150,Plastic
+W_PSC193,W_JIN326,W_JTN330,Service connector,0.8,150,Plastic
+W_PSC194,W_JIN331,W_JTN332,Service connector,0.8,150,Plastic
+W_PSC195,W_JIN331,W_JTN333,Service connector,0.8,150,Plastic
+W_PSC196,W_JIN331,W_JTN334,Service connector,0.8,150,Plastic
+W_PSC197,W_JIN331,W_JTN335,Service connector,0.8,150,Plastic
+W_PSC198,W_JIN336,W_JTN337,Service connector,0.8,150,Plastic
+W_PSC199,W_JIN336,W_JTN338,Service connector,0.8,150,Plastic
+W_PSC200,W_JIN336,W_JTN339,Service connector,0.8,150,Plastic
+W_PSC201,W_JIN336,W_JTN340,Service connector,0.8,150,Plastic
+W_PSC202,W_JIN341,W_JTN342,Service connector,0.8,150,Plastic
+W_PSC203,W_JIN341,W_JTN343,Service connector,0.8,150,Plastic
+W_PSC204,W_JIN341,W_JTN344,Service connector,0.8,150,Plastic
+W_PSC205,W_JIN341,W_JTN345,Service connector,0.8,150,Plastic
+W_PSC206,W_JIN346,W_JTN347,Service connector,0.8,150,Plastic
+W_PSC207,W_JIN346,W_JTN348,Service connector,0.8,150,Plastic
+W_PSC208,W_JIN346,W_JTN349,Service connector,0.8,150,Plastic
+W_PSC209,W_JIN350,W_JTN351,Service connector,0.8,150,Plastic
+W_PSC210,W_JIN352,W_JTN353,Service connector,0.8,150,Plastic
+W_PSC211,W_JIN352,W_JTN354,Service connector,0.8,150,Plastic
+W_PSC212,W_JIN355,W_JTN356,Service connector,0.8,150,Plastic
+W_PSC213,W_JIN355,W_JTN357,Service connector,0.8,150,Plastic
+W_PSC214,W_JIN358,W_JTN359,Service connector,0.8,150,Plastic
+W_PSC215,W_JIN358,W_JTN360,Service connector,0.8,150,Plastic
+W_PSC216,W_JIN361,W_JTN362,Service connector,0.8,150,Plastic
+W_PSC217,W_JIN361,W_JTN363,Service connector,0.8,150,Plastic
+W_PSC218,W_JIN364,W_JTN365,Service connector,0.8,150,Plastic
+W_PSC219,W_JIN364,W_JTN366,Service connector,0.8,150,Plastic
+W_PSC220,W_JIN367,W_JTN368,Service connector,0.8,150,Plastic
+W_PSC221,W_JIN367,W_JTN369,Service connector,0.8,150,Plastic
+W_PSC222,W_JIN370,W_JTN371,Service connector,0.8,150,Plastic
+W_PSC223,W_JIN370,W_JTN372,Service connector,0.8,150,Plastic
+W_PSC224,W_JIN373,W_JTN374,Service connector,0.8,150,Plastic
+W_PSC225,W_JIN373,W_JTN375,Service connector,0.8,150,Plastic
+W_PSC227,W_JIN1396,W_JTN379,Service connector,2,150,Plastic
+W_PSC228,W_JIN1394,W_JTN381,Service connector,2,150,Plastic
+W_PSC229,W_JIN1392,W_JTN383,Service connector,2,150,Plastic
+W_PSC230,W_JIN1390,W_JTN385,Service connector,2,150,Plastic
+W_PSC231,W_JIN1395,W_JTN387,Service connector,2,150,Plastic
+W_PSC232,W_JIN1393,W_JTN389,Service connector,2,150,Plastic
+W_PSC233,W_JIN1391,W_JTN391,Service connector,2,150,Plastic
+W_PSC234,W_JIN1389,W_JTN393,Service connector,2,150,Plastic
+W_PSC235,W_JIN1397,W_JTN395,Service connector,2,150,Plastic
+W_PSC236,W_JIN1399,W_JTN397,Service connector,2,150,Plastic
+W_PSC237,W_JIN1401,W_JTN399,Service connector,2,150,Plastic
+W_PSC238,W_JIN1403,W_JTN401,Service connector,2,150,Plastic
+W_PSC239,W_JIN1398,W_JTN403,Service connector,2,150,Plastic
+W_PSC240,W_JIN1400,W_JTN405,Service connector,2,150,Plastic
+W_PSC241,W_JIN1402,W_JTN407,Service connector,2,150,Plastic
+W_PSC242,W_JIN1404,W_JTN409,Service connector,2,150,Plastic
+W_PSC243,W_JIN412,W_JTN411,Service connector,0.8,150,Plastic
+W_PSC244,W_JIN412,W_JTN413,Service connector,0.8,150,Plastic
+W_PSC245,W_JIN414,W_JTN415,Service connector,0.8,150,Plastic
+W_PSC246,W_JIN414,W_JTN416,Service connector,0.8,150,Plastic
+W_PSC247,W_JIN417,W_JTN418,Service connector,0.8,150,Plastic
+W_PSC248,W_JIN417,W_JTN420,Service connector,0.8,150,Plastic
+W_PSC249,W_JIN423,W_JTN422,Service connector,0.8,150,Plastic
+W_PSC250,W_JIN423,W_JTN424,Service connector,0.8,150,Plastic
+W_PSC251,W_JIN427,W_JTN426,Service connector,0.8,150,Plastic
+W_PSC252,W_JIN427,W_JTN428,Service connector,0.8,150,Plastic
+W_PSC253,W_JIN431,W_JTN430,Service connector,0.8,150,Plastic
+W_PSC254,W_JIN431,W_JTN432,Service connector,0.8,150,Plastic
+W_PSC255,W_JIN435,W_JTN434,Service connector,0.8,150,Plastic
+W_PSC256,W_JIN435,W_JTN436,Service connector,0.8,150,Plastic
+W_PSC257,W_JIN1430,W_JTN438,Service connector,0.8,150,Plastic
+W_PSC258,W_JIN1430,W_JTN440,Service connector,0.8,150,Plastic
+W_PSC259,W_JIN441,W_JTN442,Service connector,0.8,150,Plastic
+W_PSC260,W_JIN441,W_JTN444,Service connector,0.8,150,Plastic
+W_PSC261,W_JIN447,W_JTN446,Service connector,0.8,150,Plastic
+W_PSC262,W_JIN447,W_JTN448,Service connector,0.8,150,Plastic
+W_PSC263,W_JIN449,W_JTN450,Service connector,0.8,150,Plastic
+W_PSC264,W_JIN449,W_JTN452,Service connector,0.8,150,Plastic
+W_PSC265,W_JIN455,W_JTN454,Service connector,0.8,150,Plastic
+W_PSC266,W_JIN455,W_JTN456,Service connector,0.8,150,Plastic
+W_PSC267,W_JIN457,W_JTN458,Service connector,3,150,Plastic
+W_PSC268,W_JIN457,W_JTN459,Service connector,2,150,Plastic
+W_PSC269,W_JIN457,W_JTN460,Service connector,2,150,Plastic
+W_PSC270,W_JIN461,W_JTN462,Service connector,1,140,Copper
+W_PSC271,W_JIN463,W_JTN464,Service connector,1,140,Copper
+W_PSC272,W_JIN917,W_JTN466,Service connector,2,140,Copper
+W_PSC273,W_JIN467,W_JTN468,Service connector,2,140,Copper
+W_PSC274,W_JIN917,W_JTN469,Service connector,2,140,Copper
+W_PSC275,W_JIN467,W_JTN470,Service connector,2,140,Copper
+W_PSC276,W_JIN915,W_JTN472,Service connector,2,140,Copper
+W_PSC277,W_JIN914,W_JTN474,Service connector,2,140,Copper
+W_PSC278,W_JIN911,W_JTN476,Service connector,2,140,Copper
+W_PSC279,W_JIN915,W_JTN478,Service connector,2,140,Copper
+W_PSC280,W_JIN914,W_JTN479,Service connector,2,140,Copper
+W_PSC281,W_JIN911,W_JTN480,Service connector,2,140,Copper
+W_PSC282,W_JIN908,W_JTN482,Service connector,2,140,Copper
+W_PSC283,W_JVN907,W_JTN484,Service connector,2,140,Copper
+W_PSC284,W_JIN485,W_JTN486,Service connector,2,140,Copper
+W_PSC285,W_JIN832,W_JTN488,Service connector,2,140,Copper
+W_PSC286,W_JIN489,W_JTN490,Service connector,2,140,Copper
+W_PSC287,W_JVN907,W_JTN492,Service connector,2,140,Copper
+W_PSC288,W_JIN832,W_JTN494,Service connector,2,140,Copper
+W_PSC289,W_JIN896,W_JTN496,Service connector,2,140,Copper
+W_PSC290,W_JIN897,W_JTN498,Service connector,2,140,Copper
+W_PSC291,W_JIN896,W_JTN499,Service connector,2,140,Copper
+W_PSC292,W_JIN898,W_JTN501,Service connector,2,140,Copper
+W_PSC293,W_JIN502,W_JTN503,Service connector,2,140,Copper
+W_PSC294,W_JIN504,W_JTN505,Service connector,2,140,Copper
+W_PSC295,W_JIN904,W_JTN507,Service connector,2,140,Copper
+W_PSC296,W_JIN508,W_JTN509,Service connector,2,140,Copper
+W_PSC297,W_JIN510,W_JTN511,Service connector,2,140,Copper
+W_PSC298,W_JIN512,W_JTN513,Service connector,2,140,Copper
+W_PSC299,W_JIN512,W_JTN514,Service connector,2,140,Copper
+W_PSC300,W_JIN824,W_JTN516,Service connector,2,140,Copper
+W_PSC301,W_JIN831,W_JTN518,Service connector,2,140,Copper
+W_PSC302,W_JIN877,W_JTN520,Service connector,2,140,Copper
+W_PSC303,W_JIN878,W_JTN522,Service connector,2,140,Copper
+W_PSC304,W_JIN881,W_JTN524,Service connector,2,140,Copper
+W_PSC305,W_JIN883,W_JTN526,Service connector,2,140,Copper
+W_PSC306,W_JIN828,W_JTN528,Service connector,2,140,Copper
+W_PSC307,W_JIN825,W_JTN530,Service connector,2,140,Copper
+W_PSC308,W_JIN875,W_JTN532,Service connector,2,140,Copper
+W_PSC309,W_JIN872,W_JTN534,Service connector,2,140,Copper
+W_PSC310,W_JIN890,W_JTN536,Service connector,2,140,Copper
+W_PSC311,W_JIN890,W_JTN537,Service connector,2,140,Copper
+W_PSC312,W_JIN891,W_JTN539,Service connector,2,140,Copper
+W_PSC313,W_JIN891,W_JTN540,Service connector,2,140,Copper
+W_PSC314,W_JIN1050,W_JTN542,Service connector,0.8,140,Copper
+W_PSC315,W_JIN1050,W_JTN543,Service connector,0.8,140,Copper
+W_PSC316,W_JIN1048,W_JTN545,Service connector,0.8,140,Copper
+W_PSC317,W_JIN1048,W_JTN547,Service connector,0.8,140,Copper
+W_PSC318,W_JIN1049,W_JTN549,Service connector,0.8,140,Copper
+W_PSC319,W_JIN1047,W_JTN551,Service connector,0.8,140,Copper
+W_PSC320,W_JIN1047,W_JTN552,Service connector,0.8,140,Copper
+W_PSC321,W_JIN920,W_JTN554,Service connector,0.8,140,Copper
+W_PSC322,W_JIN920,W_JTN555,Service connector,0.8,140,Copper
+W_PSC323,W_JIN1036,W_JTN557,Service connector,0.8,140,Copper
+W_PSC324,W_JIN1038,W_JTN559,Service connector,0.8,140,Copper
+W_PSC325,W_JIN893,W_JTN561,Service connector,0.8,140,Copper
+W_PSC326,W_JIN1036,W_JTN562,Service connector,0.8,140,Copper
+W_PSC327,W_JIN1037,W_JTN564,Service connector,0.8,140,Copper
+W_PSC328,W_JIN1038,W_JTN565,Service connector,0.8,140,Copper
+W_PSC329,W_JIN893,W_JTN566,Service connector,0.8,140,Copper
+W_PSC330,W_JIN892,W_JTN568,Service connector,0.8,140,Copper
+W_PSC331,W_JIN892,W_JTN569,Service connector,0.8,140,Copper
+W_PSC332,W_JIN1029,W_JTN571,Service connector,0.8,140,Copper
+W_PSC333,W_JIN1028,W_JTN573,Service connector,0.8,140,Copper
+W_PSC334,W_JIN1029,W_JTN575,Service connector,0.8,140,Copper
+W_PSC335,W_JIN1123,W_JTN577,Service connector,0.8,140,Copper
+W_PSC336,W_JIN1122,W_JTN579,Service connector,0.8,140,Copper
+W_PSC337,W_JIN1121,W_JTN581,Service connector,0.8,140,Copper
+W_PSC338,W_JIN1120,W_JTN583,Service connector,0.8,140,Copper
+W_PSC339,W_JIN1123,W_JTN585,Service connector,0.8,140,Copper
+W_PSC340,W_JIN1121,W_JTN587,Service connector,0.8,140,Copper
+W_PSC341,W_JIN1120,W_JTN589,Service connector,0.8,140,Copper
+W_PSC342,W_JIN1114,W_JTN591,Service connector,0.8,140,Copper
+W_PSC343,W_JIN1115,W_JTN593,Service connector,0.8,140,Copper
+W_PSC344,W_JIN1116,W_JTN595,Service connector,0.8,140,Copper
+W_PSC345,W_JIN1114,W_JTN596,Service connector,0.8,140,Copper
+W_PSC346,W_JIN1115,W_JTN598,Service connector,0.8,140,Copper
+W_PSC347,W_JIN1116,W_JTN599,Service connector,0.8,140,Copper
+W_PSC348,W_JIN1102,W_JTN601,Service connector,0.8,140,Copper
+W_PSC349,W_JIN1105,W_JTN603,Service connector,0.8,140,Copper
+W_PSC350,W_JIN1106,W_JTN605,Service connector,0.8,140,Copper
+W_PSC351,W_JIN1106,W_JTN607,Service connector,0.8,140,Copper
+W_PSC352,W_JIN1105,W_JTN609,Service connector,0.8,140,Copper
+W_PSC353,W_JIN1102,W_JTN610,Service connector,0.8,140,Copper
+W_PSC354,W_JIN1084,W_JTN612,Service connector,0.8,140,Copper
+W_PSC355,W_JIN1086,W_JTN614,Service connector,0.8,140,Copper
+W_PSC356,W_JIN1090,W_JTN616,Service connector,0.8,140,Copper
+W_PSC357,W_JIN1094,W_JTN618,Service connector,0.8,140,Copper
+W_PSC358,W_JIN1069,W_JTN620,Service connector,2,140,Copper
+W_PSC359,W_JIN1073,W_JTN622,Service connector,2,140,Copper
+W_PSC360,W_JIN1076,W_JTN624,Service connector,2,140,Copper
+W_PSC361,W_JIN1251,W_JTN626,Service connector,2,140,Copper
+W_PSC362,W_JVN1131,W_JTN628,Service connector,2,140,Copper
+W_PSC363,W_JIN1289,W_JTN630,Service connector,2,140,Copper
+W_PSC364,W_JIN1313,W_JTN632,Service connector,2,140,Copper
+W_PSC365,W_JIN1312,W_JTN634,Service connector,2,140,Copper
+W_PSC366,W_JIN1309,W_JTN636,Service connector,2,140,Copper
+W_PSC367,W_JIN1303,W_JTN638,Service connector,2,140,Copper
+W_PSC368,W_JVN1301,W_JTN640,Service connector,2,140,Copper
+W_PSC369,W_JIN1296,W_JTN642,Service connector,2,140,Copper
+W_PSC370,W_JIN1294,W_JTN644,Service connector,2,140,Copper
+W_PSC371,W_JIN1297,W_JTN646,Service connector,2,140,Copper
+W_PSC372,W_JIN1295,W_JTN648,Service connector,2,140,Copper
+W_PSC373,W_JIN1291,W_JTN650,Service connector,2,140,Copper
+W_PSC374,W_JIN1290,W_JTN652,Service connector,2,140,Copper
+W_PSC375,W_JIN1288,W_JTN654,Service connector,2,140,Copper
+W_PSC376,W_JIN1285,W_JTN656,Service connector,2,140,Copper
+W_PSC377,W_JIN1284,W_JTN658,Service connector,2,140,Copper
+W_PSC378,W_JVN659,W_JTN660,Service connector,2,140,Copper
+W_PSC379,W_JIN1265,W_JTN662,Service connector,2,140,Copper
+W_PSC380,W_JIN1261,W_JTN664,Service connector,2,140,Copper
+W_PSC381,W_JVN1259,W_JTN666,Service connector,2,140,Copper
+W_PSC382,W_JIN1257,W_JTN668,Service connector,2,140,Copper
+W_PSC383,W_JIN1256,W_JTN670,Service connector,2,140,Copper
+W_PSC384,W_JIN1253,W_JTN672,Service connector,2,140,Copper
+W_PSC385,W_JIN1252,W_JTN674,Service connector,2,140,Copper
+W_PSC386,W_JIN1127,W_JTN676,Service connector,2,140,Copper
+W_PSC387,W_JIN1081,W_JTN678,Service connector,2,140,Copper
+W_PSC388,W_JIN1256,W_JTN679,Service connector,2,140,Copper
+W_PSC389,W_JIN1260,W_JTN681,Service connector,2,140,Copper
+W_PSC390,W_JIN1262,W_JTN683,Service connector,2,140,Copper
+W_PSC391,W_JIN1179,W_JTN685,Service connector,2,140,Copper
+W_PSC392,W_JIN1179,W_JTN687,Service connector,2,140,Copper
+W_PSC393,W_JIN1176,W_JTN689,Service connector,0.8,140,Copper
+W_PSC394,W_JIN1173,W_JTN691,Service connector,0.8,140,Copper
+W_PSC395,W_JIN1172,W_JTN693,Service connector,0.8,140,Copper
+W_PSC396,W_JIN1171,W_JTN695,Service connector,0.8,140,Copper
+W_PSC397,W_JIN1184,W_JTN697,Service connector,0.8,140,Copper
+W_PSC398,W_JIN1187,W_JTN699,Service connector,0.8,140,Copper
+W_PSC399,W_JIN1188,W_JTN701,Service connector,0.8,140,Copper
+W_PSC400,W_JIN1189,W_JTN703,Service connector,0.8,140,Copper
+W_PSC401,W_JIN1193,W_JTN705,Service connector,0.8,140,Copper
+W_PSC402,W_JIN1194,W_JTN707,Service connector,0.8,140,Copper
+W_PSC403,W_JIN1195,W_JTN709,Service connector,0.8,140,Copper
+W_PSC404,W_JIN1196,W_JTN711,Service connector,0.8,140,Copper
+W_PSC405,W_JIN1176,W_JTN713,Service connector,0.8,140,Copper
+W_PSC406,W_JIN1172,W_JTN715,Service connector,0.8,140,Copper
+W_PSC407,W_JIN1200,W_JTN717,Service connector,0.8,140,Copper
+W_PSC408,W_JIN1201,W_JTN719,Service connector,0.8,140,Copper
+W_PSC409,W_JIN1204,W_JTN721,Service connector,0.8,140,Copper
+W_PSC410,W_JIN1205,W_JTN723,Service connector,0.8,140,Copper
+W_PSC411,W_JIN1209,W_JTN725,Service connector,0.8,140,Copper
+W_PSC412,W_JIN726,W_JTN727,Service connector,0.8,140,Copper
+W_PSC413,W_JIN1210,W_JTN729,Service connector,0.8,140,Copper
+W_PSC414,W_JIN1214,W_JTN731,Service connector,0.8,140,Copper
+W_PSC415,W_JIN1217,W_JTN733,Service connector,0.8,140,Copper
+W_PSC416,W_JIN1218,W_JTN735,Service connector,0.8,140,Copper
+W_PSC417,W_JIN1221,W_JTN737,Service connector,0.8,140,Copper
+W_PSC418,W_JIN1224,W_JTN739,Service connector,0.8,140,Copper
+W_PSC419,W_JIN1225,W_JTN741,Service connector,0.8,140,Copper
+W_PSC420,W_JIN1228,W_JTN743,Service connector,0.8,140,Copper
+W_PSC421,W_JIN1229,W_JTN745,Service connector,0.8,140,Copper
+W_PSC422,W_JIN1159,W_JTN747,Service connector,0.8,140,Copper
+W_PSC423,W_JIN1162,W_JTN749,Service connector,0.8,140,Copper
+W_PSC424,W_JIN1163,W_JTN751,Service connector,0.8,140,Copper
+W_PSC425,W_JIN1166,W_JTN753,Service connector,0.8,140,Copper
+W_PSC426,W_JIN1109,W_JTN755,Service connector,0.8,140,Copper
+W_PSC427,W_JIN1109,W_JTN757,Service connector,0.8,140,Copper
+W_PSC428,W_JIN1151,W_JTN759,Service connector,0.8,140,Copper
+W_PSC429,W_JIN1154,W_JTN761,Service connector,0.8,140,Copper
+W_PSC430,W_JIN1154,W_JTN763,Service connector,0.8,140,Copper
+W_PSC431,W_JIN1155,W_JTN765,Service connector,0.8,140,Copper
+W_PSC432,W_JIN1149,W_JTN767,Service connector,0.8,140,Copper
+W_PSC433,W_JIN1147,W_JTN769,Service connector,0.8,140,Copper
+W_PSC434,W_JIN1146,W_JTN771,Service connector,0.8,140,Copper
+W_PSC435,W_JIN1143,W_JTN773,Service connector,0.8,140,Copper
+W_PSC436,W_JIN1143,W_JTN775,Service connector,0.8,140,Copper
+W_PSC437,W_JIN1148,W_JTN777,Service connector,0.8,140,Copper
+W_PSC438,W_JIN1142,W_JTN779,Service connector,0.8,140,Copper
+W_PSC439,W_JIN1273,W_JTN781,Service connector,0.8,140,Copper
+W_PSC440,W_JIN1277,W_JTN783,Service connector,0.8,140,Copper
+W_PSC441,W_JIN1279,W_JTN785,Service connector,0.8,140,Copper
+W_PSC442,W_JIN1278,W_JTN787,Service connector,0.8,140,Copper
+W_PSC443,W_JIN1274,W_JTN789,Service connector,0.8,140,Copper
+W_PSC444,W_JIN1268,W_JTN791,Service connector,0.8,140,Copper
+W_PSC445,W_JIN1272,W_JTN793,Service connector,0.8,140,Copper
+W_PSC446,W_JIN1267,W_JTN795,Service connector,0.8,140,Copper
+W_PSC447,W_JIN1269,W_JTN797,Service connector,0.8,140,Copper
+W_PSC448,W_JIN961,W_JTN799,Service connector,0.8,140,Copper
+W_PSC450,W_JIN1330,W_JTN801,Service connector,0.8,140,Plastic
+W_PSC451,W_JIN1073,W_JTN802,Service connector,0.8,140,Copper
+W_PSC452,W_JIN1070,W_JTN804,Service connector,0.8,140,Copper
+W_PSC453,W_JIN1069,W_JTN805,Service connector,0.8,140,Copper
+W_PSC454,W_JIN1077,W_JTN807,Service connector,0.8,140,Copper
+W_PSC455,W_JIN1084,W_JTN808,Service connector,0.8,140,Copper
+W_PSC456,W_JIN1081,W_JTN810,Service connector,0.8,140,Copper
+W_PSC457,W_JIN1098,W_JTN812,Service connector,0.8,140,Copper
+W_PSC458,W_JIN1089,W_JTN814,Service connector,2,140,Copper
+W_PSC459,W_JIN1097,W_JTN816,Service connector,2,140,Copper
+W_PMA460,W_JIN510,W_JVN817,Main pipe,4,100,cast iron
+W_PMA461,W_JVN818,W_JVN819,Main pipe,12,100,ductile iron
+W_PMA462,W_JVN820,W_JIN461,Main pipe,4,100,cast iron
+W_PMA463,W_JIN461,W_JIN1518,Main pipe,4,100,cast iron
+W_PMA465,W_JIN463,W_JVN822,Main pipe,4,100,cast iron
+W_PMA466,W_JVN823,W_JIN512,Main pipe,4,100,cast iron
+W_PMA467,W_JIN824,W_JIN825,Main pipe,2,100,cast iron
+W_PMA468,W_JIN825,W_JVN826,Main pipe,2,100,cast iron
+W_PMA469,W_JVN827,W_JIN828,Main pipe,2,100,cast iron
+W_PMA470,W_JIN828,W_JVN829,Main pipe,2,100,cast iron
+W_PMA471,W_JVN830,W_JIN831,Main pipe,2,100,cast iron
+W_PMA472,W_JIN489,W_JIN832,Main pipe,2,100,cast iron
+W_PMA473,W_JIN832,W_JVN833,Main pipe,2,100,cast iron
+W_PMA474,W_JVN834,W_JIN485,Main pipe,2,100,cast iron
+W_PMA475,W_JIN835,W_JVN836,Main pipe,8,100,asbestos cement
+W_PMA476,W_JVN837,W_JIN10,Main pipe,8,100,asbestos cement
+W_PMA477,W_JIN10,W_JIN0,Main pipe,8,100,asbestos cement
+W_PMA478,W_JIN0,W_JVN838,Main pipe,12,100,ductile iron
+W_PMA479,W_JVN839,W_JIN840,Main pipe,8,100,asbestos cement
+W_PMA480,W_JIN840,W_JIN2,Main pipe,8,100,asbestos cement
+W_PMA481,W_JIN2,W_JIN8,Main pipe,8,100,asbestos cement
+W_PMA482,W_JIN8,W_JVN841,Main pipe,8,100,asbestos cement
+W_PMA483,W_JVN842,W_JIN4,Main pipe,8,100,asbestos cement
+W_PMA484,W_JIN4,W_JIN6,Main pipe,8,100,asbestos cement
+W_PMA485,W_JIN6,W_JVN843,Main pipe,8,100,asbestos cement
+W_PMA486,W_JVN844,W_JIN845,Main pipe,8,100,asbestos cement
+W_PMA487,W_JIN845,W_JVN846,Main pipe,8,100,asbestos cement
+W_PMA488,W_JVN847,W_JIN848,Main pipe,8,100,asbestos cement
+W_PMA489,W_JIN848,W_JIN849,Main pipe,8,100,asbestos cement
+W_PMA490,W_JIN849,W_JVN850,Main pipe,8,100,asbestos cement
+W_PMA491,W_JVN851,W_JIN852,Main pipe,8,100,asbestos cement
+W_PMA492,W_JIN852,W_JIN16,Main pipe,8,100,asbestos cement
+W_PMA493,W_JIN16,W_JIN853,Main pipe,8,100,asbestos cement
+W_PMA494,W_JIN853,W_JVN854,Main pipe,8,100,asbestos cement
+W_PMA495,W_JVN855,W_JVN856,Main pipe,12,100,ductile iron
+W_PMA496,W_JVN857,W_JIN858,Main pipe,8,100,asbestos cement
+W_PMA497,W_JIN858,W_JIN859,Main pipe,8,100,asbestos cement
+W_PMA498,W_JIN859,W_JVN860,Main pipe,8,100,asbestos cement
+W_PMA499,W_JVN861,W_JIN862,Main pipe,8,100,asbestos cement
+W_PMA500,W_JIN1519,W_JIN864,Main pipe,8,100,asbestos cement
+W_PMA501,W_JIN864,W_JIN865,Main pipe,8,100,asbestos cement
+W_PMA502,W_JIN865,W_JVN866,Main pipe,8,100,asbestos cement
+W_PMA503,W_JVN867,W_JIN862,Main pipe,8,100,asbestos cement
+W_PMA504,W_JVN868,W_JIN845,Main pipe,8,100,asbestos cement
+W_PMA505,W_JIN869,W_JVN870,Main pipe,8,100,asbestos cement
+W_PMA506,W_JVN871,W_JIN872,Main pipe,12,100,ductile iron
+W_PMA507,W_JIN872,W_JVN873,Main pipe,12,100,ductile iron
+W_PMA508,W_JVN874,W_JIN875,Main pipe,8,100,asbestos cement
+W_PMA509,W_JIN876,W_JIN877,Main pipe,2,100,cast iron
+W_PMA510,W_JIN877,W_JIN878,Main pipe,2,100,cast iron
+W_PMA511,W_JIN878,W_JVN879,Main pipe,2,100,cast iron
+W_PMA512,W_JVN880,W_JIN881,Main pipe,2,100,cast iron
+W_PMA513,W_JIN881,W_JIN882,Main pipe,2,100,cast iron
+W_PMA514,W_JIN882,W_JIN883,Main pipe,2,100,cast iron
+W_PMA515,W_JIN883,W_JVN884,Main pipe,2,100,cast iron
+W_PMA516,W_JVN885,W_JIN886,Main pipe,2,100,cast iron
+W_PMA517,W_JIN886,W_JIN887,Main pipe,2,100,cast iron
+W_PMA518,W_JIN887,W_JVN888,Main pipe,2,100,cast iron
+W_PMA519,W_JVN889,W_JIN890,Main pipe,2,100,cast iron
+W_PMA520,W_JIN890,W_JIN891,Main pipe,2,100,cast iron
+W_PMA521,W_JIN891,W_JIN892,Main pipe,2,100,cast iron
+W_PMA522,W_JIN893,W_JVN894,Main pipe,2,100,cast iron
+W_PMA523,W_JVN895,W_JIN896,Main pipe,2,100,cast iron
+W_PMA524,W_JIN896,W_JIN897,Main pipe,2,100,cast iron
+W_PMA525,W_JIN897,W_JIN898,Main pipe,2,100,cast iron
+W_PMA526,W_JIN898,W_JIN901,Main pipe,2,100,cast iron
+W_PMA528,W_JIN901,W_JVN902,Main pipe,2,100,cast iron
+W_PMA529,W_JVN903,W_JIN904,Main pipe,2,100,cast iron
+W_PMA530,W_JIN904,W_JIN502,Main pipe,2,100,cast iron
+W_PMA531,W_JIN502,W_JIN504,Main pipe,2,100,cast iron
+W_PMA532,W_JIN504,W_JVN905,Main pipe,2,100,cast iron
+W_PMA533,W_JVN906,W_JIN508,Main pipe,2,100,cast iron
+W_PMA534,W_JVN907,W_JIN908,Main pipe,2,100,cast iron
+W_PMA535,W_JIN908,W_JVN909,Main pipe,2,100,cast iron
+W_PMA536,W_JIN1513,W_JIN911,Main pipe,2,100,cast iron
+W_PMA537,W_JIN911,W_JVN912,Main pipe,2,100,cast iron
+W_PMA538,W_JVN913,W_JIN914,Main pipe,2,100,cast iron
+W_PMA539,W_JIN914,W_JIN915,Main pipe,2,100,cast iron
+W_PMA540,W_JIN915,W_JIN916,Main pipe,2,100,cast iron
+W_PMA541,W_JIN916,W_JIN467,Main pipe,2,100,cast iron
+W_PMA542,W_JIN467,W_JIN917,Main pipe,2,100,cast iron
+W_PMA543,W_JIN917,W_JVN918,Main pipe,2,100,cast iron
+W_PMA544,W_JVN919,W_JIN920,Main pipe,2,100,cast iron
+W_PMA545,W_JVN921,W_JVN922,Main pipe,2,100,cast iron
+W_PMA546,W_JVN923,W_JIN916,Main pipe,2,100,cast iron
+W_PMA547,W_JIN916,W_JVN924,Main pipe,2,100,cast iron
+W_PMA548,W_JVN925,W_JVN926,Main pipe,2,100,cast iron
+W_PMA549,W_JVN927,W_JIN901,Main pipe,2,100,cast iron
+W_PMA550,W_JIN901,W_JVN928,Main pipe,2,100,cast iron
+W_PMA551,W_JVN929,W_JVN930,Main pipe,2,100,cast iron
+W_PMA552,W_JVN931,W_JIN886,Main pipe,12,100,ductile iron
+W_PMA553,W_JIN886,W_JVN932,Main pipe,2,100,cast iron
+W_PMA554,W_JVN933,W_JIN934,Main pipe,4,100,asbestos cement
+W_PMA555,W_JIN935,W_JIN936,Main pipe,4,100,asbestos cement
+W_PMA556,W_JIN936,W_JIN937,Main pipe,4,100,asbestos cement
+W_PMA557,W_JIN937,W_JIN938,Main pipe,4,100,asbestos cement
+W_PMA558,W_JIN938,W_JIN939,Main pipe,4,100,asbestos cement
+W_PMA559,W_JIN939,W_JVN940,Main pipe,4,100,asbestos cement
+W_PMA560,W_JVN941,W_JIN942,Main pipe,4,100,asbestos cement
+W_PMA561,W_JIN942,W_JIN943,Main pipe,4,100,asbestos cement
+W_PMA562,W_JIN943,W_JIN944,Main pipe,4,100,asbestos cement
+W_PMA563,W_JIN944,W_JIN945,Main pipe,4,100,asbestos cement
+W_PMA564,W_JIN945,W_JVN946,Main pipe,4,100,asbestos cement
+W_PMA565,W_JVN947,W_JIN948,Main pipe,12,100,ductile iron
+W_PMA566,W_JIN948,W_JIN949,Main pipe,4,100,asbestos cement
+W_PMA567,W_JIN949,W_JVN950,Main pipe,4,100,asbestos cement
+W_PMA568,W_JVN951,W_JIN953,Main pipe,4,100,asbestos cement
+W_PMA570,W_JIN953,W_JIN954,Main pipe,4,100,asbestos cement
+W_PMA571,W_JIN954,W_JVN955,Main pipe,4,100,asbestos cement
+W_PMA572,W_JVN956,W_JIN957,Main pipe,4,100,asbestos cement
+W_PMA573,W_JIN957,W_JIN958,Main pipe,4,100,asbestos cement
+W_PMA574,W_JIN958,W_JVN959,Main pipe,4,100,asbestos cement
+W_PMA575,W_JVN960,W_JIN961,Main pipe,4,100,asbestos cement
+W_PMA576,W_JIN961,W_JVN962,Main pipe,12,100,ductile iron
+W_PMA577,W_JVN963,W_JIN964,Main pipe,4,100,asbestos cement
+W_PMA578,W_JIN964,W_JIN140,Main pipe,4,100,asbestos cement
+W_PMA580,W_JIN140,W_JVN966,Main pipe,4,100,asbestos cement
+W_PMA581,W_JVN967,W_JIN150,Main pipe,4,100,asbestos cement
+W_PMA582,W_JIN150,W_JVN12,Main pipe,4,100,asbestos cement
+W_PMA583,W_JVN969,W_JIN152,Main pipe,4,100,asbestos cement
+W_PMA584,W_JIN152,W_JIN164,Main pipe,12,100,ductile iron
+W_PMA585,W_JIN164,W_JVN970,Main pipe,4,100,asbestos cement
+W_PMA586,W_JVN971,W_JIN162,Main pipe,4,100,asbestos cement
+W_PMA587,W_JIN162,W_JIN973,Main pipe,4,100,asbestos cement
+W_PMA589,W_JIN973,W_JIN974,Main pipe,4,100,asbestos cement
+W_PMA590,W_JIN974,W_JVN975,Main pipe,4,100,asbestos cement
+W_PMA591,W_JVN976,W_JIN978,Main pipe,4,100,asbestos cement
+W_PMA593,W_JIN978,W_JVN979,Main pipe,4,100,asbestos cement
+W_PMA594,W_JVN980,W_JIN981,Main pipe,4,100,asbestos cement
+W_PMA595,W_JIN981,W_JVN982,Main pipe,4,100,asbestos cement
+W_PMA596,W_JVN983,W_JIN869,Main pipe,4,100,asbestos cement
+W_PMA597,W_JVN984,W_JIN985,Main pipe,4,100,asbestos cement
+W_PMA598,W_JIN985,W_JIN265,Main pipe,4,100,asbestos cement
+W_PMA599,W_JIN265,W_JIN986,Main pipe,4,100,asbestos cement
+W_PMA600,W_JIN986,W_JVN987,Main pipe,4,100,asbestos cement
+W_PMA601,W_JVN988,W_JIN255,Main pipe,4,100,asbestos cement
+W_PMA602,W_JIN255,W_JVN989,Main pipe,4,100,asbestos cement
+W_PMA603,W_JVN990,W_JIN250,Main pipe,4,100,asbestos cement
+W_PMA604,W_JIN250,W_JVN991,Main pipe,4,100,asbestos cement
+W_PMA605,W_JVN992,W_JIN246,Main pipe,4,100,asbestos cement
+W_PMA606,W_JIN246,W_JVN993,Main pipe,4,100,asbestos cement
+W_PMA607,W_JVN994,W_JIN995,Main pipe,4,100,asbestos cement
+W_PMA608,W_JIN995,W_JIN1520,Main pipe,4,100,asbestos cement
+W_PMA609,W_JIN1666,W_JIN936,Main pipe,12,100,ductile iron
+W_PMA610,W_JIN1665,W_JIN172,Main pipe,4,100,asbestos cement
+W_PMA611,W_JIN172,W_JIN174,Main pipe,4,100,asbestos cement
+W_PMA612,W_JIN174,W_JVN997,Main pipe,4,100,asbestos cement
+W_PMA613,W_JVN998,W_JIN973,Main pipe,4,100,asbestos cement
+W_PMA614,W_JIN973,W_JIN178,Main pipe,4,100,asbestos cement
+W_PMA615,W_JIN178,W_JIN176,Main pipe,4,100,asbestos cement
+W_PMA616,W_JIN104,W_JVN999,Main pipe,4,100,asbestos cement
+W_PMA617,W_JVN1000,W_JIN98,Main pipe,4,100,asbestos cement
+W_PMA618,W_JIN98,W_JVN1001,Main pipe,4,100,asbestos cement
+W_PMA619,W_JVN1002,W_JIN90,Main pipe,4,100,asbestos cement
+W_PMA620,W_JIN90,W_JIN80,Main pipe,4,100,asbestos cement
+W_PMA621,W_JIN80,W_JVN1003,Main pipe,4,100,asbestos cement
+W_PMA622,W_JVN1004,W_JIN58,Main pipe,4,100,asbestos cement
+W_PMA623,W_JIN58,W_JIN1511,Main pipe,4,100,asbestos cement
+W_PMA624,W_JVN1006,W_JIN74,Main pipe,4,100,asbestos cement
+W_PMA625,W_JIN74,W_JIN72,Main pipe,4,100,asbestos cement
+W_PMA626,W_JIN72,W_JVN1009,Main pipe,4,100,asbestos cement
+W_PMA627,W_JVN1010,W_JIN52,Main pipe,4,100,asbestos cement
+W_PMA628,W_JIN52,W_JIN68,Main pipe,4,100,asbestos cement
+W_PMA629,W_JIN68,W_JVN1013,Main pipe,4,100,asbestos cement
+W_PMA630,W_JVN1014,W_JIN64,Main pipe,4,100,asbestos cement
+W_PMA631,W_JIN64,W_JIN44,Main pipe,4,100,asbestos cement
+W_PMA632,W_JIN44,W_JVN1015,Main pipe,4,100,asbestos cement
+W_PMA633,W_JVN1016,W_JIN1017,Main pipe,4,100,asbestos cement
+W_PMA634,W_JIN1017,W_JIN122,Main pipe,4,100,asbestos cement
+W_PMA635,W_JIN122,W_JIN118,Main pipe,4,100,asbestos cement
+W_PMA636,W_JIN118,W_JVN1018,Main pipe,4,100,asbestos cement
+W_PMA637,W_JVN1019,W_JIN120,Main pipe,4,100,asbestos cement
+W_PMA638,W_JIN120,W_JIN34,Main pipe,12,100,ductile iron
+W_PMA639,W_JIN34,W_JVN1020,Main pipe,4,100,asbestos cement
+W_PMA640,W_JVN1021,W_JIN110,Main pipe,4,100,asbestos cement
+W_PMA641,W_JIN110,W_JVN1022,Main pipe,4,100,asbestos cement
+W_PMA642,W_JVN1023,W_JIN1017,Main pipe,4,100,asbestos cement
+W_PMA643,W_JIN892,W_JIN1024,Main pipe,8,100,asbestos cement
+W_PMA644,W_JIN1024,W_JIN1025,Main pipe,8,100,asbestos cement
+W_PMA645,W_JIN1025,W_JVN1026,Main pipe,8,100,asbestos cement
+W_PMA646,W_JVN1027,W_JIN1028,Main pipe,8,100,asbestos cement
+W_PMA647,W_JIN1028,W_JIN1029,Main pipe,8,100,asbestos cement
+W_PMA648,W_JIN1029,W_JIN1030,Main pipe,8,100,asbestos cement
+W_PMA649,W_JIN1030,W_JIN1031,Main pipe,8,100,asbestos cement
+W_PMA650,W_JIN1032,W_JIN1033,Main pipe,8,100,asbestos cement
+W_PMA651,W_JIN1033,W_JVN1034,Main pipe,8,100,asbestos cement
+W_PMA652,W_JVN1035,W_JIN1036,Main pipe,8,100,asbestos cement
+W_PMA653,W_JIN1036,W_JIN1037,Main pipe,8,100,asbestos cement
+W_PMA654,W_JIN1037,W_JIN1038,Main pipe,8,100,asbestos cement
+W_PMA655,W_JIN1038,W_JIN1039,Main pipe,8,100,asbestos cement
+W_PMA656,W_JIN1039,W_JIN1040,Main pipe,8,100,asbestos cement
+W_PMA657,W_JIN1040,W_JVN1042,Main pipe,8,100,asbestos cement
+W_PMA658,W_JVN1043,W_JIN893,Main pipe,8,100,asbestos cement
+W_PMA659,W_JIN920,W_JIN1044,Main pipe,8,100,asbestos cement
+W_PMA660,W_JIN1044,W_JVN1045,Main pipe,8,100,asbestos cement
+W_PMA661,W_JVN1046,W_JIN1047,Main pipe,8,100,asbestos cement
+W_PMA662,W_JIN1047,W_JIN1048,Main pipe,8,100,asbestos cement
+W_PMA663,W_JIN1048,W_JIN1049,Main pipe,8,100,asbestos cement
+W_PMA664,W_JIN1049,W_JIN1050,Main pipe,8,100,asbestos cement
+W_PMA665,W_JIN1050,W_JIN1051,Main pipe,8,100,asbestos cement
+W_PMA666,W_JIN1051,W_JVN1052,Main pipe,8,100,asbestos cement
+W_PMA667,W_JVN1053,W_JIN1044,Main pipe,8,100,asbestos cement
+W_PMA668,W_JIN1044,W_JVN1054,Main pipe,8,100,asbestos cement
+W_PMA669,W_JVN1055,W_JVN1056,Main pipe,8,100,asbestos cement
+W_PMA670,W_JVN1057,W_JIN1039,Main pipe,8,100,asbestos cement
+W_PMA671,W_JIN1039,W_JVN1058,Main pipe,8,100,asbestos cement
+W_PMA672,W_JVN1059,W_JIN1025,Main pipe,8,100,asbestos cement
+W_PMA673,W_JIN1025,W_JVN1060,Main pipe,8,100,asbestos cement
+W_PMA674,W_JVN1061,W_JIN1062,Main pipe,8,100,asbestos cement
+W_PMA675,W_JVN1063,W_JIN1051,Main pipe,8,100,asbestos cement
+W_PMA676,W_JIN1051,W_JIN1033,Main pipe,8,100,asbestos cement
+W_PMA677,W_JIN1033,W_JVN1064,Main pipe,8,100,asbestos cement
+W_PMA678,W_JVN1065,W_JIN1030,Main pipe,8,100,asbestos cement
+W_PMA679,W_JIN1030,W_JIN1066,Main pipe,8,100,asbestos cement
+W_PMA680,W_JVN1067,W_JIN1068,Main pipe,4,100,asbestos cement
+W_PMA681,W_JIN1068,W_JIN1069,Main pipe,4,100,asbestos cement
+W_PMA682,W_JIN1069,W_JIN1070,Main pipe,4,100,asbestos cement
+W_PMA683,W_JIN1070,W_JVN1071,Main pipe,4,100,asbestos cement
+W_PMA684,W_JVN1072,W_JIN1073,Main pipe,4,100,asbestos cement
+W_PMA685,W_JIN1073,W_JVN1074,Main pipe,4,100,asbestos cement
+W_PMA686,W_JVN1075,W_JIN1066,Main pipe,4,100,asbestos cement
+W_PMA687,W_JIN1066,W_JIN1076,Main pipe,4,100,asbestos cement
+W_PMA688,W_JIN1076,W_JIN1077,Main pipe,4,100,asbestos cement
+W_PMA689,W_JIN1077,W_JIN1062,Main pipe,4,100,asbestos cement
+W_PMA690,W_JIN1062,W_JVN1078,Main pipe,4,100,asbestos cement
+W_PMA691,W_JVN1079,W_JIN1530,Main pipe,4,100,asbestos cement
+W_PMA692,W_JIN1080,W_JIN1081,Main pipe,4,100,asbestos cement
+W_PMA693,W_JIN1081,W_JVN1082,Main pipe,4,100,asbestos cement
+W_PMA694,W_JVN1083,W_JIN1084,Main pipe,4,100,asbestos cement
+W_PMA695,W_JIN1084,W_JIN1085,Main pipe,4,100,asbestos cement
+W_PMA696,W_JIN1085,W_JIN1086,Main pipe,4,100,asbestos cement
+W_PMA697,W_JIN1086,W_JVN1087,Main pipe,4,100,asbestos cement
+W_PMA698,W_JVN1088,W_JIN1089,Main pipe,4,100,asbestos cement
+W_PMA699,W_JIN1089,W_JIN1090,Main pipe,4,100,asbestos cement
+W_PMA700,W_JIN1090,W_JVN1091,Main pipe,4,100,asbestos cement
+W_PMA701,W_JVN1092,W_JIN1093,Main pipe,4,100,asbestos cement
+W_PMA702,W_JIN1093,W_JIN1094,Main pipe,4,100,asbestos cement
+W_PMA703,W_JIN1094,W_JVN1095,Main pipe,4,100,asbestos cement
+W_PMA704,W_JVN1096,W_JIN1097,Main pipe,4,100,asbestos cement
+W_PMA705,W_JIN1097,W_JIN1098,Main pipe,4,100,asbestos cement
+W_PMA706,W_JIN1098,W_JIN1099,Main pipe,4,100,asbestos cement
+W_PMA707,W_JIN1099,W_JVN1101,Main pipe,4,100,asbestos cement
+W_PMA708,W_JIN1031,W_JIN1102,Main pipe,4,100,asbestos cement
+W_PMA709,W_JIN1102,W_JVN1103,Main pipe,4,100,asbestos cement
+W_PMA710,W_JVN1104,W_JIN1105,Main pipe,4,100,asbestos cement
+W_PMA711,W_JIN1105,W_JIN1106,Main pipe,4,100,asbestos cement
+W_PMA712,W_JIN1106,W_JIN1107,Main pipe,4,100,asbestos cement
+W_PMA713,W_JIN1107,W_JIN1108,Main pipe,4,100,asbestos cement
+W_PMA714,W_JIN1108,W_JIN1109,Main pipe,4,100,asbestos cement
+W_PMA715,W_JIN1110,W_JIN1111,Main pipe,4,100,asbestos cement
+W_PMA716,W_JIN1111,W_JVN1112,Main pipe,4,100,asbestos cement
+W_PMA717,W_JVN1113,W_JIN1114,Main pipe,4,100,asbestos cement
+W_PMA718,W_JIN1114,W_JIN1115,Main pipe,4,100,asbestos cement
+W_PMA719,W_JIN1115,W_JIN1116,Main pipe,4,100,asbestos cement
+W_PMA720,W_JIN1116,W_JVN1117,Main pipe,4,100,asbestos cement
+W_PMA721,W_JVN1118,W_JIN1032,Main pipe,4,100,asbestos cement
+W_PMA722,W_JVN1119,W_JIN1120,Main pipe,4,100,asbestos cement
+W_PMA723,W_JIN1120,W_JIN1121,Main pipe,4,100,asbestos cement
+W_PMA724,W_JIN1121,W_JIN1122,Main pipe,4,100,asbestos cement
+W_PMA725,W_JIN1122,W_JIN1123,Main pipe,4,100,asbestos cement
+W_PMA726,W_JIN1123,W_JIN1124,Main pipe,4,100,asbestos cement
+W_PMA727,W_JIN1124,W_JVN1125,Main pipe,4,100,asbestos cement
+W_PMA728,W_JVN1126,W_JIN1080,Main pipe,4,100,asbestos cement
+W_PMA729,W_JIN1080,W_JIN1127,Main pipe,4,100,asbestos cement
+W_PMA730,W_JIN1062,W_JVN1283,Main pipe,4,100,asbestos cement
+W_PMA731,W_JVN1129,W_JVN1130,Main pipe,4,100,asbestos cement
+W_PMA732,W_JIN1066,W_JVN1131,Main pipe,4,100,asbestos cement
+W_PMA733,W_JVN1132,W_JIN1124,Main pipe,4,100,asbestos cement
+W_PMA734,W_JIN1124,W_JVN1133,Main pipe,4,100,asbestos cement
+W_PMA735,W_JVN1134,W_JVN1135,Main pipe,4,100,asbestos cement
+W_PMA736,W_JVN1136,W_JIN1111,Main pipe,4,100,asbestos cement
+W_PMA737,W_JIN1111,W_JVN1137,Main pipe,4,100,asbestos cement
+W_PMA738,W_JVN1138,W_JIN1107,Main pipe,4,100,asbestos cement
+W_PMA739,W_JIN1107,W_JVN1139,Main pipe,4,100,asbestos cement
+W_PMA740,W_JVN1140,W_JIN1068,Main pipe,4,100,asbestos cement
+W_PMA741,W_JIN1068,W_JVN1248,Main pipe,4,100,asbestos cement
+W_PMA742,W_JIN1142,W_JIN1143,Main pipe,12,100,ductile iron
+W_PMA743,W_JIN1143,W_JVN1144,Main pipe,12,100,ductile iron
+W_PMA744,W_JVN1145,W_JIN1146,Main pipe,12,100,ductile iron
+W_PMA745,W_JIN1146,W_JIN1147,Main pipe,12,100,ductile iron
+W_PMA746,W_JIN1147,W_JIN1148,Main pipe,12,100,ductile iron
+W_PMA747,W_JIN1148,W_JIN1149,Main pipe,12,100,ductile iron
+W_PMA748,W_JIN1149,W_JVN1150,Main pipe,12,100,ductile iron
+W_PMA749,W_JIN1109,W_JIN1151,Main pipe,12,100,ductile iron
+W_PMA750,W_JIN1151,W_JVN1152,Main pipe,12,100,ductile iron
+W_PMA751,W_JVN1153,W_JIN1154,Main pipe,12,100,ductile iron
+W_PMA752,W_JIN1154,W_JIN1155,Main pipe,12,100,ductile iron
+W_PMA753,W_JIN1516,W_JVN1157,Main pipe,12,100,ductile iron
+W_PMA754,W_JVN1158,W_JIN1159,Main pipe,12,100,ductile iron
+W_PMA755,W_JIN1159,W_JVN1160,Main pipe,12,100,ductile iron
+W_PMA756,W_JVN1161,W_JIN1162,Main pipe,12,100,ductile iron
+W_PMA757,W_JIN1163,W_JVN1164,Main pipe,12,100,ductile iron
+W_PMA758,W_JVN1165,W_JIN1166,Main pipe,12,100,ductile iron
+W_PMA759,W_JIN1166,W_JVN1167,Main pipe,12,100,ductile iron
+W_PMA760,W_JIN1110,W_JVN1168,Main pipe,12,100,ductile iron
+W_PMA761,W_JVN1170,W_JIN1171,Main pipe,12,100,ductile iron
+W_PMA762,W_JIN1171,W_JIN1172,Main pipe,12,100,ductile iron
+W_PMA763,W_JIN1172,W_JIN1173,Main pipe,12,100,ductile iron
+W_PMA764,W_JIN1173,W_JVN1174,Main pipe,12,100,ductile iron
+W_PMA765,W_JVN1175,W_JIN1176,Main pipe,12,100,ductile iron
+W_PMA766,W_JIN1514,W_JVN1177,Main pipe,12,100,ductile iron
+W_PMA767,W_JVN1178,W_JIN1179,Main pipe,12,100,ductile iron
+W_PMA768,W_JIN1179,W_JVN1180,Main pipe,12,100,ductile iron
+W_PMA769,W_JIN1162,W_JIN1517,Main pipe,12,100,ductile iron
+W_PMA770,W_JVN1181,W_JVN1182,Main pipe,12,100,ductile iron
+W_PMA771,W_JVN1183,W_JIN1502,Main pipe,12,100,ductile iron
+W_PMA772,W_JIN1184,W_JVN1185,Main pipe,12,100,ductile iron
+W_PMA773,W_JVN1186,W_JIN1187,Main pipe,12,100,ductile iron
+W_PMA774,W_JIN1187,W_JIN1188,Main pipe,12,100,ductile iron
+W_PMA775,W_JIN1188,W_JIN1189,Main pipe,12,100,ductile iron
+W_PMA776,W_JIN1189,W_JVN1190,Main pipe,12,100,ductile iron
+W_PMA777,W_JVN1191,W_JIN1192,Main pipe,12,100,ductile iron
+W_PMA778,W_JIN1192,W_JIN1193,Main pipe,12,100,ductile iron
+W_PMA779,W_JIN1193,W_JIN1194,Main pipe,12,100,ductile iron
+W_PMA780,W_JIN1194,W_JIN1195,Main pipe,12,100,ductile iron
+W_PMA781,W_JIN1195,W_JIN1196,Main pipe,12,100,ductile iron
+W_PMA782,W_JIN1196,W_JVN1197,Main pipe,12,100,ductile iron
+W_PMA783,W_JVN1198,W_JIN1199,Main pipe,12,100,ductile iron
+W_PMA784,W_JIN1199,W_JIN1200,Main pipe,12,100,ductile iron
+W_PMA785,W_JIN1200,W_JIN1201,Main pipe,12,100,ductile iron
+W_PMA786,W_JIN1201,W_JVN1202,Main pipe,12,100,ductile iron
+W_PMA787,W_JVN1203,W_JIN1204,Main pipe,12,100,ductile iron
+W_PMA788,W_JIN1204,W_JIN1205,Main pipe,12,100,ductile iron
+W_PMA789,W_JIN1205,W_JVN1206,Main pipe,12,100,ductile iron
+W_PMA790,W_JVN1207,W_JIN1208,Main pipe,12,100,ductile iron
+W_PMA791,W_JIN1208,W_JIN1209,Main pipe,12,100,ductile iron
+W_PMA792,W_JIN1209,W_JIN726,Main pipe,12,100,ductile iron
+W_PMA793,W_JIN726,W_JIN1210,Main pipe,12,100,ductile iron
+W_PMA794,W_JIN1210,W_JVN1211,Main pipe,12,100,ductile iron
+W_PMA795,W_JVN1212,W_JIN1213,Main pipe,12,100,ductile iron
+W_PMA796,W_JIN1213,W_JIN1214,Main pipe,12,100,ductile iron
+W_PMA797,W_JIN1214,W_JVN1215,Main pipe,12,100,ductile iron
+W_PMA798,W_JVN1216,W_JIN1217,Main pipe,12,100,ductile iron
+W_PMA799,W_JIN1217,W_JIN1218,Main pipe,12,100,ductile iron
+W_PMA800,W_JIN1218,W_JIN1503,Main pipe,12,100,ductile iron
+W_PMA801,W_JVN1220,W_JIN1221,Main pipe,12,100,ductile iron
+W_PMA802,W_JIN1221,W_JVN1222,Main pipe,12,100,ductile iron
+W_PMA803,W_JVN1223,W_JIN1224,Main pipe,12,100,ductile iron
+W_PMA804,W_JIN1224,W_JIN1504,Main pipe,12,100,ductile iron
+W_PMA805,W_JIN1225,W_JVN1226,Main pipe,12,100,ductile iron
+W_PMA806,W_JVN1227,W_JIN1228,Main pipe,12,100,ductile iron
+W_PMA807,W_JIN1228,W_JIN1229,Main pipe,12,100,ductile iron
+W_PMA808,W_JIN1229,W_JIN1230,Main pipe,12,100,ductile iron
+W_PMA809,W_JIN1230,W_JVN1231,Main pipe,12,100,ductile iron
+W_PMA810,W_JVN1232,W_JIN412,Main pipe,12,100,ductile iron
+W_PMA811,W_JIN412,W_JIN414,Main pipe,12,100,ductile iron
+W_PMA812,W_JIN414,W_JIN1505,Main pipe,12,100,ductile iron
+W_PMA813,W_JIN1213,W_JVN1234,Main pipe,12,100,ductile iron
+W_PMA814,W_JVN1235,W_JVN1236,Main pipe,12,100,ductile iron
+W_PMA815,W_JIN1208,W_JVN1237,Main pipe,12,100,ductile iron
+W_PMA816,W_JVN1238,W_JVN1239,Main pipe,12,100,ductile iron
+W_PMA817,W_JVN1240,W_JVN1241,Main pipe,12,100,ductile iron
+W_PMA818,W_JIN1199,W_JVN1242,Main pipe,12,100,ductile iron
+W_PMA819,W_JVN1243,W_JVN1244,Main pipe,12,100,ductile iron
+W_PMA820,W_JIN1192,W_JVN1245,Main pipe,12,100,ductile iron
+W_PMA821,W_JVN1246,W_JVN1132,Main pipe,12,100,ductile iron
+W_PMA822,W_JVN1248,W_JVN1249,Main pipe,12,100,ductile iron
+W_PMA823,W_JVN1250,W_JIN1251,Main pipe,12,100,ductile iron
+W_PMA824,W_JIN1127,W_JIN1252,Main pipe,12,100,ductile iron
+W_PMA825,W_JIN1252,W_JIN1253,Main pipe,12,100,ductile iron
+W_PMA826,W_JIN1253,W_JVN1254,Main pipe,12,100,ductile iron
+W_PMA827,W_JVN1255,W_JIN1256,Main pipe,12,100,ductile iron
+W_PMA828,W_JIN1256,W_JIN1257,Main pipe,12,100,ductile iron
+W_PMA829,W_JIN1257,W_JVN665,Main pipe,12,100,ductile iron
+W_PMA830,W_JVN1259,W_JIN1260,Main pipe,12,100,ductile iron
+W_PMA831,W_JIN1260,W_JIN1261,Main pipe,12,100,ductile iron
+W_PMA832,W_JIN1261,W_JIN1262,Main pipe,12,100,ductile iron
+W_PMA833,W_JIN1262,W_JVN1263,Main pipe,12,100,ductile iron
+W_PMA834,W_JVN1264,W_JIN1265,Main pipe,12,100,ductile iron
+W_PMA835,W_JIN1266,W_JIN1267,Main pipe,6,100,ductile iron
+W_PMA836,W_JIN1267,W_JIN1268,Main pipe,6,100,ductile iron
+W_PMA837,W_JIN1268,W_JIN1269,Main pipe,6,100,ductile iron
+W_PMA838,W_JIN1269,W_JVN1270,Main pipe,6,100,ductile iron
+W_PMA839,W_JVN1271,W_JIN1272,Main pipe,6,100,ductile iron
+W_PMA840,W_JIN1272,W_JIN1142,Main pipe,6,100,ductile iron
+W_PMA841,W_JIN1155,W_JIN1273,Main pipe,6,100,ductile iron
+W_PMA842,W_JIN1273,W_JIN1274,Main pipe,6,100,ductile iron
+W_PMA843,W_JIN1274,W_JVN1275,Main pipe,6,100,ductile iron
+W_PMA844,W_JVN1276,W_JIN1277,Main pipe,6,100,ductile iron
+W_PMA845,W_JIN1277,W_JIN1278,Main pipe,6,100,ductile iron
+W_PMA846,W_JIN1278,W_JIN1279,Main pipe,6,100,ductile iron
+W_PMA847,W_JIN1279,W_JIN1280,Main pipe,6,100,ductile iron
+W_PMA848,W_JIN1280,W_JIN1281,Main pipe,6,100,ductile iron
+W_PMA850,W_JVN1283,W_JIN1284,Main pipe,6,100,ductile iron
+W_PMA851,W_JIN1284,W_JIN1285,Main pipe,6,100,ductile iron
+W_PMA852,W_JIN1285,W_JVN1286,Main pipe,6,100,ductile iron
+W_PMA853,W_JVN1287,W_JIN1288,Main pipe,6,100,ductile iron
+W_PMA854,W_JIN1288,W_JIN1289,Main pipe,6,100,ductile iron
+W_PMA855,W_JIN1289,W_JIN1290,Main pipe,6,100,ductile iron
+W_PMA856,W_JIN1290,W_JIN1291,Main pipe,6,100,ductile iron
+W_PMA857,W_JIN1291,W_JVN1292,Main pipe,6,100,ductile iron
+W_PMA858,W_JVN1293,W_JIN1294,Main pipe,6,100,ductile iron
+W_PMA859,W_JIN1294,W_JIN1295,Main pipe,6,100,ductile iron
+W_PMA860,W_JIN1295,W_JIN1296,Main pipe,6,100,ductile iron
+W_PMA861,W_JIN1296,W_JIN1297,Main pipe,6,100,ductile iron
+W_PMA862,W_JIN1297,W_JVN1298,Main pipe,6,100,ductile iron
+W_PMA863,W_JVN1299,W_JVN1300,Main pipe,6,100,ductile iron
+W_PMA864,W_JVN1301,W_JIN1303,Main pipe,6,100,ductile iron
+W_PMA866,W_JIN1303,W_JVN1305,Main pipe,6,100,ductile iron
+W_PMA867,W_JIN1251,W_JVN1306,Main pipe,6,100,ductile iron
+W_PMA868,W_JVN1307,W_JIN1308,Main pipe,6,100,ductile iron
+W_PMA869,W_JIN1308,W_JIN1309,Main pipe,6,100,ductile iron
+W_PMA870,W_JIN1309,W_JVN1310,Main pipe,6,100,ductile iron
+W_PMA871,W_JVN1311,W_JIN1312,Main pipe,6,100,ductile iron
+W_PMA872,W_JIN1312,W_JIN1313,Main pipe,6,100,ductile iron
+W_PMA873,W_JIN1313,W_JVN1314,Main pipe,6,100,ductile iron
+W_PMA874,W_JVN1315,W_JIN1316,Main pipe,6,100,ductile iron
+W_PMA875,W_JVN1317,W_JIN1318,Main pipe,6,100,ductile iron
+W_PMA876,W_JVN1319,W_JIN1320,Main pipe,6,100,ductile iron
+W_PMA877,W_JIN934,W_JIN1321,Main pipe,6,100,ductile iron
+W_PMA878,W_JIN1321,W_JVN1322,Main pipe,6,100,ductile iron
+W_PMA879,W_JVN1323,W_JIN1324,Main pipe,6,100,ductile iron
+W_PMA880,W_JIN1324,W_JIN1325,Main pipe,6,100,ductile iron
+W_PMA881,W_JIN1325,W_JVN1326,Main pipe,6,100,ductile iron
+W_PMA882,W_JVN1327,W_JIN1328,Main pipe,6,100,ductile iron
+W_PMA883,W_JIN1328,W_JIN935,Main pipe,6,100,ductile iron
+W_PMA884,W_JVN1329,W_JIN1330,Main pipe,6,100,ductile iron
+W_PMA885,W_JIN1330,W_JIN1331,Main pipe,6,100,ductile iron
+W_PMA886,W_JIN1331,W_JIN1332,Main pipe,6,100,ductile iron
+W_PMA887,W_JIN1332,W_JIN1333,Main pipe,6,100,ductile iron
+W_PMA888,W_JIN1333,W_JVN1334,Main pipe,6,100,ductile iron
+W_PMA889,W_JVN1335,W_JIN1336,Main pipe,6,100,ductile iron
+W_PMA890,W_JIN1336,W_JVN1337,Main pipe,6,100,ductile iron
+W_PMA891,W_JVN1482,W_JIN1549,Main pipe,6,100,ductile iron
+W_PMA892,W_JVN1340,W_JIN1341,Main pipe,6,100,ductile iron
+W_PMA893,W_JIN1341,W_JIN1342,Main pipe,6,100,ductile iron
+W_PMA894,W_JIN1342,W_JVN1343,Main pipe,6,100,ductile iron
+W_PMA895,W_JIN1667,W_JVN1345,Main pipe,6,100,ductile iron
+W_PMA896,W_JIN1344,W_JVN1346,Main pipe,6,100,ductile iron
+W_PMA897,W_JIN1344,W_JVN1347,Main pipe,6,100,ductile iron
+W_PMA898,W_JVN1348,W_JIN1349,Main pipe,6,100,ductile iron
+W_PMA899,W_JIN1349,W_JVN1350,Main pipe,6,100,ductile iron
+W_PMA900,W_JVN1351,W_JIN1352,Main pipe,6,100,ductile iron
+W_PMA901,W_JIN1352,W_JVN1353,Main pipe,6,100,ductile iron
+W_PMA902,W_JIN996,W_JIN350,Main pipe,6,100,ductile iron
+W_PMA903,W_JIN350,W_JIN346,Main pipe,6,100,ductile iron
+W_PMA904,W_JIN346,W_JVN1354,Main pipe,6,100,ductile iron
+W_PMA905,W_JVN1355,W_JIN341,Main pipe,6,100,ductile iron
+W_PMA906,W_JIN341,W_JIN336,Main pipe,6,100,ductile iron
+W_PMA907,W_JIN336,W_JIN331,Main pipe,6,100,ductile iron
+W_PMA908,W_JIN331,W_JVN1356,Main pipe,6,100,ductile iron
+W_PMA909,W_JVN1357,W_JIN326,Main pipe,6,100,ductile iron
+W_PMA910,W_JIN326,W_JVN1358,Main pipe,6,100,ductile iron
+W_PMA911,W_JVN1359,W_JIN321,Main pipe,6,100,ductile iron
+W_PMA912,W_JIN321,W_JVN1360,Main pipe,6,100,ductile iron
+W_PMA913,W_JVN1361,W_JIN316,Main pipe,6,100,ductile iron
+W_PMA914,W_JIN316,W_JVN1362,Main pipe,6,100,ductile iron
+W_PMA915,W_JVN1363,W_JIN311,Main pipe,6,100,ductile iron
+W_PMA916,W_JIN311,W_JVN1364,Main pipe,6,100,ductile iron
+W_PMA917,W_JVN1365,W_JIN1366,Main pipe,6,100,ductile iron
+W_PMA918,W_JIN1366,W_JVN1367,Main pipe,6,100,ductile iron
+W_PMA919,W_JVN1368,W_JIN1669,Main pipe,6,100,ductile iron
+W_PMA920,W_JVN1370,W_JIN1371,Main pipe,6,100,ductile iron
+W_PMA921,W_JIN1371,W_JVN1372,Main pipe,6,100,ductile iron
+W_PMA922,W_JVN1373,W_JIN373,Main pipe,6,100,ductile iron
+W_PMA923,W_JIN373,W_JVN1374,Main pipe,6,100,ductile iron
+W_PMA924,W_JVN1375,W_JIN370,Main pipe,6,100,ductile iron
+W_PMA925,W_JIN370,W_JIN367,Main pipe,6,100,ductile iron
+W_PMA926,W_JIN367,W_JIN364,Main pipe,6,100,ductile iron
+W_PMA927,W_JIN364,W_JVN1376,Main pipe,6,100,ductile iron
+W_PMA928,W_JVN1377,W_JIN361,Main pipe,6,100,ductile iron
+W_PMA929,W_JIN361,W_JVN1378,Main pipe,6,100,ductile iron
+W_PMA930,W_JVN1379,W_JIN358,Main pipe,6,100,ductile iron
+W_PMA931,W_JIN358,W_JVN1380,Main pipe,6,100,ductile iron
+W_PMA932,W_JVN1381,W_JIN355,Main pipe,6,100,ductile iron
+W_PMA933,W_JIN355,W_JVN1382,Main pipe,6,100,ductile iron
+W_PMA934,W_JVN1383,W_JIN352,Main pipe,6,100,ductile iron
+W_PMA935,W_JIN352,W_JIN1384,Main pipe,6,100,ductile iron
+W_PMA936,W_JIN1384,W_JVN1385,Main pipe,6,100,ductile iron
+W_PMA937,W_JIN1668,W_JVN1387,Main pipe,12,100,ductile iron
+W_PMA938,W_JVN1388,W_JIN996,Main pipe,6,100,ductile iron
+W_PMA939,W_JIN1321,W_JIN1389,Main pipe,6,100,ductile iron
+W_PMA940,W_JIN1389,W_JIN1390,Main pipe,6,100,ductile iron
+W_PMA941,W_JIN1390,W_JIN1391,Main pipe,6,100,ductile iron
+W_PMA942,W_JIN1391,W_JIN1392,Main pipe,6,100,ductile iron
+W_PMA943,W_JIN1392,W_JIN1393,Main pipe,6,100,ductile iron
+W_PMA944,W_JIN1393,W_JIN1394,Main pipe,6,100,ductile iron
+W_PMA945,W_JIN1394,W_JIN1395,Main pipe,6,100,ductile iron
+W_PMA946,W_JIN1395,W_JIN1396,Main pipe,6,100,ductile iron
+W_PMA947,W_JIN1397,W_JIN1398,Main pipe,6,100,ductile iron
+W_PMA948,W_JIN1398,W_JIN1399,Main pipe,6,100,ductile iron
+W_PMA949,W_JIN1399,W_JIN1400,Main pipe,6,100,ductile iron
+W_PMA950,W_JIN1400,W_JIN1401,Main pipe,6,100,ductile iron
+W_PMA951,W_JIN1401,W_JIN1402,Main pipe,6,100,ductile iron
+W_PMA952,W_JIN1402,W_JIN1403,Main pipe,6,100,ductile iron
+W_PMA953,W_JIN1403,W_JIN1404,Main pipe,6,100,ductile iron
+W_PMA954,W_JIN1404,W_JIN1328,Main pipe,6,100,ductile iron
+W_PMA955,W_JIN508,W_JIN510,Main pipe,4,100,cast iron
+W_PMA956,W_JIN875,W_JIN824,Main pipe,2,100,cast iron
+W_PMA957,W_JIN831,W_JIN876,Main pipe,2,100,cast iron
+W_PMA958,W_JIN512,W_JIN835,Main pipe,2,100,cast iron
+W_PMA959,W_JVN1405,W_JIN1534,Main pipe,2,100,cast iron
+W_PMA960,W_JIN485,W_JIN1512,Main pipe,2,100,cast iron
+W_PMA961,W_JIN1407,W_JVN1408,Main pipe,8,100,asbestos cement
+W_PMA962,W_JIN1521,W_JVN1410,Main pipe,8,100,asbestos cement
+W_PMA963,W_JIN1640,W_JVN1411,Main pipe,12,100,ductile iron
+W_PMA964,W_JIN1606,W_JVN1412,Main pipe,8,100,asbestos cement
+W_PMA965,W_JVN1413,W_JVN1414,Main pipe,4,100,asbestos cement
+W_PMA966,W_JVN1415,W_JIN1510,Main pipe,4,100,asbestos cement
+W_PMA967,W_JVN1416,W_JIN1515,Main pipe,12,100,ductile iron
+W_PMA968,W_JIN1501,W_JVN1419,Main pipe,12,100,ductile iron
+W_PMA969,W_JVN1420,W_JIN417,Main pipe,12,100,ductile iron
+W_PMA970,W_JIN417,W_JVN1421,Main pipe,12,100,ductile iron
+W_PMA971,W_JVN1422,W_JIN1506,Main pipe,12,100,ductile iron
+W_PMA972,W_JIN423,W_JVN1423,Main pipe,12,100,ductile iron
+W_PMA973,W_JVN1424,W_JIN427,Main pipe,12,100,ductile iron
+W_PMA974,W_JIN427,W_JVN1425,Main pipe,12,100,ductile iron
+W_PMA975,W_JVN1426,W_JIN431,Main pipe,12,100,ductile iron
+W_PMA976,W_JIN431,W_JIN1427,Main pipe,12,100,ductile iron
+W_PMA977,W_JIN1427,W_JIN435,Main pipe,12,100,ductile iron
+W_PMA978,W_JIN435,W_JVN1428,Main pipe,12,100,ductile iron
+W_PMA979,W_JVN1429,W_JIN1507,Main pipe,12,100,ductile iron
+W_PMA980,W_JIN1430,W_JVN1432,Main pipe,12,100,ductile iron
+W_PMA981,W_JVN1433,W_JIN455,Main pipe,12,100,ductile iron
+W_PMA982,W_JIN455,W_JVN1434,Main pipe,12,100,ductile iron
+W_PMA983,W_JVN1435,W_JIN1508,Main pipe,12,100,ductile iron
+W_PMA984,W_JIN449,W_JVN1436,Main pipe,12,100,ductile iron
+W_PMA985,W_JVN1437,W_JIN447,Main pipe,12,100,ductile iron
+W_PMA986,W_JIN447,W_JVN1438,Main pipe,12,100,ductile iron
+W_PMA987,W_JVN1439,W_JIN441,Main pipe,12,100,ductile iron
+W_PMA988,W_JIN441,W_JIN1509,Main pipe,12,100,ductile iron
+W_PMA989,W_JVN1441,W_JIN1442,Main pipe,12,100,ductile iron
+W_PMA990,W_JIN1427,W_JVN1443,Main pipe,12,100,ductile iron
+W_PMA991,W_JVN1444,W_JVN1445,Main pipe,12,100,ductile iron
+W_PMA992,W_JVN1446,W_JIN1500,Main pipe,12,100,ductile iron
+W_PMA993,W_JIN1230,W_JVN1447,Main pipe,12,100,ductile iron
+W_PMA994,W_JVN1448,W_JVN1449,Main pipe,12,100,ductile iron
+W_PMA995,W_JVN1450,W_JIN1451,Main pipe,12,100,ductile iron
+W_PMA996,W_JIN1451,W_JVN1452,Main pipe,12,100,ductile iron
+W_PMA997,W_JVN1453,W_JVN1454,Main pipe,12,100,ductile iron
+W_PMA998,W_JVN1455,W_JIN1456,Main pipe,12,100,ductile iron
+W_PMA999,W_JIN1456,W_JVN1457,Main pipe,12,100,ductile iron
+W_PMA1000,W_JVN1458,W_JVN1459,Main pipe,12,100,ductile iron
+W_PMA1001,W_JVN1460,W_JIN1461,Main pipe,12,100,ductile iron
+W_PMA1002,W_JIN1461,W_JVN1462,Main pipe,12,100,ductile iron
+W_PMA1003,W_JVN1463,W_JVN1464,Main pipe,12,100,ductile iron
+W_PMA1004,W_JVN1465,W_JIN1466,Main pipe,12,100,ductile iron
+W_PMA1005,W_JIN1466,W_JIN1467,Main pipe,12,100,ductile iron
+W_PMA1006,W_JIN1265,W_JVN1468,Main pipe,12,100,ductile iron
+W_PMA1007,W_JVN1469,W_JIN1470,Main pipe,12,100,ductile iron
+W_PMA1008,W_J1,W_JIN1470,Main pipe,12,100,ductile iron
+W_PMA1010,W_JIN1336,W_JVN1473,Main pipe,6,100,ductile iron
+W_PMA1013,W_JVN1475,W_JVN1477,Main pipe,6,100,ductile iron
+W_PMA1016,W_JVN1478,W_JVN1481,Main pipe,6,100,ductile iron
+W_PMA1018,W_JIN1407,W_JVN1483,Main pipe,6,100,ductile iron
+W_PMA1019,W_JVN1484,W_JVN1478,Main pipe,6,100,ductile iron
+W_PMA1020,W_JIN1407,W_JVN1485,Main pipe,6,100,ductile iron
+W_PMA1021,W_JVN1486,W_JIN1487,Main pipe,6,100,ductile iron
+W_PMA1022,W_JIN1487,W_JVN1488,Main pipe,6,100,ductile iron
+W_PMA1023,W_JIN1442,W_JVN1489,Main pipe,6,100,ductile iron
+W_PMA1024,W_JIN1487,W_JVN1490,Main pipe,6,100,ductile iron
+W_PMA1025,W_JIN1366,W_JIN1491,Main pipe,6,100,ductile iron
+W_PMA1026,W_JIN1491,W_JVN1492,Main pipe,6,100,ductile iron
+W_PMA2000,W_T1,W_JIN869,Main pipe,12,100,asbestos cement
+W_PMA1027,W_JIN1495,W_JIN1471,Main pipe,8,100,Copper
+W_PHC1,W_JIN1093,W_JHY1,Hydrant connector,6,100,Copper
+W_PHC2,W_JIN1466,W_JHY2,Hydrant connector,6,100,Copper
+W_PHC4,W_JIN1456,W_JHY4,Hydrant connector,6,100,Copper
+W_PHC6,W_JIN1230,W_JHY6,Hydrant connector,6,100,Copper
+W_PMA1030,W_JIN457,W_JIN1500,Main pipe,12,100,ductile iron
+W_PHC7,W_JIN1500,W_JHY7,Hydrant connector,6,100,Copper
+W_PMA1031,W_JIN1418,W_JIN1501,Main pipe,12,100,ductile iron
+W_PMA1032,W_JIN1184,W_JIN1502,Main pipe,12,100,ductile iron
+W_PHC9,W_JIN1502,W_JHY9,Hydrant connector,6,100,Copper
+W_PHC11,W_JIN1199,W_JHY11,Hydrant connector,6,100,Copper
+W_PHC12,W_JIN1208,W_JHY12,Hydrant connector,6,100,Copper
+W_PMA1033,W_JIN1503,W_JVN1219,Main pipe,12,100,ductile iron
+W_PHC14,W_JIN1503,W_JHY14,Hydrant connector,6,100,Copper
+W_PMA1034,W_JIN1225,W_JIN1504,Main pipe,12,100,ductile iron
+W_PMA1035,W_JIN1505,W_JVN1233,Main pipe,12,100,ductile iron
+W_PMA1036,W_JIN423,W_JIN1506,Main pipe,12,100,ductile iron
+W_PHC17,W_JIN1506,W_JHY17,Hydrant connector,6,100,Copper
+W_PMA1037,W_JIN1430,W_JIN1507,Main pipe,12,100,ductile iron
+W_PMA1038,W_JIN449,W_JIN1508,Main pipe,12,100,ductile iron
+W_PHC19,W_JIN1508,W_JHY19,Hydrant connector,6,100,Copper
+W_PMA1039,W_JIN1509,W_JVN1440,Main pipe,12,100,ductile iron
+W_PHC22,W_JIN1487,W_JHY22,Hydrant connector,6,100,Copper
+W_PMA1040,W_JIN104,W_JIN1510,Main pipe,4,100,asbestos cement
+W_PHC24,W_JIN1511,W_JHY24,Hydrant connector,6,100,Copper
+W_PMA1041,W_JIN1511,W_JVN1005,Main pipe,4,100,asbestos cement
+W_PHC27,W_JIN1512,W_JHY27,Hydrant connector,6,100,Copper
+W_PMA1042,W_JVN1406,W_JIN1512,Main pipe,2,100,cast iron
+W_PHC28,W_JIN1513,W_JHY28,Hydrant connector,6,100,Copper
+W_PMA1043,W_JVN909,W_JIN1513,Main pipe,2,100,cast iron
+W_PHC29,W_JIN916,W_JHY29,Hydrant connector,6,100,Copper
+W_PHC31,W_JIN1124,W_JHY31,Hydrant connector,6,100,Copper
+W_PMA1044,W_JIN1176,W_JIN1514,Main pipe,12,100,ductile iron
+W_PMA1045,W_JIN1417,W_JIN1515,Main pipe,12,100,ductile iron
+W_PHC33,W_JIN1515,W_JHY33,Hydrant connector,6,100,Copper
+W_PHC34,W_JIN1516,W_JHY34,Hydrant connector,6,100,Copper
+W_PMA1046,W_JIN1156,W_JIN1516,Main pipe,12,100,ductile iron
+W_PMA1047,W_JIN1163,W_JIN1517,Main pipe,12,100,ductile iron
+W_PHC35,W_JIN1517,W_JHY35,Hydrant connector,6,100,Copper
+W_PHC37,W_JIN1033,W_JHY37,Hydrant connector,6,100,Copper
+W_PHC38,W_JIN1039,W_JHY38,Hydrant connector,6,100,Copper
+W_PHC40,W_JIN1518,W_JHY40,Hydrant connector,6,100,Copper
+W_PMA1048,W_JIN463,W_JIN1518,Main pipe,4,100,cast iron
+W_PHC41,W_JIN835,W_JHY41,Hydrant connector,6,100,Copper
+W_PHC42,W_JIN840,W_JHY42,Hydrant connector,6,100,Copper
+W_PHC43,W_JIN845,W_JHY43,Hydrant connector,6,100,Copper
+W_PHC44,W_JIN852,W_JHY44,Hydrant connector,6,100,Copper
+W_PHC45,W_JIN1519,W_JHY45,Hydrant connector,6,100,Copper
+W_PMA1049,W_JVN863,W_JIN1519,Main pipe,8,100,asbestos cement
+W_PHC46,W_JVN1248,W_JHY46,Hydrant connector,6,100,Copper
+W_PHC47,W_JIN1308,W_JHY47,Hydrant connector,6,100,Copper
+W_PHC48,W_JIN1316,W_JHY48,Hydrant connector,6,100,Copper
+W_PHC49,W_JIN1318,W_JHY49,Hydrant connector,6,100,Copper
+W_PHC50,W_JIN1066,W_JHY50,Hydrant connector,6,100,Copper
+W_PHC51,W_JIN1080,W_JHY51,Hydrant connector,6,100,Copper
+W_PHC52,W_JIN1265,W_JHY52,Hydrant connector,6,100,Copper
+W_PHC53,W_JIN1324,W_JHY53,Hydrant connector,6,100,Copper
+W_PHC54,W_JIN943,W_JHY54,Hydrant connector,6,100,Copper
+W_PHC55,W_JIN958,W_JHY55,Hydrant connector,6,100,Copper
+W_PHC56,W_JIN1491,W_JHY56,Hydrant connector,6,100,Copper
+W_PHC57,W_JVN1357,W_JHY57,Hydrant connector,6,100,Copper
+W_PHC58,W_JIN1266,W_JHY58,Hydrant connector,6,100,Copper
+W_PHC59,W_JIN1280,W_JHY59,Hydrant connector,6,100,Copper
+W_PHC60,W_JIN1143,W_JHY60,Hydrant connector,6,100,Copper
+W_PHC61,W_JIN1108,W_JHY61,Hydrant connector,6,100,Copper
+W_PHC62,W_JIN1024,W_JHY62,Hydrant connector,6,100,Copper
+W_PHC63,W_JIN876,W_JHY63,Hydrant connector,6,100,Copper
+W_PHC64,W_JIN869,W_JHY64,Hydrant connector,6,100,Copper
+W_PHC65,W_JIN1290,W_JHY65,Hydrant connector,6,100,Copper
+W_PHC66,W_JIN140,W_JHY66,Hydrant connector,6,100,Copper
+W_PHC67,W_JVN1380,W_JHY67,Hydrant connector,6,100,Copper
+W_PMA1050,W_JIN996,W_JIN1520,Main pipe,4,100,asbestos cement
+W_PHC68,W_JIN1520,W_JHY68,Hydrant connector,6,100,Copper
+W_PMA1051,W_JIN1521,W_JVN1409,Main pipe,8,100,asbestos cement
+W_PHC69,W_JIN1521,W_JHY69,Hydrant connector,6,100,Copper
+W_PMA1160,W_JIN1522,W_JIN1471,Main pipe,10,100,Copper
+W_PSC1052,W_JIN1163,W_JTN1523,Service connector,2,140,Copper
+W_PSC1053,W_JIN882,W_JTN1524,Service connector,2,140,Copper
+W_PSC1054,W_JIN908,W_JTN1525,Service connector,2,140,Copper
+W_PSC1055,W_JIN1037,W_JTN1526,Service connector,2,140,Copper
+W_PMA1056,W_JIN1530,W_JIN1531,Main pipe,4,100,asbestos cement
+W_PMA1057,W_JIN1531,W_JIN1532,Main pipe,4,100,asbestos cement
+W_PMA1058,W_JIN1532,W_JIN1080,Main pipe,4,100,asbestos cement
+W_PSC1061,W_JIN1532,W_JTN1529,Service connector,2,140,Copper
+W_PSC1060,W_JIN1531,W_JTN1528,Service connector,2,140,Copper
+W_PSC1059,W_JIN1530,W_JTN1527,Service connector,2,140,Copper
+W_PSC1062,W_JIN862,W_JTN1533,Service connector,4,140,Copper
+W_PMA1063,W_JIN1534,W_JIN489,Main pipe,2,100,cast iron
+W_PMA1064,W_JIN1534,W_JIN1535,Main pipe,12,100,ductile iron
+W_PMA1065,W_JIN1534,W_JIN1601,Main pipe,12,100,ductile iron
+W_PMA1066,W_JIN835,W_JIN869,Main pipe,12,100,ductile iron
+W_PMA1067,W_JIN1509,W_JIN1548,Main pipe,6,100,ductile iron
+W_PMA1068,W_JIN1548,W_JIN1510,Main pipe,6,100,ductile iron
+W_PMA1069,W_JIN1510,W_JIN1550,Main pipe,6,100,ductile iron
+W_PMA1071,W_JIN1521,W_JIN1551,Main pipe,6,100,ductile iron
+W_PMA1074,W_JIN1549,W_JIN1552,Main pipe,6,100,ductile iron
+W_PMA1070,W_JIN1550,W_JIN1521,Main pipe,6,100,ductile iron
+W_PMA1072,W_JVN1339,W_JIN1549,Main pipe,6,100,ductile iron
+W_PMA1073,W_JIN1551,W_JIN1549,Main pipe,6,100,ductile iron
+W_PMA1075,W_JIN1552,W_JIN1336,Main pipe,6,100,ductile iron
+W_PMA1076,W_JIN1535,W_JIN1230,Main pipe,12,100,ductile iron
+W_PMA1077,W_JIN1535,W_JIN1536,Main pipe,12,100,ductile iron
+W_PMA1078,W_JIN1536,W_JIN1537,Main pipe,4,100,asbestos cement
+W_PMA1079,W_JIN1537,W_JIN1538,Main pipe,4,100,asbestos cement
+W_PMA1080,W_JIN1538,W_JIN1539,Main pipe,12,100,ductile iron
+W_PMA1081,W_JIN1539,W_JIN1540,Main pipe,12,100,ductile iron
+W_PMA1082,W_JIN1540,W_JIN1541,Main pipe,4,100,asbestos cement
+W_PMA1083,W_JIN1541,W_JIN1542,Main pipe,4,100,asbestos cement
+W_PMA1084,W_JIN1542,W_JIN1543,Main pipe,12,100,ductile iron
+W_PMA1085,W_JIN1543,W_JIN1544,Main pipe,4,100,asbestos cement
+W_PMA1086,W_JIN1544,W_JIN1545,Main pipe,4,100,asbestos cement
+W_PMA1087,W_JIN1545,W_JIN1546,Main pipe,4,100,asbestos cement
+W_PMA1088,W_JIN1546,W_JIN1547,Main pipe,12,100,ductile iron
+W_PMA1089,W_JIN1547,W_JIN1548,Main pipe,6,100,ductile iron
+W_PSC1160,W_JIN1536,W_JTN1553,Service connector,0.8,150,Plastic
+W_PSC1161,W_JIN1536,W_JTN1554,Service connector,0.8,150,Plastic
+W_PSC1162,W_JIN1536,W_JTN1555,Service connector,0.8,150,Plastic
+W_PSC1163,W_JIN1536,W_JTN1556,Service connector,0.8,150,Plastic
+W_PSC1164,W_JIN1537,W_JTN1557,Service connector,0.8,150,Plastic
+W_PSC1165,W_JIN1537,W_JTN1558,Service connector,0.8,150,Plastic
+W_PSC1166,W_JIN1537,W_JTN1559,Service connector,0.8,150,Plastic
+W_PSC1167,W_JIN1537,W_JTN1560,Service connector,0.8,150,Plastic
+W_PSC1168,W_JIN1538,W_JTN1561,Service connector,0.8,150,Plastic
+W_PSC1169,W_JIN1538,W_JTN1562,Service connector,0.8,150,Plastic
+W_PSC1170,W_JIN1538,W_JTN1563,Service connector,0.8,150,Plastic
+W_PSC1171,W_JIN1538,W_JTN1564,Service connector,0.8,150,Plastic
+W_PSC1172,W_JIN1539,W_JTN1565,Service connector,0.8,150,Plastic
+W_PSC1173,W_JIN1539,W_JTN1566,Service connector,0.8,150,Plastic
+W_PSC1174,W_JIN1539,W_JTN1567,Service connector,0.8,150,Plastic
+W_PSC1175,W_JIN1539,W_JTN1568,Service connector,0.8,150,Plastic
+W_PSC1176,W_JIN1540,W_JTN1569,Service connector,0.8,150,Plastic
+W_PSC1177,W_JIN1540,W_JTN1570,Service connector,0.8,150,Plastic
+W_PSC1178,W_JIN1540,W_JTN1571,Service connector,0.8,150,Plastic
+W_PSC1179,W_JIN1540,W_JTN1572,Service connector,0.8,150,Plastic
+W_PSC1180,W_JIN1541,W_JTN1573,Service connector,0.8,150,Plastic
+W_PSC1181,W_JIN1541,W_JTN1574,Service connector,0.8,150,Plastic
+W_PSC1182,W_JIN1541,W_JTN1575,Service connector,0.8,150,Plastic
+W_PSC1183,W_JIN1541,W_JTN1576,Service connector,0.8,150,Plastic
+W_PSC1184,W_JIN1542,W_JTN1578,Service connector,0.8,150,Plastic
+W_PSC1185,W_JIN1542,W_JTN1577,Service connector,0.8,150,Plastic
+W_PSC1186,W_JIN1542,W_JTN1579,Service connector,0.8,150,Plastic
+W_PSC1187,W_JIN1542,W_JTN1580,Service connector,0.8,150,Plastic
+W_PSC1188,W_JIN1543,W_JTN1581,Service connector,0.8,150,Plastic
+W_PSC1189,W_JIN1543,W_JTN1582,Service connector,0.8,150,Plastic
+W_PSC1190,W_JIN1543,W_JTN1583,Service connector,0.8,150,Plastic
+W_PSC1191,W_JIN1543,W_JTN1584,Service connector,0.8,150,Plastic
+W_PSC1192,W_JIN1544,W_JTN1586,Service connector,0.8,150,Plastic
+W_PSC1193,W_JIN1544,W_JTN1585,Service connector,0.8,150,Plastic
+W_PSC1194,W_JIN1544,W_JTN1588,Service connector,0.8,150,Plastic
+W_PSC1195,W_JIN1544,W_JTN1587,Service connector,0.8,150,Plastic
+W_PSC1196,W_JIN1545,W_JTN1590,Service connector,0.8,150,Plastic
+W_PSC1197,W_JIN1545,W_JTN1589,Service connector,0.8,150,Plastic
+W_PSC1198,W_JIN1545,W_JTN1591,Service connector,0.8,150,Plastic
+W_PSC1199,W_JIN1545,W_JTN1592,Service connector,0.8,150,Plastic
+W_PSC1200,W_JIN1546,W_JTN1593,Service connector,0.8,150,Plastic
+W_PSC1201,W_JIN1546,W_JTN1594,Service connector,0.8,150,Plastic
+W_PSC1202,W_JIN1546,W_JTN1595,Service connector,0.8,150,Plastic
+W_PSC1203,W_JIN1546,W_JTN1596,Service connector,0.8,150,Plastic
+W_PSC1204,W_JIN1547,W_JTN1597,Service connector,0.8,150,Plastic
+W_PSC1205,W_JIN1547,W_JTN1598,Service connector,0.8,150,Plastic
+W_PSC1206,W_JIN1547,W_JTN1599,Service connector,0.8,150,Plastic
+W_PSC1207,W_JIN1547,W_JTN1600,Service connector,0.8,150,Plastic
+W_PMA1090,W_JIN835,W_JIN1601,Main pipe,12,100,ductile iron
+W_PMA1091,W_JIN1606,W_JIN845,Main pipe,8,100,asbestos cement
+W_PMA1092,W_JIN1601,W_JIN1602,Main pipe,4,100,asbestos cement
+W_PMA1093,W_JIN1602,W_JIN1603,Main pipe,12,100,ductile iron
+W_PMA1094,W_JIN1603,W_JIN1604,Main pipe,4,100,asbestos cement
+W_PMA1095,W_JIN1604,W_JIN1605,Main pipe,4,100,asbestos cement
+W_PMA1096,W_JIN1605,W_JIN1606,Main pipe,4,100,asbestos cement
+W_PMA1097,W_JIN1606,W_JIN1607,Main pipe,4,100,asbestos cement
+W_PMA1098,W_JIN1607,W_JIN1608,Main pipe,4,100,asbestos cement
+W_PMA1099,W_JIN1608,W_JIN1609,Main pipe,4,100,asbestos cement
+W_PMA1100,W_JIN1609,W_JIN1610,Main pipe,4,100,asbestos cement
+W_PMA1101,W_JIN1610,W_JIN1611,Main pipe,4,100,asbestos cement
+W_PMA1102,W_JIN1611,W_JIN1612,Main pipe,12,100,ductile iron
+W_PMA1103,W_JIN1612,W_JIN1613,Main pipe,4,100,asbestos cement
+W_PMA1104,W_JIN1613,W_JIN1614,Main pipe,4,100,asbestos cement
+W_PMA1105,W_JIN1614,W_JIN1615,Main pipe,4,100,asbestos cement
+W_PMA1106,W_JIN1615,W_JIN1550,Main pipe,4,100,asbestos cement
+W_PSC1208,W_JIN1602,W_JTN1616,Service connector,12,150,Plastic
+W_PSC1209,W_JIN1602,W_JTN1617,Service connector,12,150,Plastic
+W_PSC1210,W_JIN1603,W_JTN1618,Service connector,12,150,Plastic
+W_PSC1211,W_JIN1603,W_JTN1619,Service connector,12,150,Plastic
+W_PSC1212,W_JIN1604,W_JTN1620,Service connector,12,150,Plastic
+W_PSC1213,W_JIN1604,W_JTN1621,Service connector,12,150,Plastic
+W_PSC1214,W_JIN1605,W_JTN1622,Service connector,12,150,Plastic
+W_PSC1215,W_JIN1607,W_JTN1623,Service connector,12,150,Plastic
+W_PSC1216,W_JIN1607,W_JTN1624,Service connector,12,150,Plastic
+W_PSC1217,W_JIN1608,W_JTN1625,Service connector,12,150,Plastic
+W_PSC1218,W_JIN1608,W_JTN1626,Service connector,12,150,Plastic
+W_PSC1219,W_JIN1609,W_JTN1627,Service connector,12,150,Plastic
+W_PSC1220,W_JIN1609,W_JTN1628,Service connector,12,150,Plastic
+W_PSC1221,W_JIN1610,W_JTN1629,Service connector,12,150,Plastic
+W_PSC1222,W_JIN1610,W_JTN1630,Service connector,12,150,Plastic
+W_PSC1223,W_JIN1611,W_JTN1631,Service connector,12,150,Plastic
+W_PSC1224,W_JIN1611,W_JTN1632,Service connector,12,150,Plastic
+W_PSC1225,W_JIN1612,W_JTN1633,Service connector,12,150,Plastic
+W_PSC1226,W_JIN1612,W_JTN1634,Service connector,12,150,Plastic
+W_PSC1227,W_JIN1613,W_JTN1635,Service connector,12,150,Plastic
+W_PSC1228,W_JIN1613,W_JTN1636,Service connector,12,150,Plastic
+W_PSC1229,W_JIN1614,W_JTN1637,Service connector,12,150,Plastic
+W_PSC1230,W_JIN1614,W_JTN1638,Service connector,12,150,Plastic
+W_PSC1231,W_JIN1615,W_JTN1639,Service connector,12,150,Plastic
+W_PMA1107,W_JIN176,W_JIN1640,Main pipe,12,100,ductile iron
+W_PMA1108,W_JIN1640,W_JIN1641,Main pipe,4,100,asbestos cement
+W_PMA1109,W_JIN1641,W_JIN1642,Main pipe,4,100,asbestos cement
+W_PMA1110,W_JIN1642,W_JIN1643,Main pipe,12,100,ductile iron
+W_PMA1111,W_JIN1643,W_JIN1644,Main pipe,4,100,asbestos cement
+W_PMA1112,W_JIN1644,W_JIN1645,Main pipe,6,100,ductile iron
+W_PMA1113,W_JIN1645,W_JIN1646,Main pipe,6,100,ductile iron
+W_PMA1114,W_JIN1646,W_JIN1647,Main pipe,4,100,asbestos cement
+W_PMA1115,W_JIN1647,W_JIN1648,Main pipe,6,100,ductile iron
+W_PMA1116,W_JIN1648,W_JIN1551,Main pipe,4,100,asbestos cement
+W_PSC1232,W_JIN1641,W_JTN1649,Service connector,12,140,Copper
+W_PSC1233,W_JIN1641,W_JTN1650,Service connector,12,150,Plastic
+W_PSC1234,W_JIN1642,W_JTN1651,Service connector,12,140,Copper
+W_PSC1235,W_JIN1642,W_JTN1652,Service connector,12,150,Plastic
+W_PSC1236,W_JIN1643,W_JTN1653,Service connector,12,150,Plastic
+W_PSC1237,W_JIN1643,W_JTN1654,Service connector,12,140,Copper
+W_PSC1238,W_JIN1644,W_JTN1655,Service connector,12,140,Copper
+W_PSC1239,W_JIN1644,W_JTN1656,Service connector,12,150,Plastic
+W_PSC1240,W_JIN1645,W_JTN1657,Service connector,12,150,Plastic
+W_PSC1241,W_JIN1645,W_JTN1658,Service connector,12,140,Copper
+W_PSC1242,W_JIN1646,W_JTN1659,Service connector,12,150,Plastic
+W_PSC1243,W_JIN1646,W_JTN1660,Service connector,12,140,Copper
+W_PSC1244,W_JIN1647,W_JTN1661,Service connector,12,140,Copper
+W_PSC1245,W_JIN1647,W_JTN1662,Service connector,12,150,Plastic
+W_PSC1246,W_JIN1648,W_JTN1663,Service connector,12,150,Plastic
+W_PSC1247,W_JIN1648,W_JTN1664,Service connector,12,150,Plastic
+W_PMA1117,W_JIN936,W_JIN1665,Main pipe,4,100,asbestos cement
+W_PMA1118,W_JIN995,W_JIN1666,Main pipe,12,100,ductile iron
+W_PMA1119,W_JIN1344,W_JIN1667,Main pipe,6,100,ductile iron
+W_PMA1120,W_JIN1668,W_JVN1386,Main pipe,12,100,ductile iron
+W_PMA1121,W_JIN1669,W_JVN1369,Main pipe,6,100,ductile iron
+W_PMA1122,W_JIN1665,W_JIN1670,Main pipe,12,100,ductile iron
+W_PMA1123,W_JIN1670,W_JIN1671,Main pipe,4,100,asbestos cement
+W_PMA1124,W_JIN1671,W_JIN1672,Main pipe,4,100,asbestos cement
+W_PMA1125,W_JIN1672,W_JIN1673,Main pipe,4,100,asbestos cement
+W_PMA1126,W_JIN1673,W_JIN1674,Main pipe,4,100,asbestos cement
+W_PMA1127,W_JIN1674,W_JIN1675,Main pipe,4,100,asbestos cement
+W_PMA1128,W_JIN1675,W_JIN1676,Main pipe,4,100,asbestos cement
+W_PMA1129,W_JIN1676,W_JIN1677,Main pipe,4,100,asbestos cement
+W_PMA1130,W_JIN1677,W_JIN1678,Main pipe,6,100,ductile iron
+W_PMA1131,W_JIN1678,W_JIN1679,Main pipe,6,100,ductile iron
+W_PMA1132,W_JIN1679,W_JIN1552,Main pipe,4,100,asbestos cement
+W_PMA1133,W_JIN1666,W_JIN1680,Main pipe,4,100,asbestos cement
+W_PMA1134,W_JIN1680,W_JIN1681,Main pipe,4,100,asbestos cement
+W_PMA1135,W_JIN1681,W_JIN1682,Main pipe,12,100,ductile iron
+W_PMA1136,W_JIN1682,W_JIN1683,Main pipe,4,100,asbestos cement
+W_PMA1137,W_JIN1683,W_JIN1684,Main pipe,4,100,asbestos cement
+W_PMA1138,W_JIN1684,W_JIN1685,Main pipe,4,100,asbestos cement
+W_PMA1139,W_JIN1685,W_JIN1686,Main pipe,4,100,asbestos cement
+W_PMA1140,W_JIN1686,W_JIN1687,Main pipe,4,100,asbestos cement
+W_PMA1141,W_JIN1687,W_JIN1667,Main pipe,4,100,ductile iron
+W_PMA1142,W_JIN1520,W_JIN1688,Main pipe,4,100,asbestos cement
+W_PMA1143,W_JIN1688,W_JIN1689,Main pipe,12,100,ductile iron
+W_PMA1144,W_JIN1689,W_JIN1690,Main pipe,4,100,asbestos cement
+W_PMA1145,W_JIN1690,W_JIN1691,Main pipe,12,100,ductile iron
+W_PMA1146,W_JIN1691,W_JIN1692,Main pipe,4,100,asbestos cement
+W_PMA1147,W_JIN1692,W_JIN1693,Main pipe,4,100,asbestos cement
+W_PMA1148,W_JIN1693,W_JIN1694,Main pipe,4,100,asbestos cement
+W_PMA1149,W_JIN1694,W_JIN1695,Main pipe,4,100,asbestos cement
+W_PMA1150,W_JIN1695,W_JIN1491,Main pipe,12,100,ductile iron
+W_PMA1151,W_JIN1668,W_JIN1696,Main pipe,4,100,asbestos cement
+W_PMA1152,W_JIN1696,W_JIN1697,Main pipe,12,100,ductile iron
+W_PMA1153,W_JIN1697,W_JIN1698,Main pipe,4,100,asbestos cement
+W_PMA1154,W_JIN1698,W_JIN1699,Main pipe,4,100,asbestos cement
+W_PMA1155,W_JIN1699,W_JIN1700,Main pipe,12,100,ductile iron
+W_PMA1156,W_JIN1700,W_JIN1701,Main pipe,4,100,asbestos cement
+W_PMA1157,W_JIN1701,W_JIN1702,Main pipe,4,100,asbestos cement
+W_PMA1158,W_JIN1702,W_JIN1703,Main pipe,4,100,asbestos cement
+W_PMA1159,W_JIN1703,W_JIN1669,Main pipe,4,100,asbestos cement
+W_PSC1248,W_JIN1670,W_JTN1704,Service connector,0.8,150,Plastic
+W_PSC1249,W_JIN1670,W_JTN1705,Service connector,0.8,150,Plastic
+W_PSC1250,W_JIN1670,W_JTN1706,Service connector,0.8,140,Copper
+W_PSC1251,W_JIN1670,W_JTN1707,Service connector,0.8,150,Plastic
+W_PSC1252,W_JIN1671,W_JTN1708,Service connector,0.8,150,Plastic
+W_PSC1253,W_JIN1671,W_JTN1710,Service connector,0.8,140,Copper
+W_PSC1254,W_JIN1671,W_JTN1711,Service connector,0.8,140,Copper
+W_PSC1255,W_JIN1671,W_JTN1709,Service connector,0.8,150,Plastic
+W_PSC1256,W_JIN1672,W_JTN1712,Service connector,0.8,150,Plastic
+W_PSC1257,W_JIN1672,W_JTN1713,Service connector,0.8,140,Copper
+W_PSC1258,W_JIN1672,W_JTN1714,Service connector,0.8,150,Plastic
+W_PSC1259,W_JIN1672,W_JTN1715,Service connector,0.8,150,Plastic
+W_PSC1260,W_JIN1673,W_JTN1716,Service connector,0.8,150,Plastic
+W_PSC1261,W_JIN1673,W_JTN1717,Service connector,0.8,140,Copper
+W_PSC1262,W_JIN1673,W_JTN1718,Service connector,0.8,150,Plastic
+W_PSC1263,W_JIN1673,W_JTN1719,Service connector,0.8,140,Copper
+W_PSC1264,W_JIN1674,W_JTN1720,Service connector,0.8,150,Plastic
+W_PSC1265,W_JIN1674,W_JTN1721,Service connector,0.8,150,Plastic
+W_PSC1266,W_JIN1674,W_JTN1722,Service connector,0.8,150,Plastic
+W_PSC1267,W_JIN1674,W_JTN1723,Service connector,0.8,140,Copper
+W_PSC1268,W_JIN1675,W_JTN1724,Service connector,0.8,140,Copper
+W_PSC1269,W_JIN1675,W_JTN1725,Service connector,0.8,150,Plastic
+W_PSC1270,W_JIN1675,W_JTN1726,Service connector,0.8,140,Copper
+W_PSC1271,W_JIN1676,W_JTN1727,Service connector,0.8,140,Copper
+W_PSC1272,W_JIN1676,W_JTN1728,Service connector,0.8,140,Copper
+W_PSC1273,W_JIN1676,W_JTN1729,Service connector,0.8,150,Plastic
+W_PSC1274,W_JIN1677,W_JTN1730,Service connector,0.8,150,Plastic
+W_PSC1275,W_JIN1677,W_JTN1731,Service connector,0.8,150,Plastic
+W_PSC1276,W_JIN1677,W_JTN1732,Service connector,0.8,140,Copper
+W_PSC1277,W_JIN1678,W_JTN1733,Service connector,0.8,150,Plastic
+W_PSC1278,W_JIN1678,W_JTN1734,Service connector,0.8,140,Copper
+W_PSC1279,W_JIN1678,W_JTN1735,Service connector,0.8,150,Plastic
+W_PSC1280,W_JIN1679,W_JTN1736,Service connector,0.8,140,Copper
+W_PSC1281,W_JIN1679,W_JTN1737,Service connector,0.8,150,Plastic
+W_PSC1282,W_JIN1679,W_JTN1738,Service connector,0.8,150,Plastic
+W_PSC1283,W_JIN1680,W_JTN1739,Service connector,0.8,140,Copper
+W_PSC1284,W_JIN1680,W_JTN1740,Service connector,0.8,150,Copper
+W_PSC1285,W_JIN1680,W_JTN1741,Service connector,0.8,150,Copper
+W_PSC1286,W_JIN1680,W_JTN1742,Service connector,0.8,140,Copper
+W_PSC1287,W_JIN1681,W_JTN1743,Service connector,0.8,150,Copper
+W_PSC1288,W_JIN1681,W_JTN1744,Service connector,0.8,140,Copper
+W_PSC1289,W_JIN1681,W_JTN1745,Service connector,0.8,140,Copper
+W_PSC1290,W_JIN1681,W_JTN1746,Service connector,0.8,150,Copper
+W_PSC1291,W_JIN1682,W_JTN1747,Service connector,0.8,140,Copper
+W_PSC1292,W_JIN1682,W_JTN1748,Service connector,0.8,150,Copper
+W_PSC1293,W_JIN1682,W_JTN1749,Service connector,0.8,140,Copper
+W_PSC1294,W_JIN1682,W_JTN1750,Service connector,0.8,150,Copper
+W_PSC1295,W_JIN1683,W_JTN1751,Service connector,0.8,150,Copper
+W_PSC1296,W_JIN1683,W_JTN1752,Service connector,0.8,150,Copper
+W_PSC1297,W_JIN1683,W_JTN1753,Service connector,0.8,140,Copper
+W_PSC1298,W_JIN1683,W_JTN1754,Service connector,0.8,150,Copper
+W_PSC1299,W_JIN1684,W_JTN1755,Service connector,0.8,150,Copper
+W_PSC1300,W_JIN1684,W_JTN1756,Service connector,0.8,140,Copper
+W_PSC1301,W_JIN1684,W_JTN1757,Service connector,0.8,150,Copper
+W_PSC1302,W_JIN1684,W_JTN1758,Service connector,0.8,150,Copper
+W_PSC1303,W_JIN1685,W_JTN1759,Service connector,0.8,140,Copper
+W_PSC1304,W_JIN1685,W_JTN1760,Service connector,0.8,150,Copper
+W_PSC1305,W_JIN1685,W_JTN1761,Service connector,0.8,140,Copper
+W_PSC1306,W_JIN1685,W_JTN1762,Service connector,0.8,150,Copper
+W_PSC1307,W_JIN1686,W_JTN1763,Service connector,0.8,150,Copper
+W_PSC1308,W_JIN1686,W_JTN1764,Service connector,0.8,150,Copper
+W_PSC1309,W_JIN1686,W_JTN1765,Service connector,0.8,140,Copper
+W_PSC1310,W_JIN1686,W_JTN1766,Service connector,0.8,150,Copper
+W_PSC1311,W_JIN1687,W_JTN1768,Service connector,0.8,140,Copper
+W_PSC1312,W_JIN1687,W_JTN1767,Service connector,0.8,140,Copper
+W_PSC1313,W_JIN1687,W_JTN1769,Service connector,0.8,150,Plastic
+W_PSC1314,W_JIN1687,W_JTN1770,Service connector,0.8,150,Plastic
+W_PSC1315,W_JIN1688,W_JTN1771,Service connector,12,150,Plastic
+W_PSC1316,W_JIN1688,W_JTN1772,Service connector,12,150,Plastic
+W_PSC1317,W_JIN1688,W_JTN1773,Service connector,12,140,Copper
+W_PSC1318,W_JIN1688,W_JTN1774,Service connector,12,140,Copper
+W_PSC1319,W_JIN1689,W_JTN1775,Service connector,12,150,Plastic
+W_PSC1320,W_JIN1689,W_JTN1776,Service connector,12,140,Copper
+W_PSC1321,W_JIN1689,W_JTN1777,Service connector,12,150,Plastic
+W_PSC1322,W_JIN1689,W_JTN1778,Service connector,12,150,Plastic
+W_PSC1323,W_JIN1690,W_JTN1779,Service connector,12,150,Plastic
+W_PSC1324,W_JIN1690,W_JTN1780,Service connector,12,140,Copper
+W_PSC1325,W_JIN1690,W_JTN1781,Service connector,12,140,Copper
+W_PSC1326,W_JIN1690,W_JTN1782,Service connector,12,150,Plastic
+W_PSC1327,W_JIN1691,W_JTN1783,Service connector,12,150,Plastic
+W_PSC1328,W_JIN1691,W_JTN1784,Service connector,12,150,Plastic
+W_PSC1329,W_JIN1691,W_JTN1785,Service connector,12,150,Plastic
+W_PSC1330,W_JIN1691,W_JTN1786,Service connector,12,140,Copper
+W_PSC1331,W_JIN1692,W_JTN1787,Service connector,12,140,Copper
+W_PSC1332,W_JIN1692,W_JTN1788,Service connector,12,140,Copper
+W_PSC1333,W_JIN1692,W_JTN1789,Service connector,12,150,Plastic
+W_PSC1334,W_JIN1692,W_JTN1790,Service connector,12,150,Plastic
+W_PSC1335,W_JIN1693,W_JTN1791,Service connector,12,140,Copper
+W_PSC1336,W_JIN1693,W_JTN1792,Service connector,12,140,Copper
+W_PSC1337,W_JIN1693,W_JTN1793,Service connector,12,150,Plastic
+W_PSC1338,W_JIN1693,W_JTN1794,Service connector,12,150,Plastic
+W_PSC1339,W_JIN1694,W_JTN1795,Service connector,12,140,Copper
+W_PSC1340,W_JIN1694,W_JTN1796,Service connector,12,150,Plastic
+W_PSC1341,W_JIN1694,W_JTN1797,Service connector,12,150,Plastic
+W_PSC1342,W_JIN1694,W_JTN1798,Service connector,12,140,Copper
+W_PSC1343,W_JIN1695,W_JTN1799,Service connector,12,140,Copper
+W_PSC1344,W_JIN1695,W_JTN1800,Service connector,12,140,Copper
+W_PSC1345,W_JIN1695,W_JTN1801,Service connector,12,150,Plastic
+W_PSC1346,W_JIN1695,W_JTN1802,Service connector,12,150,Plastic
+W_PSC1347,W_JIN1696,W_JTN1803,Service connector,12,140,Copper
+W_PSC1348,W_JIN1696,W_JTN1804,Service connector,12,150,Plastic
+W_PSC1349,W_JIN1696,W_JTN1805,Service connector,12,150,Plastic
+W_PSC1350,W_JIN1696,W_JTN1806,Service connector,12,150,Plastic
+W_PSC1351,W_JIN1697,W_JTN1807,Service connector,12,150,Plastic
+W_PSC1352,W_JIN1697,W_JTN1808,Service connector,12,140,Copper
+W_PSC1353,W_JIN1697,W_JTN1809,Service connector,12,150,Plastic
+W_PSC1354,W_JIN1697,W_JTN1810,Service connector,12,150,Plastic
+W_PSC1355,W_JIN1698,W_JTN1811,Service connector,12,150,Plastic
+W_PSC1356,W_JIN1698,W_JTN1812,Service connector,12,150,Plastic
+W_PSC1357,W_JIN1698,W_JTN1813,Service connector,12,140,Copper
+W_PSC1358,W_JIN1698,W_JTN1814,Service connector,12,150,Plastic
+W_PSC1359,W_JIN1699,W_JTN1815,Service connector,12,150,Plastic
+W_PSC1360,W_JIN1699,W_JTN1816,Service connector,12,150,Plastic
+W_PSC1361,W_JIN1699,W_JTN1817,Service connector,12,150,Plastic
+W_PSC1362,W_JIN1699,W_JTN1818,Service connector,12,140,Copper
+W_PSC1363,W_JIN1700,W_JTN1819,Service connector,12,140,Copper
+W_PSC1364,W_JIN1700,W_JTN1820,Service connector,12,150,Plastic
+W_PSC1365,W_JIN1700,W_JTN1821,Service connector,12,140,Copper
+W_PSC1366,W_JIN1700,W_JTN1822,Service connector,12,150,Plastic
+W_PSC1367,W_JIN1701,W_JTN1823,Service connector,12,150,Plastic
+W_PSC1368,W_JIN1701,W_JTN1824,Service connector,12,140,Copper
+W_PSC1369,W_JIN1701,W_JTN1825,Service connector,12,140,Copper
+W_PSC1370,W_JIN1701,W_JTN1826,Service connector,12,150,Plastic
+W_PSC1371,W_JIN1702,W_JTN1827,Service connector,12,140,Copper
+W_PSC1372,W_JIN1702,W_JTN1828,Service connector,12,150,Plastic
+W_PSC1373,W_JIN1702,W_JTN1829,Service connector,12,150,Plastic
+W_PSC1374,W_JIN1702,W_JTN1830,Service connector,12,150,Plastic
+W_PSC1375,W_JIN1703,W_JTN1831,Service connector,12,150,Plastic
+W_PSC1376,W_JIN1703,W_JTN1832,Service connector,12,150,Plastic
+W_PSC1377,W_JIN1703,W_JTN1833,Service connector,12,150,Plastic
+W_PSC1378,W_JIN1703,W_JTN1834,Service connector,12,140,Copper
+W_PV1,W_JVN1464,W_JVN1465,Short pipe,12,150,Copper
+W_PV2,W_JVN1462,W_JVN1463,Short pipe,12,150,Copper
+W_PV3,W_JVN1459,W_JVN1460,Short pipe,12,150,Copper
+W_PV4,W_JVN1457,W_JVN1458,Short pipe,12,150,Copper
+W_PV5,W_JVN1454,W_JVN1455,Short pipe,12,150,Copper
+W_PV6,W_JVN1452,W_JVN1453,Short pipe,12,150,Copper
+W_PV7,W_JVN1449,W_JVN1450,Short pipe,12,150,Copper
+W_PV8,W_JVN1445,W_JVN1446,Short pipe,12,150,Copper
+W_PV9,W_JVN1185,W_JVN1186,Short pipe,12,150,Copper
+W_PV10,W_JVN1182,W_JVN1183,Short pipe,12,150,Copper
+W_PV11,W_JVN1174,W_JVN1175,Short pipe,12,150,Copper
+W_PV12,W_JVN1177,W_JVN1178,Short pipe,12,150,Copper
+W_PV13,W_JVN1164,W_JVN1165,Short pipe,12,150,Copper
+W_PV14,W_JVN1160,W_JVN1161,Short pipe,12,150,Copper
+W_PV15,W_JVN1181,W_JVN1419,Short pipe,12,150,Copper
+W_PV16,W_JVN1157,W_JVN1158,Short pipe,12,150,Copper
+W_PV17,W_JVN1180,W_JVN1416,Short pipe,12,150,Copper
+W_PV18,W_JVN1190,W_JVN1191,Short pipe,12,150,Copper
+W_PV19,W_JVN1245,W_JVN1246,Short pipe,12,150,Copper
+W_PV20,W_JVN1132,W_JVN1247,Short pipe,12,150,Copper
+W_PV21,W_JVN1125,W_JVN1170,Short pipe,12,150,Copper
+W_PV22,W_JVN1133,W_JVN1134,Short pipe,12,150,Copper
+W_PV23,W_JVN1135,W_JVN1136,Short pipe,12,150,Copper
+W_PV24,W_JVN1167,W_JVN1168,Short pipe,12,150,Copper
+W_PV25,W_JVN1112,W_JVN1113,Short pipe,12,150,Copper
+W_PV26,W_JVN1117,W_JVN1118,Short pipe,12,150,Copper
+W_PV27,W_JVN1034,W_JVN1035,Short pipe,12,150,Copper
+W_PV28,W_JVN1064,W_JVN1065,Short pipe,12,150,Copper
+W_PV29,W_JVN1042,W_JVN1043,Short pipe,12,150,Copper
+W_PV30,W_JVN1058,W_JVN1059,Short pipe,12,150,Copper
+W_PV31,W_JVN1063,W_JVN1130,Short pipe,12,150,Copper
+W_PV32,W_JVN1052,W_JVN1119,Short pipe,12,150,Copper
+W_PV33,W_JVN1129,W_JVN1244,Short pipe,12,150,Copper
+W_PV34,W_JVN1197,W_JVN1198,Short pipe,12,150,Copper
+W_PV35,W_JVN1242,W_JVN1243,Short pipe,12,150,Copper
+W_PV36,W_JVN1202,W_JVN1203,Short pipe,12,150,Copper
+W_PV37,W_JVN1206,W_JVN1207,Short pipe,12,150,Copper
+W_PV38,W_JVN1237,W_JVN1238,Short pipe,12,150,Copper
+W_PV39,W_JVN1239,W_JVN1240,Short pipe,12,150,Copper
+W_PV40,W_JVN1053,W_JVN1241,Short pipe,12,150,Copper
+W_PV41,W_JVN1045,W_JVN1046,Short pipe,12,150,Copper
+W_PV42,W_JVN1054,W_JVN1055,Short pipe,12,150,Copper
+W_PV43,W_JVN1056,W_JVN1057,Short pipe,12,150,Copper
+W_PV44,W_JVN894,W_JVN895,Short pipe,12,150,Copper
+W_PV45,W_JVN918,W_JVN919,Short pipe,12,150,Copper
+W_PV46,W_JVN921,W_JVN1236,Short pipe,12,150,Copper
+W_PV47,W_JVN926,W_JVN927,Short pipe,12,150,Copper
+W_PV48,W_JVN922,W_JVN923,Short pipe,12,150,Copper
+W_PV49,W_JVN924,W_JVN925,Short pipe,12,150,Copper
+W_PV50,W_JVN1212,W_JVN1211,Short pipe,12,150,Copper
+W_PV51,W_JVN1234,W_JVN1235,Short pipe,12,150,Copper
+W_PV52,W_JVN1215,W_JVN1216,Short pipe,12,150,Copper
+W_PV53,W_JVN912,W_JVN913,Short pipe,12,150,Copper
+W_PV54,W_JVN909,W_JVN910,Short pipe,12,150,Copper
+W_PV55,W_JVN1219,W_JVN1220,Short pipe,12,150,Copper
+W_PV56,W_JVN1222,W_JVN1223,Short pipe,12,150,Copper
+W_PV57,W_JVN907,W_JVN1406,Short pipe,12,150,Copper
+W_PV58,W_JVN1233,W_JVN1420,Short pipe,12,150,Copper
+W_PV59,W_JVN833,W_JVN834,Short pipe,12,150,Copper
+W_PV60,W_JVN1226,W_JVN1227,Short pipe,12,150,Copper
+W_PV61,W_JVN1447,W_JVN1448,Short pipe,12,150,Copper
+W_PV62,W_JVN1231,W_JVN1232,Short pipe,12,150,Copper
+W_PV63,W_JVN1022,W_JVN1405,Short pipe,12,150,Copper
+W_PV64,W_JVN1020,W_JVN1021,Short pipe,12,150,Copper
+W_PV65,W_JVN1018,W_JVN1019,Short pipe,12,150,Copper
+W_PV66,W_JVN1421,W_JVN1422,Short pipe,12,150,Copper
+W_PV67,W_JVN1423,W_JVN1424,Short pipe,12,150,Copper
+W_PV68,W_JVN1443,W_JVN1444,Short pipe,12,150,Copper
+W_PV69,W_JVN1425,W_JVN1426,Short pipe,12,150,Copper
+W_PV70,W_JVN1428,W_JVN1429,Short pipe,12,150,Copper
+W_PV71,W_JVN1432,W_JVN1433,Short pipe,12,150,Copper
+W_PV72,W_JVN1434,W_JVN1435,Short pipe,12,150,Copper
+W_PV73,W_JVN1436,W_JVN1437,Short pipe,12,150,Copper
+W_PV74,W_JVN1438,W_JVN1439,Short pipe,12,150,Copper
+W_PV75,W_JVN1440,W_JVN1441,Short pipe,12,150,Copper
+W_PV76,W_JVN1489,W_JVN1490,Short pipe,12,150,Copper
+W_PV77,W_JVN866,W_JVN1410,Short pipe,12,150,Copper
+W_PV78,W_JVN1408,W_JVN1409,Short pipe,12,150,Copper
+W_PV79,W_JVN863,W_JVN867,Short pipe,12,150,Copper
+W_PV80,W_JVN860,W_JVN861,Short pipe,12,150,Copper
+W_PV81,W_JVN856,W_JVN857,Short pipe,12,150,Copper
+W_PV82,W_JVN854,W_JVN855,Short pipe,12,150,Copper
+W_PV83,W_JVN850,W_JVN851,Short pipe,12,150,Copper
+W_PV84,W_JVN843,W_JVN844,Short pipe,12,150,Copper
+W_PV85,W_JVN846,W_JVN847,Short pipe,12,150,Copper
+W_PV86,W_JVN868,W_JVN1411,Short pipe,12,150,Copper
+W_PV87,W_JVN1023,W_JVN1412,Short pipe,12,150,Copper
+W_PV88,W_JVN1015,W_JVN1016,Short pipe,12,150,Copper
+W_PV89,W_JVN1013,W_JVN1014,Short pipe,12,150,Copper
+W_PV90,W_JVN1009,W_JVN1010,Short pipe,12,150,Copper
+W_PV91,W_JVN1005,W_JVN1006,Short pipe,12,150,Copper
+W_PV92,W_JVN1003,W_JVN1004,Short pipe,12,150,Copper
+W_PV93,W_JVN1001,W_JVN1002,Short pipe,12,150,Copper
+W_PV94,W_JVN999,W_JVN1000,Short pipe,12,150,Copper
+W_PV95,W_JVN1414,W_JVN1415,Short pipe,12,150,Copper
+W_PV96,W_JVN1413,W_JVN1488,Short pipe,12,150,Copper
+W_PV97,W_JVN1485,W_JVN1486,Short pipe,12,150,Copper
+W_PV98,W_JVN1483,W_JVN1484,Short pipe,12,150,Copper
+W_PV99,W_JVN1481,W_JVN1482,Short pipe,12,150,Copper
+W_PV100,W_JVN1477,W_JVN1478,Short pipe,12,150,Copper
+W_PV101,W_JVN1473,W_JVN1475,Short pipe,12,150,Copper
+W_PV102,W_JVN1385,W_JVN1386,Short pipe,12,150,Copper
+W_PV103,W_JVN1382,W_JVN1383,Short pipe,12,150,Copper
+W_PV104,W_JVN1380,W_JVN1381,Short pipe,12,150,Copper
+W_PV105,W_JVN1378,W_JVN1379,Short pipe,12,150,Copper
+W_PV106,W_JVN1376,W_JVN1377,Short pipe,12,150,Copper
+W_PV108,W_JVN1374,W_JVN1375,Short pipe,12,150,Copper
+W_PV109,W_JVN1372,W_JVN1373,Short pipe,12,150,Copper
+W_PV110,W_JVN1369,W_JVN1370,Short pipe,12,150,Copper
+W_PV111,W_JVN1367,W_JVN1368,Short pipe,12,150,Copper
+W_PV112,W_JVN1364,W_JVN1365,Short pipe,12,150,Copper
+W_PV113,W_JVN1362,W_JVN1363,Short pipe,12,150,Copper
+W_PV114,W_JVN1360,W_JVN1361,Short pipe,12,150,Copper
+W_PV115,W_JVN1358,W_JVN1359,Short pipe,12,150,Copper
+W_PV116,W_JVN1356,W_JVN1357,Short pipe,12,150,Copper
+W_PV118,W_JVN1354,W_JVN1355,Short pipe,12,150,Copper
+W_PV119,W_JVN1387,W_JVN1388,Short pipe,12,150,Copper
+W_PV120,W_JVN991,W_JVN992,Short pipe,12,150,Copper
+W_PV121,W_JVN989,W_JVN990,Short pipe,12,150,Copper
+W_PV122,W_JVN987,W_JVN988,Short pipe,12,150,Copper
+W_PV124,W_JVN993,W_JVN994,Short pipe,12,150,Copper
+W_PV125,W_JVN984,W_JVN1353,Short pipe,12,150,Copper
+W_PV126,W_JVN1350,W_JVN1351,Short pipe,12,150,Copper
+W_PV127,W_JVN1346,W_JVN1492,Short pipe,12,150,Copper
+W_PV128,W_JVN1347,W_JVN1348,Short pipe,12,150,Copper
+W_PV129,W_JVN1337,W_JVN1345,Short pipe,12,150,Copper
+W_PV130,W_JVN1334,W_JVN1335,Short pipe,12,150,Copper
+W_PV131,W_JVN1339,W_JVN1340,Short pipe,12,150,Copper
+W_PV132,W_JVN960,W_JVN1343,Short pipe,12,150,Copper
+W_PV133,W_JVN959,W_JVN1329,Short pipe,12,150,Copper
+W_PV134,W_JVN966,W_JVN967,Short pipe,12,150,Copper
+W_PV135,W_JVN962,W_JVN963,Short pipe,12,150,Copper
+W_PV136,W_JVN955,W_JVN956,Short pipe,12,150,Copper
+W_PV137,W_JVN950,W_JVN951,Short pipe,12,150,Copper
+W_PV138,W_JVN12,W_JVN969,Short pipe,12,150,Copper
+W_PV139,W_JVN946,W_JVN947,Short pipe,12,150,Copper
+W_PV140,W_JVN970,W_JVN971,Short pipe,12,150,Copper
+W_PV141,W_JVN997,W_JVN998,Short pipe,12,150,Copper
+W_PV142,W_JVN940,W_JVN941,Short pipe,12,150,Copper
+W_PV143,W_JVN1326,W_JVN1327,Short pipe,12,150,Copper
+W_PV144,W_JVN1322,W_JVN1323,Short pipe,12,150,Copper
+W_PV145,W_JVN933,W_JVN1101,Short pipe,12,150,Copper
+W_PV146,W_JVN1095,W_JVN1096,Short pipe,12,150,Copper
+W_PV147,W_JVN1091,W_JVN1092,Short pipe,12,150,Copper
+W_PV148,W_JVN1087,W_JVN1088,Short pipe,12,150,Copper
+W_PV149,W_JVN1082,W_JVN1083,Short pipe,12,150,Copper
+W_PV150,W_JVN841,W_JVN842,Short pipe,12,150,Copper
+W_PV151,W_JVN975,W_JVN976,Short pipe,12,150,Copper
+W_PV152,W_JVN838,W_JVN839,Short pipe,12,150,Copper
+W_PV153,W_JVN979,W_JVN980,Short pipe,12,150,Copper
+W_PV154,W_JVN836,W_JVN837,Short pipe,12,150,Copper
+W_PV155,W_JVN982,W_JVN983,Short pipe,12,150,Copper
+W_PV156,W_JVN822,W_JVN823,Short pipe,12,150,Copper
+W_PV157,W_JVN819,W_JVN820,Short pipe,12,150,Copper
+W_PV158,W_JVN873,W_JVN874,Short pipe,12,150,Copper
+W_PV159,W_JVN826,W_JVN827,Short pipe,12,150,Copper
+W_PV160,W_JVN870,W_JVN871,Short pipe,12,150,Copper
+W_PV162,W_JVN817,W_JVN818,Short pipe,12,150,Copper
+W_PV163,W_JVN829,W_JVN830,Short pipe,12,150,Copper
+W_PV164,W_JVN879,W_JVN880,Short pipe,12,150,Copper
+W_PV165,W_JVN905,W_JVN906,Short pipe,12,150,Copper
+W_PV166,W_JVN902,W_JVN903,Short pipe,12,150,Copper
+W_PV167,W_JVN928,W_JVN929,Short pipe,12,150,Copper
+W_PV168,W_JVN930,W_JVN931,Short pipe,12,150,Copper
+W_PV169,W_JVN1254,W_JVN1255,Short pipe,12,150,Copper
+W_PV170,W_JVN1286,W_JVN1287,Short pipe,12,150,Copper
+W_PV172,W_JVN1468,W_JVN1469,Short pipe,12,150,Copper
+W_PV173,W_JVN1263,W_JVN1264,Short pipe,12,150,Copper
+W_PV174,W_JVN665,W_JVN1259,Short pipe,12,150,Copper
+W_PV175,W_JVN884,W_JVN885,Short pipe,12,150,Copper
+W_PV176,W_JVN932,W_JVN1126,Short pipe,12,150,Copper
+W_PV177,W_JVN888,W_JVN889,Short pipe,12,150,Copper
+W_PV179,W_JVN1275,W_JVN1276,Short pipe,12,150,Copper
+W_PV180,W_JVN1152,W_JVN1153,Short pipe,12,150,Copper
+W_PV181,W_JVN1137,W_JVN1138,Short pipe,12,150,Copper
+W_PV182,W_JVN1139,W_JVN1140,Short pipe,12,150,Copper
+W_PV183,W_JVN1103,W_JVN1104,Short pipe,12,150,Copper
+W_PV184,W_JVN1026,W_JVN1027,Short pipe,12,150,Copper
+W_PV185,W_JVN1060,W_JVN1061,Short pipe,12,150,Copper
+W_PV186,W_JVN1078,W_JVN1079,Short pipe,12,150,Copper
+W_PV187,W_JVN659,W_JVN1283,Short pipe,12,150,Copper
+W_PV188,W_JVN1292,W_JVN1293,Short pipe,12,150,Copper
+W_PV189,W_JVN1298,W_JVN1319,Short pipe,12,150,Copper
+W_PV191,W_JVN1305,W_JVN1317,Short pipe,12,150,Copper
+W_PV192,W_JVN1314,W_JVN1315,Short pipe,12,150,Copper
+W_PV193,W_JVN1300,W_JVN1301,Short pipe,12,150,Copper
+W_PV194,W_JVN1131,W_JVN1299,Short pipe,12,150,Copper
+W_PV195,W_JVN1074,W_JVN1075,Short pipe,12,150,Copper
+W_PV196,W_JVN1310,W_JVN1311,Short pipe,12,150,Copper
+W_PV197,W_JVN1306,W_JVN1307,Short pipe,12,150,Copper
+W_PV198,W_JVN1270,W_JVN1271,Short pipe,12,150,Copper
+W_PV199,W_JVN1144,W_JVN1145,Short pipe,12,150,Copper
+W_PV200,W_JVN1071,W_JVN1072,Short pipe,12,150,Copper
+W_PV201,W_JVN1249,W_JVN1250,Short pipe,12,150,Copper
+W_PV202,W_JVN1067,W_JVN1150,Short pipe,12,150,Copper
+W_PV1028,W_JVN1409,W_JVN1408,Short pipe,12,150,Copper
+W_WP1,W_R1,W_JIN1522,Pump,,,
+W_WP2,W_R1,W_JIN1522,Pump,,,
+W_WP3,W_R1,W_JIN1522,Pump,,,
+W_WP4,W_R1,W_JIN1522,Pump,,,
+W_WP5,W_JIN1471,W_J1,Pump,,,
+W_WP6,W_JIN1471,W_J1,Pump,,,
+W_WP7,W_JIN1471,W_J1,Pump,,,
+W_WP8,W_R2,W_JIN1495,Pump,,,
