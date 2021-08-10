@@ -1,3 +1,4 @@
+from os import mkdir
 import scipy.spatial as spatial
 import numpy as np
 import pandas as pd
@@ -12,6 +13,8 @@ from bokeh.tile_providers import get_provider, Vendors
 from shapely.geometry import LineString, Point
 
 from pathlib import Path
+import glob
+import os
 
 
 class RadialDisruption:
@@ -97,29 +100,45 @@ class RadialDisruption:
         :type plot_components: bool, optional
         """
 
-        # affected nodes
-        points = np.array([list(G.nodes[node]["coord"]) for node in G.nodes.keys()])
-
-        point_tree = spatial.KDTree(points)
-
-        node_indexes = point_tree.query_ball_point(
-            list(self.point_of_occurrence), self.radius_of_impact
-        )
-
-        affected_nodes = [list(G.nodes.keys())[index] for index in node_indexes]
-        print(f"There are {len(affected_nodes)} affected infrastructure nodes.")
-
-        for node in G.nodes.keys():
-            G.nodes[node]["fail_status"] = (
-                "Disrupted" if node in affected_nodes else "Functional"
-            )
-
-        # affected links
         x_po, y_po = self.point_of_occurrence
         p = Point(x_po, y_po)
         c = p.buffer(self.radius_of_impact)
 
-        affected_links = []
+        # affected nodes
+        affected_nodes = {
+            "water": [],
+            "power": [],
+            "transpo": [],
+        }
+        for _, node in enumerate(G.nodes.keys()):
+            point = Point(G.nodes[node]["coord"])
+            if (point.intersects(c)) or (point.within(c)):
+                G.nodes[node]["fail_status"] = "Disrupted"
+                if G.nodes[node]["node_type"] == "power_node":
+                    if node not in affected_nodes["power"]:
+                        affected_nodes["power"].append(node)
+                elif G.nodes[node]["node_type"] == "water_node":
+                    if node not in affected_nodes["water"]:
+                        affected_nodes["water"].append(node)
+                elif G.nodes[node]["node_type"] == "transpo_node":
+                    if node not in affected_nodes["transpo"]:
+                        affected_nodes["transpo"].append(node)
+            else:
+                if node not in affected_nodes:
+                    G.nodes[node]["fail_status"] = "Functional"
+
+        print(
+            f"There are {len(affected_nodes['water']) + len(affected_nodes['power']) + len(affected_nodes['transpo'])} affected infrastructure nodes."
+        )
+
+        # affected links
+
+        # affected_links = []
+        affected_links = {
+            "water": [],
+            "power": [],
+            "transpo": [],
+        }
         for link in G.edges.keys():
             start_node, end_node = link
             start_coords = G.nodes[start_node]["coord"]
@@ -129,11 +148,26 @@ class RadialDisruption:
 
             if c.intersection(l).is_empty == False or l.within(c):
                 G.edges[link]["fail_status"] = "Disrupted"
-                affected_links.append(G.edges[link]["id"])
+                if G.edges[link]["link_type"] == "Power":
+                    if G.edges[link]["id"] not in affected_links["power"]:
+                        affected_links["power"].append(G.edges[link]["id"])
+                    elif G.edges[link]["link_type"] == "Water":
+                        if G.edges[link]["id"] not in affected_links["water"]:
+                            affected_links["water"].append(G.edges[link]["id"])
+                    elif G.edges[link]["link_type"] == "Transportation":
+                        if G.edges[link]["id"] not in affected_links["transpo"]:
+                            affected_links["transpo"].append(G.edges[link]["id"])
             else:
-                G.edges[link]["fail_status"] = "Functional"
+                if (
+                    G.edges[link]["id"] not in affected_links["power"]
+                    and G.edges[link]["id"] not in affected_links["water"]
+                    and G.edges[link]["id"] not in affected_links["transpo"]
+                ):
+                    G.edges[link]["fail_status"] = "Functional"
 
-        print(f"There are {len(affected_links)} affected infrastructure links.")
+        print(
+            f"There are {len(affected_links['water']) + len(affected_links['power']) + len(affected_links['transpo'])} affected infrastructure links."
+        )
 
         self.affected_nodes = affected_nodes
         self.affected_links = affected_links
@@ -144,8 +178,8 @@ class RadialDisruption:
 
             p = figure(
                 background_fill_color="white",
-                plot_width=700,
-                height=400,
+                plot_width=1000,
+                height=700,
                 title=f"{self.name}: Disrupted components",
                 x_range=(1000, 8000),
                 y_range=(1000, 6600),
@@ -282,31 +316,44 @@ class RadialDisruption:
         )
 
         # add failed nodes
-        for _, node in enumerate(self.affected_nodes):
-            disrupt_file = disrupt_file.append(
-                {
-                    "time_stamp": self.time_of_occurrence,
-                    "components": node,
-                    "fail_perc": 50,
-                },
-                ignore_index=True,
-            )
+        for _, infra in enumerate(self.affected_nodes.keys()):
+            for _, node in enumerate(self.affected_nodes[infra]):
+                disrupt_file = disrupt_file.append(
+                    {
+                        "time_stamp": self.time_of_occurrence,
+                        "components": node,
+                        "fail_perc": 50,
+                    },
+                    ignore_index=True,
+                )
 
         # add failed links
-        for _, link in enumerate(self.affected_links):
-            disrupt_file = disrupt_file.append(
-                {
-                    "time_stamp": self.time_of_occurrence,
-                    "components": link,
-                    "fail_perc": 50,
-                },
-                ignore_index=True,
-            )
+        for _, infra in enumerate(self.affected_links):
+            for _, link in enumerate(self.affected_links[infra]):
+                disrupt_file = disrupt_file.append(
+                    {
+                        "time_stamp": self.time_of_occurrence,
+                        "components": link,
+                        "fail_perc": 50,
+                    },
+                    ignore_index=True,
+                )
         if location is not None:
+            test_counter = len(os.listdir(location))
+
+            if not os.path.exists(f"{location}/test{test_counter}"):
+                os.makedirs(f"{location}/test{test_counter}_{self.name}")
+
             disrupt_file.to_csv(
-                Path(location) / "disrupt_file.csv", index=False, sep=","
+                Path(location) / f"test{test_counter}_{self.name}/disruption_file.csv",
+                index=False,
+                sep=",",
             )
-            print(f"Successfully saved the disruption file to {location}")
+            print(
+                f"Successfully saved the disruption file to {location}/test{test_counter}_{self.name}/"
+            )
+        else:
+            print("Target location for saving the file not provided.")
 
 
 class TrackDisruption:
@@ -378,7 +425,11 @@ class TrackDisruption:
         :type plot_components: bool, optional
         """
         # nodes
-        affected_nodes = []
+        affected_nodes = {
+            "water": [],
+            "power": [],
+            "transpo": [],
+        }
         for _, track in enumerate(self.hazard_tracks):
             track_buffer = track.buffer(self.buffer_of_impact)
 
@@ -386,16 +437,29 @@ class TrackDisruption:
                 point = Point(G.nodes[node]["coord"])
                 if (point.intersects(track_buffer)) or (point.within(track_buffer)):
                     G.nodes[node]["fail_status"] = "Disrupted"
-                    if node not in affected_nodes:
-                        affected_nodes.append(node)
+                    if G.nodes[node]["node_type"] == "power_node":
+                        if node not in affected_nodes["power"]:
+                            affected_nodes["power"].append(node)
+                    elif G.nodes[node]["node_type"] == "water_node":
+                        if node not in affected_nodes["water"]:
+                            affected_nodes["water"].append(node)
+                    elif G.nodes[node]["node_type"] == "transpo_node":
+                        if node not in affected_nodes["transpo"]:
+                            affected_nodes["transpo"].append(node)
                 else:
                     if node not in affected_nodes:
                         G.nodes[node]["fail_status"] = "Functional"
 
-        print(f"There are {len(affected_nodes)} affected infrastructure nodes.")
+        print(
+            f"There are {len(affected_nodes['water']) + len(affected_nodes['power']) + len(affected_nodes['transpo'])} affected infrastructure nodes."
+        )
 
         # links
-        affected_links = []
+        affected_links = {
+            "water": [],
+            "power": [],
+            "transpo": [],
+        }
         for _, track in enumerate(self.hazard_tracks):
             track_buffer = track.buffer(self.buffer_of_impact)
 
@@ -408,14 +472,27 @@ class TrackDisruption:
 
                 if (l.intersects(track_buffer)) or (l.within(track_buffer)):
                     G.edges[link]["fail_status"] = "Disrupted"
-                    if G.edges[link]["id"] not in affected_links:
-                        affected_links.append(G.edges[link]["id"])
+                    if G.edges[link]["link_type"] == "Power":
+                        if G.edges[link]["id"] not in affected_links["power"]:
+                            affected_links["power"].append(G.edges[link]["id"])
+                    elif G.edges[link]["link_type"] == "Water":
+                        if G.edges[link]["id"] not in affected_links["water"]:
+                            affected_links["water"].append(G.edges[link]["id"])
+                    elif G.edges[link]["link_type"] == "Transportation":
+                        if G.edges[link]["id"] not in affected_links["transpo"]:
+                            affected_links["transpo"].append(G.edges[link]["id"])
 
                 else:
-                    if G.edges[link]["id"] not in affected_links:
+                    if (
+                        G.edges[link]["id"] not in affected_links["power"]
+                        and G.edges[link]["id"] not in affected_links["water"]
+                        and G.edges[link]["id"] not in affected_links["transpo"]
+                    ):
                         G.edges[link]["fail_status"] = "Functional"
 
-        print(f"There are {len(affected_links)} affected infrastructure links.")
+        print(
+            f"There are {len(affected_links['water']) + len(affected_links['power']) + len(affected_links['transpo'])} affected infrastructure links."
+        )
 
         self.affected_nodes = affected_nodes
         self.affected_links = affected_links
@@ -426,8 +503,8 @@ class TrackDisruption:
 
             p = figure(
                 background_fill_color="white",
-                plot_width=700,
-                height=400,
+                plot_width=1000,
+                height=700,
                 title=f"{self.name}: Disrupted components",
                 x_range=(1000, 8000),
                 y_range=(1000, 6600),
@@ -561,28 +638,46 @@ class TrackDisruption:
         )
 
         # add failed nodes
-        for _, node in enumerate(self.affected_nodes):
-            disrupt_file = disrupt_file.append(
-                {
-                    "time_stamp": self.time_of_occurrence,
-                    "components": node,
-                    "fail_perc": 50,
-                },
-                ignore_index=True,
-            )
+        for _, infra in enumerate(self.affected_nodes.keys()):
+            for _, node in enumerate(self.affected_nodes[infra]):
+                disrupt_file = disrupt_file.append(
+                    {
+                        "time_stamp": self.time_of_occurrence,
+                        "components": node,
+                        "fail_perc": 50,
+                    },
+                    ignore_index=True,
+                )
 
         # add failed links
-        for _, link in enumerate(self.affected_links):
-            disrupt_file = disrupt_file.append(
-                {
-                    "time_stamp": self.time_of_occurrence,
-                    "components": link,
-                    "fail_perc": 50,
-                },
-                ignore_index=True,
-            )
+        for _, infra in enumerate(self.affected_links):
+            for _, link in enumerate(self.affected_links[infra]):
+                disrupt_file = disrupt_file.append(
+                    {
+                        "time_stamp": self.time_of_occurrence,
+                        "components": link,
+                        "fail_perc": 50,
+                    },
+                    ignore_index=True,
+                )
         if location is not None:
+            test_counter = len(os.listdir(location))
+
+            if not os.path.exists(f"{location}/test{test_counter}"):
+                os.makedirs(f"{location}/test{test_counter}_{self.name}")
+
             disrupt_file.to_csv(
-                Path(location) / "disrupt_file.csv", index=False, sep=","
+                Path(location) / f"test{test_counter}_{self.name}/disruption_file.csv",
+                index=False,
+                sep=",",
             )
-            print(f"Successfully saved the disruption file to {location}")
+            print(
+                f"Successfully saved the disruption file to {location}/test{test_counter}_{self.name}/"
+            )
+        else:
+            print("Target location for saving the file not provided.")
+
+
+class RandomDisruption:
+    def __init__(self, failure_counts=[2, 2], infra_type="Water"):
+        pass

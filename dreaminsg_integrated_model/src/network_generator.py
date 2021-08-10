@@ -331,4 +331,4 @@ def generate_powern(file_name):
 
 # generate networks one by one
 # generate_watern("dreaminsg_integrated_model/data/networks/water/Example_water.inp")
-generate_powern("dreaminsg_integrated_model/data/networks/in2/power/power.json")
+# generate_powern("dreaminsg_integrated_model/data/networks/in2/power/power.json")

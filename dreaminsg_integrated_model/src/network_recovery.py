@@ -131,9 +131,9 @@ class NetworkRecovery:
                             0,
                         )
                     )
-                    # print(
-                    #     f"The power crew is at {self.network.get_power_crew_loc()} at t = {self.next_power_crew_trip_start / 60} minutes. It takes {travel_time} minutes to reach nearest node {nearest_node}, the nearest transportation node from {node}."
-                    # )
+                    print(
+                        f"The power crew is at {self.network.get_power_crew_loc()} at t = {self.next_power_crew_trip_start / 60} minutes. It takes {travel_time} minutes to reach nearest node {nearest_node}, the nearest transportation node from {component}."
+                    )
                     recovery_start = self.next_power_crew_trip_start + travel_time * 60
                     self.network.set_power_crew_loc(nearest_node)
                     self.next_power_crew_trip_start = recovery_start + recovery_time
@@ -196,8 +196,7 @@ class NetworkRecovery:
                     #     f"The transpo crew is at {self.network.get_transpo_crew_loc()} at t = {self.next_power_crew_trip_start / 60} minutes. It takes {travel_time} minutes to reach nearest node {nearest_node}, the nearest transportation node from {node}."
                     # )
                     recovery_start = (
-                        self.next_transpo_crew_trip_start + travel_time * 60,
-                        120,
+                        self.next_transpo_crew_trip_start + travel_time * 60
                     )
                     self.network.set_transpo_crew_loc(nearest_node)
                     self.next_transpo_crew_trip_start = recovery_start + recovery_time

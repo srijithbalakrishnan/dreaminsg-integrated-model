@@ -198,18 +198,6 @@ class IntegratedNetwork(Network):
                 ignore_index=True,
             )
 
-        # for index, row in self.pn.asymmetric_load.iterrows():
-        #     power_nodes = power_nodes.append(
-        #         {
-        #             "id": row["name"],
-        #             "node_type": "power_node",
-        #             "node_category": "Load",
-        #             "x": self.pn.asymmetric_loads_geodata.x[index],
-        #             "y": self.pn.asymmetric_loads_geodata.y[index],
-        #         },
-        #         ignore_index=True,
-        #     )
-
         # power network links
         power_links = pd.DataFrame(
             columns=["id", "link_type", "link_category", "from", "to"]
@@ -250,19 +238,6 @@ class IntegratedNetwork(Network):
                 },
                 ignore_index=True,
             )
-
-        # for _, row in self.pn.asymmetric_load.iterrows():
-        #     print(row["name"], self.pn.bus.name.values[row["bus"]])
-        #     power_links = power_links.append(
-        #         {
-        #             "id": "P_TF" + "".join(list(filter(str.isdigit, row["name"]))),
-        #             "link_type": "Power",
-        #             "link_category": "Load transformer",
-        #             "from": self.pn.bus.name.values[row["bus"]],
-        #             "to": row["name"],
-        #         },
-        #         ignore_index=True,
-        #     )
 
         G_power = nx.from_pandas_edgelist(
             power_links,
