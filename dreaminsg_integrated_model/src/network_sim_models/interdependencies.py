@@ -102,7 +102,7 @@ class DependencyTable:
         )
 
     def add_pump_loadmotor_coupling(self, water_id, power_id):
-        """Creates a pump-on-motor dependency entry in the dependency table.
+        """Creates a pump-on-motor dependency entry in the dependency table when motor is modled as a load.
 
         :param water_id: The name of the pump in the water network model.
         :type water_id: string
