@@ -107,6 +107,12 @@ def get_power_dict():
             "connect_field": "from_bus",
             "repair_time": 3,
         },
+        "LS": {
+            "code": "line",
+            "name": "Line",
+            "connect_field": "from_bus",
+            "repair_time": 3,
+        },
         "TF": {
             "code": "trafo",
             "name": "Transformer",
