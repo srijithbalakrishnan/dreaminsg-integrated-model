@@ -89,8 +89,13 @@ class NetworkRecovery:
                     ignore_index=True,
                 )
 
+                compon_details = interdependencies.get_compon_details(component)
+                if compon_details[0] == "transpo":
+                    self.fail_transpo_link(component)
+
+            self.update_traffic_model()
+
             for _, row in self.network.disruptive_events.iterrows():
-                compon_details = interdependencies.get_compon_details(row[1])
                 self.event_table = self.event_table.append(
                     {
                         "time_stamp": row[0],
@@ -100,9 +105,6 @@ class NetworkRecovery:
                     },
                     ignore_index=True,
                 )
-                if compon_details[0] == "transpo":
-                    self.fail_transpo_link(row[1])
-                    self.update_traffic_model()
 
             for _, component in enumerate(repair_order):
                 compon_details = interdependencies.get_compon_details(component)
@@ -163,9 +165,9 @@ class NetworkRecovery:
                             0,
                         )
                     )
-                    # print(
-                    #     f"The water crew is at {self.network.get_water_crew_loc()} at t = {self.next_water_crew_trip_start / 60} minutes. It takes {travel_time} minutes to reach nearest node {nearest_node}, the nearest transportation node from {node}."
-                    # )
+                    print(
+                        f"The water crew is at {self.network.get_water_crew_loc()} at t = {self.next_water_crew_trip_start / 60} minutes. It takes {travel_time} minutes to reach nearest node {nearest_node}, the nearest transportation node from {component}."
+                    )
                     recovery_start = self.next_water_crew_trip_start + travel_time * 60
                     self.network.set_water_crew_loc(nearest_node)
                     self.next_water_crew_trip_start = recovery_start + recovery_time
@@ -178,8 +180,7 @@ class NetworkRecovery:
                         * 3600
                     )
                     connected_junction = interdependencies.find_connected_transpo_node(
-                        component,
-                        self.network.tn,
+                        component, self.network.tn
                     )
                     nearest_node = connected_junction
 
@@ -192,9 +193,9 @@ class NetworkRecovery:
                             0,
                         )
                     )
-                    # print(
-                    #     f"The transpo crew is at {self.network.get_transpo_crew_loc()} at t = {self.next_power_crew_trip_start / 60} minutes. It takes {travel_time} minutes to reach nearest node {nearest_node}, the nearest transportation node from {node}."
-                    # )
+                    print(
+                        f"The transpo crew is at {self.network.get_transpo_crew_loc()} at t = {self.next_transpo_crew_trip_start / 60} minutes. It takes {travel_time} minutes to reach nearest node {nearest_node}, the nearest transportation node from {component}."
+                    )
                     recovery_start = (
                         self.next_transpo_crew_trip_start + travel_time * 60
                     )
@@ -283,7 +284,7 @@ class NetworkRecovery:
         :type next_sim_time: integer
         """
         curr_event_table = self.event_table[self.event_table.time_stamp == time_stamp]
-        print(self.network.wn.control_name_list)  ###
+        # print(self.network.wn.control_name_list)  ###
 
         for _, row in curr_event_table.iterrows():
             component = row["components"]
@@ -340,9 +341,9 @@ class NetworkRecovery:
                             start_time=time_stamp,
                             end_time=next_sim_time,
                         )
-                        print(
-                            f"The pipe leak control is added between {time_stamp} s and {next_sim_time} s"
-                        )
+                        # print(
+                        #     f"The pipe leak control is added between {time_stamp} s and {next_sim_time} s"
+                        # )
                     elif component_state == "Repairing":
                         self.network.wn.get_link(f"{component}_B").status = 0
                     elif component_state == "Service Restored":
@@ -391,10 +392,7 @@ class NetworkRecovery:
     def update_traffic_model(self):
         """Updates the static traffic assignment model based on current network conditions."""
         self.network.tn.userEquilibrium(
-            "FW",
-            400,
-            1e-4,
-            self.network.tn.averageExcessCost,
+            "FW", 400, 1e-4, self.network.tn.averageExcessCost
         )
 
     def fail_transpo_link(self, link_compon):

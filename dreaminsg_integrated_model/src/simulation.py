@@ -190,14 +190,6 @@ class NetworkSimulation:
                 network_recovery.network.wn.options.time.report_timestep,
             )
 
-            # print(
-            #     "Pump status before updating direct effects: ",
-            #     [
-            #         network_recovery.network.wn.get_link(pump).status
-            #         for pump in network_recovery.network.wn.pump_name_list
-            #     ],
-            # )
-
             # update performance of directly affected components
             network_recovery.update_directly_affected_components(
                 network_recovery.network.wn.options.time.duration,
@@ -207,14 +199,6 @@ class NetworkSimulation:
 
             # run power systems model
             power.run_power_simulation(network_recovery.network.pn)
-
-            # print(
-            #     "Pump status before updating interdependent effects: ",
-            #     [
-            #         network_recovery.network.wn.get_link(pump).status
-            #         for pump in network_recovery.network.wn.pump_name_list
-            #     ],
-            # )
 
             # update networkwide effects
             network_recovery.network.dependency_table.update_dependencies(
@@ -226,13 +210,6 @@ class NetworkSimulation:
 
             # run water network model and print results
 
-            # print(
-            #     "Pump status before simulation: ",
-            #     [
-            #         network_recovery.network.wn.get_link(pump).status
-            #         for pump in network_recovery.network.wn.pump_name_list
-            #     ],
-            # )
             wn_results = water.run_water_simulation(network_recovery.network.wn)
             # print(wn_results.link["status"])
             # print(wn_results.node["demand"])
@@ -308,9 +285,9 @@ class NetworkSimulation:
                     unique_time_differences[index]
                 )
 
-            # print(
-            #      f"Simulation for time {time_stamp / 60} minutes completed successfully"
-            # )
+            print(
+                f"Simulation for time {time_stamp / 60} minutes completed successfully"
+            )
         return resilience_metrics
 
     def write_results(
