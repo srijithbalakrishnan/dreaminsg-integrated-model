@@ -112,7 +112,7 @@ def load_water_network(network_inp, initial_sim_step):
     wn.options.time.duration = initial_sim_step
     wn.options.time.report_timestep = initial_sim_step
     wn.options.time.hydraulic_timestep = initial_sim_step
-    wn.options.hydraulic.demand_model = "PDA"
+    wn.options.hydraulic.demand_model = "DDA"
     print(
         "Water network successfully loaded from {}. The analysis type is set to Pressure Dependent Demand Analysis.".format(
             network_inp
