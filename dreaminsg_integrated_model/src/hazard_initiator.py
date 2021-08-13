@@ -17,10 +17,6 @@ from pathlib import Path
 import glob
 import os
 
-    
-
-    
-    
 class RadialDisruption:
     """Class of disaster where the probability of failure of components reduces with distance from the point of occurrence of the event."""
 
@@ -66,16 +62,16 @@ class RadialDisruption:
             "LS",
             "L",
             "SW"
-        },
-        "water":{
-        "R",
-        "P",
-        "PSC",
-        "PMA",
-        "PV",
-        "T"},
-        "transport":{
-        "L"}}
+            },
+            "water":{
+            "R",
+            "P",
+            "PSC",
+            "PMA",
+            "PV",
+            "T"},
+            "transport":{
+            "L"}}
         return self.fail_compon_dict
 
     def set_point_of_occurrence(self, point_of_occurrence):
@@ -430,16 +426,16 @@ class TrackDisruption:
             "LS",
             "L",
             "SW"
-        },
-        "water":{
-        "R",
-        "P",
-        "PSC",
-        "PMA",
-        "PV",
-        "T"},
-        "transport":{
-        "L"}}
+            },
+            "water":{
+            "R",
+            "P",
+            "PSC",
+            "PMA",
+            "PV",
+            "T"},
+            "transport":{
+            "L"}}
         return self.fail_compon_dict
 
     def set_hazard_tracks(self, hazard_tracks):
@@ -731,8 +727,6 @@ class TrackDisruption:
             if not os.path.exists(f"{location}/test{test_counter}"):
                 os.makedirs(f"{location}/test{test_counter}_{self.name}")
                 
-            #added by geeta
-
             fail_compon_dict=self.get_dict()
             indices=[]
             
@@ -746,7 +740,6 @@ class TrackDisruption:
                     indices.append(index)
                 #disrupt_file=disrupt_file[~disrupt_file['components'].str.contains('W_J|T_J',na=False)]
                
-                
             disrupt_file=disrupt_file.loc[indices]
 
             disrupt_file.to_csv(
