@@ -9,13 +9,13 @@ from bokeh.models import ColumnDataSource, HoverTool
 from bokeh.transform import factor_cmap
 from bokeh.palettes import RdYlGn
 from bokeh.tile_providers import get_provider, Vendors
+import dreaminsg_integrated_model.src.network_sim_models.interdependencies as interdependencies
 
 from shapely.geometry import LineString, Point
 
 from pathlib import Path
 import glob
 import os
-
 
 class RadialDisruption:
     """Class of disaster where the probability of failure of components reduces with distance from the point of occurrence of the event."""
@@ -51,6 +51,28 @@ class RadialDisruption:
 
         self.set_time_of_occurrence(time_of_occurrence)
         print(f"The time of the disruptive event is set to {time_of_occurrence}.")
+    
+    def get_dict(self):
+        self.fail_compon_dict = {
+        "power": {
+            "B",
+            "LO",
+            "LOA",
+            "TF",
+            "LS",
+            "L",
+            "SW"
+            },
+            "water":{
+            "R",
+            "P",
+            "PSC",
+            "PMA",
+            "PV",
+            "T"},
+            "transport":{
+            "L"}}
+        return self.fail_compon_dict
 
     def set_point_of_occurrence(self, point_of_occurrence):
         """Sets the point of occurrence of the radial disruption.
@@ -343,7 +365,25 @@ class RadialDisruption:
 
             if not os.path.exists(f"{location}/test{test_counter}"):
                 os.makedirs(f"{location}/test{test_counter}_{self.name}")
+                
+                                            
+            #added by geeta
 
+            fail_compon_dict=self.get_dict()
+            indices=[]
+            
+            for index, row in disrupt_file.iterrows():             
+                component_details=interdependencies.get_compon_details(row['components'])             
+                if (component_details[1] in fail_compon_dict['power']):
+                    indices.append(index)
+                elif(component_details[1] in fail_compon_dict['water']):
+                    indices.append(index)
+                elif(component_details[1] in fail_compon_dict['transport']):
+                    indices.append(index)
+                #disrupt_file=disrupt_file[~disrupt_file['components'].str.contains('W_J|T_J',na=False)]
+               
+                
+            disrupt_file=disrupt_file.loc[indices]
             disrupt_file.to_csv(
                 Path(location) / f"test{test_counter}_{self.name}/disruption_file.csv",
                 index=False,
@@ -376,6 +416,27 @@ class TrackDisruption:
 
         self.set_time_of_occurrence(time_of_occurrence)
         print(f"The time of the disruptive event is set to {time_of_occurrence}.")
+    def get_dict(self):
+        self.fail_compon_dict = {
+        "power": {
+            "B",
+            "LO",
+            "LOA",
+            "TF",
+            "LS",
+            "L",
+            "SW"
+            },
+            "water":{
+            "R",
+            "P",
+            "PSC",
+            "PMA",
+            "PV",
+            "T"},
+            "transport":{
+            "L"}}
+        return self.fail_compon_dict
 
     def set_hazard_tracks(self, hazard_tracks):
         """Sets the tracks of the track-based hazard from a shapefile.
@@ -665,6 +726,21 @@ class TrackDisruption:
 
             if not os.path.exists(f"{location}/test{test_counter}"):
                 os.makedirs(f"{location}/test{test_counter}_{self.name}")
+                
+            fail_compon_dict=self.get_dict()
+            indices=[]
+            
+            for index, row in disrupt_file.iterrows():             
+                component_details=interdependencies.get_compon_details(row['components'])             
+                if (component_details[1] in fail_compon_dict['power']):
+                    indices.append(index)
+                elif(component_details[1] in fail_compon_dict['water']):
+                    indices.append(index)
+                elif(component_details[1] in fail_compon_dict['transport']):
+                    indices.append(index)
+                #disrupt_file=disrupt_file[~disrupt_file['components'].str.contains('W_J|T_J',na=False)]
+               
+            disrupt_file=disrupt_file.loc[indices]
 
             disrupt_file.to_csv(
                 Path(location) / f"test{test_counter}_{self.name}/disruption_file.csv",
