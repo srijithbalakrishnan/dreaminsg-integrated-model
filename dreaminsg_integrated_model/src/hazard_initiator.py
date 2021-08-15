@@ -1,6 +1,7 @@
 from os import mkdir
 import scipy.spatial as spatial
 import numpy as np
+import random
 import pandas as pd
 
 from bokeh.plotting import figure
@@ -12,10 +13,12 @@ from bokeh.tile_providers import get_provider, Vendors
 import dreaminsg_integrated_model.src.network_sim_models.interdependencies as interdependencies
 
 from shapely.geometry import LineString, Point
+from shapely.ops import nearest_points
 
 from pathlib import Path
 import glob
 import os
+
 
 class RadialDisruption:
     """Class of disaster where the probability of failure of components reduces with distance from the point of occurrence of the event."""
@@ -51,27 +54,15 @@ class RadialDisruption:
 
         self.set_time_of_occurrence(time_of_occurrence)
         print(f"The time of the disruptive event is set to {time_of_occurrence}.")
-    
-    def get_dict(self):
+
+    def set_fail_compon_dict(self):
         self.fail_compon_dict = {
-        "power": {
-            "B",
-            "LO",
-            "LOA",
-            "TF",
-            "LS",
-            "L",
-            "SW"
-            },
-            "water":{
-            "R",
-            "P",
-            "PSC",
-            "PMA",
-            "PV",
-            "T"},
-            "transport":{
-            "L"}}
+            "power": {"B", "LO", "LOA", "TF", "LS", "L", "SW"},
+            "water": {"R", "P", "PSC", "PMA", "PV", "T"},
+            "transport": {"L"},
+        }
+
+    def get_fail_compon_dict(self):
         return self.fail_compon_dict
 
     def set_point_of_occurrence(self, point_of_occurrence):
@@ -123,8 +114,8 @@ class RadialDisruption:
         """
 
         x_po, y_po = self.point_of_occurrence
-        p = Point(x_po, y_po)
-        c = p.buffer(self.radius_of_impact)
+        p_occ = Point(x_po, y_po)
+        c = p_occ.buffer(self.radius_of_impact)
 
         # affected nodes
         affected_nodes = {
@@ -132,19 +123,25 @@ class RadialDisruption:
             "power": [],
             "transpo": [],
         }
+
         for _, node in enumerate(G.nodes.keys()):
             point = Point(G.nodes[node]["coord"])
             if (point.intersects(c)) or (point.within(c)):
-                G.nodes[node]["fail_status"] = "Disrupted"
-                if G.nodes[node]["node_type"] == "power_node":
-                    if node not in affected_nodes["power"]:
-                        affected_nodes["power"].append(node)
-                elif G.nodes[node]["node_type"] == "water_node":
-                    if node not in affected_nodes["water"]:
-                        affected_nodes["water"].append(node)
-                elif G.nodes[node]["node_type"] == "transpo_node":
-                    if node not in affected_nodes["transpo"]:
-                        affected_nodes["transpo"].append(node)
+                node_fail_status = self.assign_node_failure(p_occ, point)
+                if node_fail_status == True:
+                    G.nodes[node]["fail_status"] = "Disrupted"
+
+                    if G.nodes[node]["node_type"] == "power_node":
+                        if node not in affected_nodes["power"]:
+                            affected_nodes["power"].append(node)
+                    elif G.nodes[node]["node_type"] == "water_node":
+                        if node not in affected_nodes["water"]:
+                            affected_nodes["water"].append(node)
+                    elif G.nodes[node]["node_type"] == "transpo_node":
+                        if node not in affected_nodes["transpo"]:
+                            affected_nodes["transpo"].append(node)
+                else:
+                    G.nodes[node]["fail_status"] = "Functional"
             else:
                 if node not in affected_nodes:
                     G.nodes[node]["fail_status"] = "Functional"
@@ -154,13 +151,12 @@ class RadialDisruption:
         )
 
         # affected links
-
-        # affected_links = []
         affected_links = {
             "water": [],
             "power": [],
             "transpo": [],
         }
+
         for link in G.edges.keys():
             start_node, end_node = link
             start_coords = G.nodes[start_node]["coord"]
@@ -169,16 +165,23 @@ class RadialDisruption:
             l = LineString([start_coords, end_coords])
 
             if c.intersection(l).is_empty == False or l.within(c):
-                G.edges[link]["fail_status"] = "Disrupted"
-                if G.edges[link]["link_type"] == "Power":
-                    if G.edges[link]["id"] not in affected_links["power"]:
-                        affected_links["power"].append(G.edges[link]["id"])
+                link_fail_status = self.assign_link_failure(
+                    p_occ, start_coords, end_coords
+                )
+
+                if link_fail_status == True:
+                    G.edges[link]["fail_status"] = "Disrupted"
+                    if G.edges[link]["link_type"] == "Power":
+                        if G.edges[link]["id"] not in affected_links["power"]:
+                            affected_links["power"].append(G.edges[link]["id"])
                     elif G.edges[link]["link_type"] == "Water":
                         if G.edges[link]["id"] not in affected_links["water"]:
                             affected_links["water"].append(G.edges[link]["id"])
                     elif G.edges[link]["link_type"] == "Transportation":
                         if G.edges[link]["id"] not in affected_links["transpo"]:
                             affected_links["transpo"].append(G.edges[link]["id"])
+                else:
+                    G.edges[link]["fail_status"] = "Functional"
             else:
                 if (
                     G.edges[link]["id"] not in affected_links["power"]
@@ -196,12 +199,12 @@ class RadialDisruption:
 
         # bokeh plot
         if plot_components == True:
-            palette = [RdYlGn[11][9], RdYlGn[11][2]]
+            palette = [RdYlGn[11][2], RdYlGn[11][9]]
 
             p = figure(
                 background_fill_color="white",
-                plot_width=1000,
-                height=700,
+                plot_width=700,
+                height=450,
                 title=f"{self.name}: Disrupted components",
                 x_range=(1000, 8000),
                 y_range=(1000, 6600),
@@ -257,7 +260,7 @@ class RadialDisruption:
                     )
                 ),
                 color=factor_cmap(
-                    "fail_status", palette, np.unique(np.array(fail_status))
+                    "fail_status", palette, np.array(["Functional", "Disrupted"])
                 ),
                 alpha=0.7,
                 size=5,
@@ -287,12 +290,12 @@ class RadialDisruption:
                     )
                 ),
                 line_color=factor_cmap(
-                    "fail_status", palette, np.unique(np.array(fail_status))
+                    "fail_status", palette, np.array(["Functional", "Disrupted"])
                 ),
                 line_alpha=1,
                 line_width=1.5,
                 muted_color=factor_cmap(
-                    "fail_status", palette, np.unique(np.array(fail_status))
+                    "fail_status", palette, np.array(["Functional", "Disrupted"])
                 ),
                 muted_alpha=0.2,
                 legend_field="fail_status",
@@ -320,8 +323,20 @@ class RadialDisruption:
             p.legend.location = "top_left"
             show(p)
 
-    def set_failure_probability(self, G):
-        pass
+    def assign_node_failure(self, p_occ, node_point):
+        fail_prob = round(1 - p_occ.distance(node_point) / self.radius_of_impact, 2)
+        fail_status = True if random.random() <= fail_prob else False
+
+        return fail_status
+
+    def assign_link_failure(self, p_occ, start_coords, end_coords):
+        link_line = LineString([start_coords, end_coords])
+        nearest_point = nearest_points(link_line, p_occ)[0]
+
+        fail_prob = round(1 - p_occ.distance(nearest_point) / self.radius_of_impact, 2)
+        fail_status = True if random.random() <= fail_prob else False
+
+        return fail_status
 
     def generate_disruption_file(self, location=None):
         """Generates the disruption file consisting of the list of failed components, time of occurrence, and failure percentage (damage extent).
@@ -365,25 +380,25 @@ class RadialDisruption:
 
             if not os.path.exists(f"{location}/test{test_counter}"):
                 os.makedirs(f"{location}/test{test_counter}_{self.name}")
-                
-                                            
-            #added by geeta
 
-            fail_compon_dict=self.get_dict()
-            indices=[]
-            
-            for index, row in disrupt_file.iterrows():             
-                component_details=interdependencies.get_compon_details(row['components'])             
-                if (component_details[1] in fail_compon_dict['power']):
+            # added by geeta
+
+            fail_compon_dict = self.get_dict()
+            indices = []
+
+            for index, row in disrupt_file.iterrows():
+                component_details = interdependencies.get_compon_details(
+                    row["components"]
+                )
+                if component_details[1] in fail_compon_dict["power"]:
                     indices.append(index)
-                elif(component_details[1] in fail_compon_dict['water']):
+                elif component_details[1] in fail_compon_dict["water"]:
                     indices.append(index)
-                elif(component_details[1] in fail_compon_dict['transport']):
+                elif component_details[1] in fail_compon_dict["transport"]:
                     indices.append(index)
-                #disrupt_file=disrupt_file[~disrupt_file['components'].str.contains('W_J|T_J',na=False)]
-               
-                
-            disrupt_file=disrupt_file.loc[indices]
+                # disrupt_file=disrupt_file[~disrupt_file['components'].str.contains('W_J|T_J',na=False)]
+
+            disrupt_file = disrupt_file.loc[indices]
             disrupt_file.to_csv(
                 Path(location) / f"test{test_counter}_{self.name}/disruption_file.csv",
                 index=False,
@@ -416,26 +431,13 @@ class TrackDisruption:
 
         self.set_time_of_occurrence(time_of_occurrence)
         print(f"The time of the disruptive event is set to {time_of_occurrence}.")
-    def get_dict(self):
+
+    def get_fail_compon_dict(self):
         self.fail_compon_dict = {
-        "power": {
-            "B",
-            "LO",
-            "LOA",
-            "TF",
-            "LS",
-            "L",
-            "SW"
-            },
-            "water":{
-            "R",
-            "P",
-            "PSC",
-            "PMA",
-            "PV",
-            "T"},
-            "transport":{
-            "L"}}
+            "power": {"B", "LO", "LOA", "TF", "LS", "L", "SW"},
+            "water": {"R", "P", "PSC", "PMA", "PV", "T"},
+            "transport": {"L"},
+        }
         return self.fail_compon_dict
 
     def set_hazard_tracks(self, hazard_tracks):
@@ -496,17 +498,21 @@ class TrackDisruption:
 
             for _, node in enumerate(G.nodes.keys()):
                 point = Point(G.nodes[node]["coord"])
-                if (point.intersects(track_buffer)) or (point.within(track_buffer)):
-                    G.nodes[node]["fail_status"] = "Disrupted"
-                    if G.nodes[node]["node_type"] == "power_node":
-                        if node not in affected_nodes["power"]:
-                            affected_nodes["power"].append(node)
-                    elif G.nodes[node]["node_type"] == "water_node":
-                        if node not in affected_nodes["water"]:
-                            affected_nodes["water"].append(node)
-                    elif G.nodes[node]["node_type"] == "transpo_node":
-                        if node not in affected_nodes["transpo"]:
-                            affected_nodes["transpo"].append(node)
+                node_fail_status = self.assign_node_failure(track, point)
+                if node_fail_status == True:
+                    if (point.intersects(track_buffer)) or (point.within(track_buffer)):
+                        G.nodes[node]["fail_status"] = "Disrupted"
+                        if G.nodes[node]["node_type"] == "power_node":
+                            if node not in affected_nodes["power"]:
+                                affected_nodes["power"].append(node)
+                        elif G.nodes[node]["node_type"] == "water_node":
+                            if node not in affected_nodes["water"]:
+                                affected_nodes["water"].append(node)
+                        elif G.nodes[node]["node_type"] == "transpo_node":
+                            if node not in affected_nodes["transpo"]:
+                                affected_nodes["transpo"].append(node)
+                    else:
+                        G.nodes[node]["fail_status"] = "Functional"
                 else:
                     if node not in affected_nodes:
                         G.nodes[node]["fail_status"] = "Functional"
@@ -528,21 +534,25 @@ class TrackDisruption:
                 start_node, end_node = link
                 start_coords = G.nodes[start_node]["coord"]
                 end_coords = G.nodes[end_node]["coord"]
-
+                link_line = LineString([start_coords, end_coords])
                 l = LineString([start_coords, end_coords])
 
                 if (l.intersects(track_buffer)) or (l.within(track_buffer)):
-                    G.edges[link]["fail_status"] = "Disrupted"
-                    if G.edges[link]["link_type"] == "Power":
-                        if G.edges[link]["id"] not in affected_links["power"]:
-                            affected_links["power"].append(G.edges[link]["id"])
-                    elif G.edges[link]["link_type"] == "Water":
-                        if G.edges[link]["id"] not in affected_links["water"]:
-                            affected_links["water"].append(G.edges[link]["id"])
-                    elif G.edges[link]["link_type"] == "Transportation":
-                        if G.edges[link]["id"] not in affected_links["transpo"]:
-                            affected_links["transpo"].append(G.edges[link]["id"])
+                    link_fail_status = self.assign_link_failure(track, link_line)
 
+                    if link_fail_status == True:
+                        G.edges[link]["fail_status"] = "Disrupted"
+                        if G.edges[link]["link_type"] == "Power":
+                            if G.edges[link]["id"] not in affected_links["power"]:
+                                affected_links["power"].append(G.edges[link]["id"])
+                        elif G.edges[link]["link_type"] == "Water":
+                            if G.edges[link]["id"] not in affected_links["water"]:
+                                affected_links["water"].append(G.edges[link]["id"])
+                        elif G.edges[link]["link_type"] == "Transportation":
+                            if G.edges[link]["id"] not in affected_links["transpo"]:
+                                affected_links["transpo"].append(G.edges[link]["id"])
+                    else:
+                        G.edges[link]["fail_status"] = "Functional"
                 else:
                     if (
                         G.edges[link]["id"] not in affected_links["power"]
@@ -564,8 +574,8 @@ class TrackDisruption:
 
             p = figure(
                 background_fill_color="white",
-                plot_width=1000,
-                height=700,
+                plot_width=700,
+                height=450,
                 title=f"{self.name}: Disrupted components",
                 x_range=(1000, 8000),
                 y_range=(1000, 6600),
@@ -684,6 +694,24 @@ class TrackDisruption:
             p.legend.location = "top_left"
             show(p)
 
+    def assign_node_failure(self, track, node_point):
+        nearest_point = nearest_points(track, node_point)[0]
+        fail_prob = round(
+            1 - node_point.distance(nearest_point) / self.buffer_of_impact, 2
+        )
+        fail_status = True if random.random() <= fail_prob else False
+
+        return fail_status
+
+    def assign_link_failure(self, track, link_line):
+        link_point, track_point = nearest_points(link_line, track)
+        fail_prob = round(
+            1 - link_point.distance(track_point) / self.buffer_of_impact, 2
+        )
+        fail_status = True if random.random() <= fail_prob else False
+
+        return fail_status
+
     def generate_disruption_file(self, location=None):
         """Generates the disruption file consisting of the list of failed components, time of occurrence, and failure percentage (damage extent).
 
@@ -726,21 +754,23 @@ class TrackDisruption:
 
             if not os.path.exists(f"{location}/test{test_counter}"):
                 os.makedirs(f"{location}/test{test_counter}_{self.name}")
-                
-            fail_compon_dict=self.get_dict()
-            indices=[]
-            
-            for index, row in disrupt_file.iterrows():             
-                component_details=interdependencies.get_compon_details(row['components'])             
-                if (component_details[1] in fail_compon_dict['power']):
+
+            fail_compon_dict = self.get_dict()
+            indices = []
+
+            for index, row in disrupt_file.iterrows():
+                component_details = interdependencies.get_compon_details(
+                    row["components"]
+                )
+                if component_details[1] in fail_compon_dict["power"]:
                     indices.append(index)
-                elif(component_details[1] in fail_compon_dict['water']):
+                elif component_details[1] in fail_compon_dict["water"]:
                     indices.append(index)
-                elif(component_details[1] in fail_compon_dict['transport']):
+                elif component_details[1] in fail_compon_dict["transport"]:
                     indices.append(index)
-                #disrupt_file=disrupt_file[~disrupt_file['components'].str.contains('W_J|T_J',na=False)]
-               
-            disrupt_file=disrupt_file.loc[indices]
+                # disrupt_file=disrupt_file[~disrupt_file['components'].str.contains('W_J|T_J',na=False)]
+
+            disrupt_file = disrupt_file.loc[indices]
 
             disrupt_file.to_csv(
                 Path(location) / f"test{test_counter}_{self.name}/disruption_file.csv",
