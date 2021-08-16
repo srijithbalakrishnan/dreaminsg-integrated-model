@@ -1,14 +1,14 @@
 from os import mkdir
-import scipy.spatial as spatial
 import numpy as np
 import random
 import pandas as pd
 
 from bokeh.plotting import figure
+from bokeh.transform import factor_cmap
+
+from bokeh.palettes import RdYlGn
 from bokeh.io import show
 from bokeh.models import ColumnDataSource, HoverTool
-from bokeh.transform import factor_cmap
-from bokeh.palettes import RdYlGn
 from bokeh.tile_providers import get_provider, Vendors
 import dreaminsg_integrated_model.src.network_sim_models.interdependencies as interdependencies
 
@@ -16,7 +16,6 @@ from shapely.geometry import LineString, Point
 from shapely.ops import nearest_points
 
 from pathlib import Path
-import glob
 import os
 
 
@@ -29,6 +28,7 @@ class RadialDisruption:
         point_of_occurrence=None,
         radius_of_impact=100,
         time_of_occurrence=6000,
+        intensity="high",
     ):
         """Initiates a RadialDisruption object.
 
@@ -40,8 +40,12 @@ class RadialDisruption:
         :type radius_of_impact: float, optional
         :param time_of_occurrence: Time in seconds and multiple of 60, defaults to 6000.
         :type time_of_occurrence: integer
+        :param intensity: The intensity of the hazard using which the failure probability will be set. The intensity can be "extreme", "high", "moderate" or "low", defaults to "high"
+        :type intensity: string, optional
         """
         self.name = name
+        self.intensity = intensity
+        self.set_intensity_failure_probability()
 
         if point_of_occurrence == None:
             self.point_of_occurrence = None
@@ -56,6 +60,7 @@ class RadialDisruption:
         print(f"The time of the disruptive event is set to {time_of_occurrence}.")
 
     def set_fail_compon_dict(self):
+        """Sets the dictionary of components that could be failed due to a radial disaster."""
         self.fail_compon_dict = {
             "power": {"B", "LO", "LOA", "TF", "LS", "L", "SW"},
             "water": {"R", "P", "PSC", "PMA", "PV", "T"},
@@ -63,7 +68,23 @@ class RadialDisruption:
         }
 
     def get_fail_compon_dict(self):
+        """Returns the dictionary of that could be failed due to a radial disaster.
+
+        :return: dictionary of components that could be failed.
+        :rtype: dictionary
+        """
         return self.fail_compon_dict
+
+    def set_intensity_failure_probability(self):
+        """Sets the vulnerability (probability of failure) based on the intensity of the disaster event (currently arbitrary values are used)."""
+        if self.intensity == "extreme":
+            self.failure_probability = 1
+        elif self.intensity == "high":
+            self.failure_probability = 0.7
+        elif self.intensity == "moderate":
+            self.failure_probability = 0.3
+        elif self.intensity == "low":
+            self.failure_probability = 0.1
 
     def set_point_of_occurrence(self, point_of_occurrence):
         """Sets the point of occurrence of the radial disruption.
@@ -324,17 +345,47 @@ class RadialDisruption:
             show(p)
 
     def assign_node_failure(self, p_occ, node_point):
-        fail_prob = round(1 - p_occ.distance(node_point) / self.radius_of_impact, 2)
-        fail_status = True if random.random() <= fail_prob else False
+        """Assigns node failure status.
+
+        :param p_occ: The point of occurrence of the disruptive event.
+        :type p_occ: shapely Point object
+        :param node_point: The node for which the failure status is to be assigned.
+        :type node_point: shapely Point object
+        :return: The failure status of the node.
+        :rtype: bool
+        """
+        exposure_prob = round(1 - p_occ.distance(node_point) / self.radius_of_impact, 2)
+        fail_status = (
+            True
+            if random.random() <= exposure_prob * self.failure_probability
+            else False
+        )
 
         return fail_status
 
     def assign_link_failure(self, p_occ, start_coords, end_coords):
+        """Assigns the link failure status.
+
+        :param p_occ: The point of occurrence of the disruptive event.
+        :type p_occ: shapely Point object
+        :param start_coords: The coordinates of the start node of the link.
+        :type start_coords: tuple
+        :param end_coords: The coordinates of the end node of the link.
+        :type end_coords: tuple
+        :return: The failure status of the link
+        :rtype: bool
+        """
         link_line = LineString([start_coords, end_coords])
         nearest_point = nearest_points(link_line, p_occ)[0]
 
-        fail_prob = round(1 - p_occ.distance(nearest_point) / self.radius_of_impact, 2)
-        fail_status = True if random.random() <= fail_prob else False
+        exposure_prob = round(
+            1 - p_occ.distance(nearest_point) / self.radius_of_impact, 2
+        )
+        fail_status = (
+            True
+            if random.random() <= exposure_prob * self.failure_probability
+            else False
+        )
 
         return fail_status
 
@@ -383,7 +434,7 @@ class RadialDisruption:
 
             # added by geeta
 
-            fail_compon_dict = self.get_dict()
+            fail_compon_dict = self.get_fail_compon_dict()
             indices = []
 
             for index, row in disrupt_file.iterrows():
@@ -419,39 +470,86 @@ class TrackDisruption:
         hazard_tracks=None,
         buffer_of_impact=25,
         time_of_occurrence=6000,
+        intensity="high",
         name="Track disruption",
     ):
-        self.name = name
+        """Initiates the TrackDisruption object.
 
-        self.set_hazard_tracks(hazard_tracks)
-        print(f"The hazard tracks are set.")
+        :param hazard_tracks: The hazard tracks in shapely LineString object, defaults to None
+        :type hazard_tracks: geopandas dataframe, optional
+        :param buffer_of_impact: The buffer distance of impact measured from the centerline of the track, defaults to 25
+        :type buffer_of_impact: integer/float, optional
+        :param time_of_occurrence: The time of occurrence of the event in seconds, defaults to 6000
+        :type time_of_occurrence: int, optional
+        :param intensity: The intensity of the hazard using which the failure probability will be set. The intensity can be "extreme", "high", "moderate" or "low", defaults to "high"
+        :type intensity: string, optional
+        :param name: The name of the event, defaults to "Track disruption"
+        :type name: string, optional
+        """
+        self.name = name
+        self.intensity = intensity
+        self.set_intensity_failure_probability()
+
+        if hazard_tracks != None:
+            self.set_hazard_tracks_from_shapefile(hazard_tracks)
+            print(f"The hazard tracks are set.")
+        else:
+            self.hazard_tracks = []
+            print(
+                "No hazards tracks are provided. User must be manually set the tracks."
+            )
 
         self.set_buffer_of_impact(buffer_of_impact)
-        print(f"The buffer distance of impact is set to {buffer_of_impact}")
+        print(
+            f"The buffer distance of impact of {self.name} is set to {buffer_of_impact}"
+        )
 
         self.set_time_of_occurrence(time_of_occurrence)
-        print(f"The time of the disruptive event is set to {time_of_occurrence}.")
+        print(f"The time of the {self.name} is set to {time_of_occurrence}s.")
 
     def get_fail_compon_dict(self):
+        """Sets the dictionary of components that could be failed due to a track-based disaster."""
         self.fail_compon_dict = {
             "power": {"B", "LO", "LOA", "TF", "LS", "L", "SW"},
             "water": {"R", "P", "PSC", "PMA", "PV", "T"},
             "transport": {"L"},
         }
-        return self.fail_compon_dict
 
-    def set_hazard_tracks(self, hazard_tracks):
+        self.fail_compon_dict
+
+    def set_intensity_failure_probability(self):
+        """Sets the vulnerability (probability of failure) based on the intensity of the disaster event (currently arbitrary values are used)."""
+        if self.intensity == "extreme":
+            self.failure_probability = 1
+        elif self.intensity == "high":
+            self.failure_probability = 0.7
+        elif self.intensity == "moderate":
+            self.failure_probability = 0.3
+        elif self.intensity == "low":
+            self.failure_probability = 0.1
+
+    def set_hazard_tracks_from_shapefile(self, hazard_tracks):
         """Sets the tracks of the track-based hazard from a shapefile.
 
         :param hazard_tracks: A shapefile that has tracks of the event as LineString objects.
         :type hazard_tracks: shapefile
         """
-        self.hazard_tracks = []
         for _, linestring in enumerate(hazard_tracks.geometry):
             if linestring.geom_type == "LineString":
                 self.hazard_tracks.append(linestring)
             else:
                 print("The entry is not a LineString object and hence ignored.")
+
+    def set_hazard_tracks_from_linestring(self, linestring_track):
+        """Sets a hazard track from a LineString object.
+
+        :param linestring_track: A shapely LineString object denoting the track of the hazard.
+        :type linestring_track: LineString object
+        """
+        if linestring_track.geom_type == "LineString":
+            self.hazard_tracks.append(linestring_track)
+        else:
+            print("The entry is not a LineString object and hence ignored.")
 
     def set_buffer_of_impact(self, buffer_of_impact):
         """Sets the impact buffer distance in meters.
@@ -570,7 +668,7 @@ class TrackDisruption:
 
         # bokeh plot
         if plot_components == True:
-            palette = [RdYlGn[11][9], RdYlGn[11][2]]
+            palette = [RdYlGn[11][2], RdYlGn[11][9]]
 
             p = figure(
                 background_fill_color="white",
@@ -635,7 +733,7 @@ class TrackDisruption:
                     )
                 ),
                 color=factor_cmap(
-                    "fail_status", palette, np.unique(np.array(fail_status))
+                    "fail_status", palette, np.array(["Functional", "Disrupted"])
                 ),
                 alpha=0.7,
                 size=5,
@@ -665,7 +763,7 @@ class TrackDisruption:
                     )
                 ),
                 line_color=factor_cmap(
-                    "fail_status", palette, np.unique(np.array(fail_status))
+                    "fail_status", palette, np.array(["Functional", "Disrupted"])
                 ),
                 line_alpha=1,
                 line_width=1.5,
@@ -695,20 +793,46 @@ class TrackDisruption:
             show(p)
 
     def assign_node_failure(self, track, node_point):
+        """Assigns node failure status.
+
+        :param track: The track of the disruptive event.
+        :type track: shapely LineString object
+        :param node_point: The node for which the failure status is to be assigned.
+        :type node_point: shapely Point object.
+        :return: The failure status of the node.
+        :rtype: bool
+        """
         nearest_point = nearest_points(track, node_point)[0]
-        fail_prob = round(
+        exposure_prob = round(
             1 - node_point.distance(nearest_point) / self.buffer_of_impact, 2
         )
-        fail_status = True if random.random() <= fail_prob else False
+        fail_status = (
+            True
+            if random.random() <= exposure_prob * self.failure_probability
+            else False
+        )
 
         return fail_status
 
     def assign_link_failure(self, track, link_line):
+        """Assigns the link failure status.
+
+        :param track: The track of the disruptive event.
+        :type track: shapely LineString object
+        :param link_line: The link for which the failure status is to be assigned.
+        :type link_line: shapely LineString object
+        :return: The failure status of the link.
+        :rtype: bool
+        """
         link_point, track_point = nearest_points(link_line, track)
-        fail_prob = round(
+        exposure_prob = round(
             1 - link_point.distance(track_point) / self.buffer_of_impact, 2
         )
-        fail_status = True if random.random() <= fail_prob else False
+        fail_status = (
+            True
+            if random.random() <= exposure_prob * self.failure_probability
+            else False
+        )
 
         return fail_status
 
@@ -755,7 +879,7 @@ class TrackDisruption:
             if not os.path.exists(f"{location}/test{test_counter}"):
                 os.makedirs(f"{location}/test{test_counter}_{self.name}")
 
-            fail_compon_dict = self.get_dict()
+            fail_compon_dict = self.get_fail_compon_dict()
             indices = []
 
             for index, row in disrupt_file.iterrows():
