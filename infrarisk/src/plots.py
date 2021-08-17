@@ -10,7 +10,7 @@ from bokeh.io import show, output_notebook, curdoc
 from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource, HoverTool
 from bokeh.transform import factor_cmap
-from bokeh.palettes import Category10, Paired
+from bokeh.palettes import Category10, Turbo256
 
 import numpy as np
 
@@ -230,7 +230,13 @@ def plot_repair_curves(disrupt_recovery_object, scatter=False):
     :param scatter: scatter plot, defaults to False
     :type scatter: bool, optional
     """
-    palette = Paired[12]
+    colors = list(Turbo256)
+    interval = len(colors) // len(
+        disrupt_recovery_object.network.get_disrupted_components()
+    )
+
+    palette = [colors[i] for i in range(0, len(colors), interval)]
+
     line_width = 2.5
     mode = "after"
 

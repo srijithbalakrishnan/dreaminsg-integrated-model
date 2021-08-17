@@ -244,7 +244,8 @@ class Network:
             gap = gapFunction()
             delta = datetime.datetime.now() - now
             time = delta.seconds + delta.microseconds / 1e6
-            print("Iteration %d: gap %f: time %f" % (iteration, gap, time))
+            if iteration % 50 == 0 or gap < targetGap:
+                print("Iteration %d: gap %f: time %f" % (iteration, gap, time))
             if gap < targetGap:
                 break
             targetFlows = self.allOrNothing()
@@ -257,10 +258,6 @@ class Network:
                     "Unknown step size rule " + str(stepSizeRule)
                 )
             self.shiftFlows(targetFlows, stepSize)
-            """
-      for i in self.link:
-         print("Link ", i, " Flow ", self.link[i].flow, " Cost ", self.link[i].cost)
-         """
 
     def beckmannFunction(self):
         """
