@@ -401,7 +401,7 @@ class NetworkRecovery:
         Args:
             link_compon (string): Name of the transportation link.
         """
-        self.network.tn.link[link_compon].freeFlowTime = 99999
+        self.network.tn.link[link_compon].freeFlowTime = 9999
 
     def restore_transpo_link(self, link_compon):
         """Restores the disrupted transportation link by changing the free flow travel time to the original value.

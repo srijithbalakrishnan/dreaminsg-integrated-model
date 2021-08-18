@@ -431,7 +431,7 @@ class RadialDisruption:
             test_counter = len(os.listdir(location))
 
             if not os.path.exists(f"{location}/test{test_counter}"):
-                os.makedirs(f"{location}/test{test_counter}_{self.name}")
+                os.makedirs(f"{location}/test{test_counter}")
 
             # added by geeta
 
@@ -452,12 +452,12 @@ class RadialDisruption:
 
             disrupt_file = disrupt_file.loc[indices]
             disrupt_file.to_csv(
-                Path(location) / f"test{test_counter}_{self.name}/disruption_file.csv",
+                Path(location) / f"test{test_counter}/disruption_file.csv",
                 index=False,
                 sep=",",
             )
             print(
-                f"Successfully saved the disruption file to {location}/test{test_counter}_{self.name}/"
+                f"Successfully saved the disruption file to {location}/test{test_counter}/"
             )
         else:
             print("Target location for saving the file not provided.")
@@ -931,7 +931,7 @@ class TrackDisruption:
             test_counter = len(os.listdir(location))
 
             if not os.path.exists(f"{location}/test{test_counter}"):
-                os.makedirs(f"{location}/test{test_counter}_{self.name}")
+                os.makedirs(f"{location}/test{test_counter}")
 
             fail_compon_dict = self.get_fail_compon_dict()
             indices = []
@@ -951,12 +951,12 @@ class TrackDisruption:
             disrupt_file = disrupt_file.loc[indices]
 
             disrupt_file.to_csv(
-                Path(location) / f"test{test_counter}_{self.name}/disruption_file.csv",
+                Path(location) / f"test{test_counter}/disruption_file.csv",
                 index=False,
                 sep=",",
             )
             print(
-                f"Successfully saved the disruption file to {location}/test{test_counter}_{self.name}/"
+                f"Successfully saved the disruption file to {location}/test{test_counter}/"
             )
         else:
             print("Target location for saving the file not provided.")

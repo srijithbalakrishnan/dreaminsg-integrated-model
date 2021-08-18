@@ -215,17 +215,17 @@ class NetworkSimulation:
             # print(wn_results.node["demand"])
             # print(wn_results.node["leak_demand"])
             # failed_pipe = "W_PMA505"
-            # print(
-            #     "Pumps: ",
-            #     "\t\tstatus = ",
-            #     wn_results.link["status"][
-            #         network_recovery.network.wn.pump_name_list
-            #     ].values,
-            #     "\tflowrate = ",
-            #     wn_results.link["flowrate"][
-            #         network_recovery.network.wn.pump_name_list
-            #     ].values,
-            # )
+            print(
+                "Pumps: ",
+                "\t\tstatus = ",
+                wn_results.link["status"][
+                    network_recovery.network.wn.pump_name_list
+                ].values,
+                "\tflowrate = ",
+                wn_results.link["flowrate"][
+                    network_recovery.network.wn.pump_name_list
+                ].values,
+            )
             # print(
             #     "Failed pipe: ",
             #     "\t\tstatus = ",
@@ -242,25 +242,24 @@ class NetworkSimulation:
             #     "\tleak demand = ",
             #     wn_results.node["leak_demand"][f"{failed_pipe}_leak_node"].values,
             # )
-            # print(
-            #     "Tank: ",
-            #     "\t\tdemand",
-            #     wn_results.node["demand"]["W_T1"].values,
-            #     "\thead = ",
-            #     wn_results.node["head"]["W_T1"].values,
-            # )
-            # print(
-            #     "Pipe from Tank: ",
-            #     "status",
-            #     wn_results.link["status"]["W_PMA2000"].values,
-            #     "\tflowrate = ",
-            #     wn_results.link["flowrate"]["W_PMA2000"].values,
-            # )
-            # print("******************\n")
+            print(
+                "Tank: ",
+                "\t\tdemand",
+                wn_results.node["demand"]["W_T1"].values,
+                "\thead = ",
+                wn_results.node["head"]["W_T1"].values,
+            )
+            print(
+                "Pipe from Tank: ",
+                "status",
+                wn_results.link["status"]["W_PMA2000"].values,
+                "\tflowrate = ",
+                wn_results.link["flowrate"]["W_PMA2000"].values,
+            )
+            print("******************\n")
 
             # track results
 
-            # time_tracker.append((time_stamp) / 60)  # minutes
             resilience_metrics.time_tracker.append((time_stamp) / 60)  # minutes
 
             resilience_metrics.power_consump_tracker.append(
@@ -285,9 +284,9 @@ class NetworkSimulation:
                     unique_time_differences[index]
                 )
 
-            print(
-                f"Simulation for time {time_stamp / 60} minutes completed successfully"
-            )
+            # print(
+            #     f"Simulation for time {time_stamp / 60} minutes completed successfully"
+            # )
         return resilience_metrics
 
     def write_results(
@@ -295,7 +294,7 @@ class NetworkSimulation:
         time_tracker,
         power_consump_tracker,
         water_consump_tracker,
-        location,
+        file_url,
         plotting=False,
     ):
         """Write the results to local directory.
@@ -306,8 +305,8 @@ class NetworkSimulation:
         :type power_consump_tracker: list of floats
         :param water_consump_tracker: List of corresponding water resilience metric value.
         :type water_consump_tracker: list of floats
-        :param location: The location to which the results are to be saved.
-        :type location: string
+        :param file_name: The location and filename to which the results are to be saved.
+        :type file_name: string
         :param plotting: True if the plots are to be generated., defaults to False
         :type plotting: bool, optional
         """
@@ -318,11 +317,9 @@ class NetworkSimulation:
                 "water_perf": water_consump_tracker,
             }
         )
-        if not os.path.exists(f"{location}/results"):
-            os.makedirs(f"{location}/results")
 
-        results_df.to_csv(Path(location) / "results/network_performance.csv", sep="\t")
-        print(f"The simulation results successfully saved to {Path(location)}")
+        results_df.to_csv(Path(file_url, sep="\t"))
+        print(f"The simulation results successfully saved to {Path(file_url)}")
 
         if plotting == True:
             model_plots.plot_interdependent_effects(

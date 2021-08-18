@@ -1,5 +1,5 @@
 import ogr,os
-myDir = 'C:/Users/srijith/Dropbox/Intra-CREATE Seed Grant/Integrated Model/dreaminsg_integrated_model/dreaminsg_integrated_model/data/networks/micropolis/gis/'
+myDir = 'C:/Users/srijith/Dropbox/Intra-CREATE Seed Grant/Integrated Model/dreaminsg_integrated_model/infrarisk/data/networks/micropolis/gis/'
 
 if os.path.exists (myDir) == False:
    print("Path does not exist")

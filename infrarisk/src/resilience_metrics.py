@@ -68,11 +68,11 @@ class WeightedResilienceMetric(ResilienceMetric):
                 )
                 pattern_size = len(pattern)
                 pattern_interval = 24 / pattern_size
-                pattern_index = math.ceil(
-                    (((sim_time + 1) / 3600) % 24) / pattern_interval
+                pattern_index = math.floor(
+                    (((sim_time) / 3600) % 24) / pattern_interval
                 )
 
-                multiplier = pattern[pattern_index - 1]
+                multiplier = pattern[pattern_index]
                 base_demands_at_t.append(multiplier * base_demand)
 
         print("Supply: ", water_supplied_at_t, "Base demand: ", sum(base_demands_at_t))
