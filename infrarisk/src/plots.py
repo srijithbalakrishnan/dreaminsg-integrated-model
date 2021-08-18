@@ -8,7 +8,7 @@ import pandapower.plotting as pandaplot
 
 from bokeh.io import show, output_notebook, curdoc
 from bokeh.plotting import figure
-from bokeh.models import ColumnDataSource, HoverTool
+from bokeh.models import ColumnDataSource, HoverTool, Range1d
 from bokeh.transform import factor_cmap
 from bokeh.palettes import Category10, Turbo256
 
@@ -249,6 +249,7 @@ def plot_repair_curves(disrupt_recovery_object, scatter=False):
         y_axis_label="Damage level (%)",
         toolbar_location="above",
     )
+    p.y_range = Range1d(0, 100)
 
     for index, name in enumerate(
         disrupt_recovery_object.network.get_disrupted_components()
@@ -324,6 +325,8 @@ def plot_interdependent_effects(
         y_axis_label="Supply-to-demand ratio",
         toolbar_location="above",
     )
+
+    p.y_range = Range1d(0, 1)
 
     if water_consump_tracker != None:
         p.line(
