@@ -118,10 +118,10 @@ class WeightedResilienceMetric(ResilienceMetric):
         """Calculates the water, power, and weighted auc values."""
         self.water_auc = metrics.auc(
             self.time_tracker, self.water_consump_tracker
-        ) / max(self.time_tracker)
+        )  # / max(self.time_tracker)
         self.power_auc = metrics.auc(
             self.time_tracker, self.power_consump_tracker
-        ) / max(self.time_tracker)
+        )  # / max(self.time_tracker)
 
         self.weighed_auc = 0.5 * self.water_auc + 0.5 * self.power_auc
 
