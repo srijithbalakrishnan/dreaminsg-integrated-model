@@ -220,12 +220,7 @@ class DependencyTable:
                     # pump.status = 1
                     pass
             elif (row.water_type == "Pump") & (row.power_type == "Motor as Load"):
-                # print(
-                #     "Motor operational status: ",
-                #     network.pn.asymmetric_load[
-                #         network.pn.asymmetric_load.name == row.power_id
-                #     ].in_service.item(),
-                # )
+
                 if (
                     network.pn.asymmetric_load[
                         network.pn.asymmetric_load.name == row.power_id
@@ -362,21 +357,22 @@ def find_connected_power_node(component, pn):
     :return: Name of the connected bus.
     :rtype: string
     """
-    origin_details = get_compon_details(component)
-    print(component, origin_details)
+    compon_details = get_compon_details(component)
 
-    if origin_details[2] == "bus":
-        connected_bus = component
+    if compon_details[2] == "bus":
+        connected_buses = list(component)
     else:
-        near_node_field = power_dict[origin_details[1]]["connect_field"]
-        bus_index = (
-            pn[origin_details[2]]
-            .query('name == "{}"'.format(component))[near_node_field]
-            .item()
-        )
-        connected_bus = pn.bus.iloc[bus_index]["name"]
-
-    return connected_bus
+        near_node_fields = power_dict[compon_details[1]]["connect_field"]
+        print(near_node_fields)
+        connected_buses = []
+        for near_node_field in near_node_fields:
+            bus_index = (
+                pn[compon_details[2]]
+                .query('name == "{}"'.format(component))[near_node_field]
+                .item()
+            )
+            connected_buses.append(pn.bus.iloc[bus_index]["name"])
+    return connected_buses
 
 
 def find_connected_water_node(component, wn):
@@ -389,10 +385,14 @@ def find_connected_water_node(component, wn):
     :return: Name of the water network node.
     :rtype: string
     """
-    origin_details = get_compon_details(component)
-    near_node_field = water_dict[origin_details[1]]["connect_field"]
-    connected_node = getattr(wn.get_link(component), near_node_field)
-    return connected_node
+    compon_details = get_compon_details(component)
+    near_node_fields = water_dict[compon_details[1]]["connect_field"]
+
+    connected_nodes = []
+    for near_node_field in near_node_fields:
+        connected_nodes.append(getattr(wn.get_link(component), near_node_field))
+
+    return connected_nodes
 
 
 def find_connected_transpo_node(component, tn):
@@ -405,10 +405,10 @@ def find_connected_transpo_node(component, tn):
     :return: Name of the connected bus.
     :rtype: string
     """
-    origin_details = get_compon_details(component)
-    near_node_field = transpo_dict[origin_details[1]]["connect_field"]
-    if origin_details[1] == "J":
+    compon_details = get_compon_details(component)
+    near_node_field = transpo_dict[compon_details[1]]["connect_field"]
+    if compon_details[1] == "J":
         connected_junction = getattr(tn.node[component], near_node_field)
-    elif origin_details[1] == "L":
+    elif compon_details[1] == "L":
         connected_junction = getattr(tn.link[component], near_node_field)
     return connected_junction

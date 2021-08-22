@@ -224,19 +224,12 @@ class Network:
                             finishing this assignment, you should be able to
                             choose either relativeGap or averageExcessCost.
         """
+        print("Updating traffic model based on current network conditions...")
         initialFlows = self.allOrNothing()
         for ij in self.link:
             self.link[ij].flow = initialFlows[ij]
             self.link[ij].updateCost()
 
-        # Capacity enhancmenet and travel tiem reduction
-        """
-      link_list = ['(5,9)','(9,5)', '(9,10)', '(10,9)', '(10,15)', '(15,10)', '(15,22)','(22,15)', '(22,21)', '(21,22)']
-      for i in link_list:
-          self.link[i].capacity = 2*self.link[i].capacity
-          self.link[i].freeFlowTime = 0.5*self.link[i].freeFlowTime
-          self.link[i].updateCost()
-      """
         iteration = 0
         now = datetime.datetime.now()
         while iteration < maxIterations:
@@ -803,5 +796,12 @@ class Network:
             self.ODpair[OD].leastCost = 0
 
     def calculateShortestTravelTime(self, origin, destination):
-        _, cost = self.shortestPath(origin)
-        return cost[destination]
+        backlink, cost = self.shortestPath(origin)
+
+        travel_time = cost[destination]
+        path = []
+        while destination != origin:
+            path.append(backlink[destination])
+            destination = self.link[backlink[destination]].tail
+
+        return path, travel_time

@@ -141,13 +141,13 @@ def get_transpo_dict():
         "J": {
             "code": "node",
             "name": "Junction",
-            "connect_field": "name",
+            "connect_field": ["name"],
             "repair_time": 24,
         },
         "L": {
             "code": "link",
             "name": "Link",
-            "connect_field": "head",
+            "connect_field": ["head", "tail"],
             "repair_time": 24,
         },
     }
