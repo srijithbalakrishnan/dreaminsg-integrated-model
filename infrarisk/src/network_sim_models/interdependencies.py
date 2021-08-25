@@ -363,7 +363,6 @@ def find_connected_power_node(component, pn):
         connected_buses = list(component)
     else:
         near_node_fields = power_dict[compon_details[1]]["connect_field"]
-        print(near_node_fields)
         connected_buses = []
         for near_node_field in near_node_fields:
             bus_index = (
@@ -406,9 +405,14 @@ def find_connected_transpo_node(component, tn):
     :rtype: string
     """
     compon_details = get_compon_details(component)
-    near_node_field = transpo_dict[compon_details[1]]["connect_field"]
-    if compon_details[1] == "J":
-        connected_junction = getattr(tn.node[component], near_node_field)
-    elif compon_details[1] == "L":
-        connected_junction = getattr(tn.link[component], near_node_field)
-    return connected_junction
+    near_node_fields = transpo_dict[compon_details[1]]["connect_field"]
+
+    connected_junctions = []
+
+    for near_node_field in near_node_fields:
+        if compon_details[1] == "J":
+            connected_junctions.append(getattr(tn.node[component], near_node_field))
+        elif compon_details[1] == "L":
+            connected_junctions.append(getattr(tn.link[component], near_node_field))
+
+    return connected_junctions

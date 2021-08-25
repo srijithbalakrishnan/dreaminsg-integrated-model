@@ -237,8 +237,8 @@ class Network:
             gap = gapFunction()
             delta = datetime.datetime.now() - now
             time = delta.seconds + delta.microseconds / 1e6
-            if iteration % 50 == 0 or gap < targetGap:
-                print("Iteration %d: gap %f: time %f" % (iteration, gap, time))
+            # if iteration % 50 == 0 or gap < targetGap:
+            #     print("Iteration %d: gap %f: time %f" % (iteration, gap, time))
             if gap < targetGap:
                 break
             targetFlows = self.allOrNothing()
@@ -575,7 +575,7 @@ class Network:
                         continue
 
                     data = line.split()
-                    if len(data) < 11 or data[10] != ";":
+                    if len(data) < 12 or data[11] != ";":
                         print("Link data line not formatted properly:\n '%s'" % line)
                         raise utils.BadFileFormatException
 
@@ -584,7 +584,7 @@ class Network:
                     #     "(" + str(data[0]).strip() + "," + str(data[1]).strip() + ")"
                     # )
 
-                    self.link["T_L{}".format(linkID)] = transpo_compons.Link(
+                    self.link[data[10]] = transpo_compons.Link(
                         self,
                         data[0],
                         data[1],  # head and tail
@@ -612,8 +612,6 @@ class Network:
                             True if int(node_index) <= self.numZones else False
                         )
                         self.node[data[1]].name = data[1]
-
-                    linkID += 1
 
         except IOError:
             print("\nError reading network file %s" % networkFileName)

@@ -131,7 +131,7 @@ class NetworkRecovery:
                             * 3600
                         )
                         connected_buses = interdependencies.find_connected_power_node(
-                            component, pn
+                            component, self.network.pn
                         )
 
                         nearest_nodes = []
@@ -160,6 +160,8 @@ class NetworkRecovery:
                             link for link in path if link in components_to_repair
                         ]
 
+                        # print(components_to_repair, path, failed_transpo_link_en_route)
+
                         if not failed_transpo_link_en_route:
                             print(
                                 f"The power crew is at {self.network.get_power_crew_loc()} at t = {self.next_power_crew_trip_start / 60} minutes. It takes {travel_time} minutes to reach nearest node {nearest_node}, the nearest transportation node from {component}."
@@ -178,7 +180,7 @@ class NetworkRecovery:
                             break
                         else:
                             print(
-                                f"The power crew cannot reach the destination {nearest_node} from {self.network.power_crew_loc()} since there are failed transportation component(s) {failed_transpo_link_en_route} in its possible route. The simulation will try to repair other power components."
+                                f"The power crew cannot reach the destination {nearest_node} from {self.network.get_power_crew_loc()} since there are failed transportation component(s) {failed_transpo_link_en_route} in its possible route. The simulation will try to repair other failed components."
                             )
 
                     elif compon_details[0] == "water":
@@ -236,7 +238,7 @@ class NetworkRecovery:
                             break
                         else:
                             print(
-                                f"The water crew cannot reach the destination {nearest_node} from {self.network.get_water_crew_loc()} since there are failed transportation component(s) {failed_transpo_link_en_route} in its possible route. The simulation will try to repair other power components."
+                                f"The water crew cannot reach the destination {nearest_node} from {self.network.get_water_crew_loc()} since there are failed transportation component(s) {failed_transpo_link_en_route} in its possible route. The simulation will try to repair other failed components."
                             )
 
                     elif compon_details[0] == "transpo":
@@ -294,7 +296,7 @@ class NetworkRecovery:
                             break
                         else:
                             print(
-                                f"The transportation crew cannot reach the destination {nearest_node} from {self.network.get_transpo_crew_loc()} since there are failed transportation component(s) {failed_transpo_link_en_route} in its possible route. The simulation will try to repair other power components."
+                                f"The transportation crew cannot reach the destination {nearest_node} from {self.network.get_transpo_crew_loc()} since there are failed transportation component(s) {failed_transpo_link_en_route} in its possible route. The simulation will try to repair other failed components."
                             )
 
                 # Schedule the recovery action
