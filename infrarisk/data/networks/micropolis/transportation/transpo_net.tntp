@@ -4,7 +4,7 @@
 <NUMBER OF LINKS>210											
 <END OF METADATA>											
 											
-											
+					
 ~ 	Init node	Term node	Capacity	Length	Free Flow Time	B	Power	Speed limit	Toll	Type	id	;
 T_J1	T_J2	2700	2.006092	2.91	0.15	4	0	0	1	T_L1	;
 T_J1	T_J60	2700	1.791327	2.65	0.15	4	0	0	1	T_L46	;
