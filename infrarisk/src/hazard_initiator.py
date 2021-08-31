@@ -559,17 +559,17 @@ class TrackDisruption:
         else:
             print("The entry is not a LineString object and hence ignored.")
 
-    def generate_random_track(self, map_extents, shape="spline"):
+    def generate_random_track(self, loc_extents, shape="spline"):
         """Generates a random track using a spline connecting three points on the map.
 
-        :param map_extents: The [(xmin, ymin), (xmax, ymax)] coordinates from the map.
-        :type map_extents: list of tutples
+        :param loc_extents: The [(xmin, ymin), (xmax, ymax)] coordinates from the map denoting the occurrence of the event.
+        :type loc_extents: list of tutples
         :param shape: The method of generating the track. If "line", generates a straight line, if "spline", generates a smooth curve.
         :type shape: string
         :return: The disaster track.
         :rtype: shapely LineString object
         """
-        (minx, miny), (maxx, maxy) = map_extents
+        (minx, miny), (maxx, maxy) = loc_extents
 
         sides = {
             1: LineString([(minx, miny), (maxx, miny)]),
