@@ -586,7 +586,7 @@ class TrackDisruption:
         start_point = sides[start_side].interpolate(random.random(), True)
         end_point = sides[end_side].interpolate(random.random(), True)
         if shape == "line":
-            hazard_track = LineString(start_point, end_point)
+            hazard_track = LineString([start_point, end_point])
         elif shape == "spline":
             midx = sides[1].interpolate(random.random(), True).x
             midy = sides[4].interpolate(random.random(), True).y
