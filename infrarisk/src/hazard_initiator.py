@@ -63,8 +63,8 @@ class RadialDisruption:
     def set_fail_compon_dict(self):
         """Sets the dictionary of components that could be failed due to a radial disaster."""
         self.fail_compon_dict = {
-            "power": {"B", "LO", "LOA", "TF", "LS", "L", "SW"},
-            "water": {"R", "P", "PSC", "PMA", "PV", "T"},
+            "power": {"B", "TF", "LS", "L"},
+            "water": {"R", "P", "PMA", "T"},
             "transport": {"L"},
         }
 
@@ -512,8 +512,8 @@ class TrackDisruption:
     def set_fail_compon_dict(self):
         """Sets the dictionary of components that could be failed due to a track-based disaster."""
         self.fail_compon_dict = {
-            "power": {"B", "LO", "LOA", "TF", "LS", "L", "SW"},
-            "water": {"R", "P", "PSC", "PMA", "PV", "T"},
+            "power": {"B", "TF", "LS", "L"},
+            "water": {"R", "P", "PMA", "T"},
             "transport": {"L"},
         }
 
