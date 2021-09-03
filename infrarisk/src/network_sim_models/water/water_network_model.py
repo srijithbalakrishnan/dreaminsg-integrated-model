@@ -109,6 +109,9 @@ def load_water_network(network_inp, initial_sim_step):
     :rtype: wntr network object
     """
     wn = wntr.network.WaterNetworkModel(network_inp)
+    wn.options.hydraulic.required_pressure = 30
+    wn.options.hydraulic.minimum_pressure = 0
+    wn.options.hydraulic.threshold_pressure = 20
     wn.options.time.duration = initial_sim_step
     wn.options.time.report_timestep = initial_sim_step
     wn.options.time.hydraulic_timestep = initial_sim_step

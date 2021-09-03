@@ -46,12 +46,15 @@ class WeightedResilienceMetric(ResilienceMetric):
         :rtype: float
         """
         sim_time = network_recovery.network.wn.options.time.duration
-        node_results = wn_results.node["demand"].iloc[-1]
+        node_demand = wn_results.node["demand"].iloc[-1]
+        node_pressure = wn_results.node["pressure"].iloc[-1]
 
         water_supplied_at_t = sum(
             [
-                node_results[junc]
+                node_demand[junc]
                 for junc in network_recovery.network.wn.junction_name_list
+                if node_pressure[junc]
+                > network_recovery.network.wn.options.hydraulic.threshold_pressure
             ]
         )
 

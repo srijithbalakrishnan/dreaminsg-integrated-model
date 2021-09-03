@@ -83,7 +83,7 @@ def get_power_dict():
             "connect_field": ["bus"],
             "repair_time": 24,
         },
-        "SW": {
+        "S": {
             "code": "switch",
             "name": "Switch",
             "connect_field": ["bus", "element"],

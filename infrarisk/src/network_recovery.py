@@ -24,6 +24,10 @@ class NetworkRecovery:
         self.sim_step = sim_step
         self._tn_update_flag = True
 
+        self.water_crew_total_tt = 0
+        self.power_crew_total_tt = 0
+        self.transpo_crew_total_tt = 0
+
     def set_initial_crew_start(self, repair_order):
         """Sets the initial start times at which the respective infrastructure crews start from their locations post-disaster.
 
@@ -184,6 +188,7 @@ class NetworkRecovery:
                                 recovery_start + recovery_time
                             )
                             components_to_repair.remove(component)
+                            self.power_crew_total_tt += actual_travel_time
                             break
                         elif accessible is True:
                             if possible_start >= self.next_power_crew_trip_start:
@@ -196,8 +201,13 @@ class NetworkRecovery:
                                     + actual_travel_time * 60
                                 )
 
+                            idle_time = round(
+                                (recovery_start - self.next_power_crew_trip_start) / 60,
+                                0,
+                            )
+
                             print(
-                                f"The power crew is at {self.network.get_power_crew_loc()} at t = {self.next_power_crew_trip_start / 60} minutes. It takes {10 + int(round(travel_time, 0))} minutes to reach nearest node {nearest_node}, the nearest transportation node from {component} considering time for road link repair."
+                                f"The power crew is at {self.network.get_power_crew_loc()} at t = {self.next_power_crew_trip_start / 60} minutes. It takes {idle_time} minutes to reach nearest node {nearest_node}, the nearest transportation node from {component} considering time for road link repair."
                             )
 
                             self.network.set_power_crew_loc(nearest_node)
@@ -209,6 +219,7 @@ class NetworkRecovery:
                                 recovery_start + recovery_time
                             )
                             components_to_repair.remove(component)
+                            self.power_crew_total_tt += actual_travel_time
                             break
                         else:
                             print(
@@ -275,6 +286,7 @@ class NetworkRecovery:
                                 recovery_start + recovery_time
                             )
                             components_to_repair.remove(component)
+                            self.water_crew_total_tt += actual_travel_time
                             break
                         elif accessible is True:
                             if possible_start >= self.next_water_crew_trip_start:
@@ -287,8 +299,12 @@ class NetworkRecovery:
                                     + actual_travel_time * 60
                                 )
 
+                            idle_time = round(
+                                (recovery_start - self.next_water_crew_trip_start) / 60,
+                                0,
+                            )
                             print(
-                                f"The water crew is at {self.network.get_water_crew_loc()} at t = {self.next_water_crew_trip_start / 60} minutes. It takes {10 + int(round(travel_time, 0))} minutes to reach nearest node {nearest_node}, the nearest transportation node from {component} considering time for road link repair."
+                                f"The water crew is at {self.network.get_water_crew_loc()} at t = {self.next_water_crew_trip_start / 60} minutes. It takes {idle_time} minutes to reach nearest node {nearest_node}, the nearest transportation node from {component} considering time for road link repair."
                             )
 
                             self.network.set_water_crew_loc(nearest_node)
@@ -300,6 +316,7 @@ class NetworkRecovery:
                                 recovery_start + recovery_time
                             )
                             components_to_repair.remove(component)
+                            self.water_crew_total_tt += actual_travel_time
                             break
                         else:
                             print(
@@ -369,6 +386,7 @@ class NetworkRecovery:
                                 recovery_start + recovery_time
                             )
                             components_to_repair.remove(component)
+                            self.transpo_crew_total_tt += actual_travel_time
                             break
                         elif accessible is True:
                             if possible_start >= self.next_transpo_crew_trip_start:
@@ -380,9 +398,13 @@ class NetworkRecovery:
                                     self.next_transpo_crew_trip_start
                                     + actual_travel_time * 60
                                 )
-
+                            idle_time = round(
+                                (recovery_start - self.next_transpo_crew_trip_start)
+                                / 60,
+                                0,
+                            )
                             print(
-                                f"The transpo crew is at {self.network.get_transpo_crew_loc()} at t = {self.next_transpo_crew_trip_start / 60} minutes. It takes {10 + int(round(travel_time, 0))} minutes to reach nearest node {nearest_node}, the nearest transportation node from {component}  considering time for road link repair.."
+                                f"The transpo crew is at {self.network.get_transpo_crew_loc()} at t = {self.next_transpo_crew_trip_start / 60} minutes. It takes {idle_time} minutes to reach nearest node {nearest_node}, the nearest transportation node from {component}  considering time for road link repair.."
                             )
 
                             self.restore_transpo_link(component)
@@ -397,6 +419,7 @@ class NetworkRecovery:
                                 recovery_start + recovery_time
                             )
                             components_to_repair.remove(component)
+                            self.transpo_crew_total_tt += actual_travel_time
                             break
                         else:
                             print(
