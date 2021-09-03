@@ -1,6 +1,7 @@
 """Functions to implement water network simulations."""
 
 import wntr
+import infrarisk.src.network_sim_models.interdependencies as interdependencies
 
 
 def get_water_dict():
@@ -14,7 +15,7 @@ def get_water_dict():
             "code": "pumps",
             "name": "Pump",
             "connect_field": ["start_node_name", "end_node_name"],
-            "repair_time": 10,
+            "repair_time": 12,
         },
         "R": {
             "code": "reservoirs",
@@ -32,13 +33,13 @@ def get_water_dict():
             "code": "pipes",
             "name": "Service Connection Pipe",
             "connect_field": ["start_node_name", "end_node_name"],
-            "repair_time": 4,
+            "repair_time": 2,
         },
         "PMA": {
             "code": "pipes",
             "name": "Main Pipe",
             "connect_field": ["start_node_name", "end_node_name"],
-            "repair_time": 2,
+            "repair_time": 12,
         },
         "PHC": {
             "code": "pipes",
@@ -90,6 +91,17 @@ def get_water_dict():
         },
     }
     return water_dict
+
+
+def get_water_repair_time(component, wn):
+    compon_details = interdependencies.get_compon_details(component)
+    if compon_details[1] in ["P", "PMA", "PSC", "PV", "PHC"]:
+        repair_time = wn.get_link(component).diameter * 10 + 2  # Choi et al. (2018)
+        return repair_time
+    else:
+        water_dict = get_water_dict()
+        repair_time = water_dict[compon_details[1]]["repair_time"]
+        return repair_time
 
 
 def generate_pattern_interval_dict(wn):

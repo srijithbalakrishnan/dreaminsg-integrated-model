@@ -1,6 +1,7 @@
 """Functions to implement power systems simulations."""
 
 import pandapower as pp
+import infrarisk.src.network_sim_models.interdependencies as interdependencies
 
 
 def get_power_dict():
@@ -105,13 +106,13 @@ def get_power_dict():
             "code": "line",
             "name": "Line",
             "connect_field": ["from_bus", "to_bus"],
-            "repair_time": 3,
+            "repair_time": 5,
         },
         "LS": {
             "code": "line",
             "name": "Line",
             "connect_field": "from_bus",
-            "repair_time": 3,
+            "repair_time": 5,
         },
         "TF": {
             "code": "trafo",

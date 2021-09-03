@@ -416,3 +416,25 @@ def find_connected_transpo_node(component, tn):
             connected_junctions.append(getattr(tn.link[component], near_node_field))
 
     return connected_junctions
+
+
+def get_power_repair_time(component):
+    compon_details = get_compon_details(component)
+    repair_time = power_dict[compon_details[1]]["repair_time"]
+    return repair_time
+
+
+def get_transpo_repair_time(component):
+    compon_details = get_compon_details(component)
+    repair_time = transpo_dict[compon_details[1]]["repair_time"]
+    return repair_time
+
+
+def get_water_repair_time(component, wn):
+    compon_details = get_compon_details(component)
+    if compon_details[1] in ["P", "PMA", "PSC", "PV", "PHC"]:
+        repair_time = wn.get_link(component).diameter * 10 + 2  # Choi et al. (2018)
+        return repair_time
+    else:
+        repair_time = water_dict[compon_details[1]]["repair_time"]
+        return repair_time

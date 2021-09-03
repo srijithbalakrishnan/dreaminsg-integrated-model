@@ -127,11 +127,14 @@ class NetworkRecovery:
                     compon_details = interdependencies.get_compon_details(component)
 
                     if compon_details[0] == "power":
+                        # recovery_time = (
+                        #     interdependencies.power_dict[compon_details[1]][
+                        #         "repair_time"
+                        #     ]
+                        #     * 3600
+                        # )
                         recovery_time = (
-                            interdependencies.power_dict[compon_details[1]][
-                                "repair_time"
-                            ]
-                            * 3600
+                            interdependencies.get_power_repair_time(component) * 3600
                         )
 
                         connected_buses = interdependencies.find_connected_power_node(
@@ -226,12 +229,19 @@ class NetworkRecovery:
                                 f"The power crew cannot reach the destination {nearest_node} from {self.network.get_power_crew_loc()} since there are failed transportation component(s) {failed_transpo_link_en_route} in its possible route. The simulation will try to repair other failed components."
                             )
                     elif compon_details[0] == "water":
+                        # recovery_time = (
+                        #     interdependencies.water_dict[compon_details[1]][
+                        #         "repair_time"
+                        #     ]
+                        #     * 3600
+                        # )
                         recovery_time = (
-                            interdependencies.water_dict[compon_details[1]][
-                                "repair_time"
-                            ]
+                            interdependencies.get_water_repair_time(
+                                component, self.network.wn
+                            )
                             * 3600
                         )
+
                         connected_nodes = interdependencies.find_connected_water_node(
                             component, self.network.wn
                         )
@@ -324,12 +334,16 @@ class NetworkRecovery:
                             )
 
                     elif compon_details[0] == "transpo":
+                        # recovery_time = (
+                        #     interdependencies.transpo_dict[compon_details[1]][
+                        #         "repair_time"
+                        #     ]
+                        #     * 3600
+                        # )
                         recovery_time = (
-                            interdependencies.transpo_dict[compon_details[1]][
-                                "repair_time"
-                            ]
-                            * 3600
+                            interdependencies.get_transpo_repair_time(component) * 3600
                         )
+
                         connected_junctions = (
                             interdependencies.find_connected_transpo_node(
                                 component, self.network.tn

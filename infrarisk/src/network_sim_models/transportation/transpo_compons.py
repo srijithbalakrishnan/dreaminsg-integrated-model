@@ -1,3 +1,6 @@
+import infrarisk.src.network_sim_models.interdependencies as interdependencies
+
+
 class Link:
     """
     Class for network links.  As currently written, assumes costs are calculated as the
@@ -153,3 +156,10 @@ def get_transpo_dict():
     }
 
     return transpo_dict
+
+
+def get_transpo_repair_time(component):
+    compon_details = interdependencies.get_compon_details(component)
+    transpo_dict = get_transpo_dict()
+    repair_time = transpo_dict[compon_details[1]]["repair_time"]
+    return repair_time
