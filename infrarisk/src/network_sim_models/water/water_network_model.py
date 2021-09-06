@@ -93,17 +93,6 @@ def get_water_dict():
     return water_dict
 
 
-def get_water_repair_time(component, wn):
-    compon_details = interdependencies.get_compon_details(component)
-    if compon_details[1] in ["P", "PMA", "PSC", "PV", "PHC"]:
-        repair_time = wn.get_link(component).diameter * 10 + 2  # Choi et al. (2018)
-        return repair_time
-    else:
-        water_dict = get_water_dict()
-        repair_time = water_dict[compon_details[1]]["repair_time"]
-        return repair_time
-
-
 def generate_pattern_interval_dict(wn):
     pattern_intervals = dict()
     for pattern in wn.pattern_name_list:

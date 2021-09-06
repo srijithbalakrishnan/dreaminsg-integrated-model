@@ -388,9 +388,17 @@ def find_connected_water_node(component, wn):
     near_node_fields = water_dict[compon_details[1]]["connect_field"]
 
     connected_nodes = []
-    for near_node_field in near_node_fields:
-        connected_nodes.append(getattr(wn.get_link(component), near_node_field))
-
+    if compon_details[1] in ["P", "PMA", "PSC", "PV", "MP", "PHC", "WP"]:
+        for near_node_field in near_node_fields:
+            connected_node = getattr(wn.get_link(component), near_node_field)
+            if connected_node in wn.original_node_list:
+                connected_nodes.append(connected_node)
+    elif compon_details[1] in ["R", "J", "JIN", "JVN", "JTN", "JHY", "T"]:
+        for near_node_field in near_node_fields:
+            connected_node = getattr(wn.get_node(component), near_node_field)
+            if connected_node in wn.original_node_list:
+                connected_nodes.append(connected_node)
+    print(connected_nodes)
     return connected_nodes
 
 

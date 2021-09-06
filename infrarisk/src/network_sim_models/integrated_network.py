@@ -596,6 +596,8 @@ class IntegratedNetwork(Network):
 
     def pipe_leak_node_generator(self):
         """Splits the directly affected pipes to induce leak during simulations."""
+
+        self.wn.original_node_list = self.wn.node_name_list
         for _, component in enumerate(self.get_disrupted_components()):
             compon_details = interdependencies.get_compon_details(component)
             if compon_details[3] in [
