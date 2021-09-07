@@ -6,7 +6,7 @@ import infrarisk.src.hazard_initiator as hazard
 from infrarisk.src.network_sim_models.interdependencies import *
 from infrarisk.src.optimizer import *
 from shapely.geometry import Point, LineString
-import os
+import sys
 class Event:
     """Class of different hazard types where the probability of failure of components reduces with distance from the point of occurrence of the event."""
     def __init__(
@@ -85,11 +85,12 @@ class Event:
                                                                         intensity = inten,
                                                                         name = "Micropolis explosion")
                             
-                            no_of_datapoints=(self.datapoints/10)*self.explosion_datapoints                          
+                            no_of_datapoints=(self.datapoints/10)*self.explosion_datapoints  
+                            print("no_of_datapoints",no_of_datapoints)
                             explosion.set_affected_components(micropolis_network.integrated_graph)
                             scenario_location = MAIN_DIR/network_dir/"scenarios"
                             #check if datapoints to be generated has reached or not
-                            if(count > no_of_datapoints):
+                            if(count == no_of_datapoints):
                                 no_of_datapoints=0
                                 count=0
                                 raise StopIteration
@@ -115,14 +116,15 @@ class Event:
                     flood.set_affected_components(micropolis_network.integrated_graph, plot_components=True)
                     scenario_location = MAIN_DIR/network_dir/"scenarios"
                     no_of_datapoints=(self.datapoints/10)*self.flood_datapoints  
-                    if(count > no_of_datapoints):
+                    if(count == no_of_datapoints):
                         no_of_datapoints=0
                         count=0
                         raise StopIteration                     
                     file_is_generated=flood.generate_disruption_file(location = scenario_location,minimum_data=self.minimum_data)
                     if (file_is_generated==1):
                         count=count+1
-                        file_is_generated=0     
+                        file_is_generated=0   
+                
         except StopIteration:
             pass  
         
@@ -141,7 +143,7 @@ class Event:
                     tornado.set_affected_components(micropolis_network.integrated_graph, plot_components=True)
                     scenario_location = MAIN_DIR/network_dir/"scenarios"
                     no_of_datapoints=(self.datapoints/10)*self.tornado_datapoints     
-                    if(count > no_of_datapoints):
+                    if(count == no_of_datapoints):
                         no_of_datapoints=0
                         count=0
                         raise StopIteration                      
@@ -149,6 +151,7 @@ class Event:
                     if (file_is_generated==1):
                         count=count+1
                         file_is_generated=0   
+               
         except StopIteration:
             pass  
             
@@ -167,7 +170,7 @@ class Event:
                     no_of_datapoints=(self.datapoints/10)*self.hurricane_datapoints                
                     hurricane.set_affected_components(micropolis_network.integrated_graph, plot_components=True)
                     scenario_location = MAIN_DIR/network_dir/"scenarios"
-                    if(count > no_of_datapoints):
+                    if(count == no_of_datapoints):
                         no_of_datapoints=0
                         count=0
                         raise StopIteration
@@ -175,6 +178,7 @@ class Event:
                     if (file_is_generated==1):
                         count=count+1
                         file_is_generated=0               
+            
         except StopIteration:
             pass 
                               
