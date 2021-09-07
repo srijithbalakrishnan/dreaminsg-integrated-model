@@ -442,6 +442,7 @@ def get_water_repair_time(component, wn):
     compon_details = get_compon_details(component)
     if compon_details[1] in ["P", "PMA", "PSC", "PV", "PHC"]:
         repair_time = wn.get_link(component).diameter * 10 + 2  # Choi et al. (2018)
+        repair_time = round(repair_time, 0)
         return repair_time
     else:
         repair_time = water_dict[compon_details[1]]["repair_time"]
