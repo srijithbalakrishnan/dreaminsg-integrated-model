@@ -29,7 +29,7 @@ class RadialDisruption:
         radius_of_impact=100,
         time_of_occurrence=6000,
         intensity="high",
-        disrupt_file=None
+        disrupt_file=None,
     ):
         """Initiates a RadialDisruption object.
 
@@ -392,13 +392,13 @@ class RadialDisruption:
 
         return fail_status
 
-    def generate_disruption_file(self, location=None,minimum_data=0):
+    def generate_disruption_file(self, location=None, minimum_data=0):
         """Generates the disruption file consisting of the list of failed components, time of occurrence, and failure percentage (damage extent).
 
         :param location: The location of the file to be saved.
         :type location: string
         """
-        flag=0
+        flag = 0
         self.disrupt_file = pd.DataFrame(
             columns=[
                 "time_stamp",
@@ -431,9 +431,6 @@ class RadialDisruption:
                     ignore_index=True,
                 )
         if location is not None:
-            
-
-            
 
             # added by geeta
 
@@ -448,22 +445,24 @@ class RadialDisruption:
                     indices.append(index)
                 elif component_details[1] in fail_compon_dict["water"]:
                     indices.append(index)
-                #elif component_details[1] in fail_compon_dict["transport"]:
+                # elif component_details[1] in fail_compon_dict["transport"]:
                 #    print("not added")
-            
+
             self.disrupt_file = self.disrupt_file.loc[indices]
-            self.disrupt_file=self.disrupt_file[~self.disrupt_file['components'].str.contains('T_L',na=False)]
-            #check if the count of components is greater than minimum data to be included in each data point
-            if (len(self.disrupt_file)> minimum_data):
-                flag=1
+            self.disrupt_file = self.disrupt_file[
+                ~self.disrupt_file["components"].str.contains("T_L", na=False)
+            ]
+            # check if the count of components is greater than minimum data to be included in each data point
+            if len(self.disrupt_file) > minimum_data:
+                flag = 1
                 test_counter = len(os.listdir(location))
                 if not os.path.exists(f"{location}/test{test_counter}"):
                     os.makedirs(f"{location}/test{test_counter}_{self.name}")
                     self.disrupt_file.to_csv(
-                        Path(location) / f"test{test_counter}_{self.name}/disruption_file.csv",
+                        Path(location)
+                        / f"test{test_counter}_{self.name}/disruption_file.csv",
                         index=False,
                         sep=",",
-                    
                     )
                     print(
                         f"Successfully saved the disruption file to {location}/test{test_counter}_{self.name}/"
@@ -471,7 +470,6 @@ class RadialDisruption:
         else:
             print("Target location for saving the file not provided.")
         return flag
-
 
 
 class TrackDisruption:
@@ -485,7 +483,6 @@ class TrackDisruption:
         intensity="high",
         name="Track disruption",
         disrupt_file=None,
-        
     ):
         """Initiates the TrackDisruption object.
 
@@ -506,7 +503,6 @@ class TrackDisruption:
         self.set_fail_compon_dict()
         self.set_intensity_failure_probability()
         self.disrupt_file = pd.DataFrame()
-        
 
         if hazard_tracks is None:
             print(
@@ -528,10 +524,9 @@ class TrackDisruption:
         """Sets the dictionary of components that could be failed due to a radial disaster."""
         self.fail_compon_dict = {
             "power": {"TF", "L"},
-            "water": {"R","PMA","T"},
+            "water": {"R", "PMA", "T"},
             "transport": {"L"},
         }
-
 
     def get_fail_compon_dict(self):
         """Returns the dictionary of that could be failed due to a radial disaster.
@@ -619,7 +614,6 @@ class TrackDisruption:
             hazard_track = LineString(spline_xys)
 
         return hazard_track
-
 
     def set_buffer_of_impact(self, buffer_of_impact):
         """Sets the impact buffer distance in meters.
@@ -906,12 +900,13 @@ class TrackDisruption:
 
         return fail_status
 
-    def generate_disruption_file(self, location=None,minimum_data=0):
+    def generate_disruption_file(self, location=None, minimum_data=0):
         """Generates the disruption file consisting of the list of failed components, time of occurrence, and failure percentage (damage extent).
 
         :param location: The location of the file to be saved.
         :type location: string
         """
+        flag = 0
         self.disrupt_file = pd.DataFrame(
             columns=[
                 "time_stamp",
@@ -943,10 +938,8 @@ class TrackDisruption:
                     },
                     ignore_index=True,
                 )
-        if location is not None:
-            
 
-         
+        if location is not None:
             # added by geeta
             fail_compon_dict = self.get_fail_compon_dict()
             indices = []
@@ -960,22 +953,24 @@ class TrackDisruption:
                     indices.append(index)
                 elif component_details[1] in fail_compon_dict["water"]:
                     indices.append(index)
-                #elif component_details[1] in fail_compon_dict["transport"]:
+                # elif component_details[1] in fail_compon_dict["transport"]:
                 #    indices.append(index)
-            
+
             self.disrupt_file = self.disrupt_file.loc[indices]
-            self.disrupt_file=self.disrupt_file[~self.disrupt_file['components'].str.contains('T_L',na=False)]
-            #check if the count of components is greater than minimum data to be included in each data point
-            if (len(self.disrupt_file)> minimum_data):
-                flag=1
+            self.disrupt_file = self.disrupt_file[
+                ~self.disrupt_file["components"].str.contains("T_L", na=False)
+            ]
+            # check if the count of components is greater than minimum data to be included in each data point
+            if len(self.disrupt_file) > minimum_data:
+                flag = 1
                 test_counter = len(os.listdir(location))
                 if not os.path.exists(f"{location}/test{test_counter}"):
                     os.makedirs(f"{location}/test{test_counter}_{self.name}")
                     self.disrupt_file.to_csv(
-                        Path(location) / f"test{test_counter}_{self.name}/disruption_file.csv",
+                        Path(location)
+                        / f"test{test_counter}_{self.name}/disruption_file.csv",
                         index=False,
                         sep=",",
-                    
                     )
                     print(
                         f"Successfully saved the disruption file to {location}/test{test_counter}_{self.name}/"

@@ -28,6 +28,10 @@ class NetworkRecovery:
         self.power_crew_total_tt = 0
         self.transpo_crew_total_tt = 0
 
+        self.water_access_no_redundancy = []
+        self.power_access_no_redundancy = []
+        self.transpo_access_no_redundancy = []
+
     def set_initial_crew_start(self, repair_order):
         """Sets the initial start times at which the respective infrastructure crews start from their locations post-disaster.
 
@@ -228,6 +232,8 @@ class NetworkRecovery:
                             print(
                                 f"The power crew cannot reach the destination {nearest_node} from {self.network.get_power_crew_loc()} since there are failed transportation component(s) {failed_transpo_link_en_route} in its possible route. The simulation will try to repair other failed components."
                             )
+                            if component not in self.power_access_no_redundancy:
+                                self.power_access_no_redundancy.append(component)
                     elif compon_details[0] == "water":
                         recovery_time = (
                             interdependencies.get_water_repair_time(
@@ -326,6 +332,8 @@ class NetworkRecovery:
                             print(
                                 f"The water crew cannot reach the destination {nearest_node} from {self.network.get_water_crew_loc()} since there are failed transportation component(s) {failed_transpo_link_en_route} in its possible route. The simulation will try to repair other failed components."
                             )
+                            if component not in self.water_access_no_redundancy:
+                                self.water_access_no_redundancy.append(component)
 
                     elif compon_details[0] == "transpo":
                         # recovery_time = (
@@ -433,6 +441,8 @@ class NetworkRecovery:
                             print(
                                 f"The transportation crew cannot reach the destination {nearest_node} from {self.network.get_transpo_crew_loc()} since there are failed transportation component(s) {failed_transpo_link_en_route} in its possible route. The simulation will try to repair other failed components."
                             )
+                            if component not in self.transpo_access_no_redundancy:
+                                self.transpo_access_no_redundancy.append(component)
 
                 # Schedule the recovery action
                 if recovery_start is not None:

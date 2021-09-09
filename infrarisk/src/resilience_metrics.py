@@ -78,7 +78,7 @@ class WeightedResilienceMetric(ResilienceMetric):
                 multiplier = pattern[pattern_index]
                 base_demands_at_t.append(multiplier * base_demand)
 
-        print("Supply: ", water_supplied_at_t, "Base demand: ", sum(base_demands_at_t))
+        # print("Supply: ", water_supplied_at_t, "Base demand: ", sum(base_demands_at_t))
         water_resmetric = water_supplied_at_t / sum(base_demands_at_t)
         return water_resmetric
 
