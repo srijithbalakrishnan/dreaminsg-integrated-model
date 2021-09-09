@@ -448,11 +448,11 @@ class RadialDisruption:
                     indices.append(index)
                 elif component_details[1] in fail_compon_dict["water"]:
                     indices.append(index)
-                #elif component_details[1] in fail_compon_dict["transport"]:
-                #    print("not added")
+                elif component_details[1] in fail_compon_dict["transport"]:
+                    indices.append(index)
             
             self.disrupt_file = self.disrupt_file.loc[indices]
-            self.disrupt_file=self.disrupt_file[~self.disrupt_file['components'].str.contains('T_L',na=False)]
+            #self.disrupt_file=self.disrupt_file[~self.disrupt_file['components'].str.contains('T_L',na=False)]
             #check if the count of components is greater than minimum data to be included in each data point
             if (len(self.disrupt_file)> minimum_data):
                 flag=1
@@ -912,6 +912,7 @@ class TrackDisruption:
         :param location: The location of the file to be saved.
         :type location: string
         """
+        flag=0
         self.disrupt_file = pd.DataFrame(
             columns=[
                 "time_stamp",
@@ -960,11 +961,11 @@ class TrackDisruption:
                     indices.append(index)
                 elif component_details[1] in fail_compon_dict["water"]:
                     indices.append(index)
-                #elif component_details[1] in fail_compon_dict["transport"]:
-                #    indices.append(index)
+                elif component_details[1] in fail_compon_dict["transport"]:
+                    indices.append(index)
             
             self.disrupt_file = self.disrupt_file.loc[indices]
-            self.disrupt_file=self.disrupt_file[~self.disrupt_file['components'].str.contains('T_L',na=False)]
+            #self.disrupt_file=self.disrupt_file[~self.disrupt_file['components'].str.contains('T_L',na=False)]
             #check if the count of components is greater than minimum data to be included in each data point
             if (len(self.disrupt_file)> minimum_data):
                 flag=1
@@ -975,7 +976,6 @@ class TrackDisruption:
                         Path(location) / f"test{test_counter}_{self.name}/disruption_file.csv",
                         index=False,
                         sep=",",
-                    
                     )
                     print(
                         f"Successfully saved the disruption file to {location}/test{test_counter}_{self.name}/"
