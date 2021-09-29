@@ -3,6 +3,8 @@
 from abc import ABC, abstractmethod
 import math
 from sklearn import metrics
+import numpy as np
+from statistics import mean
 
 
 class ResilienceMetric(ABC):
@@ -49,37 +51,54 @@ class WeightedResilienceMetric(ResilienceMetric):
         node_demand = wn_results.node["demand"].iloc[-1]
         node_pressure = wn_results.node["pressure"].iloc[-1]
 
-        water_supplied_at_t = sum(
-            [
-                node_demand[junc]
-                for junc in network_recovery.network.wn.junction_name_list
-                if node_pressure[junc]
-                > network_recovery.network.wn.options.hydraulic.threshold_pressure
-            ]
-        )
-
-        base_demands_at_t = []
+        water_supplied_at_t = []
+        base_supply_at_t = []
+        supply_ratio_at_t = []
 
         for junc in network_recovery.network.wn.junction_name_list:
-            base_demand = network_recovery.network.wn.get_node(junc).base_demand
+            if junc in network_recovery.network.base_water_supply.columns:
+                # base supply
+                base_supply_df = network_recovery.network.base_water_supply
+                base_junc_supply_at_t = base_supply_df[
+                    base_supply_df.time == int(sim_time % (24 * 3600))
+                ][junc].item()
+                base_supply_at_t.append(base_junc_supply_at_t)
 
-            if base_demand != 0:
-                pattern = (
-                    network_recovery.network.wn.get_node(junc)
-                    .demand_timeseries_list[0]
-                    .pattern.multipliers
-                )
-                pattern_size = len(pattern)
-                pattern_interval = 24 / pattern_size
-                pattern_index = math.floor(
-                    (((sim_time) / 3600) % 24) / pattern_interval
-                )
+                # actual supply
+                if (
+                    node_pressure[junc]
+                    >= network_recovery.network.wn.options.hydraulic.threshold_pressure
+                ):
+                    actual_junc_supply_at_t = node_demand[junc]
+                    water_supplied_at_t.append(actual_junc_supply_at_t)
+                    # supply ratio
+                    supply_ratio_at_t.append(
+                        min(1, actual_junc_supply_at_t / base_junc_supply_at_t)
+                    )
+                elif (
+                    0
+                    <= node_pressure[junc]
+                    < network_recovery.network.wn.options.hydraulic.threshold_pressure
+                ):
+                    actual_junc_supply_at_t = node_demand[junc] * math.sqrt(
+                        node_pressure[junc]
+                        / network_recovery.network.wn.options.hydraulic.threshold_pressure
+                    )
+                    water_supplied_at_t.append(actual_junc_supply_at_t)
+                    # supply ratio
+                    supply_ratio_at_t.append(
+                        min(1, actual_junc_supply_at_t / base_junc_supply_at_t)
+                    )
 
-                multiplier = pattern[pattern_index]
-                base_demands_at_t.append(multiplier * base_demand)
-
-        # print("Supply: ", water_supplied_at_t, "Base demand: ", sum(base_demands_at_t))
-        water_resmetric = water_supplied_at_t / sum(base_demands_at_t)
+        print(
+            "Supply: ",
+            sum(water_supplied_at_t),
+            "Base demand: ",
+            sum(base_supply_at_t),
+            "Supply ratio: ",
+            mean(supply_ratio_at_t),
+        )
+        water_resmetric = min(1, mean(supply_ratio_at_t))
         return water_resmetric
 
     def calculate_power_resmetric(self, network_recovery):
