@@ -398,7 +398,7 @@ def find_connected_water_node(component, wn):
             connected_node = getattr(wn.get_node(component), near_node_field)
             if connected_node in wn.original_node_list:
                 connected_nodes.append(connected_node)
-    print(connected_nodes)
+    # print(connected_nodes)
     return connected_nodes
 
 

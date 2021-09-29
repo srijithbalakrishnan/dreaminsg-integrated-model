@@ -2,6 +2,10 @@
 
 import wntr
 import infrarisk.src.network_sim_models.interdependencies as interdependencies
+import copy
+import math
+import pandas as pd
+from pathlib import Path
 
 
 def get_water_dict():
@@ -16,54 +20,63 @@ def get_water_dict():
             "name": "Pump",
             "connect_field": ["start_node_name", "end_node_name"],
             "repair_time": 12,
+            "results": "link",
         },
         "R": {
             "code": "reservoirs",
             "name": "Reservoir",
             "connect_field": ["name"],
             "repair_time": 24,
+            "results": "node",
         },
         "P": {
             "code": "pipes",
             "name": "Pipe",
             "connect_field": ["start_node_name", "end_node_name"],
             "repair_time": 12,
+            "results": "link",
         },
         "PSC": {
             "code": "pipes",
             "name": "Service Connection Pipe",
             "connect_field": ["start_node_name", "end_node_name"],
             "repair_time": 2,
+            "results": "link",
         },
         "PMA": {
             "code": "pipes",
             "name": "Main Pipe",
             "connect_field": ["start_node_name", "end_node_name"],
             "repair_time": 12,
+            "results": "link",
         },
         "PHC": {
             "code": "pipes",
             "name": "Hydrant Connection Pipe",
             "connect_field": ["start_node_name", "end_node_name"],
             "repair_time": 4,
+            "results": "link",
         },
         "PV": {
             "code": "pipes",
             "name": "Valve converted to Pipe",
             "connect_field": ["start_node_name", "end_node_name"],
             "repair_time": 2,
+            "results": "link",
         },
         "J": {
             "code": "junctions",
             "name": "Junction",
             "connect_field": ["name"],
             "repair_time": 5,
+            "results": "node",
         },
         "JIN": {
             "code": "junctions",
             "name": "Intermmediate Junction",
             "connect_field": ["name"],
             "repair_time": 5,
+            "results": "node",
         },
         "JVN": {
             "code": "junctions",
@@ -76,18 +89,21 @@ def get_water_dict():
             "name": "Terminal Junction",
             "connect_field": ["name"],
             "repair_time": 5,
+            "results": "node",
         },
         "JHY": {
             "code": "junctions",
             "name": "Hydrant Junction",
             "connect_field": ["name"],
             "repair_time": 5,
+            "results": "node",
         },
         "T": {
             "code": "tanks",
             "name": "Tank",
             "connect_field": ["name"],
             "repair_time": 24,
+            "results": "node",
         },
     }
     return water_dict
@@ -144,3 +160,33 @@ def run_water_simulation(wn):
     )
 
     return wn_results
+
+
+def generate_base_supply(wn_original, dir):
+    wn = copy.deepcopy(wn_original)
+    wn.options.time.duration = 3600 * 24
+    wn.options.time.report_timestep = 60
+    wn.options.time.hydraulic_timestep = 60
+    wn.options.hydraulic.demand_model = "DDA"
+    wn.options.hydraulic.required_pressure = 30
+    wn.options.hydraulic.minimum_pressure = 0
+
+    wn_sim = wntr.sim.WNTRSimulator(wn)
+    wn_results = wn_sim.run_sim(
+        convergence_error=True, solver_options={"MAXITER": 10000}
+    )
+    base_node_supply_df = wn_results.node["demand"][wn.node_name_list]
+    base_node_supply_df["time"] = base_node_supply_df.index
+    base_node_supply_df["time"] = base_node_supply_df["time"].astype(int)
+    base_node_supply_df.to_csv(
+        Path(dir) / "base_water_node_supply.csv",
+        index=False,
+    )
+
+    base_link_flow_df = wn_results.link["flowrate"][wn.link_name_list]
+    base_link_flow_df["time"] = base_link_flow_df.index
+    base_link_flow_df["time"] = base_link_flow_df["time"].astype(int)
+    base_link_flow_df.to_csv(
+        Path(dir) / "base_water_link_flow.csv",
+        index=False,
+    )

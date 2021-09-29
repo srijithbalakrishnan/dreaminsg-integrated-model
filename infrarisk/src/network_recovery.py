@@ -121,7 +121,10 @@ class NetworkRecovery:
                 if compon_details[0] == "transpo":
                     self.fail_transpo_link(component)
 
-            self.update_traffic_model()
+            # update transportation link flows and costs only if there is any change to transportation network due to the event
+            disrupted_infra_dict = self.network.get_disrupted_infra_dict()
+            if len(disrupted_infra_dict["transpo"]) > 0:
+                self.update_traffic_model()
 
             # Compute time of recovery actions
             components_to_repair = copy.deepcopy(repair_order)

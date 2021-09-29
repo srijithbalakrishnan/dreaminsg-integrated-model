@@ -77,7 +77,7 @@ class IntegratedNetwork(Network):
         else:
             self.load_transpo_network(transp_folder)
 
-    def load_networks(self, water_file, power_file, transp_folder, power_sim_type):
+    def load_networks(self, water_folder, power_folder, transp_folder, power_sim_type):
         """Loads the water, power and transportation networks.
 
         :param water_file: The water network file in inp format
@@ -90,31 +90,34 @@ class IntegratedNetwork(Network):
         :type power_sim_type: string
         """
         # load water_network model
-        self.load_water_network(water_file)
+        self.load_water_network(water_folder)
 
         # load power systems network
-        self.load_power_network(power_file, power_sim_type)
+        self.load_power_network(power_folder, power_sim_type)
 
         # load static traffic assignment network
         self.load_transpo_network(transp_folder)
 
-    def load_power_network(self, power_file, power_sim_type):
+    def load_power_network(self, power_folder, power_sim_type):
         """Loads the power network.
 
         :param power_file: The power systems file in json format
         :type power_file: string
         """
         try:
-            pn = power.load_power_network(power_file, sim_type=power_sim_type)
+            pn = power.load_power_network(
+                power_folder / "power.json", sim_type=power_sim_type
+            )
             power.run_power_simulation(pn)
             self.pn = pn
+            self.base_power_supply = power.generate_base_supply(pn)
         except UserWarning:
             print(
                 "Error: The power systems file does not exist. No such file or directory: ",
-                power_file,
+                power_folder / "power.json",
             )
 
-    def load_water_network(self, water_file):
+    def load_water_network(self, water_folder):
         """Loads the water network.
 
         :param water_file: The water network file in inp format
@@ -122,12 +125,19 @@ class IntegratedNetwork(Network):
         """
         try:
             initial_sim_step = 60
-            wn = water.load_water_network(water_file, initial_sim_step)
+            wn = water.load_water_network(water_folder / "water.inp", initial_sim_step)
             self.wn = wn
+
+            self.base_water_node_supply = pd.read_csv(
+                water_folder / "base_water_node_supply.csv"
+            )
+            self.base_water_link_flow = pd.read_csv(
+                water_folder / "base_water_link_flow.csv"
+            )
         except FileNotFoundError:
             print(
                 "Error: The water network file does not exist. No such file or directory: ",
-                water_file,
+                water_folder / "water.inp",
             )
 
     def load_transpo_network(self, transp_folder):
@@ -145,8 +155,9 @@ class IntegratedNetwork(Network):
             print(
                 f"Transportation network successfully loaded from {transp_folder}. Static traffic assignment method will be used to calculate travel times."
             )
-            # tn.userEquilibrium("FW", 400, 1e-4, tn.averageExcessCost)
+            tn.userEquilibrium("FW", 400, 1e-4, tn.averageExcessCost)
             self.tn = tn
+            self.base_transpo_flow = tn
         except FileNotFoundError:
             print(
                 f"Error: The transportation network folder does not exist. No such directory: {transp_folder}."
@@ -156,14 +167,16 @@ class IntegratedNetwork(Network):
 
     def generate_integrated_graph(self):
         """Generates the integrated network as a Networkx graph."""
-        G_power = self.generate_power_networkx_graph()
+        self.power_graph = self.generate_power_networkx_graph()
         print("Successfully added power network to the integrated graph...")
-        G_water = self.generate_water_networkx_graph()
+        self.water_graph = self.generate_water_networkx_graph()
         print("Successfully added water network to the integrated graph...")
-        G_transpo = self.generate_transpo_networkx_graph()
+        self.transpo_graph = self.generate_transpo_networkx_graph()
         print("Successfully added transportation network to the integrated graph...")
 
-        G = nx.compose(G_power, nx.compose(G_water, G_transpo))
+        G = nx.compose(
+            self.power_graph, nx.compose(self.water_graph, self.transpo_graph)
+        )
 
         self.integrated_graph = G
         self.set_map_extends()

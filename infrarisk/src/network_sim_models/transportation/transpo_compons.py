@@ -146,12 +146,16 @@ def get_transpo_dict():
             "name": "Junction",
             "connect_field": ["name"],
             "repair_time": 24,
+            "results": "link",
+            "capacity_fields": ["flow"],
         },
         "L": {
             "code": "link",
             "name": "Link",
             "connect_field": ["head", "tail"],
             "repair_time": 24,
+            "results": None,
+            "capacity_fields": None,
         },
     }
 

@@ -2,6 +2,7 @@
 
 import pandapower as pp
 import infrarisk.src.network_sim_models.interdependencies as interdependencies
+import copy
 
 
 def get_power_dict():
@@ -16,127 +17,144 @@ def get_power_dict():
             "name": "Bus",
             "connect_field": ["name"],
             "repair_time": 3,
+            "results": "res_bus",
+            "capacity_fields": ["p_mw"],
         },
         "BL": {
             "code": "bus",
             "name": "Bus connected to load",
             "connect_field": ["name"],
             "repair_time": 3,
+            "results": "res_bus",
+            "capacity_fields": ["p_mw"],
         },
         "BS": {
             "code": "bus",
             "name": "Bus connected to switch",
             "connect_field": ["name"],
             "repair_time": 3,
+            "results": "res_bus",
+            "capacity_fields": ["p_mw"],
         },
         "LO": {
             "code": "load",
             "name": "Load",
             "connect_field": ["bus"],
             "repair_time": 3,
+            "results": "res_load",
+            "capacity_fields": ["p_mw"],
         },
         "LOA": {
             "code": "asymmetric_load",
             "name": "Asymmetric Load",
             "connect_field": ["bus"],
             "repair_time": 3,
-        },
-        # Three phase electric motor is not compatible with pandapower, hence it is modeled as a load
-        "LOMP": {
-            "code": "load",
-            "name": "Motor as Load",
-            "connect_field": ["bus"],
-            "repair_time": 3,
+            "results": "res_asymmetric_load_3ph",
+            "capacity_fields": ["p_a_mw", "p_b_mw", "p_c_mw"],
         },
         "SG": {
             "code": "sgen",
             "name": "Static Generator",
             "connect_field": ["bus"],
             "repair_time": 24,
+            "results": "res_sgen",
+            "capacity_fields": ["p_mw"],
         },
         "MP": {
             "code": "motor",
             "name": "Motor",
             "connect_field": ["bus"],
             "repair_time": 24,
-        },
-        "AL": {
-            "code": "asymmetric_load",
-            "name": "Asymmetric Load",
-            "connect_field": ["bus"],
-            "repair_time": 10,
+            "results": "res_motor",
+            "capacity_fields": ["p_mw"],
         },
         "AS": {
             "code": "asymmetric_sgen",
             "name": "Asymmetric Static Generator",
             "connect_field": ["bus"],
             "repair_time": 10,
+            "results": "res_asymmetric_sgen_3ph",
+            "capacity_fields": ["p_a_mw", "p_b_mw", "p_c_mw"],
         },
         "ST": {
             "code": "storage",
             "name": "Storage",
             "connect_field": ["bus"],
             "repair_time": 5,
+            "results": "res_storage",
+            "capacity_fields": ["p_mw"],
         },
         "G": {
             "code": "gen",
             "name": "Generator",
             "connect_field": ["bus"],
             "repair_time": 24,
+            "results": "res_gen",
+            "capacity_fields": ["p_mw"],
         },
         "S": {
             "code": "switch",
             "name": "Switch",
             "connect_field": ["bus", "element"],
             "repair_time": 4,
+            "results": None,
+            "capacity_fields": None,
         },
         "SH": {
             "code": "shunt",
             "name": "Shunt",
             "connect_field": ["bus"],
             "repair_time": 3,
+            "results": "res_shunt",
+            "capacity_fields": ["p_mw"],
         },
         "EG": {
             "code": "ext_grid",
             "name": "External Grid",
             "connect_field": ["bus"],
             "repair_time": 10,
+            "results": "res_ext_grid",
+            "capacity_fields": ["p_mw"],
         },
         "L": {
             "code": "line",
             "name": "Line",
             "connect_field": ["from_bus", "to_bus"],
             "repair_time": 5,
+            "results": "res_line",
+            "capacity_fields": ["p_from_mw"],
         },
         "LS": {
             "code": "line",
             "name": "Line",
             "connect_field": "from_bus",
             "repair_time": 5,
+            "results": "res_line",
+            "capacity_fields": ["p_from_mw"],
         },
         "TF": {
             "code": "trafo",
             "name": "Transformer",
             "connect_field": ["hv_bus", "lv_bus"],
             "repair_time": 10,
-        },
-        "TH": {
-            "code": "trafo3w",
-            "name": "Three Phase Transformer",
-            "connect_field": ["hv_bus", "lv_bus"],
-            "repair_time": 10,
+            "results": "res_trafo",
+            "capacity_fields": ["p_hv_mw"],
         },
         "I": {
             "code": "impedance",
             "name": "Impedance",
             "connect_field": ["from_bus", "to_bus"],
             "repair_time": 5,
+            "results": "res_impedance",
+            "capacity_fields": ["p_from_mw"],
         },
         "DL": {
             "code": "dcline",
             "name": "DCLine",
             "connect_field": ["from_bus", "to_bus"],
             "repair_time": 3,
+            "results": "res_dcline",
+            "capacity_fields": ["p_from_mw"],
         },
     }
     return power_dict
@@ -180,3 +198,9 @@ def run_power_simulation(pn):
     elif pn.sim_type == "3ph":
         pp.add_zero_impedance_parameters(pn)
         pn_sim = pp.runpp_3ph(pn)
+
+
+def generate_base_supply(pn):
+    pn_base = copy.deepcopy(pn)
+    run_power_simulation(pn_base)
+    return pn_base
