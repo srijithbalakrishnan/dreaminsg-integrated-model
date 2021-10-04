@@ -97,10 +97,10 @@ class RadialDisruption:
         """
         if isinstance(point_of_occurrence, tuple):
             self.point_of_occurrence = point_of_occurrence
-        else:
-            print(
-                "Point of occurrence was not set. Point of occurrence needs to be a tuple."
-            )
+        # else:
+        #     print(
+        #         "Point of occurrence was not set. Point of occurrence needs to be a tuple."
+        #     )
 
     def set_radius_of_impact(self, radius_of_impact):
         """Sets the radius of the radial disruption.
@@ -110,10 +110,10 @@ class RadialDisruption:
         """
         if (isinstance(radius_of_impact, float)) or (isinstance(radius_of_impact, int)):
             self.radius_of_impact = radius_of_impact
-        else:
-            print(
-                "Radius of impact was not set. Radius of impact needs to be a float or integer."
-            )
+        # else:
+        #     print(
+        #         "Radius of impact was not set. Radius of impact needs to be a float or integer."
+        #     )
 
     def set_time_of_occurrence(self, time_of_occurrence):
         """Stes the time of occurrence of the disruptive event.
@@ -123,10 +123,10 @@ class RadialDisruption:
         """
         if isinstance(time_of_occurrence, int):
             self.time_of_occurrence = time_of_occurrence
-        else:
-            print(
-                "Time of diruptive event was not set. Time of occurrence needs to be an integer in seconds and multiple of 60 (integer)."
-            )
+        # else:
+        #     print(
+        #         "Time of diruptive event was not set. Time of occurrence needs to be an integer in seconds and multiple of 60 (integer)."
+        #     )
 
     def set_affected_components(self, G, plot_components=True):
         """Set the affected components (nodes and link)
@@ -449,27 +449,30 @@ class RadialDisruption:
                 #    print("not added")
 
             self.disrupt_file = self.disrupt_file.loc[indices]
-            self.disrupt_file = self.disrupt_file[
-                ~self.disrupt_file["components"].str.contains("T_L", na=False)
-            ]
+            # self.disrupt_file = self.disrupt_file[
+            #     ~self.disrupt_file["components"].str.contains("T_L", na=False)
+            # ]
             # check if the count of components is greater than minimum data to be included in each data point
             if len(self.disrupt_file) > minimum_data:
                 flag = 1
                 test_counter = len(os.listdir(location))
-                if not os.path.exists(f"{location}/test{test_counter}"):
-                    os.makedirs(f"{location}/test{test_counter}_{self.name}")
+                print(f"{location}/{self.name}{test_counter}")
+                if not os.path.exists(f"{location}/{self.name}{test_counter}"):
+                    os.makedirs(f"{location}/{self.name}{test_counter}")
                     self.disrupt_file.to_csv(
                         Path(location)
-                        / f"test{test_counter}_{self.name}/disruption_file.csv",
+                        / f"{self.name}{test_counter}/disruption_file.csv",
                         index=False,
                         sep=",",
                     )
                     print(
                         f"Successfully saved the disruption file to {location}/test{test_counter}_{self.name}/"
                     )
+                    scenario_path = Path(location) / f"{self.name}{test_counter}"
+                    return scenario_path
         else:
             print("Target location for saving the file not provided.")
-        return flag
+            return flag
 
 
 class TrackDisruption:
@@ -556,8 +559,8 @@ class TrackDisruption:
         for _, linestring in enumerate(hazard_tracks.geometry):
             if linestring.geom_type == "LineString":
                 self.hazard_tracks.append(linestring)
-            else:
-                print("The entry is not a LineString object and hence ignored.")
+            # else:
+            #     print("The entry is not a LineString object and hence ignored.")
 
     def set_hazard_tracks_from_linestring(self, linestring_track):
         """Sets a hazard track from a LineString object.
@@ -567,8 +570,8 @@ class TrackDisruption:
         """
         if linestring_track.geom_type == "LineString":
             self.hazard_tracks.append(linestring_track)
-        else:
-            print("The entry is not a LineString object and hence ignored.")
+        # else:
+        #     print("The entry is not a LineString object and hence ignored.")
 
     def generate_random_track(self, loc_extents, shape="spline"):
         """Generates a random track using a spline connecting three points on the map.
@@ -623,10 +626,10 @@ class TrackDisruption:
         """
         if (isinstance(buffer_of_impact, float)) or (isinstance(buffer_of_impact, int)):
             self.buffer_of_impact = buffer_of_impact
-        else:
-            print(
-                "Value of buffer distance of impact was not set. The value needs to be an integer in seconds and multiple of 60 (integer)."
-            )
+        # else:
+        #     print(
+        #         "Value of buffer distance of impact was not set. The value needs to be an integer in seconds and multiple of 60 (integer)."
+        #     )
 
     def set_time_of_occurrence(self, time_of_occurrence):
         """Sets the time of occurrence of the disruptive event.
@@ -636,10 +639,10 @@ class TrackDisruption:
         """
         if isinstance(time_of_occurrence, int):
             self.time_of_occurrence = time_of_occurrence
-        else:
-            print(
-                "Time of diruptive event was not set. Time of occurrence needs to be an integer in seconds and multiple of 60 (integer)."
-            )
+        # else:
+        #     print(
+        #         "Time of diruptive event was not set. Time of occurrence needs to be an integer in seconds and multiple of 60 (integer)."
+        #     )
 
     def set_affected_components(self, G, plot_components=True):
         """Set the affected components (nodes and link)
@@ -957,27 +960,30 @@ class TrackDisruption:
                 #    indices.append(index)
 
             self.disrupt_file = self.disrupt_file.loc[indices]
-            self.disrupt_file = self.disrupt_file[
-                ~self.disrupt_file["components"].str.contains("T_L", na=False)
-            ]
+            # self.disrupt_file = self.disrupt_file[
+            #     ~self.disrupt_file["components"].str.contains("T_L", na=False)
+            # ]
             # check if the count of components is greater than minimum data to be included in each data point
             if len(self.disrupt_file) > minimum_data:
                 flag = 1
                 test_counter = len(os.listdir(location))
-                if not os.path.exists(f"{location}/test{test_counter}"):
-                    os.makedirs(f"{location}/test{test_counter}_{self.name}")
+                if not os.path.exists(f"{location}/{self.name}{test_counter}"):
+                    print(f"{location}/{self.name}{test_counter}")
+                    os.makedirs(f"{location}/{self.name}{test_counter}")
                     self.disrupt_file.to_csv(
                         Path(location)
-                        / f"test{test_counter}_{self.name}/disruption_file.csv",
+                        / f"{self.name}{test_counter}/disruption_file.csv",
                         index=False,
                         sep=",",
                     )
                     print(
                         f"Successfully saved the disruption file to {location}/test{test_counter}_{self.name}/"
                     )
+                    scenario_path = Path(location) / f"{self.name}{test_counter}"
+                    return scenario_path
         else:
             print("Target location for saving the file not provided.")
-        return flag
+            return flag
 
 
 class RandomDisruption:

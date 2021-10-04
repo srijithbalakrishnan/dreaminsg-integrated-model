@@ -3,6 +3,8 @@ import infrarisk.src.network_sim_models.interdependencies as interdependencies
 import infrarisk.src.network_sim_models.water.water_network_model as water
 import infrarisk.src.network_sim_models.power.power_system_model as power
 import infrarisk.src.network_sim_models.transportation.transpo_compons as transpo
+import geopandas as gpd
+from shapely.geometry import Point, LineString
 
 
 class CentralityStrategy:
@@ -332,6 +334,131 @@ class HandlingCapacityStrategy:
             + list(power_capacity_dict.keys())
             + list(water_capacity_dict.keys())
         )
+        self.repair_order = repair_order
+
+    def get_repair_order(self):
+        return self.repair_order
+
+
+class ZoneBasedStrategy:
+    """Based on the zone in which the components are located."""
+
+    def __init__(self, integrated_network, zones_shp):
+        self.integrated_network = integrated_network
+        self.zones = gpd.read_file(zones_shp, encoding="utf-8")
+
+    def set_repair_order(self):
+        transpo_zone_dict = dict()
+        power_zone_dict = dict()
+        water_zone_dict = dict()
+
+        node_link_dict = self.integrated_network.get_node_link_dict()
+        G = self.integrated_network.integrated_graph
+
+        for compon in self.integrated_network.get_disrupted_components():
+            compon_details = interdependencies.get_compon_details(compon)
+
+            compon_infra = compon_details[0]
+            if compon_details[1] in node_link_dict[compon_infra]["node"]:
+                compon_geometry = Point(G.nodes[compon]["coord"])
+            elif compon_details[1] in node_link_dict[compon_infra]["link"]:
+                compon_key = [
+                    (u, v)
+                    for u, v, e in self.integrated_network.integrated_graph.edges(
+                        data=True
+                    )
+                    if e["id"] == compon
+                ]
+                start_coords = G.nodes[compon_key[0][0]]["coord"]
+                end_coords = G.nodes[compon_key[0][1]]["coord"]
+                compon_geometry = LineString([start_coords, end_coords])
+
+            industrial_gpd = self.zones[self.zones["zone"] == "Industrial"]
+            cbd_gpd = self.zones[self.zones["zone"] == "CBD"]
+            residential_gpd = self.zones[self.zones["zone"] == "Residentia"]
+
+            for _, row in industrial_gpd.iterrows():
+                if row["geometry"].intersection(
+                    compon_geometry
+                ).is_empty == False or compon_geometry.within(row["geometry"]):
+                    if (compon_infra == "water") and (
+                        compon not in water_zone_dict.keys()
+                    ):
+                        water_zone_dict[compon] = 3  # "Industrial"
+                    elif (compon_infra == "power") and (
+                        compon not in water_zone_dict.keys()
+                    ):
+                        power_zone_dict[compon] = 3  # "Industrial"
+                    elif (compon_infra == "transpo") and (
+                        compon not in water_zone_dict.keys()
+                    ):
+                        transpo_zone_dict[compon] = 3  # "Industrial"
+
+            for _, row in cbd_gpd.iterrows():
+                if row["geometry"].intersection(
+                    compon_geometry
+                ).is_empty == False or compon_geometry.within(row["geometry"]):
+                    if (compon_infra == "water") and (
+                        compon not in water_zone_dict.keys()
+                    ):
+                        water_zone_dict[compon] = 2  # "CBD"
+                    elif (compon_infra == "power") and (
+                        compon not in water_zone_dict.keys()
+                    ):
+                        power_zone_dict[compon] = 2  # "CBD"
+                    elif (compon_infra == "transpo") and (
+                        compon not in water_zone_dict.keys()
+                    ):
+                        transpo_zone_dict[compon] = 2  # "CDB"
+
+            for _, row in residential_gpd.iterrows():
+                if row["geometry"].intersection(
+                    compon_geometry
+                ).is_empty == False or compon_geometry.within(row["geometry"]):
+                    if (compon_infra == "water") and (
+                        compon not in water_zone_dict.keys()
+                    ):
+                        water_zone_dict[compon] = 1  # "Residential"
+                    elif (compon_infra == "power") and (
+                        compon not in water_zone_dict.keys()
+                    ):
+                        power_zone_dict[compon] = 1  # "Residential"
+                    elif (compon_infra == "transpo") and (
+                        compon not in water_zone_dict.keys()
+                    ):
+                        transpo_zone_dict[compon] = 1  # "Residential"
+
+        water_zone_dict = {
+            k: v
+            for k, v in sorted(
+                water_zone_dict.items(),
+                key=lambda x: x[1],
+                reverse=True,
+            )
+        }
+        power_zone_dict = {
+            k: v
+            for k, v in sorted(
+                power_zone_dict.items(),
+                key=lambda x: x[1],
+                reverse=True,
+            )
+        }
+        transpo_zone_dict = {
+            k: v
+            for k, v in sorted(
+                transpo_zone_dict.items(),
+                key=lambda x: x[1],
+                reverse=True,
+            )
+        }
+
+        repair_order = (
+            list(transpo_zone_dict.keys())
+            + list(power_zone_dict.keys())
+            + list(water_zone_dict.keys())
+        )
+
         self.repair_order = repair_order
 
     def get_repair_order(self):

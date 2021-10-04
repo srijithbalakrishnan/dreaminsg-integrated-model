@@ -16,7 +16,7 @@ def main():
     os.system("cls")
 
     # -------------------- create an integrated network object ------------------- #
-    simple_network = int_net.IntegratedNetwork()
+    simple_network = int_net.IntegratedNetwork("Simple")
 
     # ------------- set the locations of infrastructure network files ------------ #
     network_dir = "in2"
@@ -31,13 +31,11 @@ def main():
 
     # --------------------- load all infrastructure networks --------------------- #
     simple_network.load_networks(
-        water_file,
-        power_file,
-        transp_folder,
+        water_file, power_file, transp_folder, power_sim_type="1ph"
     )
 
     # ------------ generate a networkx integrated infrastructure graph ----------- #
-    simple_network.generate_integrated_graph(plotting=False)
+    simple_network.generate_integrated_graph()
 
     # ------------------------ generate dependency tables ------------------------ #
     dependency_file = "infrarisk/data/networks/in2/dependecies.csv"

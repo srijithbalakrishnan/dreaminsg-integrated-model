@@ -56,9 +56,9 @@ class WeightedResilienceMetric(ResilienceMetric):
         supply_ratio_at_t = []
 
         for junc in network_recovery.network.wn.junction_name_list:
-            if junc in network_recovery.network.base_water_supply.columns:
+            if junc in network_recovery.network.base_water_node_supply.columns:
                 # base supply
-                base_supply_df = network_recovery.network.base_water_supply
+                base_supply_df = network_recovery.network.base_water_node_supply
                 base_junc_supply_at_t = base_supply_df[
                     base_supply_df.time == int(sim_time % (24 * 3600))
                 ][junc].item()
@@ -90,14 +90,14 @@ class WeightedResilienceMetric(ResilienceMetric):
                         min(1, actual_junc_supply_at_t / base_junc_supply_at_t)
                     )
 
-        print(
-            "Supply: ",
-            sum(water_supplied_at_t),
-            "Base demand: ",
-            sum(base_supply_at_t),
-            "Supply ratio: ",
-            mean(supply_ratio_at_t),
-        )
+        # print(
+        #     "Supply: ",
+        #     sum(water_supplied_at_t),
+        #     "Base demand: ",
+        #     sum(base_supply_at_t),
+        #     "Supply ratio: ",
+        #     mean(supply_ratio_at_t),
+        # )
         water_resmetric = min(1, mean(supply_ratio_at_t))
         return water_resmetric
 

@@ -181,14 +181,14 @@ class NetworkSimulation:
         for index, time_stamp in enumerate(unique_time_stamps[:-1]):
             # print(f"\nSimulating network conditions at {time_stamp} s")
 
-            print(
-                "Simulation time: ",
-                network_recovery.network.wn.options.time.duration,
-                "; Hydraulic time step: ",
-                network_recovery.network.wn.options.time.hydraulic_timestep,
-                "; Report time step: ",
-                network_recovery.network.wn.options.time.report_timestep,
-            )
+            # print(
+            #     "Simulation time: ",
+            #     network_recovery.network.wn.options.time.duration,
+            #     "; Hydraulic time step: ",
+            #     network_recovery.network.wn.options.time.hydraulic_timestep,
+            #     "; Report time step: ",
+            #     network_recovery.network.wn.options.time.report_timestep,
+            # )
 
             # update performance of directly affected components
             network_recovery.update_directly_affected_components(

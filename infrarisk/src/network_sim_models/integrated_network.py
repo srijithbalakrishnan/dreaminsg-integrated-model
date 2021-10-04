@@ -10,6 +10,7 @@ import infrarisk.src.network_sim_models.transportation.network as transpo
 import infrarisk.src.plots as model_plots
 
 import geopandas as gpd
+import math
 
 
 class Network(ABC):
@@ -194,8 +195,8 @@ class IntegratedNetwork(Network):
             y.append(y_coord)
 
         self.map_extends = [
-            (min(x), min(y)),
-            (max(x), max(y)),
+            (math.floor(min(x)), math.floor(min(y))),
+            (math.floor(max(x)), math.floor(max(y))),
         ]
 
     def get_map_extends(self):
@@ -626,3 +627,17 @@ class IntegratedNetwork(Network):
                     f"{component}_B",
                     f"{component}_leak_node",
                 )
+
+    def get_node_link_dict(self):
+        node_link_dict = {
+            "water": {
+                "node": ["R", "J", "JIN", "JVN", "JTN", "JHY", "T"],
+                "link": ["P", "PSC", "PMA", "PHC", "PV", "WP"],
+            },
+            "power": {
+                "node": ["B", "BL", "BS", "LO", "MP", "AL", "AS", "G"],
+                "link": ["S", "L", "LS", "TF", "TH", "I", "DL"],
+            },
+            "transpo": {"node": ["J"], "link": ["L"]},
+        }
+        return node_link_dict
