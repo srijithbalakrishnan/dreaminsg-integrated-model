@@ -56,9 +56,9 @@ class FullSimulation:
 
         disruption_list = ["targetted"] * 5 + ["flood"] * 1 + ["track"] * 5
 
-        buffer_list = [50, 100, 150, 200]
+        buffer_list = [50] * 3 + [100] * 4 + [150] * 2 + [200]
         intensity_list = (
-            ["extreme"] * 1 + ["high"] * 6 + ["moderate"] * 13 + ["low"] * 2
+            ["extreme"] * 1 + ["high"] * 2 + ["moderate"] * 15 + ["low"] * 2
         )  # based on probability distribution
         disruptive_event = random.choice(disruption_list)
         buffer = random.choice(buffer_list)
@@ -195,7 +195,7 @@ class FullSimulation:
 
             sim_step = self.network.wn.options.time.hydraulic_timestep
 
-            micropolis_sim = simulation.NetworkSimulation(
+            self.micropolis_sim = simulation.NetworkSimulation(
                 micropolis_recovery,
                 sim_step,
             )
@@ -204,31 +204,38 @@ class FullSimulation:
 
             for repair_order in self.unique_repair_orders:
                 print(f"Performing simulation for the repair order {repair_order}...")
-                micropolis_sim.network_recovery.schedule_recovery(repair_order)
-                micropolis_sim.expand_event_table(5)
+                self.micropolis_sim.network_recovery.schedule_recovery(repair_order)
+                self.micropolis_sim.expand_event_table(5)
 
-                resilience_metrics = micropolis_sim.simulate_interdependent_effects(
-                    micropolis_sim.network_recovery
+                resilience_metrics = (
+                    self.micropolis_sim.simulate_interdependent_effects(
+                        self.micropolis_sim.network_recovery
+                    )
                 )
 
                 resilience_metrics.set_weighted_auc_metrics()
 
-                time_tracker, power_consump_tracker, water_consump_tracker = (
-                    resilience_metrics.time_tracker,
-                    resilience_metrics.power_consump_tracker,
-                    resilience_metrics.water_consump_tracker,
-                )
+                # time_tracker, power_consump_tracker, water_consump_tracker = (
+                #     resilience_metrics.time_tracker,
+                #     resilience_metrics.power_consump_tracker,
+                #     resilience_metrics.water_consump_tracker,
+                # )
 
                 for strategy in self.repair_order_dict.keys():
                     if repair_order == self.repair_order_dict[strategy]:
-                        result_file = (
-                            self.scenario_path / f"{strategy}/network_performance.csv"
+                        result_dir = self.scenario_path / f"{strategy}"
+                        self.micropolis_sim.write_results(
+                            resilience_metrics.time_tracker,
+                            resilience_metrics.power_consump_tracker,
+                            resilience_metrics.water_consump_tracker,
+                            result_dir,
+                            resilience_metrics.water_loss_tracker,
+                            resilience_metrics.water_pump_flow_df,
+                            resilience_metrics.water_node_head_df,
                         )
-                        micropolis_sim.write_results(
-                            time_tracker,
-                            power_consump_tracker,
-                            water_consump_tracker,
-                            result_file,
+
+                        self.micropolis_sim.network_recovery.event_table.to_csv(
+                            result_dir / "event_table.csv", index=False
                         )
 
 

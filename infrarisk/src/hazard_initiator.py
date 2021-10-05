@@ -65,7 +65,7 @@ class RadialDisruption:
     def set_fail_compon_dict(self):
         """Sets the dictionary of components that could be failed due to a radial disaster."""
         self.fail_compon_dict = {
-            "power": {"TF", "L"},
+            "power": {"L"},
             "water": {"PMA", "WP", "T"},
             "transport": {"L"},
         }
@@ -81,9 +81,9 @@ class RadialDisruption:
     def set_intensity_failure_probability(self):
         """Sets the vulnerability (probability of failure) based on the intensity of the disaster event (currently arbitrary values are used)."""
         if self.intensity == "extreme":
-            self.failure_probability = 1
+            self.failure_probability = 0.8
         elif self.intensity == "high":
-            self.failure_probability = 0.7
+            self.failure_probability = 0.5
         elif self.intensity == "moderate":
             self.failure_probability = 0.3
         elif self.intensity == "low":
@@ -449,9 +449,8 @@ class RadialDisruption:
                 #    print("not added")
 
             self.disrupt_file = self.disrupt_file.loc[indices]
-            # self.disrupt_file = self.disrupt_file[
-            #     ~self.disrupt_file["components"].str.contains("T_L", na=False)
-            # ]
+            if self.disrupt_file.shape[0] > 25:
+                self.disrupt_file = self.disrupt_file.iloc[:25, :]
             # check if the count of components is greater than minimum data to be included in each data point
             if len(self.disrupt_file) > minimum_data:
                 flag = 1
@@ -526,7 +525,7 @@ class TrackDisruption:
     def set_fail_compon_dict(self):
         """Sets the dictionary of components that could be failed due to a radial disaster."""
         self.fail_compon_dict = {
-            "power": {"TF", "L"},
+            "power": {"L"},
             "water": {"R", "PMA", "T"},
             "transport": {"L"},
         }
@@ -542,9 +541,9 @@ class TrackDisruption:
     def set_intensity_failure_probability(self):
         """Sets the vulnerability (probability of failure) based on the intensity of the disaster event (currently arbitrary values are used)."""
         if self.intensity == "extreme":
-            self.failure_probability = 1
+            self.failure_probability = 0.8
         elif self.intensity == "high":
-            self.failure_probability = 0.7
+            self.failure_probability = 0.6
         elif self.intensity == "moderate":
             self.failure_probability = 0.3
         elif self.intensity == "low":
@@ -960,9 +959,8 @@ class TrackDisruption:
                 #    indices.append(index)
 
             self.disrupt_file = self.disrupt_file.loc[indices]
-            # self.disrupt_file = self.disrupt_file[
-            #     ~self.disrupt_file["components"].str.contains("T_L", na=False)
-            # ]
+            if self.disrupt_file.shape[0] > 25:
+                self.disrupt_file = self.disrupt_file.iloc[:25, :]
             # check if the count of components is greater than minimum data to be included in each data point
             if len(self.disrupt_file) > minimum_data:
                 flag = 1
