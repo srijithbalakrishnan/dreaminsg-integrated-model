@@ -495,6 +495,7 @@ class IntegratedNetwork(Network):
             )
 
         self.disrupted_components = self.disruptive_events.components
+        self.disruption_time = self.disruptive_events["time_stamp"].unique().item()
         self.set_disrupted_infra_dict()
 
     def get_disruptive_events(self):

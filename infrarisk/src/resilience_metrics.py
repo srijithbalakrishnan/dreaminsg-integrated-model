@@ -5,6 +5,8 @@ import math
 from sklearn import metrics
 import numpy as np
 from statistics import mean
+import pandas as pd
+from wntr import network
 
 
 class ResilienceMetric(ABC):
@@ -36,6 +38,54 @@ class WeightedResilienceMetric(ResilienceMetric):
         self.power_consump_tracker = []
         self.water_consump_tracker = []
         self.transpo_tracker = []
+        self.water_loss_tracker = []
+        self.water_pump_flow_df = None
+        self.water_node_head_df = None
+
+    def calculate_water_lost(self, network_recovery, wn_results):
+
+        disrupted_pipes = [
+            compon
+            for compon in network_recovery.network.get_disrupted_components()
+            if compon in network_recovery.network.wn.pipe_name_list
+        ]
+        total_leak_at_t = sum(
+            wn_results.node["leak_demand"][
+                [f"{component}_leak_node" for component in disrupted_pipes]
+            ]
+            .iloc[[-1]]
+            .values
+        )
+        return total_leak_at_t
+
+    def calculate_node_head(self, network_recovery, wn_results):
+        node_list = network_recovery.network.wn.node_name_list
+        if self.water_node_head_df is None:
+            self.water_node_head_df = pd.DataFrame(
+                columns=[node for node in node_list],
+                data=wn_results.node["head"].iloc[[-1]],
+            )
+        else:
+            self.water_node_head_df = pd.concat(
+                [self.water_node_head_df, wn_results.node["head"].iloc[[-1]]],
+                ignore_index=True,
+            )
+
+    def calculate_pump_flow(self, network_recovery, wn_results):
+        pump_list = network_recovery.network.wn.pump_name_list
+        if self.water_pump_flow_df is None:
+            self.water_pump_flow_df = pd.DataFrame(
+                columns=[pump for pump in pump_list],
+                data=wn_results.link["flowrate"][pump_list].iloc[[-1]],
+            )
+        else:
+            self.water_pump_flow_df = pd.concat(
+                [
+                    self.water_pump_flow_df,
+                    wn_results.link["flowrate"][pump_list].iloc[[-1]],
+                ],
+                ignore_index=True,
+            )
 
     def calculate_water_resmetric(self, network_recovery, wn_results):
         """Calculates and returns the water resilience metric.
@@ -72,9 +122,10 @@ class WeightedResilienceMetric(ResilienceMetric):
                     actual_junc_supply_at_t = node_demand[junc]
                     water_supplied_at_t.append(actual_junc_supply_at_t)
                     # supply ratio
-                    supply_ratio_at_t.append(
-                        min(1, actual_junc_supply_at_t / base_junc_supply_at_t)
-                    )
+                    if base_junc_supply_at_t > 0:
+                        supply_ratio_at_t.append(
+                            min(1, actual_junc_supply_at_t / base_junc_supply_at_t)
+                        )
                 elif (
                     0
                     <= node_pressure[junc]
@@ -86,18 +137,19 @@ class WeightedResilienceMetric(ResilienceMetric):
                     )
                     water_supplied_at_t.append(actual_junc_supply_at_t)
                     # supply ratio
-                    supply_ratio_at_t.append(
-                        min(1, actual_junc_supply_at_t / base_junc_supply_at_t)
-                    )
+                    if base_junc_supply_at_t > 0:
+                        supply_ratio_at_t.append(
+                            min(1, actual_junc_supply_at_t / base_junc_supply_at_t)
+                        )
 
-        # print(
-        #     "Supply: ",
-        #     sum(water_supplied_at_t),
-        #     "Base demand: ",
-        #     sum(base_supply_at_t),
-        #     "Supply ratio: ",
-        #     mean(supply_ratio_at_t),
-        # )
+        print(
+            "Supply: ",
+            round(sum(water_supplied_at_t), 3),
+            "Base demand: ",
+            round(sum(base_supply_at_t), 3),
+            "Supply ratio: ",
+            round(mean(supply_ratio_at_t), 3),
+        )
         water_resmetric = min(1, mean(supply_ratio_at_t))
         return water_resmetric
 

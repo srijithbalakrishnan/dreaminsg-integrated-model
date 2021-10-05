@@ -172,14 +172,14 @@ class NetworkSimulation:
         unique_time_stamps = sorted(
             list(network_recovery.event_table.time_stamp.unique())
         )
-        # print(unique_time_stamps)
+        print(unique_time_stamps)
 
         unique_time_differences = [
             x - unique_time_stamps[i - 1] for i, x in enumerate(unique_time_stamps)
         ][1:]
 
         for index, time_stamp in enumerate(unique_time_stamps[:-1]):
-            # print(f"\nSimulating network conditions at {time_stamp} s")
+            print(f"Simulating network conditions at {time_stamp} s")
 
             # print(
             #     "Simulation time: ",
@@ -275,18 +275,31 @@ class NetworkSimulation:
                 )
             )
 
+            resilience_metrics.water_loss_tracker.append(
+                resilience_metrics.calculate_water_lost(
+                    network_recovery,
+                    wn_results,
+                )
+            )
+
+            resilience_metrics.calculate_node_head(network_recovery, wn_results)
+            resilience_metrics.calculate_pump_flow(network_recovery, wn_results)
+
             # Fix the time until which the wntr model should run in this iteration
             if index < len(unique_time_stamps) - 1:
-                network_recovery.network.wn.options.time.duration += (
+                network_recovery.network.wn.options.time.duration += int(
                     unique_time_differences[index]
                 )
-                network_recovery.network.wn.options.time.report_timestep += (
+                network_recovery.network.wn.options.time.report_timestep += int(
                     unique_time_differences[index]
                 )
 
             # print(
             #     f"Simulation for time {time_stamp / 60} minutes completed successfully"
             # )
+        resilience_metrics.water_node_head_df["time"] = resilience_metrics.time_tracker
+        resilience_metrics.water_pump_flow_df["time"] = resilience_metrics.time_tracker
+
         return resilience_metrics
 
     def write_results(
@@ -294,7 +307,10 @@ class NetworkSimulation:
         time_tracker,
         power_consump_tracker,
         water_consump_tracker,
-        file_url,
+        file_dir,
+        water_loss_tracker=None,
+        water_pump_flow_df=None,
+        water_node_head_df=None,
         plotting=False,
     ):
         """Write the results to local directory.
@@ -318,8 +334,32 @@ class NetworkSimulation:
             }
         )
 
-        results_df.to_csv(Path(file_url, sep="\t"))
-        print(f"The simulation results successfully saved to {Path(file_url)}")
+        results_df.to_csv(
+            Path(file_dir / "network_performance.csv", sep="\t"), index=False
+        )
+
+        if water_loss_tracker != None:
+            water_loss_df = pd.DataFrame(
+                {
+                    "time_min": time_tracker,
+                    "water_loss": water_loss_tracker,
+                }
+            )
+            water_loss_df.to_csv(
+                Path(file_dir / "water_loss.csv", sep="\t"), index=False
+            )
+
+        if water_pump_flow_df.shape[0] > 0:
+            water_pump_flow_df.to_csv(
+                Path(file_dir / "water_pump_flow.csv", sep="\t"), index=False
+            )
+
+        if water_node_head_df.shape[0] > 0:
+            water_node_head_df.to_csv(
+                Path(file_dir / "water_node_head.csv", sep="\t"), index=False
+            )
+
+        print(f"The simulation results successfully saved to {Path(file_dir)}")
 
         if plotting == True:
             model_plots.plot_interdependent_effects(

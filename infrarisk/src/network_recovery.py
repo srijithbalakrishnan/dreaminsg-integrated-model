@@ -24,6 +24,9 @@ class NetworkRecovery:
         self.sim_step = sim_step
         self._tn_update_flag = True
 
+        self.transpo_updated_model_dict = dict()
+        self.transpo_updated_model_dict[0] = copy.deepcopy(network.tn)
+
         self.water_crew_total_tt = 0
         self.power_crew_total_tt = 0
         self.transpo_crew_total_tt = 0
@@ -31,6 +34,10 @@ class NetworkRecovery:
         self.water_access_no_redundancy = []
         self.power_access_no_redundancy = []
         self.transpo_access_no_redundancy = []
+
+        self.total_water_recovery_time = 0
+        self.total_power_recovery_time = 0
+        self.total_transpo_recovery_time = 0
 
     def set_initial_crew_start(self, repair_order):
         """Sets the initial start times at which the respective infrastructure crews start from their locations post-disaster.
@@ -125,6 +132,9 @@ class NetworkRecovery:
             disrupted_infra_dict = self.network.get_disrupted_infra_dict()
             if len(disrupted_infra_dict["transpo"]) > 0:
                 self.update_traffic_model()
+                self.transpo_updated_model_dict[
+                    self.network.disruption_time
+                ] = copy.deepcopy(self.network.tn)
 
             # Compute time of recovery actions
             components_to_repair = copy.deepcopy(repair_order)
@@ -134,12 +144,6 @@ class NetworkRecovery:
                     compon_details = interdependencies.get_compon_details(component)
 
                     if compon_details[0] == "power":
-                        # recovery_time = (
-                        #     interdependencies.power_dict[compon_details[1]][
-                        #         "repair_time"
-                        #     ]
-                        #     * 3600
-                        # )
                         recovery_time = (
                             interdependencies.get_power_repair_time(component) * 3600
                         )
@@ -157,11 +161,20 @@ class NetworkRecovery:
                             nearest_nodes.append(nearest_node)
 
                         travel_time = 1e10
+                        update_times = list(self.transpo_updated_model_dict.keys())
+                        curr_update_time = max(
+                            [
+                                x
+                                for x in update_times
+                                if x <= self.next_power_crew_trip_start
+                            ]
+                        )
+                        tn = self.transpo_updated_model_dict[curr_update_time]
                         for nearest_node in nearest_nodes:
                             (
                                 curr_path,
                                 curr_travel_time,
-                            ) = self.network.tn.calculateShortestTravelTime(
+                            ) = tn.calculateShortestTravelTime(
                                 self.network.get_power_crew_loc(), nearest_node
                             )
 
@@ -258,11 +271,20 @@ class NetworkRecovery:
                             nearest_nodes.append(nearest_node)
 
                         travel_time = 1e10
+                        update_times = list(self.transpo_updated_model_dict.keys())
+                        curr_update_time = max(
+                            [
+                                x
+                                for x in update_times
+                                if x <= self.next_water_crew_trip_start
+                            ]
+                        )
+                        tn = self.transpo_updated_model_dict[curr_update_time]
                         for nearest_node in nearest_nodes:
                             (
                                 curr_path,
                                 curr_travel_time,
-                            ) = self.network.tn.calculateShortestTravelTime(
+                            ) = tn.calculateShortestTravelTime(
                                 self.network.get_water_crew_loc(), nearest_node
                             )
 
@@ -339,12 +361,6 @@ class NetworkRecovery:
                                 self.water_access_no_redundancy.append(component)
 
                     elif compon_details[0] == "transpo":
-                        # recovery_time = (
-                        #     interdependencies.transpo_dict[compon_details[1]][
-                        #         "repair_time"
-                        #     ]
-                        #     * 3600
-                        # )
                         recovery_time = (
                             interdependencies.get_transpo_repair_time(component) * 3600
                         )
@@ -361,11 +377,20 @@ class NetworkRecovery:
                             nearest_nodes.append(nearest_node)
 
                         travel_time = 1e10
+                        update_times = list(self.transpo_updated_model_dict.keys())
+                        curr_update_time = max(
+                            [
+                                x
+                                for x in update_times
+                                if x <= self.next_transpo_crew_trip_start
+                            ]
+                        )
+                        tn = self.transpo_updated_model_dict[curr_update_time]
                         for nearest_node in nearest_nodes:
                             (
                                 curr_path,
                                 curr_travel_time,
-                            ) = self.network.tn.calculateShortestTravelTime(
+                            ) = tn.calculateShortestTravelTime(
                                 self.network.get_transpo_crew_loc(), nearest_node
                             )
 
@@ -400,6 +425,9 @@ class NetworkRecovery:
                             )
                             # modification needed. transport model should be updated only when the repair is complete.
                             self.update_traffic_model()
+                            self.transpo_updated_model_dict[
+                                int(recovery_start + recovery_time)
+                            ] = copy.deepcopy(self.network.tn)
 
                             self.repair_time_dict[component] = (
                                 recovery_start + recovery_time
@@ -433,6 +461,9 @@ class NetworkRecovery:
                             )
                             # modification needed. transport model should be updated only when the repair is complete.
                             self.update_traffic_model()
+                            self.transpo_updated_model_dict[
+                                int(recovery_start + recovery_time)
+                            ] = copy.deepcopy(self.network.tn)
 
                             self.repair_time_dict[component] = (
                                 recovery_start + recovery_time
@@ -484,6 +515,16 @@ class NetworkRecovery:
                         },
                         ignore_index=True,
                     )
+
+                    if compon_details[0] == "water":
+                        self.total_water_recovery_time = recovery_start + recovery_time
+                    elif compon_details[0] == "power":
+                        self.total_power_recovery_time = recovery_start + recovery_time
+                    elif compon_details[0] == "transpo":
+                        self.total_transpo_recovery_time = (
+                            recovery_start + recovery_time
+                        )
+
                     self.event_table = self.event_table.append(
                         {
                             "time_stamp": recovery_start
@@ -506,8 +547,10 @@ class NetworkRecovery:
                     )
 
             self.event_table.sort_values(by=["time_stamp"], inplace=True)
+            self.event_table["time_stamp"] = self.event_table["time_stamp"].astype(int)
             self.network.reset_crew_locs()
             print("All restoration actions are successfully scheduled.")
+            self.transpo_updated_model_dict = dict()
         else:
             print("No repair action to schedule.")
 
