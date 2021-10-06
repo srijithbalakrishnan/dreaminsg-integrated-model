@@ -449,8 +449,8 @@ class RadialDisruption:
                 #    print("not added")
 
             self.disrupt_file = self.disrupt_file.loc[indices]
-            if self.disrupt_file.shape[0] > 25:
-                self.disrupt_file = self.disrupt_file.iloc[:25, :]
+            if self.disrupt_file.shape[0] > 30:
+                self.disrupt_file = self.disrupt_file.iloc[:30, :]
             # check if the count of components is greater than minimum data to be included in each data point
             if len(self.disrupt_file) > minimum_data:
                 flag = 1
@@ -959,8 +959,8 @@ class TrackDisruption:
                 #    indices.append(index)
 
             self.disrupt_file = self.disrupt_file.loc[indices]
-            if self.disrupt_file.shape[0] > 25:
-                self.disrupt_file = self.disrupt_file.iloc[:25, :]
+            if self.disrupt_file.shape[0] > 30:
+                self.disrupt_file = self.disrupt_file.iloc[:30, :]
             # check if the count of components is greater than minimum data to be included in each data point
             if len(self.disrupt_file) > minimum_data:
                 flag = 1

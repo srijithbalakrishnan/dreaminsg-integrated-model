@@ -9,6 +9,7 @@ import infrarisk.src.hazard_initiator as hazard
 import random
 import geopandas as gpd
 import pandas as pd
+import copy
 
 import warnings
 
@@ -54,11 +55,11 @@ class FullSimulation:
 
     def generate_disruptions(self):
 
-        disruption_list = ["targetted"] * 5 + ["flood"] * 1 + ["track"] * 5
+        disruption_list = ["targetted"] * 3 + ["track"] * 1
 
-        buffer_list = [50] * 3 + [100] * 4 + [150] * 2 + [200]
+        buffer_list = [50] * 1 + [100] * 4 + [150] * 2 + [200]
         intensity_list = (
-            ["extreme"] * 1 + ["high"] * 2 + ["moderate"] * 15 + ["low"] * 2
+            ["high"] * 2 + ["moderate"] * 15 + ["low"] * 2
         )  # based on probability distribution
         disruptive_event = random.choice(disruption_list)
         buffer = random.choice(buffer_list)
@@ -195,14 +196,13 @@ class FullSimulation:
 
             sim_step = self.network.wn.options.time.hydraulic_timestep
 
-            self.micropolis_sim = simulation.NetworkSimulation(
-                micropolis_recovery,
-                sim_step,
-            )
-
             # repair_order_dict = self.generate_repair_order_dict(self.network)
 
             for repair_order in self.unique_repair_orders:
+                self.micropolis_sim = simulation.NetworkSimulation(
+                    copy.deepcopy(micropolis_recovery),
+                    sim_step,
+                )
                 print(f"Performing simulation for the repair order {repair_order}...")
                 self.micropolis_sim.network_recovery.schedule_recovery(repair_order)
                 self.micropolis_sim.expand_event_table(5)
