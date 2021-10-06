@@ -113,23 +113,21 @@ class FullSimulation:
                 self.network.integrated_graph, plot_components=False
             )
 
-        print(event.affected_links)
+        # print(event.affected_links)
         self.disrupt_count = 0
 
         for infra in event.affected_links.keys():
             self.disrupt_count = self.disrupt_count + len(event.affected_links[infra])
         for infra in event.affected_nodes.keys():
             self.disrupt_count = self.disrupt_count + len(event.affected_nodes[infra])
-        print(self.disrupt_count)
+        # print(self.disrupt_count)
 
         if self.disrupt_count > 0:
             self.scenario_path = event.generate_disruption_file(
                 location=self.scenarios_dir
             )
+            print(f"Hazard event generated in {self.scenario_path}.")
 
-            # scenario_file = (
-            #     "infrarisk/data/disruptive_scenarios/test1/motor_failure_net1.csv"
-            # )
             self.network.set_disrupted_components(
                 scenario_file=self.scenario_path / "disruption_file.csv"
             )
