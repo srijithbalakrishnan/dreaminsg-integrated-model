@@ -54,13 +54,13 @@ class RadialDisruption:
             self.point_of_occurrence = None
         else:
             self.set_point_of_occurrence(point_of_occurrence)
-            print(f"The point of occurrence is set to {point_of_occurrence}.")
+            # print(f"The point of occurrence is set to {point_of_occurrence}.")
 
         self.set_radius_of_impact(radius_of_impact)
-        print(f"The radius of impact is set to {radius_of_impact}.")
+        # print(f"The radius of impact is set to {radius_of_impact}.")
 
         self.set_time_of_occurrence(time_of_occurrence)
-        print(f"The time of the disruptive event is set to {time_of_occurrence}.")
+        # print(f"The time of the disruptive event is set to {time_of_occurrence}.")
 
     def set_fail_compon_dict(self):
         """Sets the dictionary of components that could be failed due to a radial disaster."""
@@ -170,9 +170,9 @@ class RadialDisruption:
                 if node not in affected_nodes:
                     G.nodes[node]["fail_status"] = "Functional"
 
-        print(
-            f"There are {len(affected_nodes['water']) + len(affected_nodes['power']) + len(affected_nodes['transpo'])} affected infrastructure nodes."
-        )
+        # print(
+        #     f"There are {len(affected_nodes['water']) + len(affected_nodes['power']) + len(affected_nodes['transpo'])} affected infrastructure nodes."
+        # )
 
         # affected links
         affected_links = {
@@ -214,9 +214,9 @@ class RadialDisruption:
                 ):
                     G.edges[link]["fail_status"] = "Functional"
 
-        print(
-            f"There are {len(affected_links['water']) + len(affected_links['power']) + len(affected_links['transpo'])} affected infrastructure links."
-        )
+        # print(
+        #     f"There are {len(affected_links['water']) + len(affected_links['power']) + len(affected_links['transpo'])} affected infrastructure links."
+        # )
 
         self.affected_nodes = affected_nodes
         self.affected_links = affected_links
@@ -507,20 +507,21 @@ class TrackDisruption:
         self.disrupt_file = pd.DataFrame()
 
         if hazard_tracks is None:
-            print(
-                "No hazards tracks are provided. User must be manually set the tracks."
-            )
+            # print(
+            #     "No hazards tracks are provided. User must be manually set the tracks."
+            # )
+            pass
         else:
             self.set_hazard_tracks_from_shapefile(hazard_tracks)
-            print(f"The hazard tracks are set.")
+            # print(f"The hazard tracks are set.")
 
         self.set_buffer_of_impact(buffer_of_impact)
-        print(
-            f"The buffer distance of impact of {self.name} is set to {buffer_of_impact}"
-        )
+        # print(
+        #     f"The buffer distance of impact of {self.name} is set to {buffer_of_impact}"
+        # )
 
         self.set_time_of_occurrence(time_of_occurrence)
-        print(f"The time of the {self.name} is set to {time_of_occurrence}s.")
+        # print(f"The time of the {self.name} is set to {time_of_occurrence}s.")
 
     def set_fail_compon_dict(self):
         """Sets the dictionary of components that could be failed due to a radial disaster."""
@@ -681,9 +682,9 @@ class TrackDisruption:
                     if node not in affected_nodes:
                         G.nodes[node]["fail_status"] = "Functional"
 
-        print(
-            f"There are {len(affected_nodes['water']) + len(affected_nodes['power']) + len(affected_nodes['transpo'])} affected infrastructure nodes."
-        )
+        # print(
+        #     f"There are {len(affected_nodes['water']) + len(affected_nodes['power']) + len(affected_nodes['transpo'])} affected infrastructure nodes."
+        # )
 
         # links
         affected_links = {
@@ -725,9 +726,9 @@ class TrackDisruption:
                     ):
                         G.edges[link]["fail_status"] = "Functional"
 
-        print(
-            f"There are {len(affected_links['water']) + len(affected_links['power']) + len(affected_links['transpo'])} affected infrastructure links."
-        )
+        # print(
+        #     f"There are {len(affected_links['water']) + len(affected_links['power']) + len(affected_links['transpo'])} affected infrastructure links."
+        # )
 
         self.affected_nodes = affected_nodes
         self.affected_links = affected_links
