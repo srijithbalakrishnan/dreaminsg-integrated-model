@@ -176,22 +176,17 @@ class DependencyTable:
         :param next_time_stamp: The end tiem of the iteration.
         :type next_time_stamp: integer
         """
+        print(
+            f"Updating status of indirectly affected components between {time_stamp} and {next_time_stamp}..."
+        )
+
         # print(network.wn.control_name_list)
         for _, row in self.wp_table.iterrows():
             if (row.water_type == "Pump") & (row.power_type == "Motor"):
-                # print(
-                #     "Motor operational status: ",
-                #     network.pn.motor[
-                #         network.pn.motor.name == row.power_id
-                #     ].in_service.item(),
-                # )
-                if (
-                    network.pn.motor[
-                        network.pn.motor.name == row.power_id
-                    ].in_service.item()
-                    == False
-                ):
-
+                pump_index = network.pn.motor[
+                    network.pn.motor.name == row.power_id
+                ].index.item()
+                if network.pn.res_motor.iloc[pump_index].p_mw == 0:
                     if (
                         f"{row.water_id}_power_off_{time_stamp}"
                         in network.wn.control_name_list
@@ -215,46 +210,6 @@ class DependencyTable:
                     # print(
                     #     f"Pump outage resulting from electrical motor failure is added between {time_stamp} s and {next_time_stamp} s"
                     # )
-                else:
-                    # pump = network.wn.get_link(row.water_id)
-                    # pump.status = 1
-                    pass
-            elif (row.water_type == "Pump") & (row.power_type == "Motor as Load"):
-
-                if (
-                    network.pn.asymmetric_load[
-                        network.pn.asymmetric_load.name == row.power_id
-                    ].in_service.item()
-                    == False
-                ):
-
-                    if (
-                        f"{row.water_id}_power_off_{time_stamp}"
-                        in network.wn.control_name_list
-                    ):
-                        network.wn.remove_control(
-                            f"{row.water_id}_power_off_{time_stamp}"
-                        )
-                    if (
-                        f"{row.water_id}_power_on_{next_time_stamp}"
-                        in network.wn.control_name_list
-                    ):
-                        network.wn.remove_control(
-                            f"{row.water_id}_power_on_{next_time_stamp}"
-                        )
-                    pump = network.wn.get_link(row.water_id)
-                    pump.add_outage(
-                        network.wn,
-                        time_stamp,
-                        next_time_stamp,
-                    )
-                    # print(
-                    #     f"Pump outage resulting from electrical motor failure is added between {time_stamp} s and {next_time_stamp} s"
-                    # )
-                else:
-                    # pump = network.wn.get_link(row.water_id)
-                    # pump.status = 1
-                    pass
 
 
 # ---------------------------------------------------------------------------- #

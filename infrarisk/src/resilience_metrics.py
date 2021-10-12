@@ -9,82 +9,80 @@ import pandas as pd
 from wntr import network
 
 
-class ResilienceMetric(ABC):
-    """The ResilienceMetric class defines an interface to a resilience metric."""
-
-    @abstractmethod
-    def __init__(self):
-        pass
-
-    @abstractmethod
-    def calculate_water_resmetric(self, wn, wn_results):
-        pass
-
-    @abstractmethod
-    def calculate_power_resmetric(self, pn):
-        pass
-
-    @abstractmethod
-    def calculate_transpo_resmetric(self, tn):
-        pass
-
-
-class WeightedResilienceMetric(ResilienceMetric):
+class WeightedResilienceMetric:
     """A class that consists of methods to calculate and store weighted ILOS estimates without"""
 
     def __init__(self):
         """Initiates the WeightedResilienceMetric object."""
-        self.time_tracker = []
-        self.power_consump_tracker = []
-        self.water_consump_tracker = []
-        self.transpo_tracker = []
-        self.water_loss_tracker = []
+        self.water_leak_loss_df = None
         self.water_pump_flow_df = None
         self.water_node_head_df = None
+        self.water_junc_demand_df = None
+        self.power_load_df = None
 
     def calculate_water_lost(self, network_recovery, wn_results):
 
-        disrupted_pipes = [
-            compon
-            for compon in network_recovery.network.get_disrupted_components()
-            if compon in network_recovery.network.wn.pipe_name_list
-        ]
-        total_leak_at_t = sum(
-            wn_results.node["leak_demand"][
-                [f"{component}_leak_node" for component in disrupted_pipes]
-            ]
-            .iloc[[-1]]
-            .values
-        )
-        return total_leak_at_t
+        node_list = network_recovery.network.wn.node_name_list
+        if self.water_leak_loss_df is None:
+            self.water_leak_loss_df = wn_results.node["leak_demand"][node_list]
+            self.water_leak_loss_df["time"] = wn_results.node["leak_demand"].index
+        else:
+            water_leak_loss_df_new = wn_results.node["leak_demand"][node_list]
+            water_leak_loss_df_new["time"] = wn_results.node["leak_demand"].index
+            self.water_leak_loss_df = pd.concat(
+                [self.water_leak_loss_df, water_leak_loss_df_new],
+                ignore_index=True,
+            )
 
-    def calculate_node_head(self, network_recovery, wn_results):
+    def calculate_node_details(self, network_recovery, wn_results):
         node_list = network_recovery.network.wn.node_name_list
         if self.water_node_head_df is None:
-            self.water_node_head_df = pd.DataFrame(
-                columns=[node for node in node_list],
-                data=wn_results.node["head"].iloc[[-1]],
-            )
+            self.water_node_head_df = wn_results.node["head"][node_list]
+            self.water_node_head_df["time"] = wn_results.node["head"].index
         else:
+            water_node_head_df_new = wn_results.node["head"][node_list]
+            water_node_head_df_new["time"] = wn_results.node["head"].index
             self.water_node_head_df = pd.concat(
-                [self.water_node_head_df, wn_results.node["head"].iloc[[-1]]],
+                [self.water_node_head_df, water_node_head_df_new],
+                ignore_index=True,
+            )
+
+        if self.water_junc_demand_df is None:
+            self.water_junc_demand_df = wn_results.node["demand"][node_list]
+            self.water_junc_demand_df["time"] = wn_results.node["demand"].index
+        else:
+            water_junc_demand_df_new = wn_results.node["demand"][node_list]
+            water_junc_demand_df_new["time"] = wn_results.node["demand"].index
+            self.water_junc_demand_df = pd.concat(
+                [self.water_junc_demand_df, water_junc_demand_df_new],
                 ignore_index=True,
             )
 
     def calculate_pump_flow(self, network_recovery, wn_results):
         pump_list = network_recovery.network.wn.pump_name_list
         if self.water_pump_flow_df is None:
-            self.water_pump_flow_df = pd.DataFrame(
-                columns=[pump for pump in pump_list],
-                data=wn_results.link["flowrate"][pump_list].iloc[[-1]],
+            self.water_pump_flow_df = wn_results.link["flowrate"][pump_list]
+            self.water_pump_flow_df["time"] = wn_results.link["flowrate"].index
+        else:
+            water_pump_flow_df_new = wn_results.link["flowrate"][pump_list]
+            water_pump_flow_df_new["time"] = wn_results.link["flowrate"].index
+            self.water_pump_flow_df = pd.concat(
+                [self.water_pump_flow_df, water_pump_flow_df_new],
+                ignore_index=True,
+            )
+
+    def calculate_power_load(self, network_recovery, sim_time):
+        pn = network_recovery.network.pn
+        if self.power_load_df is None:
+            self.power_load_df = pd.DataFrame(
+                columns=["time"] + list(pn.load.name) + list(pn.motor.name)
+            )
+            self.power_load_df.loc[len(self.power_load_df)] = (
+                [sim_time] + list(pn.res_load.p_mw) + list(pn.res_motor.p_mw)
             )
         else:
-            self.water_pump_flow_df = pd.concat(
-                [
-                    self.water_pump_flow_df,
-                    wn_results.link["flowrate"][pump_list].iloc[[-1]],
-                ],
-                ignore_index=True,
+            self.power_load_df.loc[len(self.power_load_df)] = (
+                [sim_time] + list(pn.res_load.p_mw) + list(pn.res_motor.p_mw)
             )
 
     def calculate_water_resmetric(self, network_recovery, wn_results):
