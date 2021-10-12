@@ -1,11 +1,13 @@
 """Functions to implement the various steps of the interdependent infrastructure network simulations."""
 
-import pandas as pd
 from pathlib import Path
-import os
+import copy
+
+from wntr import network
 import infrarisk.src.network_sim_models.water.water_network_model as water
 import infrarisk.src.network_sim_models.power.power_system_model as power
 import infrarisk.src.network_sim_models.transportation.network as transpo
+import infrarisk.src.network_sim_models.interdependencies as interdependencies
 import infrarisk.src.plots as model_plots
 import infrarisk.src.resilience_metrics as resm
 
@@ -159,7 +161,21 @@ class NetworkSimulation:
         self.components_to_repair.remove(component)
         self.components_repaired.append(component)
 
-    def simulate_interdependent_effects(self, network_recovery):
+    def get_sim_times(self, network_recovery):
+        simtime_max = 0
+
+        for _, row in network_recovery.event_table_wide.iterrows():
+            compon_details = interdependencies.get_compon_details(row["component"])
+            if compon_details[0] in ["water", "power"]:
+                if row["functional_start"] > simtime_max:
+                    simtime_max = row["functional_start"]
+
+        unique_time_stamps = network_recovery.event_table.time_stamp.unique()
+        maxtime_index = len(unique_time_stamps[unique_time_stamps < simtime_max]) + 3
+        unique_sim_times = unique_time_stamps[0:maxtime_index]
+        return unique_sim_times
+
+    def simulate_interdependent_effects(self, network_recovery_original):
         """Simulates the interdependent effect based on the initial disruptions and subsequent repair actions.
 
         :param network_recovery: A integrated infrastructure network recovery object.
@@ -167,29 +183,34 @@ class NetworkSimulation:
         :return: lists of time stamps and resilience values of power and water supply.
         :rtype: lists
         """
+        network_recovery = copy.deepcopy(network_recovery_original)
         resilience_metrics = resm.WeightedResilienceMetric()
 
         unique_time_stamps = sorted(
             list(network_recovery.event_table.time_stamp.unique())
         )
-        print(unique_time_stamps)
+
+        unique_sim_times = self.get_sim_times(network_recovery)
+        # print(unique_sim_times)
 
         unique_time_differences = [
-            x - unique_time_stamps[i - 1] for i, x in enumerate(unique_time_stamps)
+            x - unique_time_stamps[i - 1] for i, x in enumerate(unique_sim_times)
         ][1:]
+        # print(unique_time_differences)
 
-        for index, time_stamp in enumerate(unique_time_stamps[:-1]):
+        for index, time_stamp in enumerate(unique_sim_times[:-1]):
             print(f"Simulating network conditions at {time_stamp} s")
 
-            # print(
-            #     "Simulation time: ",
-            #     network_recovery.network.wn.options.time.duration,
-            #     "; Hydraulic time step: ",
-            #     network_recovery.network.wn.options.time.hydraulic_timestep,
-            #     "; Report time step: ",
-            #     network_recovery.network.wn.options.time.report_timestep,
-            # )
+            # network_recovery.remove_previous_water_controls()
 
+            print(
+                "Simulation time: ",
+                network_recovery.network.wn.options.time.duration,
+                "; Hydraulic time step: ",
+                network_recovery.network.wn.options.time.hydraulic_timestep,
+                "; Report time step: ",
+                network_recovery.network.wn.options.time.report_timestep,
+            )
             # update performance of directly affected components
             network_recovery.update_directly_affected_components(
                 network_recovery.network.wn.options.time.duration,
@@ -210,107 +231,62 @@ class NetworkSimulation:
 
             # run water network model and print results
 
+            # Fix the time until which the wntr model should run in this iteration
             wn_results = water.run_water_simulation(network_recovery.network.wn)
-            # print(wn_results.link["status"])
-            # print(wn_results.node["demand"])
-            # print(wn_results.node["leak_demand"])
-            # failed_pipe = "W_PMA505"
+
             # print(
             #     "Pumps: ",
-            #     "\t\tstatus = ",
+            #     "\t\tstatus = \n",
             #     wn_results.link["status"][
             #         network_recovery.network.wn.pump_name_list
-            #     ].values,
-            #     "\tflowrate = ",
+            #     ].round(decimals=4),
+            #     "\tflowrate = \n",
             #     wn_results.link["flowrate"][
             #         network_recovery.network.wn.pump_name_list
-            #     ].values,
-            # )
-            # print(
-            #     "Failed pipe: ",
-            #     "\t\tstatus = ",
-            #     wn_results.link["status"][failed_pipe].values,
-            #     "\tflowrate = ",
-            #     wn_results.link["flowrate"][failed_pipe].values,
-            # )
-            # print(
-            #     "Leaking pipe: ",
-            #     "\t\tstatus = ",
-            #     wn_results.link["status"][f"{failed_pipe}_B"].values,
-            #     "\tflowrate = ",
-            #     wn_results.link["flowrate"][f"{failed_pipe}_B"].values,
-            #     "\tleak demand = ",
-            #     wn_results.node["leak_demand"][f"{failed_pipe}_leak_node"].values,
+            #     ].round(decimals=4),
             # )
             # print(
             #     "Tank: ",
-            #     "\t\tdemand",
-            #     wn_results.node["demand"]["W_T1"].values,
-            #     "\thead = ",
-            #     wn_results.node["head"]["W_T1"].values,
+            #     "\t\tdemand\n",
+            #     wn_results.node["demand"]["W_T1"].round(decimals=4),
+            #     "\thead = \n",
+            #     wn_results.node["head"]["W_T1"].round(decimals=4),
             # )
             # print(
             #     "Pipe from Tank: ",
             #     "status",
-            #     wn_results.link["status"]["W_PMA2000"].values,
+            #     wn_results.link["status"]["W_PMA2000"].round(decimals=4).values,
             #     "\tflowrate = ",
-            #     wn_results.link["flowrate"]["W_PMA2000"].values,
+            #     wn_results.link["flowrate"]["W_PMA2000"].round(decimals=4).values,
             # )
-            # print("******************\n")
+            # print("Total leak: ", wn_results.node["leak_demand"].sum())
 
             # track results
-
-            resilience_metrics.time_tracker.append((time_stamp) / 60)  # minutes
-
-            resilience_metrics.power_consump_tracker.append(
-                resilience_metrics.calculate_power_resmetric(
-                    network_recovery,
-                )
-            )
-
-            resilience_metrics.water_consump_tracker.append(
-                resilience_metrics.calculate_water_resmetric(
-                    network_recovery,
-                    wn_results,
-                )
-            )
-
-            resilience_metrics.water_loss_tracker.append(
-                resilience_metrics.calculate_water_lost(
-                    network_recovery,
-                    wn_results,
-                )
-            )
-
-            resilience_metrics.calculate_node_head(network_recovery, wn_results)
+            resilience_metrics.calculate_node_details(network_recovery, wn_results)
+            resilience_metrics.calculate_water_lost(network_recovery, wn_results)
             resilience_metrics.calculate_pump_flow(network_recovery, wn_results)
+            resilience_metrics.calculate_power_load(network_recovery, time_stamp)
 
-            # Fix the time until which the wntr model should run in this iteration
+            # # Fix the time until which the wntr model should run in this iteration
             if index < len(unique_time_stamps) - 1:
                 network_recovery.network.wn.options.time.duration += int(
                     unique_time_differences[index]
                 )
-                network_recovery.network.wn.options.time.report_timestep += int(
-                    unique_time_differences[index]
-                )
+                # network_recovery.network.wn.options.time.report_timestep += int(
+                #     unique_time_differences[index]
+                # )
 
             # print(
             #     f"Simulation for time {time_stamp / 60} minutes completed successfully"
             # )
-        resilience_metrics.water_node_head_df["time"] = resilience_metrics.time_tracker
-        resilience_metrics.water_pump_flow_df["time"] = resilience_metrics.time_tracker
+            print("******************\n")
 
         return resilience_metrics
 
     def write_results(
         self,
-        time_tracker,
-        power_consump_tracker,
-        water_consump_tracker,
         file_dir,
-        water_loss_tracker=None,
-        water_pump_flow_df=None,
-        water_node_head_df=None,
+        resilience_metrics,
         plotting=False,
     ):
         """Write the results to local directory.
@@ -326,42 +302,35 @@ class NetworkSimulation:
         :param plotting: True if the plots are to be generated., defaults to False
         :type plotting: bool, optional
         """
-        results_df = pd.DataFrame(
-            {
-                "time_min": time_tracker,
-                "power_perf": power_consump_tracker,
-                "water_perf": water_consump_tracker,
-            }
-        )
 
-        results_df.to_csv(
-            Path(file_dir / "network_performance.csv", sep="\t"), index=False
-        )
-
-        if water_loss_tracker != None:
-            water_loss_df = pd.DataFrame(
-                {
-                    "time_min": time_tracker,
-                    "water_loss": water_loss_tracker,
-                }
-            )
-            water_loss_df.to_csv(
+        if resilience_metrics.water_leak_loss_df is not None:
+            resilience_metrics.water_leak_loss_df.to_csv(
                 Path(file_dir / "water_loss.csv", sep="\t"), index=False
             )
 
-        if water_pump_flow_df.shape[0] > 0:
-            water_pump_flow_df.to_csv(
+        if resilience_metrics.water_pump_flow_df is not None:
+            resilience_metrics.water_pump_flow_df.to_csv(
                 Path(file_dir / "water_pump_flow.csv", sep="\t"), index=False
             )
 
-        if water_node_head_df.shape[0] > 0:
-            water_node_head_df.to_csv(
+        if resilience_metrics.water_node_head_df is not None:
+            resilience_metrics.water_node_head_df.to_csv(
                 Path(file_dir / "water_node_head.csv", sep="\t"), index=False
+            )
+
+        if resilience_metrics.water_junc_demand_df is not None:
+            resilience_metrics.water_junc_demand_df.to_csv(
+                Path(file_dir / "water_junc_demand.csv", sep="\t"), index=False
+            )
+
+        if resilience_metrics.power_load_df is not None:
+            resilience_metrics.power_load_df.to_csv(
+                Path(file_dir / "power_load_demand.csv", sep="\t"), index=False
             )
 
         print(f"The simulation results successfully saved to {Path(file_dir)}")
 
-        if plotting == True:
-            model_plots.plot_interdependent_effects(
-                power_consump_tracker, water_consump_tracker, time_tracker
-            )
+        # if plotting == True:
+        #     model_plots.plot_interdependent_effects(
+        #         power_consump_tracker, water_consump_tracker, time_tracker
+        #     )

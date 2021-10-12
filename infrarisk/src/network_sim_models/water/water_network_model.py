@@ -154,6 +154,7 @@ def run_water_simulation(wn):
     :return: Simulation results in pandas tables.
     :rtype: ordered dictionary of string: pandas table
     """
+    # print(wn.control_name_list)
     wn_sim = wntr.sim.WNTRSimulator(wn)
     wn_results = wn_sim.run_sim(
         convergence_error=True, solver_options={"MAXITER": 10000}

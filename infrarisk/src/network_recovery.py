@@ -100,6 +100,16 @@ class NetworkRecovery:
             ]
             self.event_table = pd.DataFrame(columns=column_list)
 
+            # ----------------------------------------------------------
+            column_list_et_short = [
+                "component",
+                "disrupt_time",
+                "repair_start",
+                "functional_start",
+            ]
+            self.event_table_wide = pd.DataFrame(columns=column_list_et_short)
+            # ----------------------------------------------------------
+
             # Schedule component performance at the start of the simulation.
             for _, component in enumerate(self.network.get_disrupted_components()):
                 self.event_table = self.event_table.append(
@@ -480,6 +490,7 @@ class NetworkRecovery:
 
                 # Schedule the recovery action
                 if recovery_start is not None:
+                    recovery_start = int(120 * round(float(recovery_start) / 120))
                     self.event_table = self.event_table.append(
                         {
                             "time_stamp": recovery_start,
@@ -492,11 +503,12 @@ class NetworkRecovery:
                         },
                         ignore_index=True,
                     )
+                    recovery_end = int(
+                        120 * round(float(recovery_start + recovery_time) / 120)
+                    )
                     self.event_table = self.event_table.append(
                         {
-                            "time_stamp": recovery_start
-                            + recovery_time
-                            - self.sim_step * 2,
+                            "time_stamp": recovery_end - self.sim_step * 2,
                             "components": component,
                             "perf_level": 100
                             - self.network.disruptive_events[
@@ -508,13 +520,26 @@ class NetworkRecovery:
                     )
                     self.event_table = self.event_table.append(
                         {
-                            "time_stamp": recovery_start + recovery_time,
+                            "time_stamp": recovery_end,
                             "components": component,
                             "perf_level": 100,
                             "component_state": "Service Restored",
                         },
                         ignore_index=True,
                     )
+
+                    # -----------------------------------------------
+                    self.event_table_wide = self.event_table_wide.append(
+                        {
+                            "component": component,
+                            "disrupt_time": self.network.disruption_time,
+                            "repair_start": recovery_start,
+                            "functional_start": recovery_end,
+                        },
+                        ignore_index=True,
+                    )
+
+                    # -----------------------------------------------
 
                     if compon_details[0] == "water":
                         self.total_water_recovery_time = recovery_start + recovery_time
@@ -574,6 +599,9 @@ class NetworkRecovery:
         :param next_sim_time: Next time stamp in the event table in seconds.
         :type next_sim_time: integer
         """
+        print(
+            f"Updating status of directly affected components between {time_stamp} and {next_sim_time}..."
+        )
         curr_event_table = self.event_table[self.event_table.time_stamp == time_stamp]
         # print(self.network.wn.control_name_list)  ###
 
@@ -583,7 +611,6 @@ class NetworkRecovery:
             perf_level = row["perf_level"]
             component_state = row["component_state"]
             compon_details = interdependencies.get_compon_details(component)
-
             if compon_details[0] == "power":
                 compon_index = (
                     self.network.pn[compon_details[2]]
@@ -606,11 +633,11 @@ class NetworkRecovery:
                         self.network.wn.get_link(component).add_outage(
                             self.network.wn, time_stamp, next_sim_time
                         )
-                        print(
-                            f"The pump outage is added between {time_stamp} s and {next_sim_time} s"
-                        )
+                        # print(
+                        #     f"The pump outage is added between {time_stamp} s and {next_sim_time} s"
+                        # )
 
-                if compon_details[3] in [
+                elif compon_details[3] in [
                     "Pipe",
                     "Service Connection Pipe",
                     "Main Pipe",
@@ -633,14 +660,26 @@ class NetworkRecovery:
                             end_time=next_sim_time,
                         )
                         # print(
-                        #     f"The pipe leak control is added between {time_stamp} s and {next_sim_time} s"
+                        #     f"The pipe leak control for {component} is added between {time_stamp} s and {next_sim_time} s"
                         # )
                     elif component_state == "Repairing":
-                        self.network.wn.get_link(f"{component}_B").status = 0
+                        # self.network.wn.get_link(f"{component}_B").status = 0
+                        link_close_event(
+                            self.network.wn, f"{component}_B", time_stamp, "repairing"
+                        )
+                        link_open_event(
+                            self.network.wn,
+                            f"{component}_B",
+                            next_sim_time,
+                            "repairing",
+                        )
+                        # print(
+                        #     f"The pipe {component} is close control is added between {time_stamp} s and {next_sim_time} s"
+                        # )
                     elif component_state == "Service Restored":
-                        self.network.wn.get_link(f"{component}_B").status = 1
+                        pass
 
-                if compon_details[3] == "Tank":
+                elif compon_details[3] == "Tank":
                     if perf_level < 100:
                         pipes_to_tank = self.network.wn.get_links_for_node(component)
                         for pipe_name in pipes_to_tank:
@@ -671,10 +710,10 @@ class NetworkRecovery:
                             self.network.wn.add_control(
                                 f"open_pipe_{pipe_name}", ctrl_open
                             )
-                    else:
-                        pipes_to_tank = self.network.wn.get_links_for_node(component)
-                        for pipe_name in pipes_to_tank:
-                            self.network.wn.get_link(pipe_name).status = 1
+                    # else:
+                    #     pipes_to_tank = self.network.wn.get_links_for_node(component)
+                    #     for pipe_name in pipes_to_tank:
+                    #         self.network.wn.get_link(pipe_name).status = 1
 
     def reset_networks(self):
         """Resets the IntegratedNetwork object within NetworkRecovery object."""
@@ -717,6 +756,26 @@ class NetworkRecovery:
             ):
                 possible_start_time = self.repair_time_dict[link]
         return accessible, possible_start_time
+
+    def remove_previous_water_controls(self):
+        # remove all previous pump controls
+        pump_list = self.network.wn.pump_name_list
+        for pump_name in pump_list:
+            pump_close_controls = [
+                i
+                for i in self.network.wn.control_name_list
+                if i.startswith(f"{pump_name}_power_off")
+            ]
+            pump_open_controls = [
+                i
+                for i in self.network.wn.control_name_list
+                if i.startswith(f"{pump_name}_power_on")
+            ]
+
+            pump_controls = pump_close_controls + pump_open_controls
+            if len(pump_controls) > 0:
+                for control in pump_controls:
+                    self.network.wn.remove_control(control)
 
 
 def pipe_leak_node_generator(network):
