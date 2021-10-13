@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import copy
+from re import sub
 
 from wntr import network
 import infrarisk.src.network_sim_models.water.water_network_model as water
@@ -302,24 +303,34 @@ class NetworkSimulation:
         :param plotting: True if the plots are to be generated., defaults to False
         :type plotting: bool, optional
         """
+        sim_times = resilience_metrics.power_load_df.time.astype("int32").to_list()
 
-        if resilience_metrics.water_leak_loss_df is not None:
-            resilience_metrics.water_leak_loss_df.to_csv(
+        water_demand = resilience_metrics.water_junc_demand_df
+        add_times = [time for time in water_demand.time if time % 600 == 0]
+
+        subset_times = sorted(list(set(sim_times + add_times)))
+
+        leak_loss = resilience_metrics.water_leak_loss_df
+        if leak_loss is not None:
+            leak_loss[leak_loss.time.isin(subset_times)].to_csv(
                 Path(file_dir / "water_loss.csv", sep="\t"), index=False
             )
 
-        if resilience_metrics.water_pump_flow_df is not None:
-            resilience_metrics.water_pump_flow_df.to_csv(
+        pump_flow = resilience_metrics.water_pump_flow_df
+        if pump_flow is not None:
+            pump_flow[pump_flow.time.isin(subset_times)].to_csv(
                 Path(file_dir / "water_pump_flow.csv", sep="\t"), index=False
             )
 
-        if resilience_metrics.water_node_head_df is not None:
-            resilience_metrics.water_node_head_df.to_csv(
+        water_head = resilience_metrics.water_node_head_df
+        if water_head is not None:
+            water_head[water_head.time.isin(subset_times)].to_csv(
                 Path(file_dir / "water_node_head.csv", sep="\t"), index=False
             )
 
-        if resilience_metrics.water_junc_demand_df is not None:
-            resilience_metrics.water_junc_demand_df.to_csv(
+        water_demand = resilience_metrics.water_junc_demand_df
+        if water_demand is not None:
+            water_demand[water_demand.time.isin(subset_times)].to_csv(
                 Path(file_dir / "water_junc_demand.csv", sep="\t"), index=False
             )
 

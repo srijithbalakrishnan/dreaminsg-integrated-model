@@ -19,6 +19,7 @@ class WeightedResilienceMetric:
         self.water_node_head_df = None
         self.water_junc_demand_df = None
         self.power_load_df = None
+        self.sim_times = []
 
     def calculate_water_lost(self, network_recovery, wn_results):
 
@@ -72,6 +73,7 @@ class WeightedResilienceMetric:
             )
 
     def calculate_power_load(self, network_recovery, sim_time):
+        self.sim_times.append(sim_time)
         pn = network_recovery.network.pn
         if self.power_load_df is None:
             self.power_load_df = pd.DataFrame(
