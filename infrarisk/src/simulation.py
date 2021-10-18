@@ -334,6 +334,12 @@ class NetworkSimulation:
                 Path(file_dir / "water_junc_demand.csv", sep="\t"), index=False
             )
 
+        water_pressure = resilience_metrics.water_node_pressure_df
+        if water_pressure is not None:
+            water_pressure[water_pressure.time.isin(subset_times)].to_csv(
+                Path(file_dir / "water_node_pressure.csv", sep="\t"), index=False
+            )
+
         if resilience_metrics.power_load_df is not None:
             resilience_metrics.power_load_df.to_csv(
                 Path(file_dir / "power_load_demand.csv", sep="\t"), index=False

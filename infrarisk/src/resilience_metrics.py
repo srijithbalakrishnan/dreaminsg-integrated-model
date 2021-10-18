@@ -1,6 +1,5 @@
 """Resilience metric classes to be used for optimizing recovery actions."""
 
-from abc import ABC, abstractmethod
 import math
 from sklearn import metrics
 import numpy as np
@@ -18,6 +17,7 @@ class WeightedResilienceMetric:
         self.water_pump_flow_df = None
         self.water_node_head_df = None
         self.water_junc_demand_df = None
+        self.water_node_pressure_df = None
         self.power_load_df = None
         self.sim_times = []
 
@@ -59,6 +59,17 @@ class WeightedResilienceMetric:
                 ignore_index=True,
             )
 
+        if self.water_node_pressure_df is None:
+            self.water_node_pressure_df = wn_results.node["pressure"][node_list]
+            self.water_node_pressure_df["time"] = wn_results.node["pressure"].index
+        else:
+            water_node_pressure_df_new = wn_results.node["pressure"][node_list]
+            water_node_pressure_df_new["time"] = wn_results.node["pressure"].index
+            self.water_node_pressure_df = pd.concat(
+                [self.water_node_pressure_df, water_node_pressure_df_new],
+                ignore_index=True,
+            )
+
     def calculate_pump_flow(self, network_recovery, wn_results):
         pump_list = network_recovery.network.wn.pump_name_list
         if self.water_pump_flow_df is None:
@@ -97,60 +108,78 @@ class WeightedResilienceMetric:
         :return: water resilience metric value
         :rtype: float
         """
-        sim_time = network_recovery.network.wn.options.time.duration
-        node_demand = wn_results.node["demand"].iloc[-1]
-        node_pressure = wn_results.node["pressure"].iloc[-1]
+        water_demands = wn_results.node["demand"].iloc[-1]
+        water_pressure = wn_results.node["pressure"].iloc[-1]
 
-        water_supplied_at_t = []
-        base_supply_at_t = []
-        supply_ratio_at_t = []
+        junc_list = network_recovery.network.wn.junction_name_list
+        base_water_demands = network_recovery.network.base_water_node_supply
 
-        for junc in network_recovery.network.wn.junction_name_list:
-            if junc in network_recovery.network.base_water_node_supply.columns:
-                # base supply
-                base_supply_df = network_recovery.network.base_water_node_supply
-                base_junc_supply_at_t = base_supply_df[
-                    base_supply_df.time == int(sim_time % (24 * 3600))
-                ][junc].item()
-                base_supply_at_t.append(base_junc_supply_at_t)
+        # for junc in network_recovery.network.wn.junction_name_list:
+        #     if junc in network_recovery.network.base_water_node_supply.columns:
+        #         # base supply
+        #         base_supply_df = network_recovery.network.base_water_node_supply
+        #         base_junc_supply_at_t = base_supply_df[
+        #             base_supply_df.time == int(sim_time % (24 * 3600))
+        #         ][junc].item()
+        #         base_supply_at_t.append(base_junc_supply_at_t)
 
-                # actual supply
-                if (
-                    node_pressure[junc]
-                    >= network_recovery.network.wn.options.hydraulic.threshold_pressure
-                ):
-                    actual_junc_supply_at_t = node_demand[junc]
-                    water_supplied_at_t.append(actual_junc_supply_at_t)
-                    # supply ratio
-                    if base_junc_supply_at_t > 0:
-                        supply_ratio_at_t.append(
-                            min(1, actual_junc_supply_at_t / base_junc_supply_at_t)
-                        )
-                elif (
-                    0
-                    <= node_pressure[junc]
-                    < network_recovery.network.wn.options.hydraulic.threshold_pressure
-                ):
-                    actual_junc_supply_at_t = node_demand[junc] * math.sqrt(
-                        node_pressure[junc]
-                        / network_recovery.network.wn.options.hydraulic.threshold_pressure
-                    )
-                    water_supplied_at_t.append(actual_junc_supply_at_t)
-                    # supply ratio
-                    if base_junc_supply_at_t > 0:
-                        supply_ratio_at_t.append(
-                            min(1, actual_junc_supply_at_t / base_junc_supply_at_t)
-                        )
+        #         # actual supply
+        #         if (
+        #             node_pressure[junc]
+        #             >= network_recovery.network.wn.options.hydraulic.threshold_pressure
+        #         ):
+        #             actual_junc_supply_at_t = node_demand[junc]
+        #             water_supplied_at_t.append(actual_junc_supply_at_t)
+        #             # supply ratio
+        #             if base_junc_supply_at_t > 0:
+        #                 supply_ratio_at_t.append(
+        #                     min(1, actual_junc_supply_at_t / base_junc_supply_at_t)
+        #                 )
+        #         elif (
+        #             0
+        #             <= node_pressure[junc]
+        #             < network_recovery.network.wn.options.hydraulic.threshold_pressure
+        #         ):
+        #             actual_junc_supply_at_t = node_demand[junc] * math.sqrt(
+        #                 node_pressure[junc]
+        #                 / network_recovery.network.wn.options.hydraulic.threshold_pressure
+        #             )
+        #             water_supplied_at_t.append(actual_junc_supply_at_t)
+        #             # supply ratio
+        #             if base_junc_supply_at_t > 0:
+        #                 supply_ratio_at_t.append(
+        #                     min(1, actual_junc_supply_at_t / base_junc_supply_at_t)
+        #                 )
 
-        print(
-            "Supply: ",
-            round(sum(water_supplied_at_t), 3),
-            "Base demand: ",
-            round(sum(base_supply_at_t), 3),
-            "Supply ratio: ",
-            round(mean(supply_ratio_at_t), 3),
+        # print(
+        #     "Supply: ",
+        #     round(sum(water_supplied_at_t), 3),
+        #     "Base demand: ",
+        #     round(sum(base_supply_at_t), 3),
+        #     "Supply ratio: ",
+        #     round(mean(supply_ratio_at_t), 3),
+        # )
+        # water_resmetric = min(1, mean(supply_ratio_at_t))
+        water_time_list = water_demands.time / 60
+        water_time_list = water_time_list.tolist()
+        rel_time_list = water_demands["time"] % (24 * 3600)
+        index_list = [int(x / 60) for x in rel_time_list]
+        water_demands = water_demands[junc_list]
+
+        base_water_demands_new = base_water_demands.iloc[index_list].reset_index(
+            drop=True
         )
-        water_resmetric = min(1, mean(supply_ratio_at_t))
+        base_water_demands_new = base_water_demands_new[junc_list]
+
+        water_demands_ratio = water_demands / base_water_demands_new
+        water_demands_ratio = water_demands_ratio.clip(upper=1)
+
+        water_ecs_list = water_demands_ratio.mean(axis=1, skipna=True).tolist()
+        water_pcs_list = pd.concat([water_demands, base_water_demands_new]).min(
+            level=0
+        ).sum(axis=1, skipna=True) / base_water_demands_new.sum(axis=1, skipna=True)
+        water_pcs_list = water_pcs_list.tolist()
+
         return water_resmetric
 
     def calculate_power_resmetric(self, network_recovery):
@@ -210,27 +239,3 @@ class WeightedResilienceMetric:
             round(self.water_auc, 3),
             round(self.weighed_auc, 3),
         )
-
-    def get_time_tracker(self):
-        """Returns the time tracker list with time in minutes.
-
-        :return: time tracker
-        :rtype: list
-        """
-        return self.time_tracker
-
-    def get_power_consump_tracker(self):
-        """Returns the power consumption ratio list.
-
-        :return: power consumption ratio values
-        :rtype: list
-        """
-        return self.power_consump_tracker
-
-    def get_water_consump_tracker(self):
-        """Returns the water consumption ratio list.
-
-        :return: water consumption ratio values
-        :rtype: list
-        """
-        return self.water_consump_tracker

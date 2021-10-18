@@ -37,6 +37,7 @@ class FullSimulation:
             power_folder,
             transp_folder,
             power_sim_type="1ph",
+            water_sim_type="DDA",
         )
 
         micropolis_network.generate_integrated_graph()

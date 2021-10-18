@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from pathlib import Path
 import networkx as nx
 import pandas as pd
 import wntr
@@ -9,44 +9,20 @@ import infrarisk.src.network_sim_models.power.power_system_model as power
 import infrarisk.src.network_sim_models.transportation.network as transpo
 import infrarisk.src.plots as model_plots
 
-import geopandas as gpd
 import math
 
 
-class Network(ABC):
-    """This is an abstract class of integrated infrastructure network, defining an interface to other code. This interface needs to be implemented accordingly."""
-
-    @abstractmethod
-    def load_networks(self):
-        pass
-
-    @abstractmethod
-    def generate_integrated_graph(self, plotting=False):
-        pass
-
-    @abstractmethod
-    def generate_dependency_table(self, dependency_file):
-        pass
-
-    @abstractmethod
-    def set_disrupted_components(self, dependency_file):
-        pass
-
-    @abstractmethod
-    def get_disrupted_components(self, dependency_file):
-        pass
-
-
-class IntegratedNetwork(Network):
+class IntegratedNetwork:
     """An integrated infrastructure network class"""
 
     def __init__(
         self,
         name,
-        power_sim_type="1ph",
-        water_file=None,
-        power_file=None,
+        water_folder=None,
+        power_folder=None,
         transp_folder=None,
+        power_sim_type=None,
+        water_sim_type=None,
     ):
         """Initiates the IntegratedNetwork object.
 
@@ -63,22 +39,29 @@ class IntegratedNetwork(Network):
         """
         self.name = name
 
-        if water_file == None:
+        if water_folder is None:
             self.wn = None
         else:
-            self.load_water_network(water_file)
+            self.load_water_network(water_folder, water_sim_type=water_sim_type)
 
-        if power_file == None:
+        if power_folder is None:
             self.pn = None
         else:
-            self.load_power_network(power_file, power_sim_type)
+            self.load_power_network(power_folder, power_sim_type=power_sim_type)
 
-        if transp_folder == None:
+        if transp_folder is None:
             self.tn = None
         else:
             self.load_transpo_network(transp_folder)
 
-    def load_networks(self, water_folder, power_folder, transp_folder, power_sim_type):
+    def load_networks(
+        self,
+        water_folder,
+        power_folder,
+        transp_folder,
+        power_sim_type="1ph",
+        water_sim_type="PDA",
+    ):
         """Loads the water, power and transportation networks.
 
         :param water_file: The water network file in inp format
@@ -90,14 +73,19 @@ class IntegratedNetwork(Network):
         :param power_sim_type: Type of power flow simulation: '1ph': single phase, '3ph': three phase.
         :type power_sim_type: string
         """
+
         # load water_network model
-        self.load_water_network(water_folder)
+        print(water_folder is not None)
+        if water_folder is not None:
+            self.load_water_network(water_folder, water_sim_type)
 
         # load power systems network
-        self.load_power_network(power_folder, power_sim_type)
+        if power_folder is not None:
+            self.load_power_network(power_folder, power_sim_type)
 
         # load static traffic assignment network
-        self.load_transpo_network(transp_folder)
+        if transp_folder is not None:
+            self.load_transpo_network(transp_folder)
 
     def load_power_network(self, power_folder, power_sim_type):
         """Loads the power network.
@@ -111,6 +99,7 @@ class IntegratedNetwork(Network):
             )
             power.run_power_simulation(pn)
             self.pn = pn
+            self.power_sim_time = power_sim_type
             self.base_power_supply = power.generate_base_supply(pn)
         except UserWarning:
             print(
@@ -118,27 +107,31 @@ class IntegratedNetwork(Network):
                 power_folder / "power.json",
             )
 
-    def load_water_network(self, water_folder):
+    def load_water_network(self, water_folder, water_sim_type):
         """Loads the water network.
 
         :param water_file: The water network file in inp format
         :type water_file: string
         """
-        try:
-            initial_sim_step = 60
-            wn = water.load_water_network(water_folder / "water.inp", initial_sim_step)
-            self.wn = wn
+        initial_sim_step = 60
+        self.wn = water.load_water_network(
+            f"{water_folder}/water.inp", water_sim_type, initial_sim_step
+        )
+        self.water_sim_type = water_sim_type
 
+        if water_sim_type == "DDA":
             self.base_water_node_supply = pd.read_csv(
                 water_folder / "base_water_node_supply.csv"
             )
             self.base_water_link_flow = pd.read_csv(
                 water_folder / "base_water_link_flow.csv"
             )
-        except FileNotFoundError:
-            print(
-                "Error: The water network file does not exist. No such file or directory: ",
-                water_folder / "water.inp",
+        elif self.water_sim_type == "PDA":
+            self.base_water_node_supply = pd.read_csv(
+                water_folder / "base_water_node_supply_pda.csv"
+            )
+            self.base_water_link_flow = pd.read_csv(
+                water_folder / "base_water_link_flow_pda.csv"
             )
 
     def load_transpo_network(self, transp_folder):
@@ -495,7 +488,7 @@ class IntegratedNetwork(Network):
             )
 
         self.disrupted_components = self.disruptive_events.components
-        self.disruption_time = self.disruptive_events["time_stamp"].unique().item()
+        self.disruption_time = self.disruptive_events.time_stamp.unique().item()
         self.set_disrupted_infra_dict()
 
     def get_disruptive_events(self):

@@ -88,6 +88,8 @@ class RadialDisruption:
             self.failure_probability = 0.3
         elif self.intensity == "low":
             self.failure_probability = 0.1
+        elif self.intensity == "random":
+            self.failure_probability = random.random()
 
     def set_point_of_occurrence(self, point_of_occurrence):
         """Sets the point of occurrence of the radial disruption.
@@ -549,6 +551,8 @@ class TrackDisruption:
             self.failure_probability = 0.3
         elif self.intensity == "low":
             self.failure_probability = 0.1
+        elif self.intensity == "random":
+            self.failure_probability = random.random()
 
     def set_hazard_tracks_from_shapefile(self, hazard_tracks):
         """Sets the tracks of the track-based hazard from a shapefile.

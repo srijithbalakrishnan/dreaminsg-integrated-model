@@ -115,7 +115,7 @@ def generate_pattern_interval_dict(wn):
         pattern_intervals[pattern] = len(wn.get_pattern(pattern).multipliers)
 
 
-def load_water_network(network_inp, initial_sim_step):
+def load_water_network(network_inp, water_sim_type, initial_sim_step):
     """Loads the water network model from an inp file.
 
     :param network_inp: Location of the inp water network file.
@@ -125,25 +125,31 @@ def load_water_network(network_inp, initial_sim_step):
     :return: The loaded water wntr network object.
     :rtype: wntr network object
     """
-    wn = wntr.network.WaterNetworkModel(network_inp)
-    wn.options.hydraulic.required_pressure = 30
-    wn.options.hydraulic.minimum_pressure = 0
-    wn.options.hydraulic.threshold_pressure = 20
-    wn.options.time.duration = initial_sim_step
-    wn.options.time.report_timestep = initial_sim_step
-    wn.options.time.hydraulic_timestep = initial_sim_step
-    wn.options.hydraulic.demand_model = "DDA"
-    print(
-        "Water network successfully loaded from {}. The analysis type is set to Pressure Dependent Demand Analysis.".format(
-            network_inp
+    try:
+        wn = wntr.network.WaterNetworkModel(network_inp)
+        wn.options.hydraulic.required_pressure = 30
+        wn.options.hydraulic.minimum_pressure = 0
+        wn.options.hydraulic.threshold_pressure = 20
+        wn.options.time.duration = initial_sim_step
+        wn.options.time.report_timestep = initial_sim_step
+        wn.options.time.hydraulic_timestep = initial_sim_step
+        if water_sim_type not in ["DDA", "PDA"]:
+            print("The given simulation type is not valid!")
+
+        print(
+            f"Water network successfully loaded from {network_inp}. The analysis type is set to {water_sim_type}."
         )
-    )
-    print(
-        "initial simulation duration: {0}s; hydraulic time step: {0}s; pattern time step: 3600s\n".format(
-            initial_sim_step
+        print(
+            "initial simulation duration: {0}s; hydraulic time step: {0}s; pattern time step: 3600s\n".format(
+                initial_sim_step
+            )
         )
-    )
-    return wn
+        return wn
+    except FileNotFoundError:
+        print(
+            f"Error: The water network file does not exist. No such file or directory: ",
+            network_inp,
+        )
 
 
 def run_water_simulation(wn):
@@ -189,5 +195,35 @@ def generate_base_supply(wn_original, dir):
     base_link_flow_df["time"] = base_link_flow_df["time"].astype(int)
     base_link_flow_df.to_csv(
         Path(dir) / "base_water_link_flow.csv",
+        index=False,
+    )
+
+
+def generate_base_supply_pda(wn_original, dir):
+    wn = copy.deepcopy(wn_original)
+    wn.options.time.duration = 3600 * 24
+    wn.options.time.report_timestep = 60
+    wn.options.time.hydraulic_timestep = 60
+    wn.options.hydraulic.demand_model = "PDA"
+    wn.options.hydraulic.required_pressure = 30
+    wn.options.hydraulic.minimum_pressure = 0
+
+    wn_sim = wntr.sim.WNTRSimulator(wn)
+    wn_results = wn_sim.run_sim(
+        convergence_error=True, solver_options={"MAXITER": 10000}
+    )
+    base_node_supply_df = wn_results.node["demand"][wn.node_name_list]
+    base_node_supply_df["time"] = base_node_supply_df.index
+    base_node_supply_df["time"] = base_node_supply_df["time"].astype(int)
+    base_node_supply_df.to_csv(
+        Path(dir) / "base_water_node_supply_pda.csv",
+        index=False,
+    )
+
+    base_link_flow_df = wn_results.link["flowrate"][wn.link_name_list]
+    base_link_flow_df["time"] = base_link_flow_df.index
+    base_link_flow_df["time"] = base_link_flow_df["time"].astype(int)
+    base_link_flow_df.to_csv(
+        Path(dir) / "base_water_link_flow_pda.csv",
         index=False,
     )
