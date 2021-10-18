@@ -80,7 +80,9 @@ class RadialDisruption:
 
     def set_intensity_failure_probability(self):
         """Sets the vulnerability (probability of failure) based on the intensity of the disaster event (currently arbitrary values are used)."""
-        if self.intensity == "extreme":
+        if self.intensity == "complete":
+            self.failure_probability = 1
+        elif self.intensity == "extreme":
             self.failure_probability = 0.8
         elif self.intensity == "high":
             self.failure_probability = 0.5
@@ -359,7 +361,13 @@ class RadialDisruption:
         :return: The failure status of the node.
         :rtype: bool
         """
-        exposure_prob = round(1 - p_occ.distance(node_point) / self.radius_of_impact, 2)
+        if self.intensity == "complete":
+            exposure_prob = 1
+        else:
+            exposure_prob = round(
+                1 - p_occ.distance(node_point) / self.radius_of_impact, 2
+            )
+
         fail_status = (
             True
             if random.random() <= exposure_prob * self.failure_probability
@@ -383,9 +391,12 @@ class RadialDisruption:
         link_line = LineString([start_coords, end_coords])
         nearest_point = nearest_points(link_line, p_occ)[0]
 
-        exposure_prob = round(
-            1 - p_occ.distance(nearest_point) / self.radius_of_impact, 2
-        )
+        if self.intensity == "complete":
+            exposure_prob = 1
+        else:
+            exposure_prob = round(
+                1 - p_occ.distance(nearest_point) / self.radius_of_impact, 2
+            )
         fail_status = (
             True
             if random.random() <= exposure_prob * self.failure_probability
@@ -543,7 +554,9 @@ class TrackDisruption:
 
     def set_intensity_failure_probability(self):
         """Sets the vulnerability (probability of failure) based on the intensity of the disaster event (currently arbitrary values are used)."""
-        if self.intensity == "extreme":
+        if self.intensity == "complete":
+            self.failure_probability = 1
+        elif self.intensity == "extreme":
             self.failure_probability = 0.8
         elif self.intensity == "high":
             self.failure_probability = 0.6
@@ -874,9 +887,14 @@ class TrackDisruption:
         :rtype: bool
         """
         nearest_point = nearest_points(track, node_point)[0]
-        exposure_prob = round(
-            1 - node_point.distance(nearest_point) / self.buffer_of_impact, 2
-        )
+
+        if self.intensity == "complete":
+            exposure_prob = 1
+        else:
+            exposure_prob = round(
+                1 - node_point.distance(nearest_point) / self.buffer_of_impact, 2
+            )
+
         fail_status = (
             True
             if random.random() <= exposure_prob * self.failure_probability
@@ -896,9 +914,12 @@ class TrackDisruption:
         :rtype: bool
         """
         link_point, track_point = nearest_points(link_line, track)
-        exposure_prob = round(
-            1 - link_point.distance(track_point) / self.buffer_of_impact, 2
-        )
+        if self.intensity == "complete":
+            exposure_prob = 1
+        else:
+            exposure_prob = round(
+                1 - link_point.distance(track_point) / self.buffer_of_impact, 2
+            )
         fail_status = (
             True
             if random.random() <= exposure_prob * self.failure_probability
