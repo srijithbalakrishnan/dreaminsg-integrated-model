@@ -563,7 +563,7 @@ class NetworkRecovery:
                     )
                     self.event_table = self.event_table.append(
                         {
-                            "time_stamp": recovery_start + recovery_time + 240,
+                            "time_stamp": recovery_start + recovery_time + 10 * 3600,
                             "components": component,
                             "perf_level": 100,
                             "component_state": "Service Restored",
@@ -744,6 +744,13 @@ class NetworkRecovery:
         ].fft_base
 
     def check_route_accessibility(self, failed_transpo_link_en_route):
+        """Checks when the failed transportation links along a route are repaired and the possible start time.
+
+        :param failed_transpo_link_en_route: [description]
+        :type failed_transpo_link_en_route: [type]
+        :return: [description]
+        :rtype: [type]
+        """
         accessible = True
         possible_start_time = 0
         for link in failed_transpo_link_en_route:

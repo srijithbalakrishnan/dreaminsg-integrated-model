@@ -2,7 +2,6 @@
 
 from pathlib import Path
 import copy
-from re import sub
 
 from wntr import network
 import infrarisk.src.network_sim_models.water.water_network_model as water
@@ -163,6 +162,13 @@ class NetworkSimulation:
         self.components_repaired.append(component)
 
     def get_sim_times(self, network_recovery):
+        """Returns the unique simulation times scheduled by the event table.
+
+        :param network_recovery: A integrated infrastructure network recovery object.
+        :type network_recovery: NetworkRecovery object
+        :return: Unique simulation time stamps
+        :rtype: list of integers
+        """
         simtime_max = 0
 
         for _, row in network_recovery.event_table_wide.iterrows():
@@ -179,8 +185,8 @@ class NetworkSimulation:
     def simulate_interdependent_effects(self, network_recovery_original):
         """Simulates the interdependent effect based on the initial disruptions and subsequent repair actions.
 
-        :param network_recovery: A integrated infrastructure network recovery object.
-        :type network_recovery: NetworkRecovery object
+        :param network_recovery_original: A integrated infrastructure network recovery object.
+        :type network_recovery_original: NetworkRecovery object
         :return: lists of time stamps and resilience values of power and water supply.
         :rtype: lists
         """
@@ -191,7 +197,7 @@ class NetworkSimulation:
             list(network_recovery.event_table.time_stamp.unique())
         )
 
-        unique_sim_times = self.get_sim_times(network_recovery)
+        unique_sim_times = unique_time_stamps  # self.get_sim_times(network_recovery)
         # print(unique_sim_times)
 
         unique_time_differences = [
@@ -273,34 +279,18 @@ class NetworkSimulation:
                 network_recovery.network.wn.options.time.duration += int(
                     unique_time_differences[index]
                 )
-                # network_recovery.network.wn.options.time.report_timestep += int(
-                #     unique_time_differences[index]
-                # )
-
-            # print(
-            #     f"Simulation for time {time_stamp / 60} minutes completed successfully"
-            # )
             print("******************\n")
 
         return resilience_metrics
 
-    def write_results(
-        self,
-        file_dir,
-        resilience_metrics,
-        plotting=False,
-    ):
-        """Write the results to local directory.
+    def write_results(self, file_dir, resilience_metrics, plotting=False):
+        """[summary]
 
-        :param time_tracker: List of time stamps.
-        :type time_tracker: list of integers
-        :param power_consump_tracker: List of corresponding power resilience metric value.
-        :type power_consump_tracker: list of floats
-        :param water_consump_tracker: List of corresponding water resilience metric value.
-        :type water_consump_tracker: list of floats
-        :param file_name: The location and filename to which the results are to be saved.
-        :type file_name: string
-        :param plotting: True if the plots are to be generated., defaults to False
+        :param file_dir: The directory in which the simulation contents are to be saved.
+        :type file_dir: string
+        :param resilience_metrics: The object in which simulation related data are stored.
+        :type resilience_metrics: The WeightedResilienceMetric object
+        :param plotting: [description], defaults to False
         :type plotting: bool, optional
         """
         sim_times = resilience_metrics.power_load_df.time.astype("int32").to_list()
@@ -313,36 +303,36 @@ class NetworkSimulation:
         leak_loss = resilience_metrics.water_leak_loss_df
         if leak_loss is not None:
             leak_loss[leak_loss.time.isin(subset_times)].to_csv(
-                Path(file_dir / "water_loss.csv", sep="\t"), index=False
+                Path(file_dir) / "water_loss.csv", sep="\t", index=False
             )
 
         pump_flow = resilience_metrics.water_pump_flow_df
         if pump_flow is not None:
             pump_flow[pump_flow.time.isin(subset_times)].to_csv(
-                Path(file_dir / "water_pump_flow.csv", sep="\t"), index=False
+                Path(file_dir) / "water_pump_flow.csv", sep="\t", index=False
             )
 
         water_head = resilience_metrics.water_node_head_df
         if water_head is not None:
             water_head[water_head.time.isin(subset_times)].to_csv(
-                Path(file_dir / "water_node_head.csv", sep="\t"), index=False
+                Path(file_dir) / "water_node_head.csv", sep="\t", index=False
             )
 
         water_demand = resilience_metrics.water_junc_demand_df
         if water_demand is not None:
             water_demand[water_demand.time.isin(subset_times)].to_csv(
-                Path(file_dir / "water_junc_demand.csv", sep="\t"), index=False
+                Path(file_dir) / "water_junc_demand.csv", sep="\t", index=False
             )
 
         water_pressure = resilience_metrics.water_node_pressure_df
         if water_pressure is not None:
             water_pressure[water_pressure.time.isin(subset_times)].to_csv(
-                Path(file_dir / "water_node_pressure.csv", sep="\t"), index=False
+                Path(file_dir) / "water_node_pressure.csv", sep="\t", index=False
             )
 
         if resilience_metrics.power_load_df is not None:
             resilience_metrics.power_load_df.to_csv(
-                Path(file_dir / "power_load_demand.csv", sep="\t"), index=False
+                Path(file_dir) / "power_load_demand.csv", sep="\t", index=False
             )
 
         print(f"The simulation results successfully saved to {Path(file_dir)}")

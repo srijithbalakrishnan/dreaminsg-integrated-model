@@ -29,7 +29,6 @@ class RadialDisruption:
         radius_of_impact=100,
         time_of_occurrence=6000,
         intensity="high",
-        disrupt_file=None,
     ):
         """Initiates a RadialDisruption object.
 
@@ -50,7 +49,7 @@ class RadialDisruption:
         self.disrupt_file = pd.DataFrame()
         self.set_intensity_failure_probability()
 
-        if point_of_occurrence == None:
+        if point_of_occurrence is None:
             self.point_of_occurrence = None
         else:
             self.set_point_of_occurrence(point_of_occurrence)
@@ -156,7 +155,7 @@ class RadialDisruption:
             point = Point(G.nodes[node]["coord"])
             if (point.intersects(c)) or (point.within(c)):
                 node_fail_status = self.assign_node_failure(p_occ, point)
-                if node_fail_status == True:
+                if node_fail_status is True:
                     G.nodes[node]["fail_status"] = "Disrupted"
 
                     if G.nodes[node]["node_type"] == "power_node":
@@ -197,7 +196,7 @@ class RadialDisruption:
                     p_occ, start_coords, end_coords
                 )
 
-                if link_fail_status == True:
+                if link_fail_status is True:
                     G.edges[link]["fail_status"] = "Disrupted"
                     if G.edges[link]["link_type"] == "Power":
                         if G.edges[link]["id"] not in affected_links["power"]:
@@ -226,7 +225,7 @@ class RadialDisruption:
         self.affected_links = affected_links
 
         # bokeh plot
-        if plot_components == True:
+        if plot_components is True:
             palette = [RdYlGn[11][2], RdYlGn[11][9]]
 
             p = figure(
@@ -497,7 +496,6 @@ class TrackDisruption:
         time_of_occurrence=6000,
         intensity="high",
         name="Track disruption",
-        disrupt_file=None,
     ):
         """Initiates the TrackDisruption object.
 
@@ -681,7 +679,7 @@ class TrackDisruption:
             for _, node in enumerate(G.nodes.keys()):
                 point = Point(G.nodes[node]["coord"])
                 node_fail_status = self.assign_node_failure(track, point)
-                if node_fail_status == True:
+                if node_fail_status is True:
                     if (point.intersects(track_buffer)) or (point.within(track_buffer)):
                         G.nodes[node]["fail_status"] = "Disrupted"
                         if G.nodes[node]["node_type"] == "power_node":
