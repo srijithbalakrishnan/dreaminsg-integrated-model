@@ -11,9 +11,15 @@ class CentralityStrategy:
     """Based on betweenness centrality of the components multiplied by capacity. Break ties randomly."""
 
     def __init__(self, integrated_network):
+        """Initiates the CentralityStrategy object.
+
+        :param integrated_network: An integrated network object
+        :type integrated_network: IntegratedNetwork object
+        """
         self.integrated_network = integrated_network
 
     def set_repair_order(self):
+        """Identifies the repair sequence based on the betweenness centrality measure. For methodology, please refer to networkx package documentation."""
         pn_nx = self.integrated_network.power_graph
         wn_nx = self.integrated_network.water_graph
         tn_nx = self.integrated_network.transpo_graph
@@ -123,6 +129,11 @@ class CentralityStrategy:
         self.repair_order = repair_order
 
     def get_repair_order(self):
+        """Returns the repair sequence based on the principle of betweenness centrality.
+
+        :return: A list of component names in the order of repair action.
+        :rtype: list of strings
+        """
         return self.repair_order
 
 
@@ -130,9 +141,15 @@ class CrewDistanceStrategy:
     """Based on the distance between the component and the crew location. Break ties randomly."""
 
     def __init__(self, integrated_network):
+        """Initiates the CrewDistanceStrategy object.
+
+        :param integrated_network: An integrated network object
+        :type integrated_network: IntegratedNetwork object
+        """
         self.integrated_network = integrated_network
 
     def set_repair_order(self):
+        """Identifies the repair sequence based on the distance from crew location."""
         transpo_dist_dict = dict()
         power_dist_dict = dict()
         water_dist_dict = dict()
@@ -239,6 +256,11 @@ class CrewDistanceStrategy:
         self.repair_order = repair_order
 
     def get_repair_order(self):
+        """Returns the repair sequence based on the distance from the initial crew location.
+
+        :return: A list of component names in the order of repair action.
+        :rtype: list of strings
+        """
         return self.repair_order
 
 
@@ -246,9 +268,16 @@ class HandlingCapacityStrategy:
     """Based on the predetermined priority for different components"""
 
     def __init__(self, integrated_network):
+        """Initiates the HandlingCapacityStrategy object.
+
+        :param integrated_network: An integrated network object
+        :type integrated_network: IntegratedNetwork object
+        """
         self.integrated_network = integrated_network
 
     def set_repair_order(self):
+        """Identifies the repair sequence based on the maximum quantity of resource flow handled."""
+
         transpo_capacity_dict = dict()
         power_capacity_dict = dict()
         water_capacity_dict = dict()
@@ -337,6 +366,11 @@ class HandlingCapacityStrategy:
         self.repair_order = repair_order
 
     def get_repair_order(self):
+        """Returns the repair sequence based on the distance from the initial crew location.
+
+        :return: A list of component names in the order of repair action.
+        :rtype: list of strings
+        """
         return self.repair_order
 
 
@@ -344,10 +378,18 @@ class ZoneBasedStrategy:
     """Based on the zone in which the components are located."""
 
     def __init__(self, integrated_network, zones_shp):
+        """Initiates the ZoneBasedStrategy object.
+
+        :param integrated_network: An integrated network object
+        :type integrated_network: IntegratedNetwork object
+        :param zones_shp: The shapefile consisting the zone maps as polygons.
+        :type zones_shp: shapefile
+        """
         self.integrated_network = integrated_network
         self.zones = gpd.read_file(zones_shp, encoding="utf-8")
 
     def set_repair_order(self):
+        """Identifies the repair sequence based on the zone of the component."""
         transpo_zone_dict = dict()
         power_zone_dict = dict()
         water_zone_dict = dict()
@@ -462,6 +504,11 @@ class ZoneBasedStrategy:
         self.repair_order = repair_order
 
     def get_repair_order(self):
+        """Returns the repair sequence based on the distance from the initial crew location.
+
+        :return: A list of component names in the order of repair action.
+        :rtype: list of strings
+        """
         return self.repair_order
 
 

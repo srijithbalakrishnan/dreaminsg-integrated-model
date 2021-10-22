@@ -599,9 +599,9 @@ class NetworkRecovery:
         :param next_sim_time: Next time stamp in the event table in seconds.
         :type next_sim_time: integer
         """
-        print(
-            f"Updating status of directly affected components between {time_stamp} and {next_sim_time}..."
-        )
+        # print(
+        #     f"Updating status of directly affected components between {time_stamp} and {next_sim_time}..."
+        # )
         curr_event_table = self.event_table[self.event_table.time_stamp == time_stamp]
         # print(self.network.wn.control_name_list)  ###
 

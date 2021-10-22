@@ -178,7 +178,10 @@ class NetworkSimulation:
                     simtime_max = row["functional_start"]
 
         unique_time_stamps = network_recovery.event_table.time_stamp.unique()
-        maxtime_index = len(unique_time_stamps[unique_time_stamps < simtime_max]) + 3
+        maxtime_index = min(
+            len(unique_time_stamps),
+            len(unique_time_stamps[unique_time_stamps < (simtime_max + 5 * 3600)]) + 3,
+        )
         unique_sim_times = unique_time_stamps[0:maxtime_index]
         return unique_sim_times
 
@@ -197,7 +200,7 @@ class NetworkSimulation:
             list(network_recovery.event_table.time_stamp.unique())
         )
 
-        unique_sim_times = unique_time_stamps  # self.get_sim_times(network_recovery)
+        unique_sim_times = self.get_sim_times(network_recovery)
         # print(unique_sim_times)
 
         unique_time_differences = [

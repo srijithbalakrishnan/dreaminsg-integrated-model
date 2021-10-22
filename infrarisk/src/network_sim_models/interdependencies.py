@@ -176,9 +176,9 @@ class DependencyTable:
         :param next_time_stamp: The end tiem of the iteration.
         :type next_time_stamp: integer
         """
-        print(
-            f"Updating status of indirectly affected components between {time_stamp} and {next_time_stamp}..."
-        )
+        # print(
+        #     f"Updating status of indirectly affected components between {time_stamp} and {next_time_stamp}..."
+        # )
 
         # print(network.wn.control_name_list)
         for _, row in self.wp_table.iterrows():
