@@ -56,12 +56,12 @@ class FullSimulation:
 
     def generate_disruptions(self):
 
-        disruption_list = ["targetted"] * 1 + ["track"] * 3
+        disruption_list = ["flood"]
 
-        buffer_list = [50] * 1 + [100] * 4 + [150] * 2 + [200]
-        intensity_list = [
-            "random"
-        ]  # (["high"] * 2 + ["moderate"] * 15 + ["low"] * 2)  # based on probability distribution
+        buffer_list = [150]
+        intensity_list = (
+            ["high"] * 2 + ["moderate"] * 5 + ["low"] * 3
+        )  # based on probability distribution
         disruptive_event = random.choice(disruption_list)
         buffer = random.choice(buffer_list)
         intensity = random.choice(intensity_list)
@@ -86,6 +86,7 @@ class FullSimulation:
             micropolis_streams = gpd.read_file(
                 self.network_dir / "gis/streams_v1.shp", encoding="utf-8"
             )
+            micropolis_streams = micropolis_streams.loc[[1, 2], :]
             event = hazard.TrackDisruption(
                 hazard_tracks=micropolis_streams,
                 buffer_of_impact=buffer,
@@ -159,12 +160,12 @@ class FullSimulation:
                 "centrality"
             ] = centrality_strategy.get_repair_order()
 
-            print(
-                "Deriving the repair order based on crew distance to the component..."
-            )
-            distance_strategy = strategies.CrewDistanceStrategy(self.network)
-            distance_strategy.set_repair_order()
-            self.repair_order_dict["crewdist"] = distance_strategy.get_repair_order()
+            # print(
+            #     "Deriving the repair order based on crew distance to the component..."
+            # )
+            # distance_strategy = strategies.CrewDistanceStrategy(self.network)
+            # distance_strategy.set_repair_order()
+            # self.repair_order_dict["crewdist"] = distance_strategy.get_repair_order()
 
             print("Deriving the repair order based on component zone...")
             micropolis_zones_shp = f"{self.network_dir}/gis/micropolis_zones.shp"
