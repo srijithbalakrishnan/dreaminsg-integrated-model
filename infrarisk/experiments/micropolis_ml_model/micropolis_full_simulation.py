@@ -159,12 +159,12 @@ class FullSimulation:
                 "centrality"
             ] = centrality_strategy.get_repair_order()
 
-            print(
-                "Deriving the repair order based on crew distance to the component..."
-            )
-            distance_strategy = strategies.CrewDistanceStrategy(self.network)
-            distance_strategy.set_repair_order()
-            self.repair_order_dict["crewdist"] = distance_strategy.get_repair_order()
+            # print(
+            #     "Deriving the repair order based on crew distance to the component..."
+            # )
+            # distance_strategy = strategies.CrewDistanceStrategy(self.network)
+            # distance_strategy.set_repair_order()
+            # self.repair_order_dict["crewdist"] = distance_strategy.get_repair_order()
 
             print("Deriving the repair order based on component zone...")
             micropolis_zones_shp = f"{self.network_dir}/gis/micropolis_zones.shp"
