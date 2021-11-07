@@ -29,17 +29,18 @@ class WeightedResilienceMetric:
         :param wn_results: The water network simulation results for the current time interval
         :type wn_results: wntr object
         """
-        node_list = network_recovery.network.wn.node_name_list
-        if self.water_leak_loss_df is None:
-            self.water_leak_loss_df = wn_results.node["leak_demand"][node_list]
-            self.water_leak_loss_df["time"] = wn_results.node["leak_demand"].index
-        else:
-            water_leak_loss_df_new = wn_results.node["leak_demand"][node_list]
-            water_leak_loss_df_new["time"] = wn_results.node["leak_demand"].index
-            self.water_leak_loss_df = pd.concat(
-                [self.water_leak_loss_df, water_leak_loss_df_new],
-                ignore_index=True,
-            )
+        pass
+        # node_list = network_recovery.network.wn.node_name_list
+        # if self.water_leak_loss_df is None:
+        #     self.water_leak_loss_df = wn_results.node["leak_demand"][node_list]
+        #     self.water_leak_loss_df["time"] = wn_results.node["leak_demand"].index
+        # else:
+        #     water_leak_loss_df_new = wn_results.node["leak_demand"][node_list]
+        #     water_leak_loss_df_new["time"] = wn_results.node["leak_demand"].index
+        #     self.water_leak_loss_df = pd.concat(
+        #         [self.water_leak_loss_df, water_leak_loss_df_new],
+        #         ignore_index=True,
+        #     )
 
     def calculate_node_details(self, network_recovery, wn_results):
         """Calculates the node head, deamand and pressure and stores them to respective tables.
@@ -50,16 +51,16 @@ class WeightedResilienceMetric:
         :type wn_results: wntr object
         """
         node_list = network_recovery.network.wn.node_name_list
-        if self.water_node_head_df is None:
-            self.water_node_head_df = wn_results.node["head"][node_list]
-            self.water_node_head_df["time"] = wn_results.node["head"].index
-        else:
-            water_node_head_df_new = wn_results.node["head"][node_list]
-            water_node_head_df_new["time"] = wn_results.node["head"].index
-            self.water_node_head_df = pd.concat(
-                [self.water_node_head_df, water_node_head_df_new],
-                ignore_index=True,
-            )
+        # if self.water_node_head_df is None:
+        #     self.water_node_head_df = wn_results.node["head"][node_list]
+        #     self.water_node_head_df["time"] = wn_results.node["head"].index
+        # else:
+        #     water_node_head_df_new = wn_results.node["head"][node_list]
+        #     water_node_head_df_new["time"] = wn_results.node["head"].index
+        #     self.water_node_head_df = pd.concat(
+        #         [self.water_node_head_df, water_node_head_df_new],
+        #         ignore_index=True,
+        #     )
 
         if self.water_junc_demand_df is None:
             self.water_junc_demand_df = wn_results.node["demand"][node_list]
@@ -72,16 +73,16 @@ class WeightedResilienceMetric:
                 ignore_index=True,
             )
 
-        if self.water_node_pressure_df is None:
-            self.water_node_pressure_df = wn_results.node["pressure"][node_list]
-            self.water_node_pressure_df["time"] = wn_results.node["pressure"].index
-        else:
-            water_node_pressure_df_new = wn_results.node["pressure"][node_list]
-            water_node_pressure_df_new["time"] = wn_results.node["pressure"].index
-            self.water_node_pressure_df = pd.concat(
-                [self.water_node_pressure_df, water_node_pressure_df_new],
-                ignore_index=True,
-            )
+        # if self.water_node_pressure_df is None:
+        #     self.water_node_pressure_df = wn_results.node["pressure"][node_list]
+        #     self.water_node_pressure_df["time"] = wn_results.node["pressure"].index
+        # else:
+        #     water_node_pressure_df_new = wn_results.node["pressure"][node_list]
+        #     water_node_pressure_df_new["time"] = wn_results.node["pressure"].index
+        #     self.water_node_pressure_df = pd.concat(
+        #         [self.water_node_pressure_df, water_node_pressure_df_new],
+        #         ignore_index=True,
+        #     )
 
     def calculate_pump_flow(self, network_recovery, wn_results):
         """Calculates the flowrates in pumps and stores the values to a table.
@@ -91,17 +92,18 @@ class WeightedResilienceMetric:
         :param wn_results: The water network simulation results for the current time interval
         :type wn_results: wntr object
         """
-        pump_list = network_recovery.network.wn.pump_name_list
-        if self.water_pump_flow_df is None:
-            self.water_pump_flow_df = wn_results.link["flowrate"][pump_list]
-            self.water_pump_flow_df["time"] = wn_results.link["flowrate"].index
-        else:
-            water_pump_flow_df_new = wn_results.link["flowrate"][pump_list]
-            water_pump_flow_df_new["time"] = wn_results.link["flowrate"].index
-            self.water_pump_flow_df = pd.concat(
-                [self.water_pump_flow_df, water_pump_flow_df_new],
-                ignore_index=True,
-            )
+        # pump_list = network_recovery.network.wn.pump_name_list
+        # if self.water_pump_flow_df is None:
+        #     self.water_pump_flow_df = wn_results.link["flowrate"][pump_list]
+        #     self.water_pump_flow_df["time"] = wn_results.link["flowrate"].index
+        # else:
+        #     water_pump_flow_df_new = wn_results.link["flowrate"][pump_list]
+        #     water_pump_flow_df_new["time"] = wn_results.link["flowrate"].index
+        #     self.water_pump_flow_df = pd.concat(
+        #         [self.water_pump_flow_df, water_pump_flow_df_new],
+        #         ignore_index=True,
+        #     )
+        pass
 
     def calculate_power_load(self, network_recovery, sim_time):
         """Calculates the power flow in loads and motor pumps.
@@ -168,25 +170,25 @@ class WeightedResilienceMetric:
         base_water_demands = network_recovery.network.base_water_node_supply
 
         water_pressures = water_pressures[junc_list]
-        water_press_corrections = copy.deepcopy(water_pressures)
+        # water_press_corrections = copy.deepcopy(water_pressures)
 
-        if network_recovery.network.water_sim_type == "DDA":
-            for _, column in enumerate(water_pressures.columns):
-                water_press_corrections[column] = water_pressures[column].apply(
-                    lambda x: 0
-                    if x <= 0
-                    else (
-                        (
-                            x
-                            / network_recovery.network.wn.options.hydraulic.threshold_pressure
-                        )
-                        ** 0.5
-                        if x
-                        <= network_recovery.network.wn.options.hydraulic.threshold_pressure
-                        else x
-                    )
-                )
-            water_demands = water_demands * water_press_corrections
+        # if network_recovery.network.water_sim_type == "DDA":
+        #     for _, column in enumerate(water_pressures.columns):
+        #         water_press_corrections[column] = water_pressures[column].apply(
+        #             lambda x: 0
+        #             if x <= 0
+        #             else (
+        #                 (
+        #                     x
+        #                     / network_recovery.network.wn.options.hydraulic.threshold_pressure
+        #                 )
+        #                 ** 0.5
+        #                 if x
+        #                 <= network_recovery.network.wn.options.hydraulic.threshold_pressure
+        #                 else x
+        #             )
+        #         )
+        #     water_demands = water_demands * water_press_corrections
 
         base_water_demands_new = base_water_demands.iloc[index_list].reset_index(
             drop=True

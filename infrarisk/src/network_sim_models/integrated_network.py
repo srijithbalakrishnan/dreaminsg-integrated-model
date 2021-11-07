@@ -486,7 +486,6 @@ class IntegratedNetwork:
                 "Error: The scenario file does not exist. No such directory: ",
                 scenario_file,
             )
-
         self.disrupted_components = self.disruptive_events.components
         self.disruption_time = self.disruptive_events.time_stamp.unique().item()
         self.set_disrupted_infra_dict()

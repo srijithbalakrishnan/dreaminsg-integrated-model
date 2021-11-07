@@ -165,7 +165,7 @@ def plot_bokeh_from_integrated_graph(G, title, extent=[(1000, 8000), (1000, 6600
         alpha=0.6,
         muted_color="gainsboro",
         muted_alpha=0.2,
-        size=10,
+        size=5,
     )
 
     # links
@@ -214,6 +214,8 @@ def plot_bokeh_from_integrated_graph(G, title, extent=[(1000, 8000), (1000, 6600
 
     p.legend.location = "top_left"
     p.legend.click_policy = "mute"
+    p.grid.visible = False
+    #p.axis.visible = False
     show(p)
 
 

@@ -303,23 +303,23 @@ class NetworkSimulation:
 
         subset_times = sorted(list(set(sim_times + add_times)))
 
-        leak_loss = resilience_metrics.water_leak_loss_df
-        if leak_loss is not None:
-            leak_loss[leak_loss.time.isin(subset_times)].to_csv(
-                Path(file_dir) / "water_loss.csv", sep="\t", index=False
-            )
+        # leak_loss = resilience_metrics.water_leak_loss_df
+        # if leak_loss is not None:
+        #     leak_loss[leak_loss.time.isin(subset_times)].to_csv(
+        #         Path(file_dir) / "water_loss.csv", sep="\t", index=False
+        #     )
 
-        pump_flow = resilience_metrics.water_pump_flow_df
-        if pump_flow is not None:
-            pump_flow[pump_flow.time.isin(subset_times)].to_csv(
-                Path(file_dir) / "water_pump_flow.csv", sep="\t", index=False
-            )
+        # pump_flow = resilience_metrics.water_pump_flow_df
+        # if pump_flow is not None:
+        #     pump_flow[pump_flow.time.isin(subset_times)].to_csv(
+        #         Path(file_dir) / "water_pump_flow.csv", sep="\t", index=False
+        #     )
 
-        water_head = resilience_metrics.water_node_head_df
-        if water_head is not None:
-            water_head[water_head.time.isin(subset_times)].to_csv(
-                Path(file_dir) / "water_node_head.csv", sep="\t", index=False
-            )
+        # water_head = resilience_metrics.water_node_head_df
+        # if water_head is not None:
+        #     water_head[water_head.time.isin(subset_times)].to_csv(
+        #         Path(file_dir) / "water_node_head.csv", sep="\t", index=False
+        #     )
 
         water_demand = resilience_metrics.water_junc_demand_df
         if water_demand is not None:
@@ -327,11 +327,11 @@ class NetworkSimulation:
                 Path(file_dir) / "water_junc_demand.csv", sep="\t", index=False
             )
 
-        water_pressure = resilience_metrics.water_node_pressure_df
-        if water_pressure is not None:
-            water_pressure[water_pressure.time.isin(subset_times)].to_csv(
-                Path(file_dir) / "water_node_pressure.csv", sep="\t", index=False
-            )
+        # water_pressure = resilience_metrics.water_node_pressure_df
+        # if water_pressure is not None:
+        #     water_pressure[water_pressure.time.isin(subset_times)].to_csv(
+        #         Path(file_dir) / "water_node_pressure.csv", sep="\t", index=False
+        #     )
 
         if resilience_metrics.power_load_df is not None:
             resilience_metrics.power_load_df.to_csv(
