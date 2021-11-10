@@ -1,17 +1,19 @@
 """Functions to generate and save disruptive scenarios."""
 
-import pandas as pd
 import math
 import copy
+import pandas as pd
 import wntr
 from wntr.network.controls import ControlPriority
-import infrarisk.src.network_sim_models.interdependencies as interdependencies
+from infrarisk.src.network_sim_models import interdependencies as interdependencies
 
 
 class NetworkRecovery:
     """Generate a disaster and recovery object for storing simulation-related information and settings."""
 
-    def __init__(self, network, sim_step):
+    def __init__(
+        self, network, sim_step, pipe_close_policy="repair", pipe_closure_delay=None
+    ):
         """Initiates the NetworkRecovery object.
 
         :param network: An integrated network object
@@ -23,6 +25,9 @@ class NetworkRecovery:
         self.network = copy.deepcopy(self.base_network)
         self.sim_step = sim_step
         self._tn_update_flag = True
+
+        self.pipe_close_policy = pipe_close_policy
+        self.pipe_closure_delay = pipe_closure_delay
 
         self.transpo_updated_model_dict = dict()
         self.transpo_updated_model_dict[0] = copy.deepcopy(network.tn)
@@ -369,7 +374,6 @@ class NetworkRecovery:
                             )
                             if component not in self.water_access_no_redundancy:
                                 self.water_access_no_redundancy.append(component)
-
                     elif compon_details[0] == "transpo":
                         recovery_time = (
                             interdependencies.get_transpo_repair_time(component) * 3600
@@ -491,6 +495,29 @@ class NetworkRecovery:
                 # Schedule the recovery action
                 if recovery_start is not None:
                     recovery_start = int(120 * round(float(recovery_start) / 120))
+
+                    if (
+                        recovery_start
+                        > self.network.disruption_time + 60 * self.pipe_closure_delay
+                    ):
+                        if self.pipe_close_policy == "sensor_based":
+                            if compon_details[1] in ["PMA", "P", "T"]:
+                                self.event_table = self.event_table.append(
+                                    {
+                                        "time_stamp": self.network.disruption_time
+                                        + 60
+                                        * self.pipe_closure_delay,  # Leaks closed within 10 mins
+                                        "components": component,
+                                        "perf_level": 100
+                                        - self.network.disruptive_events[
+                                            self.network.disruptive_events.components
+                                            == component
+                                        ].fail_perc.item(),
+                                        "component_state": "Isolated",
+                                    },
+                                    ignore_index=True,
+                                )
+
                     self.event_table = self.event_table.append(
                         {
                             "time_stamp": recovery_start,
@@ -503,6 +530,7 @@ class NetworkRecovery:
                         },
                         ignore_index=True,
                     )
+
                     recovery_end = int(
                         120 * round(float(recovery_start + recovery_time) / 120)
                     )
@@ -662,8 +690,18 @@ class NetworkRecovery:
                         # print(
                         #     f"The pipe leak control for {component} is added between {time_stamp} s and {next_sim_time} s"
                         # )
+                    elif component_state == "Isolated":
+                        link_close_event(
+                            self.network.wn, f"{component}_B", time_stamp, "isolated"
+                        )
+                        link_open_event(
+                            self.network.wn, f"{component}_B", next_sim_time, "isolated"
+                        )
+                        # print(
+                        #     f"The pipe {component} is close control is added between {time_stamp} s and {next_sim_time} s"
+                        # )
+
                     elif component_state == "Repairing":
-                        # self.network.wn.get_link(f"{component}_B").status = 0
                         link_close_event(
                             self.network.wn, f"{component}_B", time_stamp, "repairing"
                         )
@@ -759,13 +797,13 @@ class NetworkRecovery:
                 possible_start_time = None
                 break
             elif (self.repair_time_dict[link] > possible_start_time) and (
-                accessible == True
+                accessible is True
             ):
                 possible_start_time = self.repair_time_dict[link]
         return accessible, possible_start_time
 
     def remove_previous_water_controls(self):
-        # remove all previous pump controls
+        """Removes all previous pump controls"""
         pump_list = self.network.wn.pump_name_list
         for pump_name in pump_list:
             pump_close_controls = [
@@ -787,13 +825,8 @@ class NetworkRecovery:
 
 def pipe_leak_node_generator(network):
     """Splits the directly affected pipes to induce leak during simulations.
-
     :param wn: Water network object.
     :type wn: wntr network object
-    :param disaster_recovery_object: The object in which all disaster and repair related information are stored.
-    :type disaster_recovery_object: DisasterAndRecovery object
-    :return: The modified wntr network object after pipe splits.
-    :rtype: wntr network object
     """
     for _, component in enumerate(network.get_disrupted_components()):
         compon_details = interdependencies.get_compon_details(component)
@@ -805,7 +838,6 @@ def pipe_leak_node_generator(network):
 
 def link_open_event(wn, pipe_name, time_stamp, state):
     """Opens a pipe.
-
     :param wn: Water network object.
     :type wn: wntr network object
     :param pipe_name:  Name of the pipe.
