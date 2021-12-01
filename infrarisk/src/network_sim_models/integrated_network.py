@@ -1,7 +1,10 @@
-from pathlib import Path
-import networkx as nx
+from io import StringIO
 import pandas as pd
+import networkx as nx
 import wntr
+import math
+import os
+import numpy as np
 
 import infrarisk.src.network_sim_models.interdependencies as interdependencies
 import infrarisk.src.network_sim_models.water.water_network_model as water
@@ -9,7 +12,7 @@ import infrarisk.src.network_sim_models.power.power_system_model as power
 import infrarisk.src.network_sim_models.transportation.network as transpo
 import infrarisk.src.plots as model_plots
 
-import math
+import infrarisk.src.repair_crews as repair_crews
 
 
 class IntegratedNetwork:
@@ -28,14 +31,16 @@ class IntegratedNetwork:
 
         :param name: The name of the network.
         :type name: string
+        :param water_folder: The directory that consists of required water network files, defaults to None
+        :type water_folder: pathlib.Path object, optional
+        :param power_folder: The directory that consists of required power network files, defaults to None
+        :type power_folder: pathlib.Path object, optional
+        :param transp_folder: The directory that consists of required traffic network files, defaults to None
+        :type transp_folder: pathlib.Path object, optional
         :param power_sim_type: Power simulation type ("1ph" for single phase networks, "3ph" for three phase networks), defaults to "1ph"
         :type power_sim_type: string, optional
-        :param water_file: The water network file in inp format, defaults to None
-        :type water_file: string, optional
-        :param power_file: The power systems file in json format, defaults to None
-        :type power_file: string, optional
-        :param transp_folder: The local directory that consists of required transportation network files, defaults to None
-        :type transp_folder: string, optional
+        :param water_sim_type: Type of water simulation: 'PDA' for pressure-dependent driven analysis, 'DDA' for demand driven analysis
+        :type water_sim_type: string
         """
         self.name = name
 
@@ -64,18 +69,18 @@ class IntegratedNetwork:
     ):
         """Loads the water, power and transportation networks.
 
-        :param water_file: The water network file in inp format
-        :type water_file: string
-        :param power_file: The power systems file in json format
-        :type power_file: string
-        :param transp_folder: The local directory that consists of required transportation network files
-        :type transp_folder: string
-        :param power_sim_type: Type of power flow simulation: '1ph': single phase, '3ph': three phase.
-        :type power_sim_type: string
+        :param water_folder: The directory that consists of required water network files, defaults to None
+        :type water_folder: pathlib.Path object, optional
+        :param power_folder: The directory that consists of required power network files, defaults to None
+        :type power_folder: pathlib.Path object, optional
+        :param transp_folder: The directory that consists of required traffic network files, defaults to None
+        :type transp_folder: pathlib.Path object, optional
+        :param power_sim_type: Power simulation type ("1ph" for single phase networks, "3ph" for three phase networks), defaults to "1ph"
+        :type power_sim_type: string, optional
+        :param water_sim_type: Type of water simulation: 'PDA' for pressure-dependent driven analysis, 'DDA' for demand driven analysis
+        :type water_sim_type: string
         """
-
         # load water_network model
-        print(water_folder is not None)
         if water_folder is not None:
             self.load_water_network(water_folder, water_sim_type)
 
@@ -110,8 +115,10 @@ class IntegratedNetwork:
     def load_water_network(self, water_folder, water_sim_type):
         """Loads the water network.
 
-        :param water_file: The water network file in inp format
-        :type water_file: string
+        :param water_folder: The directory that consists of required water network files
+        :type water_folder: pathlib.Path object
+        :param water_sim_type: Type of water simulation: 'PDA' for pressure-dependent driven analysis, 'DDA' for demand driven analysis
+        :type water_sim_type: string
         """
         initial_sim_step = 60
         self.wn = water.load_water_network(
@@ -134,10 +141,19 @@ class IntegratedNetwork:
                 water_folder / "base_water_link_flow_pda.csv"
             )
 
+        if os.path.exists(water_folder / "pipe_to_valve_map.csv"):
+            pipe_valve_df = pd.read_csv(water_folder / "pipe_to_valve_map.csv", sep=",")
+
+            self.pipe_valve_dict = dict()
+            for _, row in pipe_valve_df.iterrows():
+                pipe = row["pipe"]
+                valve_list = [x for x in row[1:] if x is not np.nan]
+                self.pipe_valve_dict[pipe] = valve_list
+
     def load_transpo_network(self, transp_folder):
         """Loads the transportation network.
 
-        :param transp_folder: The local directory that consists of required transportation network files
+        :param transp_folder: The directory that consists of required transportation network files
         :type transp_folder: string
         """
         try:
@@ -149,7 +165,7 @@ class IntegratedNetwork:
             print(
                 f"Transportation network successfully loaded from {transp_folder}. Static traffic assignment method will be used to calculate travel times."
             )
-            tn.userEquilibrium("FW", 400, 1e-4, tn.averageExcessCost)
+            # tn.userEquilibrium("FW", 400, 1e-4, tn.averageExcessCost)
             self.tn = tn
             self.base_transpo_flow = tn
         except FileNotFoundError:
@@ -275,10 +291,23 @@ class IntegratedNetwork:
             edge_attr=True,
         )
 
-        for index, row in power_nodes.iterrows():
+        for _, row in power_nodes.iterrows():
             G_power.nodes[row["id"]]["node_type"] = row["node_type"]
             G_power.nodes[row["id"]]["node_category"] = row["node_category"]
             G_power.nodes[row["id"]]["coord"] = (row["x"], row["y"])
+
+        for graph in [G_power]:
+            for _, link in enumerate(graph.edges.keys()):
+                start_node, end_node = link
+                start_coords = graph.nodes[link[0]]["coord"]
+                end_coords = graph.nodes[link[1]]["coord"]
+                graph.edges[link]["length"] = round(
+                    math.sqrt(
+                        ((start_coords[0] - end_coords[0]) ** 2)
+                        + ((start_coords[1] - end_coords[1]) ** 2)
+                    ),
+                    3,
+                )
 
         if plot == True:
             pos = {node: G_power.nodes[node]["coord"] for node in power_nodes.id}
@@ -379,6 +408,19 @@ class IntegratedNetwork:
             G_water.nodes[row["id"]]["node_category"] = row["node_category"]
             G_water.nodes[row["id"]]["coord"] = self.wn.get_node(row["id"]).coordinates
 
+        for graph in [G_water]:
+            for _, link in enumerate(graph.edges.keys()):
+                start_node, end_node = link
+                start_coords = graph.nodes[link[0]]["coord"]
+                end_coords = graph.nodes[link[1]]["coord"]
+                graph.edges[link]["length"] = round(
+                    math.sqrt(
+                        ((start_coords[0] - end_coords[0]) ** 2)
+                        + ((start_coords[1] - end_coords[1]) ** 2)
+                    ),
+                    3,
+                )
+
         if plot == True:
             pos = {node: G_water.nodes[node]["coord"] for node in water_nodes.id}
             nx.draw(G_water, pos, node_size=1)
@@ -451,6 +493,19 @@ class IntegratedNetwork:
                 self.tn.node_coords[self.tn.node_coords["Node"] == node_name].Y.item(),
             ]
 
+        for graph in [G_transpo]:
+            for _, link in enumerate(graph.edges.keys()):
+                start_node, end_node = link
+                start_coords = graph.nodes[link[0]]["coord"]
+                end_coords = graph.nodes[link[1]]["coord"]
+                graph.edges[link]["length"] = round(
+                    math.sqrt(
+                        ((start_coords[0] - end_coords[0]) ** 2)
+                        + ((start_coords[1] - end_coords[1]) ** 2)
+                    ),
+                    3,
+                )
+
         if plot == True:
             pos = {node: G_transpo.nodes[node]["coord"] for node in transpo_nodes.id}
             nx.draw(G_transpo, pos, node_size=1)
@@ -487,7 +542,7 @@ class IntegratedNetwork:
                 scenario_file,
             )
         self.disrupted_components = self.disruptive_events.components
-        self.disruption_time = self.disruptive_events.time_stamp.unique().item()
+        self.disruption_time = self.disruptive_events["time_stamp"].unique().item()
         self.set_disrupted_infra_dict()
 
     def get_disruptive_events(self):
@@ -530,28 +585,111 @@ class IntegratedNetwork:
         """
         return self.disrupted_infra_dict
 
-    def set_init_crew_locs(self, init_power_loc, init_water_loc, init_transpo_loc):
-        """Sets the intial location of the infrastructure crews. Assign the locations of the respective offices.
+    def deploy_crews(
+        self,
+        init_power_crew_locs=None,
+        power_crews_size=None,
+        init_water_crew_locs=None,
+        water_crews_size=None,
+        init_transpo_crew_locs=None,
+        transpo_crews_size=None,
+    ):
+        """Deploys the infrastructure crews for performing recovery actions.
 
-        :param init_power_loc: Location (node) of the power crew office.
-        :type init_power_loc: string
-        :param init_water_loc: Location (node) of the water crew office.
-        :type init_water_loc: string
-        :param init_transpo_loc: Location (node) of the transportation crew office.
-        :type init_transpo_loc: string
+        :param init_power_crew_locs: Initial locations (nearest transportation nodes) of the power crews.
+        :type init_power_crew_locs: list of strings
+        :param init_water_crew_locs: Initial locations (nearest transportation nodes) of the water crews.
+        :type init_water_crew_locs: list of strings
+        :param init_transpo_crew_locs: Initial locations (nearest transportation nodes) of the transportation crews.
+        :type init_transpo_crew_locs: list of strings
         """
-        self.init_power_crew_loc = init_power_loc
-        self.init_water_crew_loc = init_water_loc
-        self.init_transpo_crew_loc = init_transpo_loc
-        self.power_crew_loc = self.init_power_crew_loc
-        self.water_crew_loc = self.init_water_crew_loc
-        self.transpo_crew_loc = self.init_transpo_crew_loc
+        self.power_crews = {}
+        self.water_crews = {}
+        self.transpo_crews = {}
+
+        try:
+            for i in range(len(init_power_crew_locs)):
+                crew_size = None if power_crews_size is None else power_crews_size[i]
+                self.power_crews[i + 1] = repair_crews.PowerRepairCrew(
+                    name=i + 1,
+                    init_loc=init_power_crew_locs[i],
+                    crew_size=crew_size,
+                )
+                self.power_crews[i + 1].set_next_trip_start(self.disruption_time)
+            print("Power repair crews successfully deployed.")
+        except TypeError:
+            print(
+                "TypeError: The initial locations of the power crews are not specified or not valid."
+            )
+
+        try:
+            for i in range(len(init_water_crew_locs)):
+                crew_size = None if water_crews_size is None else water_crews_size[i]
+                self.water_crews[i + 1] = repair_crews.WaterRepairCrew(
+                    name=i + 1,
+                    init_loc=init_water_crew_locs[i],
+                    crew_size=crew_size,
+                )
+                self.water_crews[i + 1].set_next_trip_start(self.disruption_time)
+            print("Water repair crews successfully deployed.")
+        except TypeError:
+            print(
+                "TypeError: The initial locations of the water crews are not specified or not valid."
+            )
+
+        try:
+            for i in range(len(init_transpo_crew_locs)):
+                crew_size = (
+                    None if transpo_crews_size is None else transpo_crews_size[i]
+                )
+                self.transpo_crews[i + 1] = repair_crews.TranspoRepairCrew(
+                    name=i + 1,
+                    init_loc=init_transpo_crew_locs[i],
+                    crew_size=crew_size,
+                )
+                self.transpo_crews[i + 1].set_next_trip_start(self.disruption_time)
+            print("Transportation repair crews successfully deployed.")
+        except TypeError:
+            print(
+                "TypeError: The initial locations of the transportation crews are not specified or not valid."
+            )
+
+    def get_idle_crew(self, crew_type):
+        """Returns the idle crew of the given type.
+
+        :param crew_type: Type of the crew.
+        :type crew_type: string
+        :return: The idle crew of the given type.
+        :rtype: repair_crews.RepairCrew
+        """
+        if crew_type == "power":
+            crews = self.power_crews
+
+            idle_crew = crews[list(crews.keys())[0]]
+            for crew_name in crews.keys():
+                if crews[crew_name].next_trip_start < idle_crew.next_trip_start:
+                    idle_crew = crews[crew_name]
+            return idle_crew
+        elif crew_type == "water":
+            crews = self.water_crews
+            idle_crew = crews[list(crews.keys())[0]]
+            for crew_name in crews.keys():
+                if crews[crew_name].next_trip_start < idle_crew.next_trip_start:
+                    idle_crew = crews[crew_name]
+            return idle_crew
+        elif crew_type == "transpo":
+            crews = self.transpo_crews
+            idle_crew = crews[list(crews.keys())[0]]
+            for crew_name in crews.keys():
+                if crews[crew_name].next_trip_start < idle_crew.next_trip_start:
+                    idle_crew = crews[crew_name]
+            return idle_crew
 
     def reset_crew_locs(self):
         """Resets the location of infrastructure crews."""
-        self.power_crew_loc = self.init_power_crew_loc
-        self.water_crew_loc = self.init_water_crew_loc
-        self.transpo_crew_loc = self.init_transpo_crew_loc
+        for crew_type in [self.power_crews, self.water_crews, self.transpo_crews]:
+            for crew in crew_type.keys():
+                crew_type[crew].reset_locs()
 
     def set_power_crew_loc(self, power_crew_loc):
         """Sets the location of the power crew.

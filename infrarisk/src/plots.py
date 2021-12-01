@@ -1,10 +1,10 @@
 """Functions to generate infrastructure network plots and result plots."""
 
-import networkx as nx
+# import pandapower.plotting as pandaplot
 import pandas as pd
-import matplotlib.pyplot as plt
 
-import pandapower.plotting as pandaplot
+# import matplotlib.pyplot as plt
+import networkx as nx
 
 from bokeh.io import show, output_notebook, curdoc
 from bokeh.plotting import figure
@@ -215,7 +215,7 @@ def plot_bokeh_from_integrated_graph(G, title, extent=[(1000, 8000), (1000, 6600
     p.legend.location = "top_left"
     p.legend.click_policy = "mute"
     p.grid.visible = False
-    #p.axis.visible = False
+    # p.axis.visible = False
     show(p)
 
 

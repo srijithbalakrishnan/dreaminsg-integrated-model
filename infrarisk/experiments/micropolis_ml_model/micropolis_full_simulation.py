@@ -11,6 +11,8 @@ import geopandas as gpd
 import pandas as pd
 import copy
 
+from random import randrange
+
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -26,33 +28,40 @@ class FullSimulation:
         """This is the main function that contains the whole simulation workflow."""
         os.system("cls")
 
-        micropolis_network = int_net.IntegratedNetwork(name="Micropolis")
+        micropolis_networks = {"low": None, "med": None, "high": None}
 
-        water_folder = self.network_dir / "water"
-        power_folder = self.network_dir / "power"
-        transp_folder = self.network_dir / "transportation"
+        for mesh_level in micropolis_networks.keys():
+            micropolis_networks[mesh_level] = int_net.IntegratedNetwork(
+                name=f"Micropolis_{mesh_level}"
+            )
+            water_folder = self.network_dir / f"water/{mesh_level}"
+            power_folder = self.network_dir / f"power/{mesh_level}"
+            transp_folder = self.network_dir / f"transportation/{mesh_level}"
 
-        micropolis_network.load_networks(
-            water_folder,
-            power_folder,
-            transp_folder,
-            power_sim_type="1ph",
-            water_sim_type="PDA",
-        )
+            micropolis_networks[mesh_level].load_networks(
+                water_folder,
+                power_folder,
+                transp_folder,
+                power_sim_type="1ph",
+                water_sim_type="PDA",
+            )
 
-        micropolis_network.generate_integrated_graph()
+            micropolis_networks[mesh_level].generate_integrated_graph()
 
-        micropolis_network.generate_dependency_table(
-            dependency_file=self.dependency_file
-        )
+            micropolis_networks[mesh_level].generate_dependency_table(
+                dependency_file=self.dependency_file
+            )
 
-        micropolis_network.set_init_crew_locs(
-            init_power_loc="T_J8",
-            init_water_loc="T_J8",
-            init_transpo_loc="T_J8",
-        )
+            # micropolis_networks[mesh_level].set_init_crew_locs(
+            #     init_power_loc="T_J8",
+            #     init_water_loc="T_J8",
+            #     init_transpo_loc="T_J8",
+            # )
 
-        self.network = micropolis_network
+            self.networks = micropolis_networks
+
+    def set_network(self, network):
+        self.network = network
 
     def generate_disruptions(self):
 
@@ -67,7 +76,7 @@ class FullSimulation:
         intensity = random.choice(intensity_list)
 
         if disruptive_event == "targetted":
-            map_extends = self.network.get_map_extends()
+            map_extends = self.networks["med"].get_map_extends()
             point_of_occurrence = (
                 random.randint(map_extends[0][0], map_extends[1][0]),
                 random.randint(map_extends[0][1], map_extends[1][1]),
@@ -78,9 +87,9 @@ class FullSimulation:
                 intensity=intensity,
                 name="point",
             )
-            event.set_affected_components(
-                self.network.integrated_graph, plot_components=False
-            )
+            # event.set_affected_components(
+            #     self.network.integrated_graph, plot_components=False
+            # )
 
         elif disruptive_event == "flood":
             micropolis_streams = gpd.read_file(
@@ -93,9 +102,9 @@ class FullSimulation:
                 intensity=intensity,
                 name="flood",
             )
-            event.set_affected_components(
-                self.network.integrated_graph, plot_components=False
-            )
+            # event.set_affected_components(
+            #     self.network.integrated_graph, plot_components=False
+            # )
         elif disruptive_event == "track":
             event = hazard.TrackDisruption(
                 hazard_tracks=None,
@@ -105,33 +114,51 @@ class FullSimulation:
                 name="track",
             )
 
-            micropolis_map_extents = self.network.get_map_extends()
+            micropolis_map_extents = self.networks["med"].get_map_extends()
             event_track = event.generate_random_track(
                 micropolis_map_extents, shape="spline"
             )
             event.set_hazard_tracks_from_linestring(event_track)
-            event.set_affected_components(
-                self.network.integrated_graph, plot_components=False
-            )
+            # event.set_affected_components(
+            #     self.network.integrated_graph, plot_components=False
+            # )
+        self.event = event
+
+        test_counter = len(os.listdir(self.scenarios_dir))
+        self.scenario_path = self.scenarios_dir / f"{event.name}{test_counter}"
+        if not os.path.exists(self.scenarios_dir / f"{event.name}{test_counter}"):
+            os.makedirs(self.scenarios_dir / f"{event.name}{test_counter}")
+
+    def set_disrupted_components_for_event(self, mesh_level):
+
+        self.event.set_affected_components(
+            self.network.integrated_graph, plot_components=False
+        )
 
         # print(event.affected_links)
         self.disrupt_count = 0
 
-        for infra in event.affected_links.keys():
-            self.disrupt_count = self.disrupt_count + len(event.affected_links[infra])
-        for infra in event.affected_nodes.keys():
-            self.disrupt_count = self.disrupt_count + len(event.affected_nodes[infra])
+        for infra in self.event.affected_links.keys():
+            self.disrupt_count = self.disrupt_count + len(
+                self.event.affected_links[infra]
+            )
+        for infra in self.event.affected_nodes.keys():
+            self.disrupt_count = self.disrupt_count + len(
+                self.event.affected_nodes[infra]
+            )
         # print(self.disrupt_count)
 
         if self.disrupt_count > 0:
-            self.scenario_path = event.generate_disruption_file(
-                location=self.scenarios_dir
+            self.case_path = self.event.generate_disruption_file(
+                location=self.scenario_path, folder_extra=mesh_level
             )
-            print(f"Hazard event generated in {self.scenario_path}.")
+            print(f"Hazard event generated in {self.case_path}.")
 
+            # print(f"Network distupt time: {self.network.disruption_time}")
             self.network.set_disrupted_components(
-                scenario_file=self.scenario_path / "disruption_file.csv"
+                scenario_file=self.case_path / "disruption_file.csv"
             )
+            # print(f"Network distupt time: {self.network.disruption_time}")
             self.network.pipe_leak_node_generator()
         else:
             print(
@@ -141,8 +168,8 @@ class FullSimulation:
     def generate_repair_order_dict(self):
         if self.disrupt_count > 0:
             for strategy in ["capacity", "centrality", "zone"]:
-                if not os.path.exists(f"{self.scenario_path}/{strategy}"):
-                    os.makedirs(f"{self.scenario_path}/{strategy}")
+                if not os.path.exists(f"{self.case_path}/{strategy}"):
+                    os.makedirs(f"{self.case_path}/{strategy}")
 
             self.repair_order_dict = dict()
             print("Deriving the repair order based on component handling capacity...")
@@ -178,7 +205,7 @@ class FullSimulation:
                 self.repair_order_dict, orient="index"
             ).transpose()
             repair_order_pd.to_csv(
-                f"{self.scenario_path}/repair_strategies.csv", index=False
+                f"{self.case_path}/repair_strategies.csv", index=False
             )
 
             repair_orders = list(self.repair_order_dict.values())
@@ -189,6 +216,22 @@ class FullSimulation:
 
     def perform_micropolis_simulation(self):
         if self.disrupt_count > 0:
+            power_count = len(self.network.disrupted_infra_dict["power"])
+            water_count = len(self.network.disrupted_infra_dict["water"])
+            transpo_count = len(self.network.disrupted_infra_dict["transpo"])
+
+            crew_size = [
+                randrange(1, min(power_count + 2, 8)),
+                randrange(1, min(water_count + 2, 8)),
+                randrange(1, min(transpo_count + 2, 8)),
+            ]
+
+            self.network.deploy_crews(
+                init_power_crew_locs=["T_J8"] * crew_size[0],
+                init_water_crew_locs=["T_J8"] * crew_size[1],
+                init_transpo_crew_locs=["T_J8"] * crew_size[2],
+            )
+
             micropolis_recovery = network_recovery.NetworkRecovery(
                 self.network, sim_step=60
             )
@@ -204,7 +247,7 @@ class FullSimulation:
                 )
                 print(f"Performing simulation for the repair order {repair_order}...")
                 self.micropolis_sim.network_recovery.schedule_recovery(repair_order)
-                self.micropolis_sim.expand_event_table(5)
+                self.micropolis_sim.expand_event_table(1)
 
                 resilience_metrics = (
                     self.micropolis_sim.simulate_interdependent_effects(
@@ -212,17 +255,9 @@ class FullSimulation:
                     )
                 )
 
-                # resilience_metrics.set_weighted_auc_metrics()
-
-                # time_tracker, power_consump_tracker, water_consump_tracker = (
-                #     resilience_metrics.time_tracker,
-                #     resilience_metrics.power_consump_tracker,
-                #     resilience_metrics.water_consump_tracker,
-                # )
-
                 for strategy in self.repair_order_dict.keys():
                     if repair_order == self.repair_order_dict[strategy]:
-                        result_dir = self.scenario_path / f"{strategy}"
+                        result_dir = self.case_path / f"{strategy}"
                         self.micropolis_sim.write_results(
                             result_dir,
                             resilience_metrics,
@@ -232,6 +267,45 @@ class FullSimulation:
                         self.micropolis_sim.network_recovery.event_table_wide.to_csv(
                             result_dir / "event_table_wide.csv", index=False
                         )
+
+                        # crew size
+                        power_size = len(
+                            self.micropolis_sim.network_recovery.network.power_crews
+                        )
+                        water_size = len(
+                            self.micropolis_sim.network_recovery.network.water_crews
+                        )
+                        transpo_size = len(
+                            self.micropolis_sim.network_recovery.network.transpo_crews
+                        )
+
+                        pd.DataFrame(
+                            data=[
+                                ["power", power_size],
+                                ["water", water_size],
+                                ["transpo", transpo_size],
+                            ],
+                            columns=["infra", "crew_size"],
+                        ).to_csv(result_dir / "crew_size.csv", index=False)
+
+                        # crew travel time
+                        pd.DataFrame(
+                            data=[
+                                [
+                                    "power",
+                                    self.micropolis_sim.network_recovery.power_crew_total_tt,
+                                ],
+                                [
+                                    "water",
+                                    self.micropolis_sim.network_recovery.water_crew_total_tt,
+                                ],
+                                [
+                                    "transpo",
+                                    self.micropolis_sim.network_recovery.transpo_crew_total_tt,
+                                ],
+                            ],
+                            columns=["infra", "crew_tt"],
+                        ).to_csv(result_dir / "crew_tt.csv", index=False)
 
 
 # if __name__ == "__main__":

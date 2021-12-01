@@ -404,7 +404,9 @@ class RadialDisruption:
 
         return fail_status
 
-    def generate_disruption_file(self, location=None, minimum_data=0):
+    def generate_disruption_file(
+        self, location=None, folder_extra=None, minimum_data=0
+    ):
         """Generates the disruption file consisting of the list of failed components, time of occurrence, and failure percentage (damage extent).
 
         :param location: The location of the file to be saved.
@@ -461,26 +463,30 @@ class RadialDisruption:
                     indices.append(index)
 
             self.disrupt_file = self.disrupt_file.loc[indices]
+
             if self.disrupt_file.shape[0] > 30:
                 self.disrupt_file = self.disrupt_file.iloc[:30, :]
             # check if the count of components is greater than minimum data to be included in each data point
             if len(self.disrupt_file) > minimum_data:
                 flag = 1
-                test_counter = len(os.listdir(location))
-                print(f"{location}/{self.name}{test_counter}")
-                if not os.path.exists(f"{location}/{self.name}{test_counter}"):
-                    os.makedirs(f"{location}/{self.name}{test_counter}")
-                    self.disrupt_file.to_csv(
-                        Path(location)
-                        / f"{self.name}{test_counter}/disruption_file.csv",
-                        index=False,
-                        sep=",",
-                    )
-                    print(
-                        f"Successfully saved the disruption file to {location}/test{test_counter}_{self.name}/"
-                    )
-                    scenario_path = Path(location) / f"{self.name}{test_counter}"
-                    return scenario_path
+                # test_counter = len(os.listdir(location))
+
+                if folder_extra is not None:
+                    disruption_folder = f"{location}/{folder_extra}"
+                else:
+                    disruption_folder = f"{location}"
+
+                print(disruption_folder)
+                if not os.path.exists(disruption_folder):
+                    os.makedirs(disruption_folder)
+                self.disrupt_file.to_csv(
+                    f"{disruption_folder}/disruption_file.csv",
+                    index=False,
+                    sep=",",
+                )
+                print(f"Successfully saved the disruption file to {disruption_folder}/")
+                scenario_path = Path(f"{disruption_folder}/")
+                return scenario_path
         else:
             print("Target location for saving the file not provided.")
             return flag
@@ -926,7 +932,9 @@ class TrackDisruption:
 
         return fail_status
 
-    def generate_disruption_file(self, location=None, minimum_data=0):
+    def generate_disruption_file(
+        self, location=None, folder_extra=None, minimum_data=0
+    ):
         """Generates the disruption file consisting of the list of failed components, time of occurrence, and failure percentage (damage extent).
 
         :param location: The location of the file to be saved.
@@ -988,21 +996,24 @@ class TrackDisruption:
             # check if the count of components is greater than minimum data to be included in each data point
             if len(self.disrupt_file) > minimum_data:
                 flag = 1
-                test_counter = len(os.listdir(location))
-                if not os.path.exists(f"{location}/{self.name}{test_counter}"):
-                    print(f"{location}/{self.name}{test_counter}")
-                    os.makedirs(f"{location}/{self.name}{test_counter}")
-                    self.disrupt_file.to_csv(
-                        Path(location)
-                        / f"{self.name}{test_counter}/disruption_file.csv",
-                        index=False,
-                        sep=",",
-                    )
-                    print(
-                        f"Successfully saved the disruption file to {location}/test{test_counter}_{self.name}/"
-                    )
-                    scenario_path = Path(location) / f"{self.name}{test_counter}"
-                    return scenario_path
+                # test_counter = len(os.listdir(location))
+
+                if folder_extra is not None:
+                    disruption_folder = f"{location}/{folder_extra}"
+                else:
+                    disruption_folder = f"{location}"
+
+                print(disruption_folder)
+                if not os.path.exists(disruption_folder):
+                    os.makedirs(disruption_folder)
+                self.disrupt_file.to_csv(
+                    f"{disruption_folder}/disruption_file.csv",
+                    index=False,
+                    sep=",",
+                )
+                print(f"Successfully saved the disruption file to {disruption_folder}/")
+                scenario_path = Path(f"{disruption_folder}/")
+                return scenario_path
         else:
             print("Target location for saving the file not provided.")
             return flag
@@ -1272,7 +1283,9 @@ class RandomDisruption:
             p.legend.location = "top_left"
             show(p)
 
-    def generate_disruption_file(self, location=None, minimum_data=0):
+    def generate_disruption_file(
+        self, location=None, folder_extra=None, minimum_data=0
+    ):
         """Generates the disruption file consisting of the list of failed components, time of occurrence, and failure percentage (damage extent).
 
         :param location: The location of the file to be saved.
@@ -1334,21 +1347,24 @@ class RandomDisruption:
             # check if the count of components is greater than minimum data to be included in each data point
             if len(self.disrupt_file) > minimum_data:
                 flag = 1
-                test_counter = len(os.listdir(location))
-                if not os.path.exists(f"{location}/{self.name}{test_counter}"):
-                    print(f"{location}/{self.name}{test_counter}")
-                    os.makedirs(f"{location}/{self.name}{test_counter}")
-                    self.disrupt_file.to_csv(
-                        Path(location)
-                        / f"{self.name}{test_counter}/disruption_file.csv",
-                        index=False,
-                        sep=",",
-                    )
-                    print(
-                        f"Successfully saved the disruption file to {location}/test{test_counter}_{self.name}/"
-                    )
-                    scenario_path = Path(location) / f"{self.name}{test_counter}"
-                    return scenario_path
+                # test_counter = len(os.listdir(location))
+
+                if folder_extra is not None:
+                    disruption_folder = f"{location}/{folder_extra}"
+                else:
+                    disruption_folder = f"{location}"
+
+                print(disruption_folder)
+                if not os.path.exists(disruption_folder):
+                    os.makedirs(disruption_folder)
+                self.disrupt_file.to_csv(
+                    f"{disruption_folder}/disruption_file.csv",
+                    index=False,
+                    sep=",",
+                )
+                print(f"Successfully saved the disruption file to {disruption_folder}/")
+                scenario_path = Path(f"{disruption_folder}/")
+                return scenario_path
         else:
             print("Target location for saving the file not provided.")
             return flag
