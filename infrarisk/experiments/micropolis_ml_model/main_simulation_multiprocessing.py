@@ -23,7 +23,7 @@ SIM_NUMBER = 50
 
 
 def process_1():
-    for i in range(30):
+    for i in range(SIM_NUMBER):
         # print(i)
         micropolis_simulation = copy.deepcopy(micropolis_simulation_original)
         try:
@@ -51,7 +51,7 @@ def process_1():
 
 
 def process_2():
-    for i in range(30):
+    for i in range(SIM_NUMBER):
         # print(i)
         micropolis_simulation = copy.deepcopy(micropolis_simulation_original)
         try:
@@ -79,7 +79,7 @@ def process_2():
 
 
 def process_3():
-    for i in range(30):
+    for i in range(SIM_NUMBER):
         # print(i)
         micropolis_simulation = copy.deepcopy(micropolis_simulation_original)
         try:
@@ -107,7 +107,7 @@ def process_3():
 
 
 def process_4():
-    for i in range(30):
+    for i in range(SIM_NUMBER):
         # print(i)
         micropolis_simulation = copy.deepcopy(micropolis_simulation_original)
         try:
@@ -135,7 +135,7 @@ def process_4():
 
 
 def process_5():
-    for i in range(30):
+    for i in range(SIM_NUMBER):
         # print(i)
         micropolis_simulation = copy.deepcopy(micropolis_simulation_original)
         try:
