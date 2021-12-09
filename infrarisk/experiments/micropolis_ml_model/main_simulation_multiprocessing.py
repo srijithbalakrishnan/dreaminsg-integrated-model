@@ -24,24 +24,15 @@ SIM_NUMBER = 50
 
 def process_1():
     for i in range(SIM_NUMBER):
-        # print(i)
         micropolis_simulation = copy.deepcopy(micropolis_simulation_original)
         try:
             micropolis_simulation.generate_disruptions()
 
-            for mesh_level in micropolis_simulation.networks.keys():
-                print(i)
-                print(mesh_level)
-                micropolis_simulation.set_network(
-                    micropolis_simulation.networks[mesh_level]
-                )
-                micropolis_simulation.set_disrupted_components_for_event(
-                    mesh_level=mesh_level
-                )
-                repair_order_dict = micropolis_simulation.generate_repair_order_dict()
-                micropolis_simulation.perform_micropolis_simulation()
-                print(micropolis_simulation.network.disruption_time)
-                # clear_output(wait=True)
+            micropolis_simulation.set_disrupted_components_for_event()
+            repair_order_dict = micropolis_simulation.generate_repair_order_dict()
+            micropolis_simulation.perform_micropolis_simulation()
+
+            # clear_output(wait=True)
         except StopIteration:
             pass
         except TypeError:
@@ -52,24 +43,15 @@ def process_1():
 
 def process_2():
     for i in range(SIM_NUMBER):
-        # print(i)
         micropolis_simulation = copy.deepcopy(micropolis_simulation_original)
         try:
             micropolis_simulation.generate_disruptions()
 
-            for mesh_level in micropolis_simulation.networks.keys():
-                print(i)
-                print(mesh_level)
-                micropolis_simulation.set_network(
-                    micropolis_simulation.networks[mesh_level]
-                )
-                micropolis_simulation.set_disrupted_components_for_event(
-                    mesh_level=mesh_level
-                )
-                repair_order_dict = micropolis_simulation.generate_repair_order_dict()
-                micropolis_simulation.perform_micropolis_simulation()
-                print(micropolis_simulation.network.disruption_time)
-                # clear_output(wait=True)
+            micropolis_simulation.set_disrupted_components_for_event()
+            repair_order_dict = micropolis_simulation.generate_repair_order_dict()
+            micropolis_simulation.perform_micropolis_simulation()
+
+            # clear_output(wait=True)
         except StopIteration:
             pass
         except TypeError:
@@ -80,24 +62,15 @@ def process_2():
 
 def process_3():
     for i in range(SIM_NUMBER):
-        # print(i)
         micropolis_simulation = copy.deepcopy(micropolis_simulation_original)
         try:
             micropolis_simulation.generate_disruptions()
 
-            for mesh_level in micropolis_simulation.networks.keys():
-                print(i)
-                print(mesh_level)
-                micropolis_simulation.set_network(
-                    micropolis_simulation.networks[mesh_level]
-                )
-                micropolis_simulation.set_disrupted_components_for_event(
-                    mesh_level=mesh_level
-                )
-                repair_order_dict = micropolis_simulation.generate_repair_order_dict()
-                micropolis_simulation.perform_micropolis_simulation()
-                print(micropolis_simulation.network.disruption_time)
-                # clear_output(wait=True)
+            micropolis_simulation.set_disrupted_components_for_event()
+            repair_order_dict = micropolis_simulation.generate_repair_order_dict()
+            micropolis_simulation.perform_micropolis_simulation()
+
+            # clear_output(wait=True)
         except StopIteration:
             pass
         except TypeError:
@@ -108,24 +81,15 @@ def process_3():
 
 def process_4():
     for i in range(SIM_NUMBER):
-        # print(i)
         micropolis_simulation = copy.deepcopy(micropolis_simulation_original)
         try:
             micropolis_simulation.generate_disruptions()
 
-            for mesh_level in micropolis_simulation.networks.keys():
-                print(i)
-                print(mesh_level)
-                micropolis_simulation.set_network(
-                    micropolis_simulation.networks[mesh_level]
-                )
-                micropolis_simulation.set_disrupted_components_for_event(
-                    mesh_level=mesh_level
-                )
-                repair_order_dict = micropolis_simulation.generate_repair_order_dict()
-                micropolis_simulation.perform_micropolis_simulation()
-                print(micropolis_simulation.network.disruption_time)
-                # clear_output(wait=True)
+            micropolis_simulation.set_disrupted_components_for_event()
+            repair_order_dict = micropolis_simulation.generate_repair_order_dict()
+            micropolis_simulation.perform_micropolis_simulation()
+
+            # clear_output(wait=True)
         except StopIteration:
             pass
         except TypeError:
@@ -136,24 +100,15 @@ def process_4():
 
 def process_5():
     for i in range(SIM_NUMBER):
-        # print(i)
         micropolis_simulation = copy.deepcopy(micropolis_simulation_original)
         try:
             micropolis_simulation.generate_disruptions()
 
-            for mesh_level in micropolis_simulation.networks.keys():
-                print(i)
-                print(mesh_level)
-                micropolis_simulation.set_network(
-                    micropolis_simulation.networks[mesh_level]
-                )
-                micropolis_simulation.set_disrupted_components_for_event(
-                    mesh_level=mesh_level
-                )
-                repair_order_dict = micropolis_simulation.generate_repair_order_dict()
-                micropolis_simulation.perform_micropolis_simulation()
-                print(micropolis_simulation.network.disruption_time)
-                # clear_output(wait=True)
+            micropolis_simulation.set_disrupted_components_for_event()
+            repair_order_dict = micropolis_simulation.generate_repair_order_dict()
+            micropolis_simulation.perform_micropolis_simulation()
+
+            # clear_output(wait=True)
         except StopIteration:
             pass
         except TypeError:
