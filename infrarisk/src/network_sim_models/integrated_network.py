@@ -193,7 +193,25 @@ class IntegratedNetwork:
         print("Integrated graph successffully created.")
 
         title = f"{self.name} integrated network"
+
+        self.generate_betweenness_centrality()
         model_plots.plot_bokeh_from_integrated_graph(G, title=title)
+
+    def generate_betweenness_centrality(self):
+        """Generates the betweenness centrality of the integrated graph."""
+        print("Generating betweenness centrality...")
+        pn_nx = self.power_graph
+        wn_nx = self.water_graph
+        tn_nx = self.transpo_graph
+
+        self.pn_nodebc = nx.betweenness_centrality(pn_nx, normalized=True)
+        self.pn_edgebc = nx.edge_betweenness_centrality(pn_nx, normalized=True)
+
+        self.wn_nodebc = nx.betweenness_centrality(wn_nx, normalized=True)
+        self.wn_edgebc = nx.edge_betweenness_centrality(wn_nx, normalized=True)
+
+        self.tn_nodebc = nx.betweenness_centrality(tn_nx, normalized=True)
+        self.tn_edgebc = nx.edge_betweenness_centrality(tn_nx, normalized=True)
 
     def set_map_extends(self):
         """Sets the extents of the map in the format ((xmin, ymin), (xmax, ymax))."""

@@ -128,7 +128,7 @@ class NetworkRecovery:
             # update transportation link flows and costs only if there is any change to transportation network due to the event
             disrupted_infra_dict = self.network.get_disrupted_infra_dict()
             if len(disrupted_infra_dict["transpo"]) > 0:
-                self.update_traffic_model()
+                # self.update_traffic_model()
                 self.transpo_updated_model_dict[
                     self.network.disruption_time
                 ] = copy.deepcopy(self.network.tn)
@@ -370,8 +370,8 @@ class NetworkRecovery:
                                 self.water_access_no_redundancy.append(component)
 
                     elif compon_details[0] == "transpo":
-                        transpo_crew = self.network.get_idle_crew("transpo")
 
+                        transpo_crew = self.network.get_idle_crew("transpo")
                         recovery_time = (
                             interdependencies.get_transpo_repair_time(component) * 3600
                         )
@@ -396,6 +396,7 @@ class NetworkRecovery:
                                 if x <= transpo_crew.get_next_trip_start()
                             ]
                         )
+
                         tn = self.transpo_updated_model_dict[curr_update_time]
                         for nearest_node in nearest_nodes:
                             (
@@ -418,6 +419,7 @@ class NetworkRecovery:
                         accessible, possible_start = self.check_route_accessibility(
                             failed_transpo_link_en_route
                         )
+                        print(accessible, possible_start)
 
                         if not failed_transpo_link_en_route:
                             recovery_start = (
@@ -436,7 +438,7 @@ class NetworkRecovery:
                             )
 
                             # modification needed. transport model should be updated only when the repair is complete.
-                            self.update_traffic_model()
+                            # self.update_traffic_model()
                             self.transpo_updated_model_dict[
                                 int(recovery_start + recovery_time)
                             ] = copy.deepcopy(self.network.tn)
@@ -456,7 +458,21 @@ class NetworkRecovery:
                             #         f"The transportation repair crew {transpo_crew._name} is available for service at time = {transpo_crew.get_next_trip_start() / 60} minutes, much before the possible repair start of {component} at {possible_start}. Hence the simulation will check if there are other components, whose repair can be initiated at the earliest."
                             #     )
                             # else:
-                            if possible_start < transpo_crew.get_next_trip_start():
+                            no_other_transpo_repairs = (
+                                len(
+                                    [
+                                        x
+                                        for x in components_to_repair
+                                        if x.startswith("T_L")
+                                    ]
+                                )
+                                <= 1
+                            )
+
+                            if (
+                                possible_start < transpo_crew.get_next_trip_start()
+                                or no_other_transpo_repairs is True
+                            ):
                                 recovery_start = (
                                     transpo_crew.get_next_trip_start()
                                     + actual_travel_time * 60
@@ -480,7 +496,7 @@ class NetworkRecovery:
                                 )
 
                                 # modification needed. transport model should be updated only when the repair is complete.
-                                self.update_traffic_model()
+                                # self.update_traffic_model()
                                 self.transpo_updated_model_dict[
                                     int(recovery_start + recovery_time)
                                 ] = copy.deepcopy(self.network.tn)

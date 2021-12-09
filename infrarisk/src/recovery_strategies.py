@@ -20,23 +20,23 @@ class CentralityStrategy:
 
     def set_repair_order(self):
         """Identifies the repair sequence based on the betweenness centrality measure. For methodology, please refer to networkx package documentation."""
-        pn_nx = self.integrated_network.power_graph
-        wn_nx = self.integrated_network.water_graph
-        tn_nx = self.integrated_network.transpo_graph
+        # pn_nx = self.integrated_network.power_graph
+        # wn_nx = self.integrated_network.water_graph
+        # tn_nx = self.integrated_network.transpo_graph
 
-        disrupted_infra_dict = self.integrated_network.get_disrupted_infra_dict()
+        # disrupted_infra_dict = self.integrated_network.get_disrupted_infra_dict()
 
-        if len(disrupted_infra_dict["power"]) > 0:
-            pn_nodebc = nx.betweenness_centrality(pn_nx, normalized=True)
-            pn_edgebc = nx.edge_betweenness_centrality(pn_nx, normalized=True)
+        # if len(disrupted_infra_dict["power"]) > 0:
+        #     pn_nodebc = nx.betweenness_centrality(pn_nx, normalized=True)
+        #     pn_edgebc = nx.edge_betweenness_centrality(pn_nx, normalized=True)
 
-        if len(disrupted_infra_dict["water"]) > 0:
-            wn_nodebc = nx.betweenness_centrality(wn_nx, normalized=True)
-            wn_edgebc = nx.edge_betweenness_centrality(wn_nx, normalized=True)
+        # if len(disrupted_infra_dict["water"]) > 0:
+        #     wn_nodebc = nx.betweenness_centrality(wn_nx, normalized=True)
+        #     wn_edgebc = nx.edge_betweenness_centrality(wn_nx, normalized=True)
 
-        if len(disrupted_infra_dict["transpo"]) > 0:
-            tn_nodebc = nx.betweenness_centrality(tn_nx, normalized=True)
-            tn_edgebc = nx.edge_betweenness_centrality(tn_nx, normalized=True)
+        # if len(disrupted_infra_dict["transpo"]) > 0:
+        #     tn_nodebc = nx.betweenness_centrality(tn_nx, normalized=True)
+        #     tn_edgebc = nx.edge_betweenness_centrality(tn_nx, normalized=True)
 
         transpo_centrality_dict = dict()
         power_centrality_dict = dict()
@@ -47,7 +47,9 @@ class CentralityStrategy:
 
             if compon_details[0] == "water":
                 if compon_details[1] in ["R", "J", "JIN", "JVN", "JTN", "JHY", "T"]:
-                    water_centrality_dict[compon] = wn_nodebc[compon]
+                    water_centrality_dict[compon] = self.integrated_network.wn_nodebc[
+                        compon
+                    ]
                 elif compon_details[1] in ["P", "PSC", "PMA", "PHC", "PV", "WP"]:
                     compon_key = [
                         (u, v)
@@ -56,7 +58,9 @@ class CentralityStrategy:
                         )
                         if e["id"] == compon
                     ]
-                    water_centrality_dict[compon] = wn_edgebc[compon_key[0]]
+                    water_centrality_dict[compon] = self.integrated_network.wn_edgebc[
+                        compon_key[0]
+                    ]
 
             elif compon_details[0] == "power":
                 if compon_details[1] in [
@@ -72,7 +76,9 @@ class CentralityStrategy:
                     "G",
                     "SH",
                 ]:
-                    power_centrality_dict[compon] = pn_nodebc[compon]
+                    power_centrality_dict[compon] = self.integrated_network.pn_nodebc[
+                        compon
+                    ]
                 elif compon_details[1] in ["S", "L", "LS", "TF", "TH", "I", "DL"]:
                     compon_key = [
                         (u, v)
@@ -81,11 +87,15 @@ class CentralityStrategy:
                         )
                         if e["id"] == compon
                     ]
-                    power_centrality_dict[compon] = pn_edgebc[compon_key[0]]
+                    power_centrality_dict[compon] = self.integrated_network.pn_edgebc[
+                        compon_key[0]
+                    ]
 
             elif compon_details[0] == "transpo":
                 if compon_details[1] in ["J"]:
-                    transpo_centrality_dict[compon] = tn_nodebc[compon]
+                    transpo_centrality_dict[compon] = self.integrated_network.tn_nodebc[
+                        compon
+                    ]
                 elif compon_details[1] in ["L"]:
                     compon_key = [
                         (u, v)
@@ -94,7 +104,9 @@ class CentralityStrategy:
                         )
                         if e["id"] == compon
                     ]
-                    transpo_centrality_dict[compon] = tn_edgebc[compon_key[0]]
+                    transpo_centrality_dict[compon] = self.integrated_network.tn_edgebc[
+                        compon_key[0]
+                    ]
 
         water_centrality_dict = {
             k: v
@@ -516,4 +528,3 @@ class JointStrategy:
     """Optimized strategy. Capture interdependencies somehow if exist. Not an immediate priority"""
 
     pass
-

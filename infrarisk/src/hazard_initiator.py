@@ -65,7 +65,10 @@ class RadialDisruption:
         """Sets the dictionary of components that could be failed due to a radial disaster."""
         self.fail_compon_dict = {
             "power": {"L"},
-            "water": {"PMA", "WP", "T"},
+            "water": {
+                "PMA",
+                "WP",
+            },
             "transport": {"L"},
         }
 
@@ -484,7 +487,9 @@ class RadialDisruption:
                     index=False,
                     sep=",",
                 )
-                print(f"Successfully saved the disruption file to {disruption_folder}/")
+                print(
+                    f"Successfully saved the disruption file (with {self.disrupt_file.shape[0]} disruptions) to {disruption_folder}/"
+                )
                 scenario_path = Path(f"{disruption_folder}/")
                 return scenario_path
         else:
@@ -544,7 +549,7 @@ class TrackDisruption:
         """Sets the dictionary of components that could be failed due to a radial disaster."""
         self.fail_compon_dict = {
             "power": {"L"},
-            "water": {"R", "PMA", "T"},
+            "water": {"R", "PMA"},
             "transport": {"L"},
         }
 
@@ -1003,7 +1008,6 @@ class TrackDisruption:
                 else:
                     disruption_folder = f"{location}"
 
-                print(disruption_folder)
                 if not os.path.exists(disruption_folder):
                     os.makedirs(disruption_folder)
                 self.disrupt_file.to_csv(
@@ -1011,7 +1015,9 @@ class TrackDisruption:
                     index=False,
                     sep=",",
                 )
-                print(f"Successfully saved the disruption file to {disruption_folder}/")
+                print(
+                    f"Successfully saved the disruption file (with {self.disrupt_file.shape[0]} disruptions) to {disruption_folder}/"
+                )
                 scenario_path = Path(f"{disruption_folder}/")
                 return scenario_path
         else:
@@ -1035,7 +1041,7 @@ class RandomDisruption:
         """Sets the dictionary of components that could be failed due to a radial disaster."""
         self.fail_compon_dict = {
             "power": {"L"},
-            "water": {"R", "PMA", "T"},
+            "water": {"R", "PMA"},
             "transport": {"L"},
         }
 
@@ -1362,7 +1368,9 @@ class RandomDisruption:
                     index=False,
                     sep=",",
                 )
-                print(f"Successfully saved the disruption file to {disruption_folder}/")
+                print(
+                    f"Successfully saved the disruption file (with {self.disrupt_file.shape[0]} disruptions) to {disruption_folder}/"
+                )
                 scenario_path = Path(f"{disruption_folder}/")
                 return scenario_path
         else:
