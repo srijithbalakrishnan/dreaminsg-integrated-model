@@ -128,7 +128,7 @@ class NetworkRecovery:
             # update transportation link flows and costs only if there is any change to transportation network due to the event
             disrupted_infra_dict = self.network.get_disrupted_infra_dict()
             if len(disrupted_infra_dict["transpo"]) > 0:
-                # self.update_traffic_model()
+                self.update_traffic_model()
                 self.transpo_updated_model_dict[
                     self.network.disruption_time
                 ] = copy.deepcopy(self.network.tn)
@@ -438,7 +438,7 @@ class NetworkRecovery:
                             )
 
                             # modification needed. transport model should be updated only when the repair is complete.
-                            # self.update_traffic_model()
+                            self.update_traffic_model()
                             self.transpo_updated_model_dict[
                                 int(recovery_start + recovery_time)
                             ] = copy.deepcopy(self.network.tn)
@@ -496,7 +496,7 @@ class NetworkRecovery:
                                 )
 
                                 # modification needed. transport model should be updated only when the repair is complete.
-                                # self.update_traffic_model()
+                                self.update_traffic_model()
                                 self.transpo_updated_model_dict[
                                     int(recovery_start + recovery_time)
                                 ] = copy.deepcopy(self.network.tn)
