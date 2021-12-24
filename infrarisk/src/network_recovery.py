@@ -140,6 +140,8 @@ class NetworkRecovery:
             transpo_links_to_repair = [
                 x for x in components_to_repair if x.startswith("T_L")
             ]
+            skipped_transpo_links = []
+
             while len(transpo_links_to_repair) > 0:
                 recovery_start = None
                 for _, component in enumerate(transpo_links_to_repair):
@@ -217,6 +219,7 @@ class NetworkRecovery:
                             )
                             components_to_repair.remove(component)
                             transpo_links_to_repair.remove(component)
+                            skipped_transpo_links = []
                             self.transpo_crew_total_tt += actual_travel_time
                             break
                         elif accessible is True:
@@ -224,18 +227,13 @@ class NetworkRecovery:
                             print(
                                 transpo_crew.get_next_trip_start(),
                                 possible_start,
-                                possible_start >= transpo_crew.get_next_trip_start(),
+                                possible_start > transpo_crew.get_next_trip_start(),
                             )
-                            if possible_start > transpo_crew.get_next_trip_start():
-                                # recovery_start = (
-                                #     possible_start + actual_travel_time * 60
-                                # )
-                                print(
-                                    f"The transportation repair crew {transpo_crew._name} is available for service at time = {transpo_crew.get_next_trip_start() / 60} minutes, much before the possible repair start of {component} at {possible_start/60} minutes. Hence the simulation will check if there are other components, whose repair can be initiated at the earliest."
-                                )
-                            elif (
+
+                            if (
                                 possible_start <= transpo_crew.get_next_trip_start()
                                 or no_other_transpo_repairs is True
+                                or component in skipped_transpo_links
                             ):
                                 recovery_start = (
                                     transpo_crew.get_next_trip_start()
@@ -270,8 +268,17 @@ class NetworkRecovery:
                                 )
                                 components_to_repair.remove(component)
                                 transpo_links_to_repair.remove(component)
+                                skipped_transpo_links = []
                                 self.transpo_crew_total_tt += actual_travel_time
                                 break
+                            elif possible_start > transpo_crew.get_next_trip_start():
+                                # recovery_start = (
+                                #     possible_start + actual_travel_time * 60
+                                # )
+                                print(
+                                    f"The transportation repair crew {transpo_crew._name} is available for service at time = {transpo_crew.get_next_trip_start() / 60} minutes, much before the possible repair start of {component} at {possible_start/60} minutes. Hence the simulation will check if there are other components, whose repair can be initiated at the earliest."
+                                )
+                                skipped_transpo_links.append(component)
                         else:
                             print(
                                 f"The transportation crew {transpo_crew._name} cannot reach the destination {nearest_node} from {transpo_crew.get_crew_loc()} since there are failed transportation component(s) {failed_transpo_link_en_route} in its possible route. The simulation will defer the repair of {component} and try to repair other failed components."
