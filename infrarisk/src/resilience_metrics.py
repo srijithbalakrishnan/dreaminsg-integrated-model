@@ -5,6 +5,7 @@ from statistics import mean
 import pandas as pd
 import wntr
 import copy
+import numpy as np
 
 
 class WeightedResilienceMetric:
@@ -156,39 +157,15 @@ class WeightedResilienceMetric:
         :param network_recovery: The network recovery object
         :type network_recovery: NetworkRecovery object
         """
-        junc_list = network_recovery.network.wn.junction_name_list
+        junc_list = network_recovery.base_network.wn.junction_name_list
+        base_water_demands = network_recovery.network.base_water_node_supply
 
         water_demands = self.water_junc_demand_df
-        water_pressures = self.water_node_pressure_df
-
         water_time_list = water_demands.time / 60
         self.water_time_list = water_time_list.tolist()
         rel_time_list = water_demands["time"] % (24 * 3600)
-        index_list = [int(x / 60) for x in rel_time_list]
+        index_list = [int(x / 60) for x in rel_time_list if np.isnan(x) == False]
         water_demands = water_demands[junc_list]
-
-        base_water_demands = network_recovery.network.base_water_node_supply
-
-        water_pressures = water_pressures[junc_list]
-        # water_press_corrections = copy.deepcopy(water_pressures)
-
-        # if network_recovery.network.water_sim_type == "DDA":
-        #     for _, column in enumerate(water_pressures.columns):
-        #         water_press_corrections[column] = water_pressures[column].apply(
-        #             lambda x: 0
-        #             if x <= 0
-        #             else (
-        #                 (
-        #                     x
-        #                     / network_recovery.network.wn.options.hydraulic.threshold_pressure
-        #                 )
-        #                 ** 0.5
-        #                 if x
-        #                 <= network_recovery.network.wn.options.hydraulic.threshold_pressure
-        #                 else x
-        #             )
-        #         )
-        #     water_demands = water_demands * water_press_corrections
 
         base_water_demands_new = base_water_demands.iloc[index_list].reset_index(
             drop=True
@@ -196,13 +173,34 @@ class WeightedResilienceMetric:
         base_water_demands_new = base_water_demands_new[junc_list]
 
         water_demands_ratio = water_demands / base_water_demands_new
-        water_demands_ratio = water_demands_ratio.clip(upper=1)
+        water_demands_ratio = water_demands_ratio.clip(upper=1, lower=0)
 
         self.water_ecs_list = water_demands_ratio.mean(axis=1, skipna=True).tolist()
-        water_pcs_list = pd.concat([water_demands, base_water_demands_new]).min(
+
+        water_pcs_list = pd.concat([water_demands, base_water_demands_new]).groupby(
             level=0
-        ).sum(axis=1, skipna=True) / base_water_demands_new.sum(axis=1, skipna=True)
+        ).min().sum(axis=1, skipna=True) / base_water_demands_new.sum(
+            axis=1, skipna=True
+        )
         self.water_pcs_list = water_pcs_list.tolist()
+
+        self.water_auc_ecs = round(
+            metrics.auc(water_time_list / 60, [1 - x for x in self.water_ecs_list]), 3
+        )
+        self.water_auc_pcs = round(
+            metrics.auc(water_time_list / 60, [1 - x for x in self.water_pcs_list]), 3
+        )
+
+        print(
+            "The Resilience Metric value based on ECS is",
+            self.water_auc_ecs,
+            "equivalent outage hours (EOH)",
+        )
+        print(
+            "The Resilience Metric value based on PCS is",
+            self.water_auc_pcs,
+            "equivalent outage hours (EOH)",
+        )
 
     def calculate_power_resmetric(self, network_recovery):
         """Calculates the power network performance timelines (pcs and ecs).
@@ -214,7 +212,7 @@ class WeightedResilienceMetric:
         power_time_list = power_demands.time / 60
         self.power_time_list = power_time_list.tolist()
 
-        base_power_demands = network_recovery.network.base_power_demands
+        base_power_demands = network_recovery.base_network.base_power_supply
 
         base_load_demands = pd.DataFrame(
             base_power_demands.load.p_mw.tolist()
@@ -229,13 +227,33 @@ class WeightedResilienceMetric:
         ).reset_index(drop=True)
 
         power_demand_ratio = power_demands.iloc[:, 1:] / base_load_demands
-        power_demand_ratio = power_demand_ratio.clip(upper=1)
+        power_demand_ratio = power_demand_ratio.clip(upper=1, lower=0)
 
         self.power_ecs_list = power_demand_ratio.mean(axis=1, skipna=True).tolist()
-        power_pcs_list = pd.concat([power_demands.iloc[:, 1:], base_load_demands]).min(
-            level=0
-        ).sum(axis=1, skipna=True) / base_load_demands.sum(axis=1, skipna=True)
+        power_pcs_list = pd.concat(
+            [power_demands.iloc[:, 1:], base_load_demands]
+        ).groupby(level=0).min().sum(axis=1, skipna=True) / base_load_demands.sum(
+            axis=1, skipna=True
+        )
         self.power_pcs_list = power_pcs_list.tolist()
+
+        self.power_auc_ecs = round(
+            metrics.auc(power_time_list / 60, [1 - x for x in self.power_ecs_list]), 3
+        )
+        self.power_auc_pcs = round(
+            metrics.auc(power_time_list / 60, [1 - x for x in self.power_pcs_list]), 3
+        )
+
+        print(
+            "The Resilience Metric value based on ECS is",
+            self.power_auc_ecs,
+            "equivalent outage hours (EOH)",
+        )
+        print(
+            "The Resilience Metric value based on PCS is",
+            self.power_auc_pcs,
+            "equivalent outage hours (EOH)",
+        )
 
     def calculate_transpo_resmetric(self, tn):
         pass
