@@ -273,8 +273,8 @@ class NetworkSimulation:
 
             # track results
             resilience_metrics.calculate_node_details(network_recovery, wn_results)
-            resilience_metrics.calculate_water_lost(network_recovery, wn_results)
-            resilience_metrics.calculate_pump_flow(network_recovery, wn_results)
+            # resilience_metrics.calculate_water_lost(network_recovery, wn_results)
+            # resilience_metrics.calculate_pump_flow(network_recovery, wn_results)
             resilience_metrics.calculate_power_load(network_recovery, time_stamp)
 
             # # Fix the time until which the wntr model should run in this iteration
