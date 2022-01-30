@@ -49,6 +49,8 @@ class NetworkRecovery:
         self.total_power_recovery_time = 0
         self.total_transpo_recovery_time = 0
 
+        self.network.pipe_leak_node_generator()
+
     def set_initial_crew_start(self):
         """Sets the initial start times at which the respective infrastructure crews start from their locations post-disaster.
 
@@ -760,11 +762,12 @@ class NetworkRecovery:
         :param next_sim_time: Next time stamp in the event table in seconds.
         :type next_sim_time: integer
         """
-        # print(
-        #     f"Updating status of directly affected components between {time_stamp} and {next_sim_time}..."
-        # )
+        print(
+            f"Updating status of directly affected components between {time_stamp} and {next_sim_time}..."
+        )
         curr_event_table = self.event_table[self.event_table.time_stamp == time_stamp]
         # print(self.network.wn.control_name_list)  ###
+        # print(curr_event_table)
 
         for _, row in curr_event_table.iterrows():
             component = row["components"]
