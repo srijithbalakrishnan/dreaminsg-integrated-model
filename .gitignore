@@ -24,12 +24,6 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-**/tests/
-**/micropolis/scenarios/
-**/shelby/
-**/wds_db
-**/gui
-**/experiments
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -109,5 +103,3 @@ ENV/
 
 # IDE settings
 .vscode/
-YRRLNTK.html
-odNdxrl.html
