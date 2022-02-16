@@ -483,7 +483,7 @@ class RadialDisruption:
                 if not os.path.exists(disruption_folder):
                     os.makedirs(disruption_folder)
                 self.disrupt_file.to_csv(
-                    f"{disruption_folder}/disruption_file.csv",
+                    f"{disruption_folder}/disruption_file.dat",
                     index=False,
                     sep=",",
                 )
@@ -1364,7 +1364,7 @@ class RandomDisruption:
                 if not os.path.exists(disruption_folder):
                     os.makedirs(disruption_folder)
                 self.disrupt_file.to_csv(
-                    f"{disruption_folder}/disruption_file.csv",
+                    f"{disruption_folder}/disruption_file.dat",
                     index=False,
                     sep=",",
                 )
