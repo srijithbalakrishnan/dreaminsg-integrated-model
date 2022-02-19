@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 import infrarisk.src.network_recovery as network_recovery
 import infrarisk.src.simulation as simulation
-import infrarisk.src.network_sim_models.integrated_network as int_net
+import infrarisk.src.physical.integrated_network as int_net
 import infrarisk.src.recovery_strategies as strategies
 import infrarisk.src.hazard_initiator as hazard
 
@@ -28,9 +28,9 @@ class FullSimulation:
 
         micropolis_network = int_net.IntegratedNetwork(name="Micropolis")
 
-        water_folder = self.network_dir / "water"
-        power_folder = self.network_dir / "power"
-        transp_folder = self.network_dir / "transportation"
+        water_folder = self.network_dir / "water/med"
+        power_folder = self.network_dir / "power/low"
+        transp_folder = self.network_dir / "transportation/high"
 
         micropolis_network.load_networks(
             water_folder,
@@ -44,12 +44,6 @@ class FullSimulation:
 
         micropolis_network.generate_dependency_table(
             dependency_file=self.dependency_file
-        )
-
-        micropolis_network.set_init_crew_locs(
-            init_power_loc="T_J8",
-            init_water_loc="T_J8",
-            init_transpo_loc="T_J8",
         )
 
         self.network = micropolis_network
@@ -125,15 +119,17 @@ class FullSimulation:
         # print(self.disrupt_count)
 
         if self.disrupt_count > 0:
-            self.scenario_path = event.generate_disruption_file(
-                location=self.scenarios_dir
-            )
+            test_counter = len(os.listdir(self.scenarios_dir))
+            self.scenario_path = self.scenarios_dir / f"flood{test_counter}"
+            if not os.path.exists(self.scenario_path):
+                os.makedirs(self.scenario_path)
+            scenario_path = event.generate_disruption_file(location=self.scenario_path)
             print(f"Hazard event generated in {self.scenario_path}.")
 
             self.network.set_disrupted_components(
                 scenario_file=self.scenario_path / "disruption_file.csv"
             )
-            self.network.pipe_leak_node_generator()
+            # self.network.pipe_leak_node_generator()
         else:
             print(
                 "Ignoring the generated hazard scenario due to insufficient disruptions."
@@ -189,6 +185,13 @@ class FullSimulation:
             return self.repair_order_dict
 
     def perform_micropolis_simulation(self):
+
+        self.network.deploy_crews(
+            init_power_crew_locs=["T_J8"],
+            init_water_crew_locs=["T_J8"],
+            init_transpo_crew_locs=["T_J8"],
+        )
+
         if self.disrupt_count > 0:
             micropolis_recovery = network_recovery.NetworkRecovery(
                 self.network, sim_step=60
