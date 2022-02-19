@@ -6,10 +6,10 @@ import math
 import os
 import numpy as np
 
-import infrarisk.src.network_sim_models.interdependencies as interdependencies
-import infrarisk.src.network_sim_models.water.water_network_model as water
-import infrarisk.src.network_sim_models.power.power_system_model as power
-import infrarisk.src.network_sim_models.transportation.network as transpo
+import infrarisk.src.physical.interdependencies as interdependencies
+import infrarisk.src.physical.water.water_network_model as water
+import infrarisk.src.physical.power.power_system_model as power
+import infrarisk.src.physical.transportation.network as transpo
 import infrarisk.src.plots as model_plots
 
 import infrarisk.src.repair_crews as repair_crews

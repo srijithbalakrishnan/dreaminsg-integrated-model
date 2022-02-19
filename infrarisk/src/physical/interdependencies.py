@@ -2,9 +2,9 @@
 
 import pandas as pd
 from scipy import spatial
-import infrarisk.src.network_sim_models.water.water_network_model as water
-import infrarisk.src.network_sim_models.power.power_system_model as power
-import infrarisk.src.network_sim_models.transportation.transpo_compons as transpo
+import infrarisk.src.physical.water.water_network_model as water
+import infrarisk.src.physical.power.power_system_model as power
+import infrarisk.src.physical.transportation.transpo_compons as transpo
 
 water_dict = water.get_water_dict()
 power_dict = power.get_power_dict()

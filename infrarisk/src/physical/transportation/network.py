@@ -1,5 +1,5 @@
-import infrarisk.src.network_sim_models.transportation.utils as utils
-import infrarisk.src.network_sim_models.transportation.transpo_compons as transpo_compons
+import infrarisk.src.physical.transportation.utils as utils
+import infrarisk.src.physical.transportation.transpo_compons as transpo_compons
 
 import copy
 import datetime

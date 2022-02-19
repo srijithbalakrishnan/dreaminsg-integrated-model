@@ -1,7 +1,7 @@
 """Functions to implement power systems simulations."""
 
 import pandapower as pp
-import infrarisk.src.network_sim_models.interdependencies as interdependencies
+import infrarisk.src.physical.interdependencies as interdependencies
 import copy
 
 

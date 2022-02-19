@@ -5,7 +5,7 @@ import copy
 import pandas as pd
 import wntr
 from wntr.network.controls import ControlPriority
-from infrarisk.src.network_sim_models import interdependencies as interdependencies
+from infrarisk.src.physical import interdependencies as interdependencies
 
 
 class NetworkRecovery:

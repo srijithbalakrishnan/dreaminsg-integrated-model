@@ -11,7 +11,7 @@ from bokeh.io import show
 from bokeh.models import ColumnDataSource, HoverTool
 from bokeh.tile_providers import get_provider, Vendors
 
-import infrarisk.src.network_sim_models.interdependencies as interdependencies
+import infrarisk.src.physical.interdependencies as interdependencies
 
 from shapely.geometry import LineString, Point
 from shapely.ops import nearest_points
@@ -483,7 +483,7 @@ class RadialDisruption:
                 if not os.path.exists(disruption_folder):
                     os.makedirs(disruption_folder)
                 self.disrupt_file.to_csv(
-                    f"{disruption_folder}/disruption_file.csv",
+                    f"{disruption_folder}/disruption_file.dat",
                     index=False,
                     sep=",",
                 )
@@ -1364,7 +1364,7 @@ class RandomDisruption:
                 if not os.path.exists(disruption_folder):
                     os.makedirs(disruption_folder)
                 self.disrupt_file.to_csv(
-                    f"{disruption_folder}/disruption_file.csv",
+                    f"{disruption_folder}/disruption_file.dat",
                     index=False,
                     sep=",",
                 )

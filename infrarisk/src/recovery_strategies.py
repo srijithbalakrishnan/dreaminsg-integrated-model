@@ -1,8 +1,8 @@
 import networkx as nx
-import infrarisk.src.network_sim_models.interdependencies as interdependencies
-import infrarisk.src.network_sim_models.water.water_network_model as water
-import infrarisk.src.network_sim_models.power.power_system_model as power
-import infrarisk.src.network_sim_models.transportation.transpo_compons as transpo
+import infrarisk.src.physical.interdependencies as interdependencies
+import infrarisk.src.physical.water.water_network_model as water
+import infrarisk.src.physical.power.power_system_model as power
+import infrarisk.src.physical.transportation.transpo_compons as transpo
 import geopandas as gpd
 from shapely.geometry import Point, LineString
 
