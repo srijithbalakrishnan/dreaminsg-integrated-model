@@ -873,7 +873,7 @@ class NetworkRecovery:
                                 switch_index = self.network.pn.switch.query(
                                     'name == "{}"'.format(switch)
                                 ).index.item()
-                            self.network.pn.switch.at[switch_index, "closed"] = True
+                                self.network.pn.switch.at[switch_index, "closed"] = True
 
                     if component_state == "Service Restored":
                         if component in self.repairs_to_simulate:
