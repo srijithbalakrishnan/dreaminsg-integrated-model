@@ -1,5 +1,7 @@
 import os
 from pathlib import Path
+
+from numpy import maximum
 import infrarisk.src.network_recovery as network_recovery
 import infrarisk.src.simulation as simulation
 import infrarisk.src.physical.integrated_network as int_net
@@ -52,7 +54,7 @@ class FullSimulation:
 
         disruption_list = ["flood"]
 
-        buffer_list = [150]
+        buffer_list = [100]
         intensity_list = (
             ["high"] * 2 + ["moderate"] * 5 + ["low"] * 3
         )  # based on probability distribution
@@ -123,7 +125,9 @@ class FullSimulation:
             self.scenario_path = self.scenarios_dir / f"flood{test_counter}"
             if not os.path.exists(self.scenario_path):
                 os.makedirs(self.scenario_path)
-            scenario_path = event.generate_disruption_file(location=self.scenario_path)
+            scenario_path = event.generate_disruption_file(
+                location=self.scenario_path, maximum_data=35
+            )
             print(f"Hazard event generated in {self.scenario_path}.")
 
             self.network.set_disrupted_components(
@@ -194,7 +198,12 @@ class FullSimulation:
 
         if self.disrupt_count > 0:
             micropolis_recovery = network_recovery.NetworkRecovery(
-                self.network, sim_step=60
+                self.network,
+                sim_step=60,
+                pipe_close_policy="sensor_based_cluster_isolation",
+                pipe_closure_delay=10,
+                line_close_policy="sensor_based_cluster_isolation",
+                line_closure_delay=10,
             )
 
             sim_step = self.network.wn.options.time.hydraulic_timestep
