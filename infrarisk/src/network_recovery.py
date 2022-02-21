@@ -1040,9 +1040,9 @@ class NetworkRecovery:
 
     def update_traffic_model(self):
         """Updates the static traffic assignment model based on current network conditions."""
-        # self.network.tn.userEquilibrium(
-        #     "FW", 400, 1e-4, self.network.tn.averageExcessCost
-        # )
+        self.network.tn.userEquilibrium(
+            "FW", 400, 1e-4, self.network.tn.averageExcessCost
+        )
         pass
 
     def fail_transpo_link(self, link_compon):
