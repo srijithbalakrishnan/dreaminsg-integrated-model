@@ -112,6 +112,17 @@ class IntegratedNetwork:
                 power_folder / "power.json",
             )
 
+        if os.path.exists(power_folder / "line_to_switch_map.csv"):
+            line_switch_df = pd.read_csv(
+                power_folder / "line_to_switch_map.csv", sep=","
+            )
+
+            self.line_switch_dict = dict()
+            for _, row in line_switch_df.iterrows():
+                line = row["line"]
+                switch_list = [x for x in row[1:] if x is not np.nan]
+                self.line_switch_dict[line] = switch_list
+
     def load_water_network(self, water_folder, water_sim_type):
         """Loads the water network.
 

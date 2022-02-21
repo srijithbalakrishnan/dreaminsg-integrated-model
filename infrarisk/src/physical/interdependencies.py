@@ -201,7 +201,11 @@ class DependencyTable:
                         network.wn.remove_control(
                             f"{row.water_id}_power_on_{next_time_stamp}"
                         )
+
                     pump = network.wn.get_link(row.water_id)
+
+                    if f"{row.water_id}_outage" in network.wn.control_name_list:
+                        network.wn.remove_control(f"{row.water_id}_outage")
                     pump.add_outage(
                         network.wn,
                         time_stamp,

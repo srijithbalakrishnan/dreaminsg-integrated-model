@@ -12,7 +12,13 @@ class NetworkRecovery:
     """Generate a disaster and recovery object for storing simulation-related information and settings."""
 
     def __init__(
-        self, network, sim_step, pipe_close_policy="repair", pipe_closure_delay=None
+        self,
+        network,
+        sim_step,
+        pipe_close_policy="repair",
+        pipe_closure_delay=None,
+        line_close_policy="sensor_based_line_isolation",
+        line_closure_delay=None,
     ):
         """Initiates the NetworkRecovery object.
 
@@ -20,10 +26,14 @@ class NetworkRecovery:
         :type network: IntegratedNetwork object
         :param sim_step: Initial simulation time step in seconds.
         :type sim_step: integer
-        :param pipe_close_policy: The policy to close leaking pipes - whether performed by crew during repair ("repair"), pipe sensor-based ("pipe_sensor_based") or valve sensor-based ("valve_sensor_based), defaults to "repair"
+        :param pipe_close_policy: The policy to isolating leaking pipes - whether performed by crew during repair ("repair"), sensor triggered isolation of leaking pipes ("sensor_based_pipe_isolation") or sensor triggered isolation of cluster consisting of leaking pipes ("sensor_based_cluster_isolation), defaults to "repair"
         :type pipe_close_policy: str, optional
-        :param pipe_closure_delay: If pipe_close_policy is "pipe_sensor_based" or "valve_sensor_based", the delay in minutes for the sensors to detect the leak, defaults to None
+        :param pipe_closure_delay: If pipe_close_policy is "sensor_based_pipe_isolation" or "sensor_based_cluster_isolation", the delay in minutes for the sensors to detect the leak, defaults to None
         :type pipe_closure_delay: integer, optional
+        :param line_close_policy: The policy to isolating leaking lines - whether performed by crew during repair ("repair"), sensor triggered isolation of broken lines ("sensor_based_line_isolation") or sensor triggered isolation of cluster consisting of roken lines ("sensor_based_cluster_isolation"), defaults to "sensor_based_line_isolation"
+        :type line_close_policy: str, optional
+        :param line_closure_delay: If line_close_policy is "sensor_based_line_isolation" or "sensor_based_cluster_isolation", the delay in minutes for the sensors to detect the leak, defaults to None
+        :type line_closure_delay: integer, optional
         """
         self.base_network = network
         self.network = copy.deepcopy(self.base_network)
@@ -32,6 +42,9 @@ class NetworkRecovery:
 
         self._pipe_close_policy = pipe_close_policy
         self._pipe_closure_delay = pipe_closure_delay
+
+        self._line_close_policy = line_close_policy
+        self._line_closure_delay = line_closure_delay
 
         self.transpo_updated_model_dict = dict()
         self.transpo_updated_model_dict[0] = copy.deepcopy(network.tn)
@@ -48,6 +61,8 @@ class NetworkRecovery:
         self.total_water_recovery_time = 0
         self.total_power_recovery_time = 0
         self.total_transpo_recovery_time = 0
+
+        self.repairs_to_simulate = self.network.disrupted_components.tolist()
 
         self.network.pipe_leak_node_generator()
 
@@ -608,50 +623,103 @@ class NetworkRecovery:
                 if recovery_start is not None:
                     recovery_start = int(120 * round(float(recovery_start) / 120))
 
-                    if compon_details[1] in ["PMA", "P", "T"]:
-                        if self._pipe_close_policy == "pipe_sensor_based":
-                            if (
-                                recovery_start
-                                > self.network.disruption_time
-                                + 60 * self._pipe_closure_delay
+                    if compon_details[0] == "power":
+                        if compon_details[1] in ["L"]:
+                            if self._line_close_policy == "sensor_based_line_isolation":
+                                if (
+                                    recovery_start
+                                    > self.network.disruption_time
+                                    + 60 * self._pipe_closure_delay
+                                ):
+                                    self.network.disruption_time = recovery_start
+                                    self.event_table = self.event_table.append(
+                                        {
+                                            "time_stamp": self.network.disruption_time
+                                            + 60
+                                            * self._line_closure_delay,  # Leaks closed within 10 mins
+                                            "components": component,
+                                            "perf_level": 100
+                                            - self.network.disruptive_events[
+                                                self.network.disruptive_events.components
+                                                == component
+                                            ].fail_perc.item(),
+                                            "component_state": "Line Isolated",
+                                        },
+                                        ignore_index=True,
+                                    )
+                            elif (
+                                self._line_close_policy
+                                == "sensor_based_cluster_isolation"
                             ):
-                                self.network.disruption_time = recovery_start
-                                self.event_table = self.event_table.append(
-                                    {
-                                        "time_stamp": self.network.disruption_time
-                                        + 60
-                                        * self._pipe_closure_delay,  # Leaks closed within 10 mins
-                                        "components": component,
-                                        "perf_level": 100
-                                        - self.network.disruptive_events[
-                                            self.network.disruptive_events.components
-                                            == component
-                                        ].fail_perc.item(),
-                                        "component_state": "Pipe Isolated",
-                                    },
-                                    ignore_index=True,
-                                )
-                        elif self._pipe_close_policy == "valve_sensor_based":
-                            if (
-                                recovery_start
-                                > self.network.disruption_time
-                                + 60 * self._pipe_closure_delay
+                                if (
+                                    recovery_start
+                                    > self.network.disruption_time
+                                    + 60 * self._pipe_closure_delay
+                                ):
+                                    self.event_table = self.event_table.append(
+                                        {
+                                            "time_stamp": self.network.disruption_time
+                                            + 60
+                                            * self._line_closure_delay,  # Leaks closed within 10 mins
+                                            "components": component,
+                                            "perf_level": 100
+                                            - self.network.disruptive_events[
+                                                self.network.disruptive_events.components
+                                                == component
+                                            ].fail_perc.item(),
+                                            "component_state": "Switches Isolated",
+                                        },
+                                        ignore_index=True,
+                                    )
+
+                    elif compon_details[0] == "water":
+                        if compon_details[1] in ["PMA", "P", "T"]:
+                            if self._pipe_close_policy == "sensor_based_pipe_isolation":
+                                if (
+                                    recovery_start
+                                    > self.network.disruption_time
+                                    + 60 * self._pipe_closure_delay
+                                ):
+                                    self.network.disruption_time = recovery_start
+                                    self.event_table = self.event_table.append(
+                                        {
+                                            "time_stamp": self.network.disruption_time
+                                            + 60
+                                            * self._pipe_closure_delay,  # Leaks closed within 10 mins
+                                            "components": component,
+                                            "perf_level": 100
+                                            - self.network.disruptive_events[
+                                                self.network.disruptive_events.components
+                                                == component
+                                            ].fail_perc.item(),
+                                            "component_state": "Pipe Isolated",
+                                        },
+                                        ignore_index=True,
+                                    )
+                            elif (
+                                self._pipe_close_policy
+                                == "sensor_based_cluster_isolation"
                             ):
-                                self.event_table = self.event_table.append(
-                                    {
-                                        "time_stamp": self.network.disruption_time
-                                        + 60
-                                        * self._pipe_closure_delay,  # Leaks closed within 10 mins
-                                        "components": component,
-                                        "perf_level": 100
-                                        - self.network.disruptive_events[
-                                            self.network.disruptive_events.components
-                                            == component
-                                        ].fail_perc.item(),
-                                        "component_state": "Valves Isolated",
-                                    },
-                                    ignore_index=True,
-                                )
+                                if (
+                                    recovery_start
+                                    > self.network.disruption_time
+                                    + 60 * self._pipe_closure_delay
+                                ):
+                                    self.event_table = self.event_table.append(
+                                        {
+                                            "time_stamp": self.network.disruption_time
+                                            + 60
+                                            * self._pipe_closure_delay,  # Leaks closed within 10 mins
+                                            "components": component,
+                                            "perf_level": 100
+                                            - self.network.disruptive_events[
+                                                self.network.disruptive_events.components
+                                                == component
+                                            ].fail_perc.item(),
+                                            "component_state": "Valves Isolated",
+                                        },
+                                        ignore_index=True,
+                                    )
 
                     self.event_table = self.event_table.append(
                         {
@@ -746,14 +814,6 @@ class NetworkRecovery:
         """Returns the event table."""
         return self.event_table
 
-    # def initiate_next_recov_scheduled(self):
-    #     """
-    #     Flag to identify when the crew must stop at a point and schedule next recovery
-    #     """
-    #     self.power_next_scheduled = False
-    #     self.water_next_scheduled = False
-    #     self.transpo_next_scheduled = False
-
     def update_directly_affected_components(self, time_stamp, next_sim_time):
         """Updates the operational performance of directly impacted infrastructure components by the external event.
 
@@ -762,12 +822,11 @@ class NetworkRecovery:
         :param next_sim_time: Next time stamp in the event table in seconds.
         :type next_sim_time: integer
         """
+        # print(self.network.wn.control_name_list)
         print(
             f"Updating status of directly affected components between {time_stamp} and {next_sim_time}..."
         )
         curr_event_table = self.event_table[self.event_table.time_stamp == time_stamp]
-        # print(self.network.wn.control_name_list)  ###
-        # print(curr_event_table)
 
         for _, row in curr_event_table.iterrows():
             component = row["components"]
@@ -781,14 +840,44 @@ class NetworkRecovery:
                     .query('name == "{}"'.format(component))
                     .index.item()
                 )
+
                 if perf_level < 100:
-                    self.network.pn[compon_details[2]].at[
-                        compon_index, "in_service"
-                    ] = False
+                    if self._line_close_policy == "sensor_based_line_isolation":
+                        self.network.pn[compon_details[2]].at[
+                            compon_index, "in_service"
+                        ] = False
+                    elif self._line_close_policy == "sensor_based_cluster_isolation":
+                        list_of_switches = self.network.line_switch_dict[component]
+                        for switch in list_of_switches:
+                            switch_index = self.network.pn.switch.query(
+                                'name == "{}"'.format(switch)
+                            ).index.item()
+                            self.network.pn.switch.at[switch_index, "closed"] = False
+
                 else:
-                    self.network.pn[compon_details[2]].at[
-                        compon_index, "in_service"
-                    ] = True
+                    if self._line_close_policy == "sensor_based_line_isolation":
+                        self.network.pn[compon_details[2]].at[
+                            compon_index, "in_service"
+                        ] = True
+                    elif self._line_close_policy == "sensor_based_cluster_isolation":
+                        compons_left_for_repair = copy.deepcopy(
+                            self.repairs_to_simulate
+                        )
+                        if component in compons_left_for_repair:
+                            compons_left_for_repair.remove(component)
+                        list_of_switches = self.network.line_switch_dict[component]
+                        for switch in list_of_switches:
+                            if self.switch_closure_allowed(
+                                compons_left_for_repair, switch
+                            ):
+                                switch_index = self.network.pn.switch.query(
+                                    'name == "{}"'.format(switch)
+                                ).index.item()
+                            self.network.pn.switch.at[switch_index, "closed"] = True
+
+                    if component_state == "Service Restored":
+                        if component in self.repairs_to_simulate:
+                            self.repairs_to_simulate.remove(component)
 
             elif compon_details[0] == "water":
 
@@ -828,7 +917,7 @@ class NetworkRecovery:
                         # )
                     elif component_state == "Pipe Isolated":
                         if (
-                            f"close pipe {component}{time_stamp}_isolated"
+                            f"close pipe {component}_isolated"
                             not in self.network.wn.control_name_list
                         ):
                             link_close_event(
@@ -847,7 +936,7 @@ class NetworkRecovery:
                         list_of_valves = self.network.pipe_valve_dict[component]
                         for valve in list_of_valves:
                             if (
-                                f"close pipe {valve}{time_stamp}_isolated"
+                                f"close pipe {valve}_isolated"
                                 not in self.network.wn.control_name_list
                             ):
                                 link_close_event(
@@ -864,7 +953,10 @@ class NetworkRecovery:
                             # )
 
                     elif component_state == "Repairing":
-                        if self._pipe_close_policy in ["repair", "pipe_sensor_based"]:
+                        if self._pipe_close_policy in [
+                            "repair",
+                            "sensor_based_pipe_isolation",
+                        ]:
                             link_close_event(
                                 self.network.wn,
                                 f"{component}_B",
@@ -880,11 +972,13 @@ class NetworkRecovery:
                             # print(
                             #     f"The pipe {component} close control is added between {time_stamp} s and {next_sim_time} s"
                             # )
-                        elif self._pipe_close_policy == "valve_sensor_based":
+                        elif (
+                            self._pipe_close_policy == "sensor_based_cluster_isolation"
+                        ):
                             list_of_valves = self.network.pipe_valve_dict[component]
                             for valve in list_of_valves:
                                 if (
-                                    f"close pipe {valve}{time_stamp}_repairing"
+                                    f"close pipe {valve}_repairing"
                                     not in self.network.wn.control_name_list
                                 ):
                                     link_close_event(
@@ -901,7 +995,8 @@ class NetworkRecovery:
                                     )
 
                     elif component_state == "Service Restored":
-                        pass
+                        if component in self.repairs_to_simulate:
+                            self.repairs_to_simulate.remove(component)
 
                 elif compon_details[3] == "Tank":
                     if perf_level < 100:
@@ -1009,6 +1104,25 @@ class NetworkRecovery:
                 for control in pump_controls:
                     self.network.wn.remove_control(control)
 
+    def switch_closure_allowed(self, compons_to_repair, switch):
+        """Check if a switch closure is possible. Depends on whether a switch needs to be open to isolate any component whose repair is not yet performed
+
+        :param network_recovery: NetworkRecovery object
+        :type network_recovery: NetworkRecovery
+        :param compons_to_repair: List of components to be repaired excluding the component under consideration.
+        :type compons_to_repair: list
+        :param switch: Switch component
+        :type switch: string
+        """
+        allowed = True
+        p_compons = [compon for compon in compons_to_repair if compon.startswith("P_")]
+
+        for p_compon in p_compons:
+            if switch in self.network.line_switch_dict[p_compon]:
+                allowed = False
+                break
+        return allowed
+
 
 def pipe_leak_node_generator(network):
     """Splits the directly affected pipes to induce leak during simulations.
@@ -1044,7 +1158,7 @@ def link_open_event(wn, pipe_name, time_stamp, state):
     ctrl_open = wntr.network.controls.Control(
         cond_open, act_open, ControlPriority.medium
     )
-    wn.add_control("open pipe " + pipe_name + f"{time_stamp}" + f"_{state}", ctrl_open)
+    wn.add_control("open pipe " + pipe_name + f"_{state}", ctrl_open)
     return wn
 
 
@@ -1070,7 +1184,5 @@ def link_close_event(wn, pipe_name, time_stamp, state):
     ctrl_close = wntr.network.controls.Control(
         cond_close, act_close, ControlPriority.medium
     )
-    wn.add_control(
-        "close pipe " + pipe_name + f"{time_stamp}" + f"_{state}", ctrl_close
-    )
+    wn.add_control("close pipe " + pipe_name + f"_{state}", ctrl_close)
     return wn

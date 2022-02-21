@@ -408,7 +408,7 @@ class RadialDisruption:
         return fail_status
 
     def generate_disruption_file(
-        self, location=None, folder_extra=None, minimum_data=0
+        self, location=None, folder_extra=None, minimum_data=0, maximum_data=None
     ):
         """Generates the disruption file consisting of the list of failed components, time of occurrence, and failure percentage (damage extent).
 
@@ -467,8 +467,9 @@ class RadialDisruption:
 
             self.disrupt_file = self.disrupt_file.loc[indices]
 
-            if self.disrupt_file.shape[0] > 30:
-                self.disrupt_file = self.disrupt_file.iloc[:30, :]
+            if maximum_data is not None:
+                if self.disrupt_file.shape[0] > maximum_data:
+                    self.disrupt_file = self.disrupt_file.iloc[:maximum_data, :]
             # check if the count of components is greater than minimum data to be included in each data point
             if len(self.disrupt_file) > minimum_data:
                 flag = 1
@@ -938,7 +939,7 @@ class TrackDisruption:
         return fail_status
 
     def generate_disruption_file(
-        self, location=None, folder_extra=None, minimum_data=0
+        self, location=None, folder_extra=None, minimum_data=0, maximum_data=None
     ):
         """Generates the disruption file consisting of the list of failed components, time of occurrence, and failure percentage (damage extent).
 
@@ -996,8 +997,9 @@ class TrackDisruption:
                     indices.append(index)
 
             self.disrupt_file = self.disrupt_file.loc[indices]
-            if self.disrupt_file.shape[0] > 30:
-                self.disrupt_file = self.disrupt_file.iloc[:30, :]
+            if maximum_data is not None:
+                if self.disrupt_file.shape[0] > maximum_data:
+                    self.disrupt_file = self.disrupt_file.iloc[:maximum_data, :]
             # check if the count of components is greater than minimum data to be included in each data point
             if len(self.disrupt_file) > minimum_data:
                 flag = 1
@@ -1290,7 +1292,7 @@ class RandomDisruption:
             show(p)
 
     def generate_disruption_file(
-        self, location=None, folder_extra=None, minimum_data=0
+        self, location=None, folder_extra=None, minimum_data=0, maximum_data=None
     ):
         """Generates the disruption file consisting of the list of failed components, time of occurrence, and failure percentage (damage extent).
 
@@ -1348,8 +1350,9 @@ class RandomDisruption:
                     indices.append(index)
 
             self.disrupt_file = self.disrupt_file.loc[indices]
-            if self.disrupt_file.shape[0] > 30:
-                self.disrupt_file = self.disrupt_file.iloc[:30, :]
+            if maximum_data is not None:
+                if self.disrupt_file.shape[0] > maximum_data:
+                    self.disrupt_file = self.disrupt_file.iloc[:maximum_data, :]
             # check if the count of components is greater than minimum data to be included in each data point
             if len(self.disrupt_file) > minimum_data:
                 flag = 1
