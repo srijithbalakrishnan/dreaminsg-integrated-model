@@ -631,7 +631,7 @@ class NetworkRecovery:
                                     > self.network.disruption_time
                                     + 60 * self._pipe_closure_delay
                                 ):
-                                    self.network.disruption_time = recovery_start
+                                    # self.network.disruption_time = recovery_start
                                     self.event_table = self.event_table.append(
                                         {
                                             "time_stamp": self.network.disruption_time
@@ -680,7 +680,7 @@ class NetworkRecovery:
                                     > self.network.disruption_time
                                     + 60 * self._pipe_closure_delay
                                 ):
-                                    self.network.disruption_time = recovery_start
+                                    # self.network.disruption_time = recovery_start
                                     self.event_table = self.event_table.append(
                                         {
                                             "time_stamp": self.network.disruption_time
@@ -918,17 +918,23 @@ class NetworkRecovery:
                     elif component_state == "Pipe Isolated":
                         if (
                             f"close pipe {component}_isolated"
-                            not in self.network.wn.control_name_list
+                            in self.network.wn.control_name_list
                         ):
-                            link_close_event(
-                                self.network.wn, f"{component}", time_stamp, "isolated"
+                            self.network.wn.remove_control(
+                                f"close pipe {component}_isolated"
                             )
-                            link_open_event(
-                                self.network.wn,
-                                f"{component}",
-                                next_sim_time,
-                                "isolated",
+                            self.network.wn.remove_control(
+                                f"open pipe {component}_isolated"
                             )
+                        link_close_event(
+                            self.network.wn, f"{component}", time_stamp, "isolated"
+                        )
+                        link_open_event(
+                            self.network.wn,
+                            f"{component}",
+                            next_sim_time,
+                            "isolated",
+                        )
                         # print(
                         #     f"The valve {component} close control is added between {time_stamp} s and {next_sim_time} s"
                         # )
@@ -937,17 +943,23 @@ class NetworkRecovery:
                         for valve in list_of_valves:
                             if (
                                 f"close pipe {valve}_isolated"
-                                not in self.network.wn.control_name_list
+                                in self.network.wn.control_name_list
                             ):
-                                link_close_event(
-                                    self.network.wn, f"{valve}", time_stamp, "isolated"
+                                self.network.wn.remove_control(
+                                    f"close pipe {component}_isolated"
                                 )
-                                link_open_event(
-                                    self.network.wn,
-                                    f"{valve}",
-                                    next_sim_time,
-                                    "isolated",
-                                )
+                            self.network.wn.remove_control(
+                                f"open pipe {component}_isolated"
+                            )
+                            link_close_event(
+                                self.network.wn, f"{valve}", time_stamp, "isolated"
+                            )
+                            link_open_event(
+                                self.network.wn,
+                                f"{valve}",
+                                next_sim_time,
+                                "isolated",
+                            )
                             # print(
                             #     f"The valve {component} close control is added between {time_stamp} s and {next_sim_time} s"
                             # )
@@ -957,6 +969,16 @@ class NetworkRecovery:
                             "repair",
                             "sensor_based_pipe_isolation",
                         ]:
+                            if (
+                                f"close pipe {component}_B_repairing"
+                                in self.network.wn.control_name_list
+                            ):
+                                self.network.wn.remove_control(
+                                    f"close pipe {component}_B_repairing"
+                                )
+                                self.network.wn.remove_control(
+                                    f"open pipe {component}_B_repairing"
+                                )
                             link_close_event(
                                 self.network.wn,
                                 f"{component}_B",
@@ -1040,9 +1062,9 @@ class NetworkRecovery:
 
     def update_traffic_model(self):
         """Updates the static traffic assignment model based on current network conditions."""
-        self.network.tn.userEquilibrium(
-            "FW", 400, 1e-4, self.network.tn.averageExcessCost
-        )
+        # self.network.tn.userEquilibrium(
+        #     "FW", 400, 1e-4, self.network.tn.averageExcessCost
+        # )
         pass
 
     def fail_transpo_link(self, link_compon):
