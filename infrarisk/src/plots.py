@@ -496,7 +496,7 @@ def plot_network_impact_map(
         color_mapper=color_mapper["transform"],
         width=15,
         location=(0, 0),
-        title="Expected water outage (equivalent outage hours)",
+        title="Expected power outage (equivalent outage hours)",
         title_text_font="helvetica",
         title_text_font_style="normal",
         title_text_font_size="14pt",
