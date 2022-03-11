@@ -10,7 +10,8 @@ from bokeh.io import show, output_notebook, curdoc
 from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource, HoverTool, Range1d, ColorBar
 from bokeh.transform import factor_cmap
-from bokeh.palettes import Category10, Turbo256
+from bokeh.palettes import Category10, Turbo256, RdYlGn3, Viridis3, RdYlGn
+from bokeh.tile_providers import get_provider, Vendors
 
 from bokeh.transform import factor_cmap, linear_cmap
 from sklearn import metrics
@@ -425,10 +426,7 @@ def plot_network_impact_map(
     for _, link in enumerate(G.edges.keys()):
         x.append([G.nodes[link[0]]["coord"][0], G.nodes[link[1]]["coord"][0]])
         y.append([G.nodes[link[0]]["coord"][1], G.nodes[link[1]]["coord"][1]])
-        link_layer.append(G.edges[link]["link_type"])
-        link_category.append(G.edges[link]["link_category"])
         avg_perf.append(G.edges[link]["avg_perf"])
-        id.append(G.edges[link]["id"])
 
     plot_links = p.multi_line(
         "x",
@@ -437,14 +435,11 @@ def plot_network_impact_map(
             dict(
                 x=x,
                 y=y,
-                link_layer=link_layer,
-                link_category=link_category,
                 avg_perf=avg_perf,
-                id=id,
             )
         ),
         line_color="grey",
-        line_alpha=0.5,
+        line_alpha=0.6,
         line_width=0.75,
         legend_label="Infrastructure links",
         # legend_field="fail_prob",
@@ -464,7 +459,6 @@ def plot_network_impact_map(
                 x.append(integrated_network.pn.loads_geodata.x[index])
                 y.append(integrated_network.pn.loads_geodata.y[index])
                 avg_perf.append(auc_type[strategy][node])
-
     color_mapper = linear_cmap(
         field_name="avg_perf",
         palette=palette,
@@ -492,11 +486,12 @@ def plot_network_impact_map(
     p.legend.location = "bottom_left"
     p.legend.label_text_font_size = "14pt"
 
+    # infra = [word[0].upper() + word[1:] for word in s.split()]
     color_bar = ColorBar(
         color_mapper=color_mapper["transform"],
         width=15,
         location=(0, 0),
-        title="Expected power outage (equivalent outage hours)",
+        title=f"{infra.title()} outage (equivalent outage hours)",
         title_text_font="helvetica",
         title_text_font_style="normal",
         title_text_font_size="14pt",
@@ -511,99 +506,191 @@ def plot_network_impact_map(
     show(p)
 
 
-def plot_power_impact_map(resilience_metrics, G, strategy):
+def plot_disruptions_and_crews(integrated_network):
+    failed_components_list = list(integrated_network.disrupted_components)
+    affected_nodes = {}
+    affected_links = {}
+    fail_compon_dict = {
+        "power": {"L"},
+        "water": {"R", "PMA"},
+        "transport": {"L"},
+    }
+
+    G = integrated_network.integrated_graph
+
+    crew_locs = {"power": [], "water": [], "transpo": []}
+    for key in integrated_network.power_crews.keys():
+        crew_locs["power"].append(integrated_network.power_crews[key]._init_loc)
+    for key in integrated_network.water_crews.keys():
+        crew_locs["water"].append(integrated_network.water_crews[key]._init_loc)
+    for key in integrated_network.water_crews.keys():
+        crew_locs["transpo"].append(integrated_network.transpo_crews[key]._init_loc)
+
+    power_node_list = [
+        node for node in G.nodes.keys() if G.nodes[node]["node_type"] == "Power"
+    ]
+    power_link_list = [
+        G.edges[edge]["id"]
+        for edge in G.edges.keys()
+        if G.edges[edge]["link_type"] == "Power"
+    ]
+
+    affected_nodes["power"] = [
+        compon
+        for compon in failed_components_list
+        for compon_type in fail_compon_dict["power"]
+        if (compon.startswith("P_" + compon_type) and compon in power_node_list)
+    ]
+    affected_links["power"] = [
+        compon
+        for compon in failed_components_list
+        for compon_type in fail_compon_dict["power"]
+        if (compon.startswith("P_" + compon_type) and compon in power_link_list)
+    ]
+
+    # water
+    water_node_list = [
+        node for node in G.nodes.keys() if G.nodes[node]["node_type"] == "Water"
+    ]
+    water_link_list = [
+        G.edges[edge]["id"]
+        for edge in G.edges.keys()
+        if G.edges[edge]["link_type"] == "Water"
+    ]
+
+    affected_nodes["water"] = [
+        compon
+        for compon in failed_components_list
+        for compon_type in fail_compon_dict["water"]
+        if (compon.startswith("W_" + compon_type) and compon in water_node_list)
+    ]
+    affected_links["water"] = [
+        compon
+        for compon in failed_components_list
+        for compon_type in fail_compon_dict["water"]
+        if (compon.startswith("W_" + compon_type) and compon in water_link_list)
+    ]
+
+    # transportation
+    transpo_node_list = [
+        node
+        for node in G.nodes.keys()
+        if G.nodes[node]["node_type"] == "Transportation"
+    ]
+    transpo_link_list = [
+        G.edges[edge]["id"]
+        for edge in G.edges.keys()
+        if G.edges[edge]["link_type"] == "Transportation"
+    ]
+
+    affected_nodes["transpo"] = [
+        compon
+        for compon in failed_components_list
+        for compon_type in fail_compon_dict["transport"]
+        if (compon.startswith("T_" + compon_type) and compon in transpo_node_list)
+    ]
+    affected_links["transpo"] = [
+        compon
+        for compon in failed_components_list
+        for compon_type in fail_compon_dict["transport"]
+        if (compon.startswith("T_" + compon_type) and compon in transpo_link_list)
+    ]
+
+    for _, node in enumerate(G.nodes.keys()):
+        if (
+            node
+            in affected_nodes["water"]
+            + affected_nodes["power"]
+            + affected_nodes["transpo"]
+        ):
+            G.nodes[node]["fail_status"] = "Disrupted"
+        else:
+            G.nodes[node]["fail_status"] = "Functional"
+
+    for _, link in enumerate(G.edges.keys()):
+        if (
+            G.edges[link]["id"]
+            in affected_links["power"]
+            + affected_links["water"]
+            + affected_links["transpo"]
+        ):
+            G.edges[link]["fail_status"] = "Disrupted"
+        else:
+            G.edges[link]["fail_status"] = "Functional"
+
+    # for _, node in enumerate(crew_locs["power"]):
+    #     G.nodes[node]["crew_type"] = "Power crew"
+    # for _, node in enumerate(crew_locs["water"]):
+    #     G.nodes[node]["crew_type"] = "Water crew"
+    # for _, node in enumerate(crew_locs["transpo"]):
+    #     G.nodes[node]["crew_type"] = "Transportation crew"
+
     output_notebook()
-    avg_water_demand_ratio = {"capacity": {}, "centrality": {}, "zone": {}}
-    avg_power_demand_ratio = {"capacity": {}, "centrality": {}, "zone": {}}
 
-    water_demands_ratio = resilience_metrics.water_demands_ratio
-    power_demands_ratio = resilience_metrics.power_demand_ratio
-    water_time_list = resilience_metrics.water_time_list
-    power_time_list = resilience_metrics.power_time_list
-    for column in water_demands_ratio.columns:
-        if column.startswith("W_JTN"):
-            if column in avg_water_demand_ratio[strategy].keys():
-                avg_water_demand_ratio[strategy][column].append(
-                    metrics.auc(water_time_list, 1 - water_demands_ratio[column])
-                )
-            else:
-                avg_water_demand_ratio[strategy][column] = [
-                    metrics.auc(water_time_list, 1 - water_demands_ratio[column])
-                ]
-    for column in power_demands_ratio.columns:
-        if column in avg_power_demand_ratio[strategy].keys():
-            avg_power_demand_ratio[strategy][column].append(
-                metrics.auc(power_time_list, 1 - power_demands_ratio[column])
-            )
-        else:
-            avg_power_demand_ratio[strategy][column] = [
-                metrics.auc(power_time_list, 1 - power_demands_ratio[column])
-            ]
-
-    water_compon_auc = {"capacity": {}, "centrality": {}, "zone": {}}
-    power_compon_auc = {"capacity": {}, "centrality": {}, "zone": {}}
-
-    for node in avg_water_demand_ratio[strategy].keys():
-        water_compon_auc[strategy][node] = (
-            np.mean(avg_water_demand_ratio[strategy][node]) / 60
-        )
-    for node in avg_power_demand_ratio[strategy].keys():
-        power_compon_auc[strategy][node] = (
-            np.mean(avg_power_demand_ratio[strategy][node]) / 60
-        )
-
-    water_compon_auc_df = pd.DataFrame(water_compon_auc)
-    water_compon_auc_df["component"] = water_compon_auc_df.index
-
-    power_compon_auc_df = pd.DataFrame(power_compon_auc)
-    power_compon_auc_df["component"] = power_compon_auc_df.index
-
-    auc_type = water_compon_auc
-    for node in G.nodes.keys():
-        if node in auc_type[strategy].keys():
-            G.nodes[node]["avg_perf"] = auc_type[strategy][node]
-        else:
-            G.nodes[node]["avg_perf"] = np.nan
-
-    for link in G.edges.keys():
-        link_id = G.edges[link]["id"]
-        if link_id in auc_type[strategy].keys():
-            G.edges[link]["avg_perf"] = auc_type[strategy][link_id]
-        else:
-            G.edges[link]["avg_perf"] = np.nan
-
-    palette = tuple(
-        [
-            "#32CD32",
-            "#5FCF26",
-            "#8DD11B",
-            "#BAD310",
-            "#E8D505",
-            "#FFBF00",
-            "#FF8F00",
-            "#FF5F00",
-            "#FF2F00",
-            "#FF0000",
-        ]
-    )
+    palette = [RdYlGn[11][2], RdYlGn[11][9]]
 
     p = figure(
         background_fill_color="white",
-        plot_width=785,
-        height=500,
-        # title=f"Mean consumer-level outage during floods: {strategy}-based recovery strategy",
-        x_range=(1400, 7400),
-        y_range=(2000, 6000),
+        plot_width=700,
+        height=450,
+        x_range=(1000, 8000),
+        y_range=(1000, 6600),
+    )
+
+    # instatiate the tile source provider
+    tile_provider = get_provider(Vendors.CARTODBPOSITRON_RETINA)
+
+    # add the back ground basemap
+    p.add_tile(tile_provider, alpha=0.1)
+
+    # nodes
+    x, y, node_type, node_category, fail_status, crew_type, id = (
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+    )
+
+    for _, node in enumerate(G.nodes.keys()):
+        x.append(G.nodes[node]["coord"][0])
+        y.append(G.nodes[node]["coord"][1])
+        node_type.append(G.nodes[node]["node_type"])
+        node_category.append(G.nodes[node]["node_category"])
+        fail_status.append(G.nodes[node]["fail_status"])
+        crew_type.append(G.nodes[node]["crew_type"])
+        id.append(node)
+
+    plot_nodes = p.square(
+        "x",
+        "y",
+        source=ColumnDataSource(
+            dict(
+                x=x,
+                y=y,
+                node_type=node_type,
+                node_category=node_category,
+                fail_status=fail_status,
+                id=id,
+            )
+        ),
+        color=factor_cmap(
+            "fail_status", palette, np.array(["Functional", "Disrupted"])
+        ),
+        alpha=0.7,
+        size=1,
     )
 
     # links
-    x, y, link_layer, link_category, avg_perf, id = [], [], [], [], [], []
+    x, y, link_layer, link_category, fail_status, id = [], [], [], [], [], []
     for _, link in enumerate(G.edges.keys()):
         x.append([G.nodes[link[0]]["coord"][0], G.nodes[link[1]]["coord"][0]])
         y.append([G.nodes[link[0]]["coord"][1], G.nodes[link[1]]["coord"][1]])
         link_layer.append(G.edges[link]["link_type"])
         link_category.append(G.edges[link]["link_category"])
-        avg_perf.append(G.edges[link]["avg_perf"])
+        fail_status.append(G.edges[link]["fail_status"])
         id.append(G.edges[link]["id"])
 
     plot_links = p.multi_line(
@@ -615,67 +702,60 @@ def plot_power_impact_map(resilience_metrics, G, strategy):
                 y=y,
                 link_layer=link_layer,
                 link_category=link_category,
-                avg_perf=avg_perf,
+                fail_status=fail_status,
                 id=id,
             )
         ),
-        line_color="grey",
-        line_alpha=0.5,
-        line_width=0.75,
-        legend_label="Infrastructure links",
-        # legend_field="fail_prob",
+        line_color=factor_cmap(
+            "fail_status", palette, np.array(["Functional", "Disrupted"])
+        ),
+        line_alpha=1,
+        line_width=2,
+        legend_field="fail_status",
     )
 
-    x, y, node_type, node_category, avg_perf, id = [], [], [], [], [], []
-
-    for _, node in enumerate(G.nodes.keys()):
-        if G.nodes[node]["avg_perf"] is not np.nan:
-            x.append(G.nodes[node]["coord"][0])
-            y.append(G.nodes[node]["coord"][1])
-            node_type.append(G.nodes[node]["node_type"])
-            node_category.append(G.nodes[node]["node_category"])
-            avg_perf.append(G.nodes[node]["avg_perf"])
-            id.append(node)
-    color_mapper = linear_cmap(
-        field_name="avg_perf", palette=palette, low=0, high=50, nan_color="snow"
+    # crews
+    x, y, crew_type = (
+        [],
+        [],
+        [],
     )
 
-    plot_nodes = p.square(
+    for node in crew_locs["power"]:
+        x.append(G.nodes[node]["coord"][0])
+        y.append(G.nodes[node]["coord"][1])
+        crew_type.append("Power crew")
+    for node in crew_locs["water"]:
+        x.append(G.nodes[node]["coord"][0])
+        y.append(G.nodes[node]["coord"][1])
+        crew_type.append("Water crew")
+    for node in crew_locs["transpo"]:
+        x.append(G.nodes[node]["coord"][0])
+        y.append(G.nodes[node]["coord"][1])
+        crew_type.append("Transportation crew")
+
+    index_cmap = factor_cmap(
+        "crew_type",
+        palette=Viridis3,
+        factors=sorted(set(crew_type)),
+    )
+
+    plot_crews = p.square(
         "x",
         "y",
         source=ColumnDataSource(
             dict(
                 x=x,
                 y=y,
-                node_type=node_type,
-                node_category=node_category,
-                avg_perf=avg_perf,
-                id=id,
+                crew_type=crew_type,
             )
         ),
-        color=color_mapper,
-        fill_alpha=1,
-        alpha=1,
-        size=6,
+        color=index_cmap,
+        size=10,
+        legend_field="crew_type",
     )
 
-    p.legend.location = "bottom_left"
-    p.legend.label_text_font_size = "14pt"
-
-    color_bar = ColorBar(
-        color_mapper=color_mapper["transform"],
-        width=15,
-        location=(0, 0),
-        title="Expected water outage (equivalent outage hours)",
-        title_text_font="helvetica",
-        title_text_font_style="normal",
-        title_text_font_size="14pt",
-        major_label_text_font_size="14pt",
-    )
-    p.add_layout(color_bar, "right")
-
+    p.legend.location = "top_left"
     p.axis.visible = False
     p.grid.visible = False
-    p.outline_line_color = None
-
     show(p)
