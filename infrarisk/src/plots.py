@@ -3,14 +3,19 @@
 # import pandapower.plotting as pandaplot
 import pandas as pd
 
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import networkx as nx
 
 from bokeh.io import show, output_notebook, curdoc
 from bokeh.plotting import figure
-from bokeh.models import ColumnDataSource, HoverTool, Range1d
+from bokeh.models import ColumnDataSource, HoverTool, Range1d, ColorBar
 from bokeh.transform import factor_cmap
 from bokeh.palettes import Category10, Turbo256
+
+from bokeh.transform import factor_cmap, linear_cmap
+from sklearn import metrics
+
+import seaborn as sns
 
 import numpy as np
 
@@ -293,99 +298,384 @@ def plot_repair_curves(disrupt_recovery_object, scatter=False):
     show(p)
 
 
-def plot_interdependent_effects(
-    time_tracker,
-    power_consump_tracker=None,
-    water_consump_tracker=None,
-    transpo_access_tracker=None,
-    scatter=True,
-):
-    """Generates the network-level performance plots.
-
-    :param time_tracker: A list of time-stamps from the similation.
-    :type time_tracker: list of floats
-    :param power_consump_tracker: A list of power consumption resilience metric values., defaults to None
-    :type power_consump_tracker: list of floats, optional
-    :param water_consump_tracker: A list of water consumption resilience metric values., defaults to None
-    :type water_consump_tracker: list of floats, optional
-    :param transpo_access_tracker: A list of transportation access resilience metric values., defaults to None
-    :type transpo_access_tracker: list of floats, optional
-    :param scatter: scatter plot, defaults to True
-    :type scatter: bool, optional
-    """
-    # settings
-    curdoc().theme = "light_minimal"
-    palette = Category10[3]
-    line_width = 2.5
-
-    # plot
-    p = figure(
-        plot_width=750,
-        plot_height=450,
-        title="Network-wide effects and recovery",
-        x_axis_label="Time (min)",
-        y_axis_label="Supply-to-demand ratio",
-        toolbar_location="above",
+def plot_interdependent_effects(resilience_metrics):
+    sns.set_context("paper", font_scale=1.25)
+    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(7, 4))
+    fig.tight_layout()
+    sns.lineplot(
+        ax=ax,
+        x=[x / 60 for x in resilience_metrics.water_time_list],
+        y=resilience_metrics.water_ecs_list,
+        label="Water",
+        linewidth=2,
+        alpha=0.9,
+    )
+    sns.lineplot(
+        ax=ax,
+        x=[x / 60 for x in resilience_metrics.power_time_list],
+        y=resilience_metrics.power_ecs_list,
+        drawstyle="steps-post",
+        label="Power",
+        linewidth=2,
+        alpha=0.9,
     )
 
-    p.y_range = Range1d(0, 1)
+    ax.set(
+        xlabel="Time (hours)", ylabel="Equivalent Consumer Serviceability", ylim=(0, 1)
+    )
+    ax.set_title("Network-wide performance", fontsize=12)
 
-    if water_consump_tracker != None:
-        p.line(
-            time_tracker,
-            water_consump_tracker,
-            line_width=line_width,
-            color=palette[0],
-            muted_alpha=0.2,
-            legend_label="Water",
-        )
-        if scatter == True:
-            p.scatter(
-                time_tracker,
-                water_consump_tracker,
-                size=5,
-                color=palette[0],
-                alpha=0.2,
+    fig.subplots_adjust(hspace=0.35)
+
+
+def plot_network_impact_map(
+    resilience_metrics, integrated_network, strategy, infra="power"
+):
+    output_notebook()
+    avg_water_demand_ratio = {"capacity": {}, "centrality": {}, "zone": {}}
+    avg_power_demand_ratio = {"capacity": {}, "centrality": {}, "zone": {}}
+
+    water_demands_ratio = resilience_metrics.water_demands_ratio
+    power_demands_ratio = resilience_metrics.power_demand_ratio
+    water_time_list = resilience_metrics.water_time_list
+    power_time_list = resilience_metrics.power_time_list
+    for column in water_demands_ratio.columns:
+        if column.startswith("W_JTN"):
+            if column in avg_water_demand_ratio[strategy].keys():
+                avg_water_demand_ratio[strategy][column].append(
+                    metrics.auc(water_time_list, 1 - water_demands_ratio[column])
+                )
+            else:
+                avg_water_demand_ratio[strategy][column] = [
+                    metrics.auc(water_time_list, 1 - water_demands_ratio[column])
+                ]
+    for column in power_demands_ratio.columns:
+        if column in avg_power_demand_ratio[strategy].keys():
+            avg_power_demand_ratio[strategy][column].append(
+                metrics.auc(power_time_list, 1 - power_demands_ratio[column])
             )
+        else:
+            avg_power_demand_ratio[strategy][column] = [
+                metrics.auc(power_time_list, 1 - power_demands_ratio[column])
+            ]
 
-    if power_consump_tracker != None:
-        p.line(
-            time_tracker,
-            power_consump_tracker,
-            line_width=line_width,
-            color=palette[1],
-            muted_alpha=0.2,
-            legend_label="Power",
+    water_compon_auc = {"capacity": {}, "centrality": {}, "zone": {}}
+    power_compon_auc = {"capacity": {}, "centrality": {}, "zone": {}}
+
+    for node in avg_water_demand_ratio[strategy].keys():
+        water_compon_auc[strategy][node] = (
+            np.mean(avg_water_demand_ratio[strategy][node]) / 60
         )
-        if scatter == True:
-            p.scatter(
-                time_tracker,
-                power_consump_tracker,
-                size=5,
-                color=palette[1],
-                alpha=0.2,
-            )
-
-    if transpo_access_tracker != None:
-        p.line(
-            time_tracker,
-            transpo_access_tracker,
-            line_width=line_width,
-            color=palette[2],
-            muted_alpha=0.2,
-            legend_label="Transportation",
+    for node in avg_power_demand_ratio[strategy].keys():
+        power_compon_auc[strategy][node] = (
+            np.mean(avg_power_demand_ratio[strategy][node]) / 60
         )
-        if scatter == True:
-            p.scatter(
-                time_tracker,
-                transpo_access_tracker,
-                size=5,
-                color=palette[2],
-                alpha=0.2,
-            )
 
-    p.add_layout(p.legend[0], "right")
-    p.legend.background_fill_color = "gainsboro"
-    p.legend.background_fill_alpha = 0.1
-    p.legend.click_policy = "mute"
+    water_compon_auc_df = pd.DataFrame(water_compon_auc)
+    water_compon_auc_df["component"] = water_compon_auc_df.index
+
+    power_compon_auc_df = pd.DataFrame(power_compon_auc)
+    power_compon_auc_df["component"] = power_compon_auc_df.index
+
+    G = integrated_network.integrated_graph
+    if infra == "water":
+        auc_type = water_compon_auc
+    elif infra == "power":
+        auc_type = power_compon_auc
+
+    for node in G.nodes.keys():
+        if node in auc_type[strategy].keys():
+            G.nodes[node]["avg_perf"] = auc_type[strategy][node]
+        else:
+            G.nodes[node]["avg_perf"] = np.nan
+
+    for link in G.edges.keys():
+        link_id = G.edges[link]["id"]
+        if link_id in auc_type[strategy].keys():
+            G.edges[link]["avg_perf"] = auc_type[strategy][link_id]
+        else:
+            G.edges[link]["avg_perf"] = np.nan
+
+    palette = tuple(
+        [
+            "#32CD32",
+            "#5FCF26",
+            "#8DD11B",
+            "#BAD310",
+            "#E8D505",
+            "#FFBF00",
+            "#FF8F00",
+            "#FF5F00",
+            "#FF2F00",
+            "#FF0000",
+        ]
+    )
+
+    p = figure(
+        background_fill_color="white",
+        plot_width=785,
+        height=500,
+        # title=f"Mean consumer-level outage during floods: {strategy}-based recovery strategy",
+        x_range=(1400, 7400),
+        y_range=(2000, 6000),
+    )
+
+    # links
+    x, y, link_layer, link_category, avg_perf, id = [], [], [], [], [], []
+    for _, link in enumerate(G.edges.keys()):
+        x.append([G.nodes[link[0]]["coord"][0], G.nodes[link[1]]["coord"][0]])
+        y.append([G.nodes[link[0]]["coord"][1], G.nodes[link[1]]["coord"][1]])
+        link_layer.append(G.edges[link]["link_type"])
+        link_category.append(G.edges[link]["link_category"])
+        avg_perf.append(G.edges[link]["avg_perf"])
+        id.append(G.edges[link]["id"])
+
+    plot_links = p.multi_line(
+        "x",
+        "y",
+        source=ColumnDataSource(
+            dict(
+                x=x,
+                y=y,
+                link_layer=link_layer,
+                link_category=link_category,
+                avg_perf=avg_perf,
+                id=id,
+            )
+        ),
+        line_color="grey",
+        line_alpha=0.5,
+        line_width=0.75,
+        legend_label="Infrastructure links",
+        # legend_field="fail_prob",
+    )
+
+    x, y, node_type, node_category, avg_perf, id = [], [], [], [], [], []
+
+    if infra == "water":
+        for _, node in enumerate(G.nodes.keys()):
+            if G.nodes[node]["avg_perf"] is not np.nan:
+                x.append(G.nodes[node]["coord"][0])
+                y.append(G.nodes[node]["coord"][1])
+                avg_perf.append(G.nodes[node]["avg_perf"])
+    elif infra == "power":
+        for index, node in enumerate(integrated_network.pn.load.name):
+            if node in auc_type[strategy].keys():
+                x.append(integrated_network.pn.loads_geodata.x[index])
+                y.append(integrated_network.pn.loads_geodata.y[index])
+                avg_perf.append(auc_type[strategy][node])
+
+    color_mapper = linear_cmap(
+        field_name="avg_perf",
+        palette=palette,
+        low=0,
+        high=max(avg_perf),
+        nan_color="snow",
+    )
+
+    plot_nodes = p.square(
+        "x",
+        "y",
+        source=ColumnDataSource(
+            dict(
+                x=x,
+                y=y,
+                avg_perf=avg_perf,
+            )
+        ),
+        color=color_mapper,
+        fill_alpha=1,
+        alpha=1,
+        size=6,
+    )
+
+    p.legend.location = "bottom_left"
+    p.legend.label_text_font_size = "14pt"
+
+    color_bar = ColorBar(
+        color_mapper=color_mapper["transform"],
+        width=15,
+        location=(0, 0),
+        title="Expected water outage (equivalent outage hours)",
+        title_text_font="helvetica",
+        title_text_font_style="normal",
+        title_text_font_size="14pt",
+        major_label_text_font_size="14pt",
+    )
+    p.add_layout(color_bar, "right")
+
+    p.axis.visible = False
+    p.grid.visible = False
+    p.outline_line_color = None
+
+    show(p)
+
+
+def plot_power_impact_map(resilience_metrics, G, strategy):
+    output_notebook()
+    avg_water_demand_ratio = {"capacity": {}, "centrality": {}, "zone": {}}
+    avg_power_demand_ratio = {"capacity": {}, "centrality": {}, "zone": {}}
+
+    water_demands_ratio = resilience_metrics.water_demands_ratio
+    power_demands_ratio = resilience_metrics.power_demand_ratio
+    water_time_list = resilience_metrics.water_time_list
+    power_time_list = resilience_metrics.power_time_list
+    for column in water_demands_ratio.columns:
+        if column.startswith("W_JTN"):
+            if column in avg_water_demand_ratio[strategy].keys():
+                avg_water_demand_ratio[strategy][column].append(
+                    metrics.auc(water_time_list, 1 - water_demands_ratio[column])
+                )
+            else:
+                avg_water_demand_ratio[strategy][column] = [
+                    metrics.auc(water_time_list, 1 - water_demands_ratio[column])
+                ]
+    for column in power_demands_ratio.columns:
+        if column in avg_power_demand_ratio[strategy].keys():
+            avg_power_demand_ratio[strategy][column].append(
+                metrics.auc(power_time_list, 1 - power_demands_ratio[column])
+            )
+        else:
+            avg_power_demand_ratio[strategy][column] = [
+                metrics.auc(power_time_list, 1 - power_demands_ratio[column])
+            ]
+
+    water_compon_auc = {"capacity": {}, "centrality": {}, "zone": {}}
+    power_compon_auc = {"capacity": {}, "centrality": {}, "zone": {}}
+
+    for node in avg_water_demand_ratio[strategy].keys():
+        water_compon_auc[strategy][node] = (
+            np.mean(avg_water_demand_ratio[strategy][node]) / 60
+        )
+    for node in avg_power_demand_ratio[strategy].keys():
+        power_compon_auc[strategy][node] = (
+            np.mean(avg_power_demand_ratio[strategy][node]) / 60
+        )
+
+    water_compon_auc_df = pd.DataFrame(water_compon_auc)
+    water_compon_auc_df["component"] = water_compon_auc_df.index
+
+    power_compon_auc_df = pd.DataFrame(power_compon_auc)
+    power_compon_auc_df["component"] = power_compon_auc_df.index
+
+    auc_type = water_compon_auc
+    for node in G.nodes.keys():
+        if node in auc_type[strategy].keys():
+            G.nodes[node]["avg_perf"] = auc_type[strategy][node]
+        else:
+            G.nodes[node]["avg_perf"] = np.nan
+
+    for link in G.edges.keys():
+        link_id = G.edges[link]["id"]
+        if link_id in auc_type[strategy].keys():
+            G.edges[link]["avg_perf"] = auc_type[strategy][link_id]
+        else:
+            G.edges[link]["avg_perf"] = np.nan
+
+    palette = tuple(
+        [
+            "#32CD32",
+            "#5FCF26",
+            "#8DD11B",
+            "#BAD310",
+            "#E8D505",
+            "#FFBF00",
+            "#FF8F00",
+            "#FF5F00",
+            "#FF2F00",
+            "#FF0000",
+        ]
+    )
+
+    p = figure(
+        background_fill_color="white",
+        plot_width=785,
+        height=500,
+        # title=f"Mean consumer-level outage during floods: {strategy}-based recovery strategy",
+        x_range=(1400, 7400),
+        y_range=(2000, 6000),
+    )
+
+    # links
+    x, y, link_layer, link_category, avg_perf, id = [], [], [], [], [], []
+    for _, link in enumerate(G.edges.keys()):
+        x.append([G.nodes[link[0]]["coord"][0], G.nodes[link[1]]["coord"][0]])
+        y.append([G.nodes[link[0]]["coord"][1], G.nodes[link[1]]["coord"][1]])
+        link_layer.append(G.edges[link]["link_type"])
+        link_category.append(G.edges[link]["link_category"])
+        avg_perf.append(G.edges[link]["avg_perf"])
+        id.append(G.edges[link]["id"])
+
+    plot_links = p.multi_line(
+        "x",
+        "y",
+        source=ColumnDataSource(
+            dict(
+                x=x,
+                y=y,
+                link_layer=link_layer,
+                link_category=link_category,
+                avg_perf=avg_perf,
+                id=id,
+            )
+        ),
+        line_color="grey",
+        line_alpha=0.5,
+        line_width=0.75,
+        legend_label="Infrastructure links",
+        # legend_field="fail_prob",
+    )
+
+    x, y, node_type, node_category, avg_perf, id = [], [], [], [], [], []
+
+    for _, node in enumerate(G.nodes.keys()):
+        if G.nodes[node]["avg_perf"] is not np.nan:
+            x.append(G.nodes[node]["coord"][0])
+            y.append(G.nodes[node]["coord"][1])
+            node_type.append(G.nodes[node]["node_type"])
+            node_category.append(G.nodes[node]["node_category"])
+            avg_perf.append(G.nodes[node]["avg_perf"])
+            id.append(node)
+    color_mapper = linear_cmap(
+        field_name="avg_perf", palette=palette, low=0, high=50, nan_color="snow"
+    )
+
+    plot_nodes = p.square(
+        "x",
+        "y",
+        source=ColumnDataSource(
+            dict(
+                x=x,
+                y=y,
+                node_type=node_type,
+                node_category=node_category,
+                avg_perf=avg_perf,
+                id=id,
+            )
+        ),
+        color=color_mapper,
+        fill_alpha=1,
+        alpha=1,
+        size=6,
+    )
+
+    p.legend.location = "bottom_left"
+    p.legend.label_text_font_size = "14pt"
+
+    color_bar = ColorBar(
+        color_mapper=color_mapper["transform"],
+        width=15,
+        location=(0, 0),
+        title="Expected water outage (equivalent outage hours)",
+        title_text_font="helvetica",
+        title_text_font_style="normal",
+        title_text_font_size="14pt",
+        major_label_text_font_size="14pt",
+    )
+    p.add_layout(color_bar, "right")
+
+    p.axis.visible = False
+    p.grid.visible = False
+    p.outline_line_color = None
+
     show(p)

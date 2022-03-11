@@ -6,6 +6,7 @@ import pandas as pd
 import wntr
 import copy
 import numpy as np
+import seaborn as sns
 
 
 class WeightedResilienceMetric:
@@ -173,9 +174,9 @@ class WeightedResilienceMetric:
         base_water_demands_new = base_water_demands_new[junc_list]
 
         water_demands_ratio = water_demands / base_water_demands_new
-        water_demands_ratio = water_demands_ratio.clip(upper=1, lower=0)
+        self.water_demands_ratio = water_demands_ratio.clip(upper=1, lower=0)
 
-        self.water_ecs_list = water_demands_ratio.mean(axis=1, skipna=True).tolist()
+        self.water_ecs_list = self.water_demands_ratio.mean(axis=1, skipna=True).tolist()
 
         water_pcs_list = pd.concat([water_demands, base_water_demands_new]).groupby(
             level=0
@@ -227,9 +228,9 @@ class WeightedResilienceMetric:
         ).reset_index(drop=True)
 
         power_demand_ratio = power_demands.iloc[:, 1:] / base_load_demands
-        power_demand_ratio = power_demand_ratio.clip(upper=1, lower=0)
+        self.power_demand_ratio = power_demand_ratio.clip(upper=1, lower=0)
 
-        self.power_ecs_list = power_demand_ratio.mean(axis=1, skipna=True).tolist()
+        self.power_ecs_list = self.power_demand_ratio.mean(axis=1, skipna=True).tolist()
         power_pcs_list = pd.concat(
             [power_demands.iloc[:, 1:], base_load_demands]
         ).groupby(level=0).min().sum(axis=1, skipna=True) / base_load_demands.sum(
