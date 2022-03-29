@@ -876,6 +876,9 @@ class NetworkRecovery:
                                 self.network.pn.switch.at[switch_index, "closed"] = True
 
                     if component_state == "Service Restored":
+                        self.network.pn[compon_details[2]].at[
+                            compon_index, "in_service"
+                        ] = True
                         if component in self.repairs_to_simulate:
                             self.repairs_to_simulate.remove(component)
 
@@ -1062,10 +1065,10 @@ class NetworkRecovery:
 
     def update_traffic_model(self):
         """Updates the static traffic assignment model based on current network conditions."""
-        # self.network.tn.userEquilibrium(
-        #     "FW", 400, 1e-4, self.network.tn.averageExcessCost
-        # )
-        pass
+        self.network.tn.userEquilibrium(
+            "FW", 400, 1e-4, self.network.tn.averageExcessCost
+        )
+        #pass
 
     def fail_transpo_link(self, link_compon):
         """Fails the given transportation link by changing the free-flow travel time to a very large value.
