@@ -237,3 +237,34 @@ def generate_base_supply_pda(wn_original, dir):
         Path(dir) / "base_water_link_flow_pda.csv",
         index=False,
     )
+
+
+# def get_valves_to_isolate_water_node(integrated_network, node):
+#     # The function 'valve_identification' identifies all the valves that need to be closed in order to isolate a given NODE
+#     segment, explored_nodes = [], []
+#     explored_nodes.append(node)
+#     if node in [
+#         y[0] for y in valves_se
+#     ]:  # if the node is the start node of a valve, add that valve to the segment
+#         j = [y[0] for y in valves_se].index(node)
+#         segment.append(valves[j])
+#     else:
+#         if node in [
+#             y[1] for y in valves_se
+#         ]:  # if the node is the end node of a valve, add that valve to the segment
+#             j = [y[1] for y in valves_se].index(node)
+#             segment.append(valves[j])
+#         else:
+#             connected_pipes = [x for x in G_water.edges(node)]
+#             connected_nodes = []
+#             for c in connected_pipes:
+#                 unexplored_node = list(filter(lambda x: x not in explored_nodes, c))
+#                 if unexplored_node != []:
+#                     connected_nodes.append(
+#                         unexplored_node[0]
+#                     )  # consider all nodes connected to the node by a pipe (but not that node)
+#             if (
+#                 connected_nodes != []
+#             ):  # if connected_nodes == 0, then the node is a peripheral node
+#                 for k in connected_nodes:
+#                     valve_identification(k, segment, explored_nodes)

@@ -200,3 +200,7 @@ def generate_base_supply(pn):
     pn_base = copy.deepcopy(pn)
     run_power_simulation(pn_base)
     return pn_base
+
+
+# def idenitfy_switches_to_isolate(pn, component):
+    

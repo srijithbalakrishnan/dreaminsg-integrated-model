@@ -299,17 +299,29 @@ def plot_repair_curves(disrupt_recovery_object, scatter=False):
     show(p)
 
 
-def plot_interdependent_effects(resilience_metrics):
-    sns.set_context("paper", font_scale=1.25)
-    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(7, 4))
+def plot_interdependent_effects(resilience_metrics, metric, title=True, area=True):
+    water_metric = f"water_{metric}_list"
+    power_metric = f"power_{metric}_list"
+
+    if metric == "ecs":
+        title = "Equivalent Consumer Serviceability"
+    elif metric == "pcs":
+        title = "Prioritized Consumer Serviceability"
+
+    sns.set_style(style="ticks")
+    sns.set_context("paper", font_scale=1.5)
+    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 4))
     fig.tight_layout()
+
     sns.lineplot(
         ax=ax,
         x=[x / 60 for x in resilience_metrics.water_time_list],
         y=resilience_metrics.water_ecs_list,
+        drawstyle="steps-post",
         label="Water",
         linewidth=2,
-        alpha=0.9,
+        alpha=0.95,
+        color="tab:blue",
     )
     sns.lineplot(
         ax=ax,
@@ -318,15 +330,18 @@ def plot_interdependent_effects(resilience_metrics):
         drawstyle="steps-post",
         label="Power",
         linewidth=2,
-        alpha=0.9,
+        alpha=0.95,
+        color="tab:orange",
     )
 
-    ax.set(
-        xlabel="Time (hours)", ylabel="Equivalent Consumer Serviceability", ylim=(0, 1)
-    )
-    ax.set_title("Network-wide performance", fontsize=12)
+    plt.legend(loc="lower right")
+
+    ax.set(xlabel="Time (hours)", ylabel=title, ylim=(0, 1))
+    if title is True:
+        ax.set_title("Network-wide performance", fontsize=12)
 
     fig.subplots_adjust(hspace=0.35)
+    plt.savefig(f"{metric}_plot.pdf", bbox_inches="tight")
 
 
 def plot_network_impact_map(
@@ -720,16 +735,16 @@ def plot_disruptions_and_crews(integrated_network):
     )
 
     for node in crew_locs["power"]:
-        x.append(G.nodes[node]["coord"][0])
-        y.append(G.nodes[node]["coord"][1])
+        x.append(G.nodes[node]["coord"][0] - 20)
+        y.append(G.nodes[node]["coord"][1] - 20)
         crew_type.append("Power crew")
     for node in crew_locs["water"]:
-        x.append(G.nodes[node]["coord"][0])
-        y.append(G.nodes[node]["coord"][1])
+        x.append(G.nodes[node]["coord"][0] + 20)
+        y.append(G.nodes[node]["coord"][1] + 20)
         crew_type.append("Water crew")
     for node in crew_locs["transpo"]:
-        x.append(G.nodes[node]["coord"][0])
-        y.append(G.nodes[node]["coord"][1])
+        x.append(G.nodes[node]["coord"][0] + 40)
+        y.append(G.nodes[node]["coord"][1] + 40)
         crew_type.append("Transportation crew")
 
     index_cmap = factor_cmap(

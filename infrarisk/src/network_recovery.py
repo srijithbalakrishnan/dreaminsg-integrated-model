@@ -949,10 +949,10 @@ class NetworkRecovery:
                                 in self.network.wn.control_name_list
                             ):
                                 self.network.wn.remove_control(
-                                    f"close pipe {component}_isolated"
+                                    f"close pipe {valve}_isolated"
                                 )
                             self.network.wn.remove_control(
-                                f"open pipe {component}_isolated"
+                                f"open pipe {valve}_isolated"
                             )
                             link_close_event(
                                 self.network.wn, f"{valve}", time_stamp, "isolated"
@@ -1068,7 +1068,7 @@ class NetworkRecovery:
         self.network.tn.userEquilibrium(
             "FW", 400, 1e-4, self.network.tn.averageExcessCost
         )
-        #pass
+        # pass
 
     def fail_transpo_link(self, link_compon):
         """Fails the given transportation link by changing the free-flow travel time to a very large value.
