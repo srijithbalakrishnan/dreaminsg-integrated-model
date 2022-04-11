@@ -1,6 +1,6 @@
 """Resilience metric classes to be used for optimizing recovery actions."""
 
-from sklearn import metrics
+# from sklearn import metrics
 from statistics import mean
 import pandas as pd
 import wntr
@@ -148,9 +148,17 @@ class WeightedResilienceMetric:
         pump_energy_dict = dict()
         for pump in pump_energy.columns:
             pump_energy_dict[pump] = round(
-                metrics.auc(pump_energy.index, pump_energy[pump]) / (3600 * 1000), 3
+                self.integrate(pump_energy.index, pump_energy[pump]) / (3600 * 1000), 3
             )
         self.pump_energy_consumed = pump_energy_dict
+
+    def integrate(x, y):
+        sm = 0
+        for i in range(1, len(x)):
+            h = x[i] - x[i - 1]
+            sm += h * (y[i - 1] + y[i]) / 2
+
+        return sm
 
     def calculate_water_resmetrics(self, network_recovery):
         """Calculates the water network performance timelines (pcs and ecs).
@@ -176,7 +184,9 @@ class WeightedResilienceMetric:
         water_demands_ratio = water_demands / base_water_demands_new
         self.water_demands_ratio = water_demands_ratio.clip(upper=1, lower=0)
 
-        self.water_ecs_list = self.water_demands_ratio.mean(axis=1, skipna=True).tolist()
+        self.water_ecs_list = self.water_demands_ratio.mean(
+            axis=1, skipna=True
+        ).tolist()
 
         water_pcs_list = pd.concat([water_demands, base_water_demands_new]).groupby(
             level=0
@@ -186,10 +196,12 @@ class WeightedResilienceMetric:
         self.water_pcs_list = water_pcs_list.tolist()
 
         self.water_auc_ecs = round(
-            metrics.auc(water_time_list / 60, [1 - x for x in self.water_ecs_list]), 3
+            self.integrate(water_time_list / 60, [1 - x for x in self.water_ecs_list]),
+            3,
         )
         self.water_auc_pcs = round(
-            metrics.auc(water_time_list / 60, [1 - x for x in self.water_pcs_list]), 3
+            self.integrate(water_time_list / 60, [1 - x for x in self.water_pcs_list]),
+            3,
         )
 
         print(
@@ -239,10 +251,12 @@ class WeightedResilienceMetric:
         self.power_pcs_list = power_pcs_list.tolist()
 
         self.power_auc_ecs = round(
-            metrics.auc(power_time_list / 60, [1 - x for x in self.power_ecs_list]), 3
+            self.integrate(power_time_list / 60, [1 - x for x in self.power_ecs_list]),
+            3,
         )
         self.power_auc_pcs = round(
-            metrics.auc(power_time_list / 60, [1 - x for x in self.power_pcs_list]), 3
+            self.integrate(power_time_list / 60, [1 - x for x in self.power_pcs_list]),
+            3,
         )
 
         print(
@@ -262,17 +276,17 @@ class WeightedResilienceMetric:
     def set_weighted_auc_metrics(self):
         """Calculates the water, power, and weighted auc values."""
         self.power_ecs_auc = round(
-            metrics.auc(self.power_time_list, self.power_ecs_list), 3
+            self.integrate(self.power_time_list, self.power_ecs_list), 3
         )
         self.power_pcs_auc = round(
-            metrics.auc(self.power_time_list, self.power_pcs_list), 3
+            self.integrate(self.power_time_list, self.power_pcs_list), 3
         )
 
         self.water_ecs_auc = round(
-            metrics.auc(self.water_time_list, self.water_ecs_list), 3
+            self.integrate(self.water_time_list, self.water_ecs_list), 3
         )
         self.water_pcs_auc = round(
-            metrics.auc(self.water_time_list, self.water_pcs_list), 3
+            self.integrate(self.water_time_list, self.water_pcs_list), 3
         )
 
         self.weighed_ecs_auc = 0.5 * self.power_ecs_auc + 0.5 * self.water_ecs_auc
