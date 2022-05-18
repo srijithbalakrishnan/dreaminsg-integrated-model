@@ -152,7 +152,7 @@ class WeightedResilienceMetric:
             )
         self.pump_energy_consumed = pump_energy_dict
 
-    def integrate(x, y):
+    def integrate(self, x, y):
         sm = 0
         for i in range(1, len(x)):
             h = x[i] - x[i - 1]
