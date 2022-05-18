@@ -320,8 +320,9 @@ def plot_interdependent_effects(resilience_metrics, metric, title=True, area=Tru
         drawstyle="steps-post",
         label="Water",
         linewidth=2,
+        linestyle=(0, (5, 1)),
         alpha=0.95,
-        color="tab:blue",
+        color="tab:red",
     )
     sns.lineplot(
         ax=ax,
@@ -330,13 +331,14 @@ def plot_interdependent_effects(resilience_metrics, metric, title=True, area=Tru
         drawstyle="steps-post",
         label="Power",
         linewidth=2,
+        linestyle=(0, (3, 1, 1, 1)),
         alpha=0.95,
-        color="tab:orange",
+        color="tab:blue",
     )
 
     plt.legend(loc="lower right")
 
-    ax.set(xlabel="Time (hours)", ylabel=title, ylim=(0, 1))
+    ax.set(xlabel="Time (hours)", ylabel=title, ylim=(0, 1.01))
     if title is True:
         ax.set_title("Network-wide performance", fontsize=12)
 
