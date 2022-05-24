@@ -34,9 +34,7 @@ Full documentation is available at ```dreaminsg_integrated_model/dreaminsg_docum
 
 ## Publications
 
-    - Balakrishnan, S., B. Cassottana. InfraRisk: A Python-based Simulation Platform for
-Risk and Resilience Analysis in Interdependent Infrastructure Networks. Accepted for
-publication in Sustainable Cities and Society [(arXiv)](https://doi.org/10.48550/arXiv.2205.04717).
+1. Balakrishnan, S., B. Cassottana. InfraRisk: A Python-based Simulation Platform for Risk and Resilience Analysis in Interdependent Infrastructure Networks. Accepted for publication in Sustainable Cities and Society [(arXiv)](https://doi.org/10.48550/arXiv.2205.04717).
 
 ## Authors
 
