@@ -12,9 +12,9 @@ A Python -based model to simulate the cascading failures in interdependent urban
 
 ### Installation
 
-Please follow the steps below to setup the DREAMIN'SG Integrated Simulation Platform.
+Please follow the steps below to setup the InfraRisk Integrated Simulation Platform.
 
- 1. Clone the DREAMIN'SG integrated simulation platfom repository from [Github](https://github.com/srijithbalakrishnan/dreaminsg-integrated-model.git).
+ 1. Clone the InfraRisk integrated simulation platfom repository from [Github](https://github.com/srijithbalakrishnan/dreaminsg-integrated-model.git).
 
 ```
 git clone https://github.com/srijithbalakrishnan/dreaminsg-integrated-model.git folder-name
