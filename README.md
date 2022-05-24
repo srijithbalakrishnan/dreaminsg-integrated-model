@@ -28,9 +28,9 @@ git clone https://github.com/srijithbalakrishnan/dreaminsg-integrated-model.git 
 
 ## Help
 
-For instructions to run simulations, please refer to ```notebooks/demo_no_optimization_micropolis.ipynb```.
+For instructions to run sample simulation on the Micropolis testbed, please refer to ```notebooks/demo_no_optimization_micropolis.ipynb```.
 
-Full documentation is available at ```dreaminsg_integrated_model/dreaminsg_documentation.pdf```.
+Full documentation is available at ```dreaminsg_integrated_model/dreaminsg_documentation.pdf```. Please do note some sections need to be updated and the process is going on.
 
 ## Publications
 
