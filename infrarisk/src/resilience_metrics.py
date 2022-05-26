@@ -153,6 +153,15 @@ class WeightedResilienceMetric:
         self.pump_energy_consumed = pump_energy_dict
 
     def integrate(self, x, y):
+        """Calculates the area under a curve
+
+        :param x: An array of the x values of the curve
+        :type x: array of floats
+        :param y: An array of the y values of the curve
+        :type y:array of floats
+        :return: The area under the curve
+        :rtype: float
+        """
         sm = 0
         for i in range(1, len(x)):
             h = x[i] - x[i - 1]

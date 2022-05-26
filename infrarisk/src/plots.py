@@ -130,7 +130,7 @@ def plot_water_net(wn):
     # nodes, edges = wntr.graphics.plot_network(water_net, node_cmap='lightsteelblue', **options)
 
 
-def plot_bokeh_from_integrated_graph(G, title, extent=[(1000, 8000), (1000, 6600)]):
+def plot_bokeh_from_integrated_graph(G, title, extent=[(1000, 1000), (8000, 6600)]):
     """Converts the integrated network into a Bokeh interactive plot.
 
     :param G: Integrated network on which the simulation is to be performed.
@@ -147,8 +147,8 @@ def plot_bokeh_from_integrated_graph(G, title, extent=[(1000, 8000), (1000, 6600
         plot_width=700,
         height=400,
         title=title,
-        x_range=extent[0],
-        y_range=extent[1],
+        x_range=(extent[0][0] - 100, extent[1][0] + 100),
+        y_range=(extent[0][1] - 100, extent[1][1] + 100),
     )
 
     # nodes
@@ -523,7 +523,22 @@ def plot_network_impact_map(
     show(p)
 
 
-def plot_disruptions_and_crews(integrated_network):
+def plot_disruptions_and_crews(integrated_network, extent=[(1000, 1000), (8000, 6600)]):
+    """Generate a plot of the number of disruptions and crews for each strategy.
+
+    :param integrated_network: IntegratedNetwork object
+    :type integrated_network: IntegratedNetwork
+    :param extent: extent of the map, defaults to [(1000, 1000), (8000, 6600)]
+    :type extent: list, optional
+    """
+    p = figure(
+        background_fill_color="white",
+        plot_width=700,
+        height=400,
+        x_range=(extent[0][0] - 100, extent[1][0] + 100),
+        y_range=(extent[0][1] - 100, extent[1][1] + 100),
+    )
+
     failed_components_list = list(integrated_network.disrupted_components)
     affected_nodes = {}
     affected_links = {}
@@ -646,14 +661,6 @@ def plot_disruptions_and_crews(integrated_network):
 
     palette = [RdYlGn[11][2], RdYlGn[11][9]]
 
-    p = figure(
-        background_fill_color="white",
-        plot_width=700,
-        height=450,
-        x_range=(1000, 8000),
-        y_range=(1000, 6600),
-    )
-
     # instatiate the tile source provider
     tile_provider = get_provider(Vendors.CARTODBPOSITRON_RETINA)
 
@@ -771,6 +778,9 @@ def plot_disruptions_and_crews(integrated_network):
     )
 
     p.legend.location = "top_left"
-    p.axis.visible = False
-    p.grid.visible = False
+    # p.axis.visible = False
+    # p.grid.visible = False
     show(p)
+
+
+# write codes for dijkstra's algorithm

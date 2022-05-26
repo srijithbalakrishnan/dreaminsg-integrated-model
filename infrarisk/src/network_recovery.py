@@ -827,7 +827,7 @@ class NetworkRecovery:
             f"Updating status of directly affected components between {time_stamp} and {next_sim_time}..."
         )
         curr_event_table = self.event_table[self.event_table.time_stamp == time_stamp]
-
+        print(self.network.wn.control_name_list)
         for _, row in curr_event_table.iterrows():
             component = row["components"]
             time_stamp = row["time_stamp"]
@@ -886,6 +886,10 @@ class NetworkRecovery:
 
                 if compon_details[3] == "Pump":
                     if perf_level < 100:
+                        if f"{component}_outage" in self.network.wn.control_name_list:
+                            self.network.wn.remove_control(
+                                f"{component}_outage"
+                            )
                         self.network.wn.get_link(component).add_outage(
                             self.network.wn, time_stamp, next_sim_time
                         )
@@ -1211,3 +1215,5 @@ def link_close_event(wn, pipe_name, time_stamp, state):
     )
     wn.add_control("close pipe " + pipe_name + f"_{state}", ctrl_close)
     return wn
+
+        

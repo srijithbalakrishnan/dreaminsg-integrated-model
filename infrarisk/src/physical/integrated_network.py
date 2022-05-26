@@ -206,7 +206,9 @@ class IntegratedNetwork:
         title = f"{self.name} integrated network"
 
         self.generate_betweenness_centrality()
-        model_plots.plot_bokeh_from_integrated_graph(G, title=title)
+        model_plots.plot_bokeh_from_integrated_graph(
+            G, title=title, extent=self.map_extends
+        )
 
     def generate_betweenness_centrality(self):
         """Generates the betweenness centrality of the integrated graph."""
