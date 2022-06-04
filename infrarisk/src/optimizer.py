@@ -161,6 +161,7 @@ class BruteForceOptimizer(Optimizer):
                     #     resilience_metrics.get_power_consump_tracker(),
                     #     resilience_metrics.get_water_consump_tracker(),
                     # ]
+                    self.resilience_metrics = resilience_metrics
 
                 # simulation.network_recovery.reset_networks()
 
