@@ -3,6 +3,7 @@ from itertools import permutations
 from sklearn import metrics
 import pandas as pd
 import timeit
+import copy
 
 
 class Optimizer(ABC):
@@ -79,7 +80,7 @@ class BruteForceOptimizer(Optimizer):
         counter = 1
 
         while len(simulation.get_components_to_repair()) > 0:
-            print("PREDICTION HORIZON {}".format(counter))
+            print(f"PREDICTION HORIZON {counter}")
             print("*" * 50)
             print(
                 "Components to repair: ",
@@ -95,29 +96,41 @@ class BruteForceOptimizer(Optimizer):
             )
 
             print("-" * 50)
+
             for repair_order in repair_orders:
-                cum_repair_order = simulation.get_components_repaired() + repair_order
+                curr_simulation = copy.deepcopy(simulation)
+
+                cum_repair_order = (
+                    curr_simulation.get_components_repaired() + repair_order
+                )
                 print(
                     "Simulating the current cumulative repair order",
                     cum_repair_order,
                     "...",
                 )
 
-                simulation.network_recovery.schedule_recovery(cum_repair_order)
-                # print(simulation.network_recovery.get_event_table())
-                simulation.expand_event_table(30)
-                # print(simulation.network_recovery.get_event_table())
+                curr_simulation.network_recovery.schedule_recovery(cum_repair_order)
+                # print(curr_simulation.network_recovery.get_event_table())
+                curr_simulation.expand_event_table(1)
+                # print(curr_simulation.network_recovery.get_event_table())
 
-                resilience_metrics = simulation.simulate_interdependent_effects(
-                    simulation.network_recovery
+                resilience_metrics = curr_simulation.simulate_interdependent_effects(
+                    curr_simulation.network_recovery
+                )
+
+                resilience_metrics.calculate_power_resmetric(
+                    curr_simulation.network_recovery
+                )
+                resilience_metrics.calculate_water_resmetrics(
+                    curr_simulation.network_recovery
                 )
 
                 resilience_metrics.set_weighted_auc_metrics()
-                (
-                    power_auc,
-                    water_auc,
-                    weighted_auc,
-                ) = resilience_metrics.get_weighted_auc_metrics()
+                power_auc, water_auc, weighted_auc = (
+                    resilience_metrics.power_auc_pcs,
+                    resilience_metrics.water_auc_pcs,
+                    resilience_metrics.weighed_pcs_auc,
+                )
 
                 print(
                     "Water AUC: ",
@@ -138,27 +151,27 @@ class BruteForceOptimizer(Optimizer):
                     },
                     ignore_index=True,
                 )
-                if (self.auc == None) or (resilience_metrics.weighted_auc >= self.auc):
+                if (self.auc == None) or (
+                    resilience_metrics.weighed_pcs_auc >= self.auc
+                ):
                     self.auc = weighted_auc
                     self.best_repair_strategy = cum_repair_order
-                    self.trackers = [
-                        resilience_metrics.get_time_tracker(),
-                        resilience_metrics.get_power_consump_tracker(),
-                        resilience_metrics.get_water_consump_tracker(),
-                    ]
+                    # self.trackers = [
+                    #     resilience_metrics.get_time_tracker(),
+                    #     resilience_metrics.get_power_consump_tracker(),
+                    #     resilience_metrics.get_water_consump_tracker(),
+                    # ]
 
-                simulation.network_recovery.reset_networks()
+                # simulation.network_recovery.reset_networks()
 
             best_repair_component = [
                 i
                 for i in self.best_repair_strategy
-                if i not in simulation.get_components_repaired()
+                if i not in curr_simulation.get_components_repaired()
             ][0]
 
             print(
-                "\n{} is identified as the next best repair action in the current prediction horizon. The repair order {} produced the highest AUC of {}".format(
-                    best_repair_component, self.best_repair_strategy, round(self.auc, 3)
-                )
+                f"\n{best_repair_component} is identified as the next best repair action in the current prediction horizon. The repair order {self.best_repair_strategy} produced the highest AUC of {round(self.auc, 3)}"
             )
             print("-" * 50)
 

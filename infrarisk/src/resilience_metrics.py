@@ -214,12 +214,12 @@ class WeightedResilienceMetric:
         )
 
         print(
-            "The Resilience Metric value based on ECS is",
+            "The water Resilience Metric value based on ECS is",
             self.water_auc_ecs,
             "equivalent outage hours (EOH)",
         )
         print(
-            "The Resilience Metric value based on PCS is",
+            "The water Resilience Metric value based on PCS is",
             self.water_auc_pcs,
             "equivalent outage hours (EOH)",
         )
@@ -269,12 +269,12 @@ class WeightedResilienceMetric:
         )
 
         print(
-            "The Resilience Metric value based on ECS is",
+            "The power Resilience Metric value based on ECS is",
             self.power_auc_ecs,
             "equivalent outage hours (EOH)",
         )
         print(
-            "The Resilience Metric value based on PCS is",
+            "The power Resilience Metric value based on PCS is",
             self.power_auc_pcs,
             "equivalent outage hours (EOH)",
         )
@@ -284,22 +284,12 @@ class WeightedResilienceMetric:
 
     def set_weighted_auc_metrics(self):
         """Calculates the water, power, and weighted auc values."""
-        self.power_ecs_auc = round(
-            self.integrate(self.power_time_list, self.power_ecs_list), 3
-        )
-        self.power_pcs_auc = round(
-            self.integrate(self.power_time_list, self.power_pcs_list), 3
-        )
 
-        self.water_ecs_auc = round(
-            self.integrate(self.water_time_list, self.water_ecs_list), 3
-        )
-        self.water_pcs_auc = round(
-            self.integrate(self.water_time_list, self.water_pcs_list), 3
-        )
+        self.weighed_ecs_auc = 0.5 * self.power_auc_ecs + 0.5 * self.water_auc_ecs
+        self.weighed_pcs_auc = 0.5 * self.power_auc_pcs + 0.5 * self.water_auc_pcs
 
-        self.weighed_ecs_auc = 0.5 * self.power_ecs_auc + 0.5 * self.water_ecs_auc
-        self.weighed_pcs_auc = 0.5 * self.power_pcs_auc + 0.5 * self.water_pcs_auc
+        print("The weighted AUC value based on ECS is", self.weighed_ecs_auc)
+        print("The weighted AUC value based on PCS is", self.weighed_pcs_auc)
 
     def get_weighted_auc_metrics(self):
         """Returns the weighted auc metrics.

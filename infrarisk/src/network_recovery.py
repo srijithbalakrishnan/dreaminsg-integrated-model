@@ -827,7 +827,6 @@ class NetworkRecovery:
             f"Updating status of directly affected components between {time_stamp} and {next_sim_time}..."
         )
         curr_event_table = self.event_table[self.event_table.time_stamp == time_stamp]
-        print(self.network.wn.control_name_list)
         for _, row in curr_event_table.iterrows():
             component = row["components"]
             time_stamp = row["time_stamp"]
