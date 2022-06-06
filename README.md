@@ -28,7 +28,7 @@ git clone https://github.com/srijithbalakrishnan/dreaminsg-integrated-model.git 
 
 ## Help
 
-For instructions to run sample simulation on the simple network testbed, please refer to ```notebooks/demo_no_optimization_simmple.ipynb``` (faster).
+For instructions to run sample simulation on the simple network testbed, please refer to ```notebooks/demo_no_optimization_simple.ipynb``` (faster).
 
 For instructions to run sample simulation on the Micropolis testbed, please refer to ```notebooks/demo_no_optimization_micropolis.ipynb``` (slower).
 
