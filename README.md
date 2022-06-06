@@ -26,7 +26,7 @@ git clone https://github.com/srijithbalakrishnan/dreaminsg-integrated-model.git 
  conda env create --name ENV_NAME --file=environment.ym
  ```
 
- 3. Install the InfraRisk package in the created environment. Go to the InfraRisk folder and run the following command:
+ 3. Install the InfraRisk package in the created environment. Go to the project folder and run the following command:
 
  ```
  conda activate redcar
