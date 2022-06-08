@@ -523,14 +523,14 @@ def plot_network_impact_map(
     show(p)
 
 
-def plot_disruptions_and_crews(integrated_network, extent=[(1000, 1000), (8000, 6600)]):
+def plot_disruptions_and_crews(integrated_network):
     """Generate a plot of the number of disruptions and crews for each strategy.
 
     :param integrated_network: IntegratedNetwork object
     :type integrated_network: IntegratedNetwork
-    :param extent: extent of the map, defaults to [(1000, 1000), (8000, 6600)]
-    :type extent: list, optional
     """
+    extent = integrated_network.map_extends
+    print(extent)
     p = figure(
         background_fill_color="white",
         plot_width=700,
@@ -543,8 +543,8 @@ def plot_disruptions_and_crews(integrated_network, extent=[(1000, 1000), (8000, 
     affected_nodes = {}
     affected_links = {}
     fail_compon_dict = {
-        "power": {"L"},
-        "water": {"R", "PMA"},
+        "power": {"L", "MP"},
+        "water": {"R", "PMA", "P", "WP"},
         "transport": {"L"},
     }
 
@@ -654,11 +654,11 @@ def plot_disruptions_and_crews(integrated_network, extent=[(1000, 1000), (8000, 
 
     palette = [RdYlGn[11][2], RdYlGn[11][9]]
 
-    # instatiate the tile source provider
-    tile_provider = get_provider(Vendors.CARTODBPOSITRON_RETINA)
+    # # instatiate the tile source provider
+    # tile_provider = get_provider(Vendors.CARTODBPOSITRON_RETINA)
 
-    # add the back ground basemap
-    p.add_tile(tile_provider, alpha=0.1)
+    # # add the back ground basemap
+    # p.add_tile(tile_provider, alpha=0.1)
 
     # nodes
     x, y, node_type, node_category, fail_status, id = (
@@ -695,7 +695,7 @@ def plot_disruptions_and_crews(integrated_network, extent=[(1000, 1000), (8000, 
             "fail_status", palette, np.array(["Functional", "Disrupted"])
         ),
         alpha=0.7,
-        size=1,
+        size=3,
     )
 
     # links
@@ -774,6 +774,3 @@ def plot_disruptions_and_crews(integrated_network, extent=[(1000, 1000), (8000, 
     # p.axis.visible = False
     # p.grid.visible = False
     show(p)
-
-
-# write codes for dijkstra's algorithm
