@@ -661,7 +661,9 @@ class IntegratedNetwork:
                     init_loc=init_power_crew_locs[i],
                     crew_size=crew_size,
                 )
-                self.power_crews[i + 1].set_next_trip_start(self.disruption_time_dict['power'])
+                self.power_crews[i + 1].set_next_trip_start(
+                    self.disruption_time_dict["power"]
+                )
             print("Power repair crews successfully deployed.")
         except TypeError:
             print(
@@ -676,7 +678,9 @@ class IntegratedNetwork:
                     init_loc=init_water_crew_locs[i],
                     crew_size=crew_size,
                 )
-                self.water_crews[i + 1].set_next_trip_start(self.disruption_time_dict['water'])
+                self.water_crews[i + 1].set_next_trip_start(
+                    self.disruption_time_dict["water"]
+                )
             print("Water repair crews successfully deployed.")
         except TypeError:
             print(
@@ -693,7 +697,9 @@ class IntegratedNetwork:
                     init_loc=init_transpo_crew_locs[i],
                     crew_size=crew_size,
                 )
-                self.transpo_crews[i + 1].set_next_trip_start(self.disruption_time_dict['transpo'])
+                self.transpo_crews[i + 1].set_next_trip_start(
+                    self.disruption_time_dict["transpo"]
+                )
             print("Transportation repair crews successfully deployed.")
         except TypeError:
             print(

@@ -162,9 +162,7 @@ class NetworkRecovery:
 
                     if compon_details[0] == "transpo":
                         transpo_crew = self.network.get_idle_crew("transpo")
-                        recovery_time = (
-                            interdependencies.get_transpo_repair_time(component) * 3600
-                        )
+                        recovery_time = self.calculate_recovery_time(component)
                         connected_junctions = (
                             interdependencies.find_connected_transpo_node(
                                 component, self.network.tn
@@ -398,10 +396,7 @@ class NetworkRecovery:
                     if compon_details[0] == "power":
                         power_crew = self.network.get_idle_crew("power")
 
-                        recovery_time = (
-                            interdependencies.get_power_repair_time(component) * 3600
-                        )
-
+                        recovery_time = self.calculate_recovery_time(component)
                         connected_buses = interdependencies.find_connected_power_node(
                             component, self.network.pn
                         )
@@ -520,12 +515,7 @@ class NetworkRecovery:
                         # select an available power repair crew
                         water_crew = self.network.get_idle_crew("water")
 
-                        recovery_time = (
-                            interdependencies.get_water_repair_time(
-                                component, self.network.wn
-                            )
-                            * 3600
-                        )
+                        recovery_time = self.calculate_recovery_time(component)
 
                         connected_nodes = interdependencies.find_connected_water_node(
                             component, self.network.wn
@@ -1180,6 +1170,13 @@ class NetworkRecovery:
                 allowed = False
                 break
         return allowed
+    
+    def calculate_recovery_time(self, component):
+        disruptive_events = self.network.disruptive_events
+        perc_damage = disruptive_events[disruptive_events['components'] == component]['fail_perc'].values[0]
+        recovery_time = interdependencies.get_compon_repair_time(component) * 3600 * perc_damage/100
+        return recovery_time
+                        
 
 
 def pipe_leak_node_generator(network):
