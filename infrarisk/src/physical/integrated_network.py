@@ -573,8 +573,23 @@ class IntegratedNetwork:
                 scenario_file,
             )
         self.disrupted_components = self.disruptive_events.components
-        self.disruption_time = self.disruptive_events["time_stamp"].unique().item()
         self.set_disrupted_infra_dict()
+
+        self.disruption_time_dict = {}  # self.disruptive_events["time_stamp"].min()
+
+        power_list = self.disrupted_infra_dict["power"]
+        water_list = self.disrupted_infra_dict["water"]
+        transpo_list = self.disrupted_infra_dict["transpo"]
+
+        self.disruption_time_dict["power"] = self.disruptive_events[
+            self.disruptive_events["components"].isin(power_list)
+        ]["time_stamp"].min()
+        self.disruption_time_dict["water"] = self.disruptive_events[
+            self.disruptive_events["components"].isin(water_list)
+        ]["time_stamp"].min()
+        self.disruption_time_dict["transpo"] = self.disruptive_events[
+            self.disruptive_events["components"].isin(transpo_list)
+        ]["time_stamp"].min()
 
     def get_disruptive_events(self):
         """Returns the disruptive event data
@@ -646,7 +661,7 @@ class IntegratedNetwork:
                     init_loc=init_power_crew_locs[i],
                     crew_size=crew_size,
                 )
-                self.power_crews[i + 1].set_next_trip_start(self.disruption_time)
+                self.power_crews[i + 1].set_next_trip_start(self.disruption_time_dict['power'])
             print("Power repair crews successfully deployed.")
         except TypeError:
             print(
@@ -661,7 +676,7 @@ class IntegratedNetwork:
                     init_loc=init_water_crew_locs[i],
                     crew_size=crew_size,
                 )
-                self.water_crews[i + 1].set_next_trip_start(self.disruption_time)
+                self.water_crews[i + 1].set_next_trip_start(self.disruption_time_dict['water'])
             print("Water repair crews successfully deployed.")
         except TypeError:
             print(
@@ -678,7 +693,7 @@ class IntegratedNetwork:
                     init_loc=init_transpo_crew_locs[i],
                     crew_size=crew_size,
                 )
-                self.transpo_crews[i + 1].set_next_trip_start(self.disruption_time)
+                self.transpo_crews[i + 1].set_next_trip_start(self.disruption_time_dict['transpo'])
             print("Transportation repair crews successfully deployed.")
         except TypeError:
             print(

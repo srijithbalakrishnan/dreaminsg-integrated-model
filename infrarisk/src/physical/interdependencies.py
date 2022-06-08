@@ -211,9 +211,9 @@ class DependencyTable:
                         time_stamp,
                         next_time_stamp,
                     )
-                    # print(
-                    #     f"Pump outage resulting from electrical motor failure is added between {time_stamp} s and {next_time_stamp} s"
-                    # )
+                    print(
+                        f"Pump outage resulting from electrical motor failure is added for {row.water_id} between {time_stamp} s and {next_time_stamp} s"
+                    )
 
 
 # ---------------------------------------------------------------------------- #

@@ -650,13 +650,6 @@ def plot_disruptions_and_crews(integrated_network, extent=[(1000, 1000), (8000, 
         else:
             G.edges[link]["fail_status"] = "Functional"
 
-    # for _, node in enumerate(crew_locs["power"]):
-    #     G.nodes[node]["crew_type"] = "Power crew"
-    # for _, node in enumerate(crew_locs["water"]):
-    #     G.nodes[node]["crew_type"] = "Water crew"
-    # for _, node in enumerate(crew_locs["transpo"]):
-    #     G.nodes[node]["crew_type"] = "Transportation crew"
-
     output_notebook()
 
     palette = [RdYlGn[11][2], RdYlGn[11][9]]

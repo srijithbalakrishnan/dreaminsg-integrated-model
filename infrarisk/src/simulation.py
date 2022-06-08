@@ -199,19 +199,15 @@ class NetworkSimulation:
         unique_time_stamps = sorted(
             list(network_recovery.event_table.time_stamp.unique())
         )
-
-        unique_sim_times = self.get_sim_times(network_recovery)
-        # print(unique_sim_times)
+        print(unique_time_stamps)
 
         unique_time_differences = [
-            x - unique_time_stamps[i - 1] for i, x in enumerate(unique_sim_times)
+            x - unique_time_stamps[i - 1] for i, x in enumerate(unique_time_stamps)
         ][1:]
-        # print(unique_time_differences)
+        print(unique_time_differences)
 
-        for index, time_stamp in enumerate(unique_sim_times[:-1]):
-            print(f"Simulating network conditions at {time_stamp} s")
-
-            # network_recovery.remove_previous_water_controls()
+        for index, time_stamp in enumerate(unique_time_stamps[:-1]):
+            print(f"Simulating network conditions until {time_stamp} s")
 
             print(
                 "Simulation time: ",
@@ -221,7 +217,9 @@ class NetworkSimulation:
                 "; Report time step: ",
                 network_recovery.network.wn.options.time.report_timestep,
             )
+
             # update performance of directly affected components
+
             network_recovery.update_directly_affected_components(
                 network_recovery.network.wn.options.time.duration,
                 network_recovery.network.wn.options.time.duration
@@ -244,17 +242,17 @@ class NetworkSimulation:
             # Fix the time until which the wntr model should run in this iteration
             wn_results = water.run_water_simulation(network_recovery.network.wn)
 
-            # print(
-            #     "Pumps: ",
-            #     "\t\tstatus = \n",
-            #     wn_results.link["status"][
-            #         network_recovery.network.wn.pump_name_list
-            #     ].round(decimals=4),
-            #     "\tflowrate = \n",
-            #     wn_results.link["flowrate"][
-            #         network_recovery.network.wn.pump_name_list
-            #     ].round(decimals=4),
-            # )
+            print(
+                "Pumps: ",
+                "\t\tstatus = \n",
+                wn_results.link["status"][
+                    network_recovery.network.wn.pump_name_list
+                ].round(decimals=4),
+                # "\tflowrate = \n",
+                # wn_results.link["flowrate"][
+                #     network_recovery.network.wn.pump_name_list
+                # ].round(decimals=4),
+            )
             # print(
             #     "Tank: ",
             #     "\t\tdemand\n",
@@ -274,8 +272,9 @@ class NetworkSimulation:
             # track results
             resilience_metrics.calculate_node_details(network_recovery, wn_results)
             # resilience_metrics.calculate_water_lost(network_recovery, wn_results)
-            # resilience_metrics.calculate_pump_flow(network_recovery, wn_results)
+            resilience_metrics.calculate_pump_flow(network_recovery, wn_results)
             resilience_metrics.calculate_power_load(network_recovery, time_stamp)
+            resilience_metrics.calculate_pump_status(network_recovery, wn_results)
 
             # # Fix the time until which the wntr model should run in this iteration
             if index < len(unique_time_stamps) - 1:
@@ -309,17 +308,23 @@ class NetworkSimulation:
         #         Path(file_dir) / "water_loss.csv", sep="\t", index=False
         #     )
 
-        # pump_flow = resilience_metrics.water_pump_flow_df
-        # if pump_flow is not None:
-        #     pump_flow[pump_flow.time.isin(subset_times)].to_csv(
-        #         Path(file_dir) / "water_pump_flow.csv", sep="\t", index=False
-        #     )
+        pump_flow = resilience_metrics.water_pump_flow_df
+        if pump_flow is not None:
+            pump_flow[pump_flow.time.isin(subset_times)].to_csv(
+                Path(file_dir) / "water_pump_flow.csv", sep="\t", index=False
+            )
 
-        # water_head = resilience_metrics.water_node_head_df
-        # if water_head is not None:
-        #     water_head[water_head.time.isin(subset_times)].to_csv(
-        #         Path(file_dir) / "water_node_head.csv", sep="\t", index=False
-        #     )
+        pump_status = resilience_metrics.water_pump_status_df
+        if pump_status is not None:
+            pump_status[pump_status.time.isin(subset_times)].to_csv(
+                Path(file_dir) / "water_pump_status.csv", sep="\t", index=False
+            )
+
+        water_head = resilience_metrics.water_node_head_df
+        if water_head is not None:
+            water_head[water_head.time.isin(subset_times)].to_csv(
+                Path(file_dir) / "water_node_head.csv", sep="\t", index=False
+            )
 
         water_demand = resilience_metrics.water_junc_demand_df
         if water_demand is not None:

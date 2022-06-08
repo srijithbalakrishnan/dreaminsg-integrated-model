@@ -16,6 +16,7 @@ class WeightedResilienceMetric:
         """Initiates the WeightedResilienceMetric object."""
         self.water_leak_loss_df = None
         self.water_pump_flow_df = None
+        self.water_pump_status_df = None
         self.water_node_head_df = None
         self.water_junc_demand_df = None
         self.water_node_pressure_df = None
@@ -53,16 +54,16 @@ class WeightedResilienceMetric:
         :type wn_results: wntr object
         """
         node_list = network_recovery.network.wn.node_name_list
-        # if self.water_node_head_df is None:
-        #     self.water_node_head_df = wn_results.node["head"][node_list]
-        #     self.water_node_head_df["time"] = wn_results.node["head"].index
-        # else:
-        #     water_node_head_df_new = wn_results.node["head"][node_list]
-        #     water_node_head_df_new["time"] = wn_results.node["head"].index
-        #     self.water_node_head_df = pd.concat(
-        #         [self.water_node_head_df, water_node_head_df_new],
-        #         ignore_index=True,
-        #     )
+        if self.water_node_head_df is None:
+            self.water_node_head_df = wn_results.node["head"][node_list]
+            self.water_node_head_df["time"] = wn_results.node["head"].index
+        else:
+            water_node_head_df_new = wn_results.node["head"][node_list]
+            water_node_head_df_new["time"] = wn_results.node["head"].index
+            self.water_node_head_df = pd.concat(
+                [self.water_node_head_df, water_node_head_df_new],
+                ignore_index=True,
+            )
 
         if self.water_junc_demand_df is None:
             self.water_junc_demand_df = wn_results.node["demand"][node_list]
@@ -94,18 +95,37 @@ class WeightedResilienceMetric:
         :param wn_results: The water network simulation results for the current time interval
         :type wn_results: wntr object
         """
-        # pump_list = network_recovery.network.wn.pump_name_list
-        # if self.water_pump_flow_df is None:
-        #     self.water_pump_flow_df = wn_results.link["flowrate"][pump_list]
-        #     self.water_pump_flow_df["time"] = wn_results.link["flowrate"].index
-        # else:
-        #     water_pump_flow_df_new = wn_results.link["flowrate"][pump_list]
-        #     water_pump_flow_df_new["time"] = wn_results.link["flowrate"].index
-        #     self.water_pump_flow_df = pd.concat(
-        #         [self.water_pump_flow_df, water_pump_flow_df_new],
-        #         ignore_index=True,
-        #     )
-        pass
+        pump_list = network_recovery.network.wn.pump_name_list
+        if self.water_pump_flow_df is None:
+            self.water_pump_flow_df = wn_results.link["flowrate"][pump_list]
+            self.water_pump_flow_df["time"] = wn_results.link["flowrate"].index
+        else:
+            water_pump_flow_df_new = wn_results.link["flowrate"][pump_list]
+            water_pump_flow_df_new["time"] = wn_results.link["flowrate"].index
+            self.water_pump_flow_df = pd.concat(
+                [self.water_pump_flow_df, water_pump_flow_df_new],
+                ignore_index=True,
+            )
+
+    def calculate_pump_status(self, network_recovery, wn_results):
+        """Calculates the status of pumps and stores the values to a table.
+
+        :param network_recovery: The network recovery object.
+        :type network_recovery: NetworkRecovery object
+        :param wn_results: The water network simulation results for the current time interval
+        :type wn_results: wntr object
+        """
+        pump_list = network_recovery.network.wn.pump_name_list
+        if self.water_pump_status_df is None:
+            self.water_pump_status_df = wn_results.link["status"][pump_list]
+            self.water_pump_status_df["time"] = wn_results.link["status"].index
+        else:
+            water_pump_status_df_new = wn_results.link["status"][pump_list]
+            water_pump_status_df_new["time"] = wn_results.link["status"].index
+            self.water_pump_status_df = pd.concat(
+                [self.water_pump_status_df, water_pump_status_df_new],
+                ignore_index=True,
+            )
 
     def calculate_power_load(self, network_recovery, sim_time):
         """Calculates the power flow in loads and motor pumps.
