@@ -237,8 +237,8 @@ class Network:
             gap = gapFunction()
             delta = datetime.datetime.now() - now
             time = delta.seconds + delta.microseconds / 1e6
-            # if iteration % 50 == 0 or gap < targetGap:
-            #     print("Iteration %d: gap %f: time %f" % (iteration, gap, time))
+            # if iteration % 1 == 0 or gap < targetGap:
+            print("Iteration %d: gap %f: time %f" % (iteration, gap, time))
             if gap < targetGap:
                 break
             targetFlows = self.allOrNothing()
@@ -391,6 +391,7 @@ class Network:
             allOrNothing[ij] = 0
 
         for origin in self.node.keys():
+
             (backlink, _) = self.shortestPath(origin)
             for OD in [OD for OD in self.ODpair if self.ODpair[OD].origin == origin]:
                 curnode = self.ODpair[OD].destination
@@ -633,6 +634,7 @@ class Network:
                 try:
                     self.totalDemandCheck = float(metadata["TOTAL OD FLOW"])
                     if self.numZones != None:
+                        # print(self.numZones)
                         if self.numZones != int(metadata["NUMBER OF ZONES"]):
                             print(
                                 "Error: Number of zones does not match in network/demand files."
@@ -714,16 +716,19 @@ class Network:
                 print("Link %s has negative parameters." % ij)
 
         # Then check that all OD pairs are in range
+        # print(self.ODpair)
         for ODpair in self.ODpair:
             (origin, destination) = (
                 self.ODpair[ODpair].origin,
                 self.ODpair[ODpair].destination,
             )
+
             valid = valid and origin in self.node
             valid = valid and destination in self.node
             if not valid:
                 print("Error: Origin/destination %s not found" % ODpair)
                 raise utils.BadFileFormatException
+            # print(self.node[origin].isZone, self.node[destination].isZone)
             valid = valid and self.node[origin].isZone == True
             valid = valid and self.node[destination].isZone == True
             if not valid:

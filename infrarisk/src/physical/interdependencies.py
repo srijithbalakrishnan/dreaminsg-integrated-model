@@ -4,11 +4,11 @@ import pandas as pd
 from scipy import spatial
 import infrarisk.src.physical.water.water_network_model as water
 import infrarisk.src.physical.power.power_system_model as power
-import infrarisk.src.physical.transportation.transpo_compons as transpo
+import infrarisk.src.physical.transportation.transpo_compons as transpo_compons
 
 water_dict = water.get_water_dict()
 power_dict = power.get_power_dict()
-transpo_dict = transpo.get_transpo_dict()
+transpo_dict = transpo_compons.get_transpo_dict()
 
 # ---------------------------------------------------------------------------- #
 #                      DEPENDENCY TABLE CLASS AND METHODS                      #
@@ -211,9 +211,9 @@ class DependencyTable:
                         time_stamp,
                         next_time_stamp,
                     )
-                    print(
-                        f"Pump outage resulting from electrical motor failure is added for {row.water_id} between {time_stamp} s and {next_time_stamp} s"
-                    )
+                    # print(
+                    #     f"Pump outage resulting from electrical motor failure is added for {row.water_id} between {time_stamp} s and {next_time_stamp} s"
+                    # )
 
 
 # ---------------------------------------------------------------------------- #
@@ -387,11 +387,11 @@ def find_connected_transpo_node(component, tn):
 
 def get_compon_repair_time(component):
     compon_details = get_compon_details(component)
-    if compon_details[0] == 'power':
+    if compon_details[0] == "power":
         repair_time = power_dict[compon_details[1]]["repair_time"]
-    elif compon_details[0] == 'transpo':
+    elif compon_details[0] == "transpo":
         repair_time = transpo_dict[compon_details[1]]["repair_time"]
-    elif compon_details[0] == 'water':
+    elif compon_details[0] == "water":
         repair_time = water_dict[compon_details[1]]["repair_time"]
-        
+
     return repair_time

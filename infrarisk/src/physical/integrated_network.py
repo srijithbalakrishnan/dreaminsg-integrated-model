@@ -5,6 +5,7 @@ import wntr
 import math
 import os
 import numpy as np
+import geopandas as gpd
 
 import infrarisk.src.physical.interdependencies as interdependencies
 import infrarisk.src.physical.water.water_network_model as water
@@ -97,6 +98,10 @@ class IntegratedNetwork:
 
         :param power_file: The power systems file in json format
         :type power_file: string
+        :param power_sim_type: Power simulation type ("1ph" for single phase networks, "3ph" for three phase networks), defaults to "1ph"
+        :type power_sim_type: string, optional
+        :param service_area: If True, the service area will be loaded, defaults to False
+        :type service_area: bool, optional
         """
         try:
             pn = power.load_power_network(
@@ -123,6 +128,16 @@ class IntegratedNetwork:
                 switch_list = [x for x in row[1:] if x is not np.nan]
                 self.line_switch_dict[line] = switch_list
 
+        if os.path.exists(power_folder / "service_area/service_area.shp"):
+            print("Loading power service area details...")
+            pn.service_area = gpd.read_file(
+                power_folder / "service_area/service_area.shp",
+                crs={"init": "epsg:4326"},
+            )
+            pn.service_area = pn.service_area.to_crs({"init": "epsg:3857"})
+            pn.service_area.Power_Node = "P_LO" + pn.service_area.Power_Node.astype(str)
+            pn.service_area.Id = pn.service_area.index
+
     def load_water_network(self, water_folder, water_sim_type):
         """Loads the water network.
 
@@ -138,6 +153,9 @@ class IntegratedNetwork:
         self.water_sim_type = water_sim_type
 
         if water_sim_type == "DDA":
+            if not os.path.exists(water_folder / "base_water_node_supply.csv"):
+                print("Generating base water supply values...")
+                water.generate_base_supply(self.wn, water_folder)
             self.base_water_node_supply = pd.read_csv(
                 water_folder / "base_water_node_supply.csv"
             )
@@ -145,6 +163,10 @@ class IntegratedNetwork:
                 water_folder / "base_water_link_flow.csv"
             )
         elif self.water_sim_type == "PDA":
+            if not os.path.exists(water_folder / "base_water_node_supply_pda.csv"):
+                print("Generating base water supply values...")
+                water.generate_base_supply_pda(self.wn, water_folder)
+
             self.base_water_node_supply = pd.read_csv(
                 water_folder / "base_water_node_supply_pda.csv"
             )
@@ -160,6 +182,18 @@ class IntegratedNetwork:
                 pipe = row["pipe"]
                 valve_list = [x for x in row[1:] if x is not np.nan]
                 self.pipe_valve_dict[pipe] = valve_list
+
+        if os.path.exists(water_folder / "service_area/service_area.shp"):
+            print("Loading water service area details...")
+            self.wn.service_area = gpd.read_file(
+                water_folder / "service_area/service_area.shp",
+                crs={"init": "epsg:4326"},
+            )
+            self.wn.service_area = self.wn.service_area.to_crs({"init": "epsg:3857"})
+            self.wn.service_area.Water_Node = (
+                "W_J" + self.wn.service_area.Water_Node.astype(str)
+            )
+            self.wn.service_area.Id = self.wn.service_area.index
 
     def load_transpo_network(self, transp_folder):
         """Loads the transportation network.
@@ -186,7 +220,7 @@ class IntegratedNetwork:
         except AttributeError:
             print("Error: Some required network files not found.")
 
-    def generate_integrated_graph(self):
+    def generate_integrated_graph(self, basemap=False):
         """Generates the integrated network as a Networkx graph."""
         self.power_graph = self.generate_power_networkx_graph()
         print("Successfully added power network to the integrated graph...")
@@ -207,7 +241,7 @@ class IntegratedNetwork:
 
         self.generate_betweenness_centrality()
         model_plots.plot_bokeh_from_integrated_graph(
-            G, title=title, extent=self.map_extends
+            G, title=title, extent=self.map_extends, basemap=basemap
         )
 
     def generate_betweenness_centrality(self):
@@ -234,9 +268,13 @@ class IntegratedNetwork:
             x.append(x_coord)
             y.append(y_coord)
 
+        xdiff = math.floor(max(x)) - math.floor(min(x))
+        ydiff = math.floor(max(y)) - math.floor(min(y))
+        tol = 0.2
+
         self.map_extends = [
-            (math.floor(min(x)), math.floor(min(y))),
-            (math.floor(max(x)), math.floor(max(y))),
+            (math.floor(min(x)) - tol * xdiff, math.floor(min(y)) - tol * ydiff),
+            (math.floor(max(x)) + tol * xdiff, math.floor(max(y)) + tol * ydiff),
         ]
 
     def get_map_extends(self):

@@ -107,6 +107,11 @@ def get_water_dict():
 
 
 def generate_pattern_interval_dict(wn):
+    """_summary_
+
+    :param wn: _description_
+    :type wn: _type_
+    """
     pattern_intervals = dict()
     for pattern in wn.pattern_name_list:
         pattern_intervals[pattern] = len(wn.get_pattern(pattern).multipliers)
@@ -133,9 +138,9 @@ def load_water_network(network_inp, water_sim_type, initial_sim_step):
         wn.options.time.report_timestep = initial_sim_step
         wn.options.time.hydraulic_timestep = initial_sim_step
         wn.options.hydraulic.demand_model = water_sim_type
-        
+
         wn.original_node_list = wn.node_name_list
-        
+
         if water_sim_type not in ["DDA", "PDA"]:
             print("The given simulation type is not valid!")
 

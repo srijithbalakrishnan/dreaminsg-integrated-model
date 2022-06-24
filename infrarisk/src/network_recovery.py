@@ -143,7 +143,7 @@ class NetworkRecovery:
             if len(disrupted_infra_dict["transpo"]) > 0:
                 self.update_traffic_model()
                 self.transpo_updated_model_dict[
-                    self.network.disruption_time_dict['transpo']
+                    self.network.disruption_time_dict["transpo"]
                 ] = copy.deepcopy(self.network.tn)
 
             # Compute time of recovery actions
@@ -198,17 +198,19 @@ class NetworkRecovery:
                         failed_transpo_link_en_route = [
                             link for link in path if link in repair_order
                         ]
-                        
+
                         disruption_time = self.network.disruptive_events[
                             self.network.disruptive_events["components"] == component
                         ].time_stamp.values[0]
-            
-                        already_disrupted = transpo_crew.get_next_trip_start() >= disruption_time
-                        
+
+                        already_disrupted = (
+                            transpo_crew.get_next_trip_start() >= disruption_time
+                        )
+
                         accessible, possible_start = self.check_route_accessibility(
                             failed_transpo_link_en_route
                         )
-                        
+
                         if already_disrupted:
                             if not failed_transpo_link_en_route:
                                 recovery_start = (
@@ -240,7 +242,9 @@ class NetworkRecovery:
                                 self.transpo_crew_total_tt += actual_travel_time
                                 break
                             elif accessible is True:
-                                no_other_transpo_repairs = len(transpo_links_to_repair) <= 1
+                                no_other_transpo_repairs = (
+                                    len(transpo_links_to_repair) <= 1
+                                )
                                 # print(
                                 #     transpo_crew.get_next_trip_start(),
                                 #     possible_start,
@@ -288,7 +292,9 @@ class NetworkRecovery:
                                     skipped_transpo_links = []
                                     self.transpo_crew_total_tt += actual_travel_time
                                     break
-                                elif possible_start > transpo_crew.get_next_trip_start():
+                                elif (
+                                    possible_start > transpo_crew.get_next_trip_start()
+                                ):
                                     # recovery_start = (
                                     #     possible_start + actual_travel_time * 60
                                     # )
@@ -345,7 +351,9 @@ class NetworkRecovery:
                     )
 
                     # -----------------------------------------------
-                    disruption_time = self.network.disruptive_events[self.network.disruptive_events.components == component].time_stamp.item()
+                    disruption_time = self.network.disruptive_events[
+                        self.network.disruptive_events.components == component
+                    ].time_stamp.item()
                     self.event_table_wide = self.event_table_wide.append(
                         {
                             "component": component,
@@ -392,7 +400,7 @@ class NetworkRecovery:
                 recovery_start = None
                 for _, component in enumerate(components_to_repair):
                     compon_details = interdependencies.get_compon_details(component)
-                    
+
                     if compon_details[0] == "power":
                         power_crew = self.network.get_idle_crew("power")
 
@@ -444,7 +452,9 @@ class NetworkRecovery:
                         disruption_time = self.network.disruptive_events[
                             self.network.disruptive_events["components"] == component
                         ].time_stamp.values[0]
-                        already_disrupted = power_crew.get_next_trip_start() >= disruption_time
+                        already_disrupted = (
+                            power_crew.get_next_trip_start() >= disruption_time
+                        )
                         accessible, possible_start = self.check_route_accessibility(
                             failed_transpo_link_en_route
                         )
@@ -550,6 +560,8 @@ class NetworkRecovery:
                             if curr_travel_time < travel_time:
                                 path = curr_path
                                 travel_time = curr_travel_time
+
+                        print(curr_path, curr_travel_time)
                         actual_travel_time = 10 + int(round(travel_time, 0))
                         # 10 minutes for preparations
 
@@ -563,7 +575,9 @@ class NetworkRecovery:
                         disruption_time = self.network.disruptive_events[
                             self.network.disruptive_events["components"] == component
                         ].time_stamp.values[0]
-                        already_disrupted = water_crew.get_next_trip_start() >= disruption_time
+                        already_disrupted = (
+                            water_crew.get_next_trip_start() >= disruption_time
+                        )
                         accessible, possible_start = self.check_route_accessibility(
                             failed_transpo_link_en_route
                         )
@@ -632,15 +646,16 @@ class NetworkRecovery:
                 if recovery_start is not None:
                     recovery_start = int(120 * round(float(recovery_start) / 120))
 
-                    disruption_time = self.network.disruptive_events[self.network.disruptive_events.components == component].time_stamp.item()
-                    
+                    disruption_time = self.network.disruptive_events[
+                        self.network.disruptive_events.components == component
+                    ].time_stamp.item()
+
                     if compon_details[0] == "power":
                         if compon_details[1] in ["L"]:
                             if self._line_close_policy == "sensor_based_line_isolation":
                                 if (
                                     recovery_start
-                                    > disruption_time
-                                    + 60 * self._pipe_closure_delay
+                                    > disruption_time + 60 * self._pipe_closure_delay
                                 ):
                                     self.event_table = self.event_table.append(
                                         {
@@ -663,8 +678,7 @@ class NetworkRecovery:
                             ):
                                 if (
                                     recovery_start
-                                    > disruption_time
-                                    + 60 * self._pipe_closure_delay
+                                    > disruption_time + 60 * self._pipe_closure_delay
                                 ):
                                     self.event_table = self.event_table.append(
                                         {
@@ -687,8 +701,7 @@ class NetworkRecovery:
                             if self._pipe_close_policy == "sensor_based_pipe_isolation":
                                 if (
                                     recovery_start
-                                    > disruption_time
-                                    + 60 * self._pipe_closure_delay
+                                    > disruption_time + 60 * self._pipe_closure_delay
                                 ):
                                     self.event_table = self.event_table.append(
                                         {
@@ -711,8 +724,7 @@ class NetworkRecovery:
                             ):
                                 if (
                                     recovery_start
-                                    > disruption_time
-                                    + 60 * self._pipe_closure_delay
+                                    > disruption_time + 60 * self._pipe_closure_delay
                                 ):
                                     self.event_table = self.event_table.append(
                                         {
@@ -831,11 +843,11 @@ class NetworkRecovery:
         :param next_sim_time: Next time stamp in the event table in seconds.
         :type next_sim_time: integer
         """
-        
+
         print(
             f"Updating status of directly affected components between {time_stamp} and {next_sim_time}..."
         )
-        print(self.network.wn.control_name_list)
+        # print(self.network.wn.control_name_list)
         curr_event_table = self.event_table[self.event_table.time_stamp == time_stamp]
         for _, row in curr_event_table.iterrows():
             component = row["components"]
@@ -912,9 +924,9 @@ class NetworkRecovery:
                         self.network.wn.get_link(component).add_outage(
                             self.network.wn, time_stamp, next_sim_time
                         )
-                        print(
-                            f"The pump outage is added for {component} between {time_stamp} s and {next_sim_time} s"
-                        )
+                        # print(
+                        #     f"The pump outage is added for {component} between {time_stamp} s and {next_sim_time} s"
+                        # )
 
                 elif compon_details[3] in [
                     "Pipe",
@@ -961,9 +973,9 @@ class NetworkRecovery:
                             next_sim_time,
                             "isolated",
                         )
-                        print(
-                            f"The valve {component} close control is added between {time_stamp} s and {next_sim_time} s"
-                        )
+                        # print(
+                        #     f"The valve {component} close control is added between {time_stamp} s and {next_sim_time} s"
+                        # )
                     elif component_state == "Valves Isolated":
                         list_of_valves = self.network.pipe_valve_dict[component]
                         for valve in list_of_valves:
@@ -986,9 +998,9 @@ class NetworkRecovery:
                                 next_sim_time,
                                 "isolated",
                             )
-                            print(
-                                f"The valve {component} close control is added between {time_stamp} s and {next_sim_time} s"
-                            )
+                            # print(
+                            #     f"The valve {component} close control is added between {time_stamp} s and {next_sim_time} s"
+                            # )
 
                     elif component_state == "Repairing":
                         if self._pipe_close_policy in [
@@ -1017,9 +1029,9 @@ class NetworkRecovery:
                                 next_sim_time,
                                 "repairing",
                             )
-                            print(
-                                f"The pipe {component} close control is added between {time_stamp} s and {next_sim_time} s"
-                            )
+                            # print(
+                            #     f"The pipe {component} close control is added between {time_stamp} s and {next_sim_time} s"
+                            # )
                         elif (
                             self._pipe_close_policy == "sensor_based_cluster_isolation"
                         ):
@@ -1088,10 +1100,10 @@ class NetworkRecovery:
 
     def update_traffic_model(self):
         """Updates the static traffic assignment model based on current network conditions."""
-        self.network.tn.userEquilibrium(
-            "FW", 400, 1e-4, self.network.tn.averageExcessCost
-        )
-        # pass
+        # self.network.tn.userEquilibrium(
+        #     "FW", 400, 1e-4, self.network.tn.averageExcessCost
+        # )
+        pass
 
     def fail_transpo_link(self, link_compon):
         """Fails the given transportation link by changing the free-flow travel time to a very large value.
@@ -1170,13 +1182,19 @@ class NetworkRecovery:
                 allowed = False
                 break
         return allowed
-    
+
     def calculate_recovery_time(self, component):
         disruptive_events = self.network.disruptive_events
-        perc_damage = disruptive_events[disruptive_events['components'] == component]['fail_perc'].values[0]
-        recovery_time = interdependencies.get_compon_repair_time(component) * 3600 * perc_damage/100
+        perc_damage = disruptive_events[disruptive_events["components"] == component][
+            "fail_perc"
+        ].values[0]
+        recovery_time = (
+            interdependencies.get_compon_repair_time(component)
+            * 3600
+            * perc_damage
+            / 100
+        )
         return recovery_time
-                        
 
 
 def pipe_leak_node_generator(network):
@@ -1241,5 +1259,3 @@ def link_close_event(wn, pipe_name, time_stamp, state):
     )
     wn.add_control("close pipe " + pipe_name + f"_{state}", ctrl_close)
     return wn
-
-        

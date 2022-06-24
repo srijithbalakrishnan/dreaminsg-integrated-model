@@ -10,6 +10,7 @@ import infrarisk.src.physical.transportation.network as transpo
 import infrarisk.src.physical.interdependencies as interdependencies
 import infrarisk.src.plots as model_plots
 import infrarisk.src.resilience_metrics as resm
+import infrarisk.src.socioeconomic.se_analysis as se_analysis
 
 
 class NetworkSimulation:
@@ -242,17 +243,17 @@ class NetworkSimulation:
             # Fix the time until which the wntr model should run in this iteration
             wn_results = water.run_water_simulation(network_recovery.network.wn)
 
-            print(
-                "Pumps: ",
-                "\t\tstatus = \n",
-                wn_results.link["status"][
-                    network_recovery.network.wn.pump_name_list
-                ].round(decimals=4),
-                # "\tflowrate = \n",
-                # wn_results.link["flowrate"][
-                #     network_recovery.network.wn.pump_name_list
-                # ].round(decimals=4),
-            )
+            # print(
+            #     "Pumps: ",
+            #     "\t\tstatus = \n",
+            #     wn_results.link["status"][
+            #         network_recovery.network.wn.pump_name_list
+            #     ].round(decimals=4),
+            #     # "\tflowrate = \n",
+            #     # wn_results.link["flowrate"][
+            #     #     network_recovery.network.wn.pump_name_list
+            #     # ].round(decimals=4),
+            # )
             # print(
             #     "Tank: ",
             #     "\t\tdemand\n",
@@ -285,15 +286,13 @@ class NetworkSimulation:
 
         return resilience_metrics
 
-    def write_results(self, file_dir, resilience_metrics, plotting=False):
-        """[summary]
+    def write_results(self, file_dir, resilience_metrics):
+        """Writes tje
 
         :param file_dir: The directory in which the simulation contents are to be saved.
         :type file_dir: string
         :param resilience_metrics: The object in which simulation related data are stored.
         :type resilience_metrics: The WeightedResilienceMetric object
-        :param plotting: [description], defaults to False
-        :type plotting: bool, optional
         """
         sim_times = resilience_metrics.power_load_df.time.astype("int32").to_list()
 
@@ -344,8 +343,3 @@ class NetworkSimulation:
             )
 
         print(f"The simulation results successfully saved to {Path(file_dir)}")
-
-        # if plotting == True:
-        #     model_plots.plot_interdependent_effects(
-        #         power_consump_tracker, water_consump_tracker, time_tracker
-        #     )

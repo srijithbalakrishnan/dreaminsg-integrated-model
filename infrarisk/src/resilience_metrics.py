@@ -40,6 +40,8 @@ class WeightedResilienceMetric:
         # else:
         #     water_leak_loss_df_new = wn_results.node["leak_demand"][node_list]
         #     water_leak_loss_df_new["time"] = wn_results.node["leak_demand"].index
+        #     water_leak_loss_df_new = water_leak_loss_df_new[~water_leak_loss_df_new.time.isin(self.water_leak_loss_df.time)]
+
         #     self.water_leak_loss_df = pd.concat(
         #         [self.water_leak_loss_df, water_leak_loss_df_new],
         #         ignore_index=True,
@@ -60,6 +62,9 @@ class WeightedResilienceMetric:
         else:
             water_node_head_df_new = wn_results.node["head"][node_list]
             water_node_head_df_new["time"] = wn_results.node["head"].index
+            water_node_head_df_new = water_node_head_df_new[
+                ~water_node_head_df_new.time.isin(self.water_node_head_df.time)
+            ]
             self.water_node_head_df = pd.concat(
                 [self.water_node_head_df, water_node_head_df_new],
                 ignore_index=True,
@@ -71,6 +76,10 @@ class WeightedResilienceMetric:
         else:
             water_junc_demand_df_new = wn_results.node["demand"][node_list]
             water_junc_demand_df_new["time"] = wn_results.node["demand"].index
+            water_junc_demand_df_new = water_junc_demand_df_new[
+                ~water_junc_demand_df_new.time.isin(self.water_junc_demand_df.time)
+            ]
+
             self.water_junc_demand_df = pd.concat(
                 [self.water_junc_demand_df, water_junc_demand_df_new],
                 ignore_index=True,
@@ -82,6 +91,7 @@ class WeightedResilienceMetric:
         # else:
         #     water_node_pressure_df_new = wn_results.node["pressure"][node_list]
         #     water_node_pressure_df_new["time"] = wn_results.node["pressure"].index
+        #     water_node_pressure_df_new = water_node_pressure_df_new[~water_node_pressure_df_new.time.isin(self.water_node_pressure_df.time)]
         #     self.water_node_pressure_df = pd.concat(
         #         [self.water_node_pressure_df, water_node_pressure_df_new],
         #         ignore_index=True,
@@ -102,6 +112,10 @@ class WeightedResilienceMetric:
         else:
             water_pump_flow_df_new = wn_results.link["flowrate"][pump_list]
             water_pump_flow_df_new["time"] = wn_results.link["flowrate"].index
+
+            water_pump_flow_df_new = water_pump_flow_df_new[
+                ~water_pump_flow_df_new.time.isin(self.water_pump_flow_df.time)
+            ]
             self.water_pump_flow_df = pd.concat(
                 [self.water_pump_flow_df, water_pump_flow_df_new],
                 ignore_index=True,
@@ -122,6 +136,10 @@ class WeightedResilienceMetric:
         else:
             water_pump_status_df_new = wn_results.link["status"][pump_list]
             water_pump_status_df_new["time"] = wn_results.link["status"].index
+            water_pump_status_df_new = water_pump_status_df_new[
+                ~water_pump_status_df_new.time.isin(self.water_pump_status_df.time)
+            ]
+
             self.water_pump_status_df = pd.concat(
                 [self.water_pump_status_df, water_pump_status_df_new],
                 ignore_index=True,
