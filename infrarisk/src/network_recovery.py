@@ -38,7 +38,6 @@ class NetworkRecovery:
         self.base_network = network
         self.network = copy.deepcopy(self.base_network)
         self.sim_step = sim_step
-        self._tn_update_flag = True
 
         self._pipe_close_policy = pipe_close_policy
         self._pipe_closure_delay = pipe_closure_delay
@@ -49,39 +48,427 @@ class NetworkRecovery:
         self.transpo_updated_model_dict = dict()
         self.transpo_updated_model_dict[0] = copy.deepcopy(network.tn)
 
-        self.water_crew_total_tt = 0
-        self.power_crew_total_tt = 0
-        self.transpo_crew_total_tt = 0
+        self.crew_total_tt = {"water": 0, "power": 0, "transpo": 0}
+        self.total_recovery_time = {"water": 0, "power": 0, "transpo": 0}
 
         self.water_access_no_redundancy = []
         self.power_access_no_redundancy = []
-
         self.transpo_access_no_redundancy = dict()
-
-        self.total_water_recovery_time = 0
-        self.total_power_recovery_time = 0
-        self.total_transpo_recovery_time = 0
 
         self.repairs_to_simulate = self.network.disrupted_components.tolist()
 
         self.network.pipe_leak_node_generator()
 
     def set_initial_crew_start(self):
-        """Sets the initial start times at which the respective infrastructure crews start from their locations post-disaster.
-
-        :param repair_order: The repair order considered in the current simulation.
-        :type repair_order: list of strings.
-        """
-        crew_types = [
+        """Sets the initial start times at which the respective infrastructure crews start from their locations post-disaster."""
+        crew_groups = [
             self.network.power_crews,
             self.network.water_crews,
             self.network.transpo_crews,
         ]
-        for crew_type in crew_types:
-            for crew in crew_type.keys():
-                crew_type[crew].set_next_trip_start(
+        for crew_group in crew_groups:
+            for crew in crew_group.keys():
+                crew_group[crew].set_next_trip_start(
                     list(self.network.get_disruptive_events().time_stamp)[0]
                 )
+
+    def add_disruption_to_event_table(self):
+        """Schedules the events until the initial disruption events."""
+        column_list = [
+            "time_stamp",
+            "components",
+            "perf_level",
+            "component_state",
+        ]
+        self.event_table = pd.DataFrame(columns=column_list)
+
+        # ----------------------------------------------------------
+        column_list_et_short = [
+            "component",
+            "disrupt_time",
+            "repair_start",
+            "functional_start",
+        ]
+        self.event_table_wide = pd.DataFrame(columns=column_list_et_short)
+        # ----------------------------------------------------------
+
+        # Schedule component performance at the start of the simulation.
+        for _, component in enumerate(self.network.get_disrupted_components()):
+            self.event_table = self.event_table.append(
+                {
+                    "time_stamp": 0,
+                    "components": component,
+                    "perf_level": 100,
+                    "component_state": "Functional",
+                },
+                ignore_index=True,
+            )
+
+        # Schedule component disruptions
+        for _, row in self.network.disruptive_events.iterrows():
+            self.event_table = self.event_table.append(
+                {
+                    "time_stamp": row[0],
+                    "components": row[1],
+                    "perf_level": 100 - row[2],
+                    "component_state": "Service Disrupted",
+                },
+                ignore_index=True,
+            )
+
+            compon_details = interdependencies.get_compon_details(component)
+            if compon_details[0] == "transpo":
+                self.fail_transpo_link(component)
+
+    def calculate_travel_time_and_path(self, component, crew):
+        """Calculates the travel time and path for a component and crew.
+
+        :param component: The component for which the travel time and path is to be calculated
+        :type component: string
+        :param crew: The crew for which the travel time and path is to be calculated
+        :type crew: crew object
+        :return: The nearest node, travel time to that node for the crew and path for the component and crew
+        :rtype: list
+        """
+        connected_nodes = interdependencies.find_connected_nodes(
+            component, self.network
+        )
+        nearest_nodes = []
+        for connected_node in connected_nodes:
+            nearest_node, _ = interdependencies.get_nearest_node(
+                self.network.integrated_graph, connected_node, "transpo"
+            )
+            nearest_nodes.append(nearest_node)
+
+        travel_time = 1e10
+        update_times = list(self.transpo_updated_model_dict.keys())
+        curr_update_time = max(
+            [x for x in update_times if x <= crew.get_next_trip_start()]
+        )
+        tn = self.transpo_updated_model_dict[curr_update_time]
+        for nearest_node in nearest_nodes:
+            (
+                curr_path,
+                curr_travel_time,
+            ) = tn.calculateShortestTravelTime(crew.get_crew_loc(), nearest_node)
+
+            if curr_travel_time < travel_time:
+                nearest_node = nearest_node
+                path = curr_path
+                travel_time = curr_travel_time
+        return nearest_node, path, travel_time
+
+    def calculate_recovery_start_end(self, links_to_repair, repair_order):
+        """Calculates the start and end times for the repair of the links.
+
+        :param links_to_repair: The list of components to be repaired
+        :type links_to_repair: list
+        :param repair_order: The list of components to be repaired in the order in which they are to be repaired
+        :type repair_order: list
+        :return: The component name, start time and durationof  the repair of the links
+        :rtype: list
+        """
+        for _, component in enumerate(links_to_repair):
+            compon_details = interdependencies.get_compon_details(component)
+            recovery_time = self.calculate_recovery_time(component)
+
+            crew = self.network.get_idle_crew(compon_details[0])
+            nearest_node, path, travel_time = self.calculate_travel_time_and_path(
+                component, crew
+            )
+            actual_travel_time = 10 + int(
+                round(travel_time, 0)
+            )  # 10 minutes preparation
+            failed_transpo_link_en_route = [
+                link for link in path if link in repair_order
+            ]
+
+            disruption_time = self.network.disruptive_events[
+                self.network.disruptive_events["components"] == component
+            ].time_stamp.values[0]
+
+            already_disrupted = crew.get_next_trip_start() >= disruption_time
+
+            accessible, possible_start = self.check_route_accessibility(
+                failed_transpo_link_en_route
+            )
+
+            if already_disrupted:
+                if not failed_transpo_link_en_route:
+                    recovery_start = (
+                        crew.get_next_trip_start() + actual_travel_time * 60
+                    )
+
+                    print(
+                        f"Repair {component}: The {compon_details[0]} crew {crew._name} is at {crew.get_crew_loc()} at t = {crew.get_next_trip_start() / 60} minutes. It takes {actual_travel_time} minutes to reach nearest node {nearest_node}, the nearest transportation node from {component}."
+                    )
+
+                    crew.set_crew_loc(nearest_node)
+                    crew.set_next_trip_start(recovery_start + recovery_time)
+
+                    if compon_details[0] == "transpo":
+                        self.restore_transpo_link(component)
+                        self.update_traffic_model()
+                        self.transpo_updated_model_dict[
+                            int(recovery_start + recovery_time)
+                        ] = copy.deepcopy(self.network.tn)
+                        self.transpo_links_to_repair.remove(component)
+
+                    self.repair_time_dict[component] = recovery_start + recovery_time
+                    self.components_to_repair.remove(component)
+                    # skipped_transpo_links = []
+                    self.crew_total_tt[compon_details[0]] += actual_travel_time
+                    break
+                elif accessible is True:
+                    no_other_transpo_repairs = len(self.transpo_links_to_repair) <= 1
+
+                    if (
+                        possible_start <= crew.get_next_trip_start()
+                        or no_other_transpo_repairs is True
+                        or component in self.skipped_transpo_links
+                    ):
+                        recovery_start = (
+                            crew.get_next_trip_start() + actual_travel_time * 60
+                        )
+                        idle_time = round(
+                            (recovery_start - crew.get_next_trip_start()) / 60,
+                            0,
+                        )
+                        print(
+                            f"Repair {component}: The {compon_details[0]} crew {crew._name} is at {crew.get_crew_loc()} at t = {crew.get_next_trip_start() / 60} minutes. It takes {idle_time} minutes to reach nearest node {nearest_node}, the nearest transportation  node from {component}  considering time for road link repair.."
+                        )
+
+                        crew.set_crew_loc(nearest_node)
+                        crew.set_next_trip_start(recovery_start + recovery_time)
+
+                        # modification needed. transport model should be updated only when the repair is complete.
+                        if compon_details[0] == "transpo":
+                            self.restore_transpo_link(component)
+                            self.update_traffic_model()
+                            self.transpo_updated_model_dict[
+                                int(recovery_start + recovery_time)
+                            ] = copy.deepcopy(self.network.tn)
+                            self.transpo_links_to_repair.remove(component)
+
+                        self.repair_time_dict[component] = (
+                            recovery_start + recovery_time
+                        )
+                        self.components_to_repair.remove(component)
+
+                        self.crew_total_tt[compon_details[0]] += actual_travel_time
+                        break
+                    elif possible_start > crew.get_next_trip_start():
+
+                        print(
+                            f"The {compon_details[0]} repair crew {crew._name} is available for service at time = {crew.get_next_trip_start() / 60} minutes, much before the possible repair start of {component} at {possible_start/60} minutes. Hence the simulation will check if there are other components, whose repair can be initiated at the earliest."
+                        )
+                        if compon_details[0] == "transpo":
+                            self.skipped_transpo_links.append(component)
+                        recovery_start = None
+                else:
+                    print(
+                        f"The {compon_details[0]} crew {crew._name} cannot reach the destination {nearest_node} from {crew.get_crew_loc()} since there are failed transportation component(s) {failed_transpo_link_en_route} in its possible route. The simulation will defer the repair of {component} and try to repair other failed components."
+                    )
+                    recovery_start = None
+                    if component not in self.transpo_access_no_redundancy:
+                        self.transpo_access_no_redundancy[component] = 1e10
+
+        return component, recovery_start, recovery_time
+
+    def add_recovery_to_event_table(self, component, recovery_start, recovery_time):
+        """Adds the recovery time to the event table.
+        
+        :param component: The component name
+        :type component: string
+        :param recovery_start: The start time of the recovery in seconds
+        :type recovery_start: integer
+        :param recovery_time: The duration of the recovery in seconds
+        
+        """
+        if recovery_start is not None:
+            compon_details = interdependencies.get_compon_details(component)
+            recovery_start = int(120 * round(float(recovery_start) / 120))
+            disruption_time = self.network.disruptive_events[
+                self.network.disruptive_events.components == component
+            ].time_stamp.item()
+
+            if compon_details[0] == "transpo":
+                pass
+
+            elif compon_details[0] == "water":
+                if compon_details[1] in ["PMA", "P", "PSC", "T"]:
+                    if self._pipe_close_policy == "sensor_based_pipe_isolation":
+                        if (
+                            recovery_start
+                            > disruption_time + 60 * self._pipe_closure_delay
+                        ):
+                            self.event_table = self.event_table.append(
+                                {
+                                    "time_stamp": (
+                                        disruption_time + 60 * self._pipe_closure_delay
+                                    ),  # Leaks closed within 10 mins
+                                    "components": component,
+                                    "perf_level": 100
+                                    - self.network.disruptive_events[
+                                        self.network.disruptive_events.components
+                                        == component
+                                    ].fail_perc.item(),
+                                    "component_state": "Pipe Isolated",
+                                },
+                                ignore_index=True,
+                            )
+                    elif self._pipe_close_policy == "sensor_based_cluster_isolation":
+                        if (
+                            recovery_start
+                            > disruption_time + 60 * self._pipe_closure_delay
+                        ):
+                            self.event_table = self.event_table.append(
+                                {
+                                    "time_stamp": (
+                                        disruption_time + 60 * self._pipe_closure_delay
+                                    ),  # Leaks closed within 10 mins
+                                    "components": component,
+                                    "perf_level": 100
+                                    - self.network.disruptive_events[
+                                        self.network.disruptive_events.components
+                                        == component
+                                    ].fail_perc.item(),
+                                    "component_state": "Valves Isolated",
+                                },
+                                ignore_index=True,
+                            )
+
+            elif compon_details[0] == "power":
+                if compon_details[1] in ["L"]:
+                    if self._line_close_policy == "sensor_based_line_isolation":
+                        if (
+                            recovery_start
+                            > disruption_time + 60 * self._line_closure_delay
+                        ):
+                            self.event_table = self.event_table.append(
+                                {
+                                    "time_stamp": (
+                                        disruption_time + 60 * self._line_closure_delay
+                                    ),  # Leaks closed within 10 mins
+                                    "components": component,
+                                    "perf_level": 100
+                                    - self.network.disruptive_events[
+                                        self.network.disruptive_events.components
+                                        == component
+                                    ].fail_perc.item(),
+                                    "component_state": "Line Isolated",
+                                },
+                                ignore_index=True,
+                            )
+                    elif self._line_close_policy == "sensor_based_cluster_isolation":
+                        if (
+                            recovery_start
+                            > disruption_time + 60 * self._pipe_closure_delay
+                        ):
+                            self.event_table = self.event_table.append(
+                                {
+                                    "time_stamp": disruption_time
+                                    + 60
+                                    * self._line_closure_delay,  # Leaks closed within 10 mins
+                                    "components": component,
+                                    "perf_level": 100
+                                    - self.network.disruptive_events[
+                                        self.network.disruptive_events.components
+                                        == component
+                                    ].fail_perc.item(),
+                                    "component_state": "Switches Isolated",
+                                },
+                                ignore_index=True,
+                            )
+
+            self.event_table = self.event_table.append(
+                {
+                    "time_stamp": recovery_start + recovery_time + self.sim_step * 2,
+                    "components": component,
+                    "perf_level": 100,
+                    "component_state": "Service Restored",
+                },
+                ignore_index=True,
+            )
+            self.event_table = self.event_table.append(
+                {
+                    "time_stamp": recovery_start + recovery_time + 10 * 3600,
+                    "components": component,
+                    "perf_level": 100,
+                    "component_state": "Service Restored",
+                },
+                ignore_index=True,
+            )
+
+            self.event_table = self.event_table.append(
+                {
+                    "time_stamp": recovery_start,
+                    "components": component,
+                    "perf_level": 100
+                    - self.network.disruptive_events[
+                        self.network.disruptive_events.components == component
+                    ].fail_perc.item(),
+                    "component_state": "Repairing",
+                },
+                ignore_index=True,
+            )
+
+            recovery_end = int(120 * round(float(recovery_start + recovery_time) / 120))
+            self.event_table = self.event_table.append(
+                {
+                    "time_stamp": recovery_end - self.sim_step * 2,
+                    "components": component,
+                    "perf_level": 100
+                    - self.network.disruptive_events[
+                        self.network.disruptive_events.components == component
+                    ].fail_perc.item(),
+                    "component_state": "Repairing",
+                },
+                ignore_index=True,
+            )
+            self.event_table = self.event_table.append(
+                {
+                    "time_stamp": recovery_end,
+                    "components": component,
+                    "perf_level": 100,
+                    "component_state": "Service Restored",
+                },
+                ignore_index=True,
+            )
+
+            # -----------------------------------------------
+            self.event_table_wide = self.event_table_wide.append(
+                {
+                    "component": component,
+                    "disrupt_time": disruption_time,
+                    "repair_start": recovery_start,
+                    "functional_start": recovery_end,
+                },
+                ignore_index=True,
+            )
+            self.total_recovery_time[compon_details[0]] += (
+                recovery_start + recovery_time
+            ) / 60
+
+    def add_additional_end_events(self, repair_order, extra_hours=5):
+        """Add events post-recovery to the event table.
+
+        :param repair_order: list of components to be repaired
+        :type repair_order: list
+        :param extra_hours: Number of hours post-recovery to be added, defaults to 5
+        :type extra_hours: integer, optional
+        """
+        max_event_table_time = self.event_table["time_stamp"].max()
+        for component in repair_order:
+            self.event_table = self.event_table.append(
+                {
+                    "time_stamp": max_event_table_time + extra_hours * 3600,
+                    "components": component,
+                    "perf_level": 100,
+                    "component_state": "Service Restored",
+                },
+                ignore_index=True,
+            )
 
     def schedule_recovery(self, repair_order):
         """Generates the unexpanded event table consisting of disruptions and repair actions.
@@ -92,51 +479,8 @@ class NetworkRecovery:
         self.repair_time_dict = {component: None for component in repair_order}
 
         if len(list(repair_order)) > 0:
-            column_list = [
-                "time_stamp",
-                "components",
-                "perf_level",
-                "component_state",
-            ]
-            self.event_table = pd.DataFrame(columns=column_list)
-
-            # ----------------------------------------------------------
-            column_list_et_short = [
-                "component",
-                "disrupt_time",
-                "repair_start",
-                "functional_start",
-            ]
-            self.event_table_wide = pd.DataFrame(columns=column_list_et_short)
-            # ----------------------------------------------------------
-
-            # Schedule component performance at the start of the simulation.
-            for _, component in enumerate(self.network.get_disrupted_components()):
-                self.event_table = self.event_table.append(
-                    {
-                        "time_stamp": 0,
-                        "components": component,
-                        "perf_level": 100,
-                        "component_state": "Functional",
-                    },
-                    ignore_index=True,
-                )
-
-            # Schedule component disruptions
-            for _, row in self.network.disruptive_events.iterrows():
-                self.event_table = self.event_table.append(
-                    {
-                        "time_stamp": row[0],
-                        "components": row[1],
-                        "perf_level": 100 - row[2],
-                        "component_state": "Service Disrupted",
-                    },
-                    ignore_index=True,
-                )
-
-                compon_details = interdependencies.get_compon_details(component)
-                if compon_details[0] == "transpo":
-                    self.fail_transpo_link(component)
+            # initiates the recovery schedule pandas table and add component performances until the initial failures
+            self.add_disruption_to_event_table()
 
             # update transportation link flows and costs only if there is any change to transportation network due to the event
             disrupted_infra_dict = self.network.get_disrupted_infra_dict()
@@ -147,686 +491,56 @@ class NetworkRecovery:
                 ] = copy.deepcopy(self.network.tn)
 
             # Compute time of recovery actions
-            components_to_repair = copy.deepcopy(repair_order)
+            self.components_to_repair = copy.deepcopy(repair_order)
 
             # repair transportation links first
-            transpo_links_to_repair = [
-                x for x in components_to_repair if x.startswith("T_L")
+            self.transpo_links_to_repair = [
+                x for x in self.components_to_repair if x.startswith("T_L")
             ]
-            skipped_transpo_links = []
+            self.skipped_transpo_links = []
 
-            while len(transpo_links_to_repair) > 0:
+            while len(self.transpo_links_to_repair) > 0:
                 recovery_start = None
-                for _, component in enumerate(transpo_links_to_repair):
-                    compon_details = interdependencies.get_compon_details(component)
-
-                    if compon_details[0] == "transpo":
-                        transpo_crew = self.network.get_idle_crew("transpo")
-                        recovery_time = self.calculate_recovery_time(component)
-                        connected_junctions = (
-                            interdependencies.find_connected_transpo_node(
-                                component, self.network.tn
-                            )
-                        )
-                        nearest_nodes = []
-                        for connected_junction in connected_junctions:
-                            nearest_node = connected_junction
-                            nearest_nodes.append(nearest_node)
-                        travel_time = 1e10
-                        update_times = list(self.transpo_updated_model_dict.keys())
-                        curr_update_time = max(
-                            [
-                                x
-                                for x in update_times
-                                if x <= transpo_crew.get_next_trip_start()
-                            ]
-                        )
-                        tn = self.transpo_updated_model_dict[curr_update_time]
-                        for nearest_node in nearest_nodes:
-                            (
-                                curr_path,
-                                curr_travel_time,
-                            ) = tn.calculateShortestTravelTime(
-                                transpo_crew.get_crew_loc(), nearest_node
-                            )
-
-                            if curr_travel_time < travel_time:
-                                path = curr_path
-                                travel_time = curr_travel_time
-                        actual_travel_time = 10 + int(round(travel_time, 0))
-                        # 10 minutes for preparations
-                        failed_transpo_link_en_route = [
-                            link for link in path if link in repair_order
-                        ]
-
-                        disruption_time = self.network.disruptive_events[
-                            self.network.disruptive_events["components"] == component
-                        ].time_stamp.values[0]
-
-                        already_disrupted = (
-                            transpo_crew.get_next_trip_start() >= disruption_time
-                        )
-
-                        accessible, possible_start = self.check_route_accessibility(
-                            failed_transpo_link_en_route
-                        )
-
-                        if already_disrupted:
-                            if not failed_transpo_link_en_route:
-                                recovery_start = (
-                                    transpo_crew.get_next_trip_start()
-                                    + actual_travel_time * 60
-                                )
-
-                                print(
-                                    f"Repair {component}: The transpo crew {transpo_crew._name} is at {transpo_crew.get_crew_loc()} at t = {transpo_crew.get_next_trip_start() / 60} minutes. It takes {actual_travel_time} minutes to reach nearest node {nearest_node}, the nearest transportation node from {component}."
-                                )
-
-                                self.restore_transpo_link(component)
-                                transpo_crew.set_crew_loc(nearest_node)
-                                transpo_crew.set_next_trip_start(
-                                    recovery_start + recovery_time
-                                )
-
-                                self.update_traffic_model()
-                                self.transpo_updated_model_dict[
-                                    int(recovery_start + recovery_time)
-                                ] = copy.deepcopy(self.network.tn)
-
-                                self.repair_time_dict[component] = (
-                                    recovery_start + recovery_time
-                                )
-                                components_to_repair.remove(component)
-                                transpo_links_to_repair.remove(component)
-                                skipped_transpo_links = []
-                                self.transpo_crew_total_tt += actual_travel_time
-                                break
-                            elif accessible is True:
-                                no_other_transpo_repairs = (
-                                    len(transpo_links_to_repair) <= 1
-                                )
-                                # print(
-                                #     transpo_crew.get_next_trip_start(),
-                                #     possible_start,
-                                #     possible_start > transpo_crew.get_next_trip_start(),
-                                # )
-
-                                if (
-                                    possible_start <= transpo_crew.get_next_trip_start()
-                                    or no_other_transpo_repairs is True
-                                    or component in skipped_transpo_links
-                                ):
-                                    recovery_start = (
-                                        transpo_crew.get_next_trip_start()
-                                        + actual_travel_time * 60
-                                    )
-                                    idle_time = round(
-                                        (
-                                            recovery_start
-                                            - transpo_crew.get_next_trip_start()
-                                        )
-                                        / 60,
-                                        0,
-                                    )
-                                    print(
-                                        f"Repair {component}: The transpo crew {transpo_crew._name} is at {transpo_crew.get_crew_loc()} at t = {transpo_crew.get_next_trip_start() / 60} minutes. It takes {idle_time} minutes to reach nearest node {nearest_node}, the nearest transportation  node from {component}  considering time for road link repair.."
-                                    )
-
-                                    self.restore_transpo_link(component)
-                                    transpo_crew.set_crew_loc(nearest_node)
-                                    transpo_crew.set_next_trip_start(
-                                        recovery_start + recovery_time
-                                    )
-
-                                    # modification needed. transport model should be updated only when the repair is complete.
-                                    self.update_traffic_model()
-                                    self.transpo_updated_model_dict[
-                                        int(recovery_start + recovery_time)
-                                    ] = copy.deepcopy(self.network.tn)
-
-                                    self.repair_time_dict[component] = (
-                                        recovery_start + recovery_time
-                                    )
-                                    components_to_repair.remove(component)
-                                    transpo_links_to_repair.remove(component)
-                                    skipped_transpo_links = []
-                                    self.transpo_crew_total_tt += actual_travel_time
-                                    break
-                                elif (
-                                    possible_start > transpo_crew.get_next_trip_start()
-                                ):
-                                    # recovery_start = (
-                                    #     possible_start + actual_travel_time * 60
-                                    # )
-                                    print(
-                                        f"The transportation repair crew {transpo_crew._name} is available for service at time = {transpo_crew.get_next_trip_start() / 60} minutes, much before the possible repair start of {component} at {possible_start/60} minutes. Hence the simulation will check if there are other components, whose repair can be initiated at the earliest."
-                                    )
-                                    skipped_transpo_links.append(component)
-                            else:
-                                print(
-                                    f"The transportation crew {transpo_crew._name} cannot reach the destination {nearest_node} from {transpo_crew.get_crew_loc()} since there are failed transportation component(s) {failed_transpo_link_en_route} in its possible route. The simulation will defer the repair of {component} and try to repair other failed components."
-                                )
-                                if component not in self.transpo_access_no_redundancy:
-                                    self.transpo_access_no_redundancy[component] = 1e10
-                # Schedule the recovery action
-                if recovery_start is not None:
-                    recovery_start = int(120 * round(float(recovery_start) / 120))
-
-                    self.event_table = self.event_table.append(
-                        {
-                            "time_stamp": recovery_start,
-                            "components": component,
-                            "perf_level": 100
-                            - self.network.disruptive_events[
-                                self.network.disruptive_events.components == component
-                            ].fail_perc.item(),
-                            "component_state": "Repairing",
-                        },
-                        ignore_index=True,
-                    )
-
-                    recovery_end = int(
-                        120 * round(float(recovery_start + recovery_time) / 120)
-                    )
-                    self.event_table = self.event_table.append(
-                        {
-                            "time_stamp": recovery_end - self.sim_step * 2,
-                            "components": component,
-                            "perf_level": 100
-                            - self.network.disruptive_events[
-                                self.network.disruptive_events.components == component
-                            ].fail_perc.item(),
-                            "component_state": "Repairing",
-                        },
-                        ignore_index=True,
-                    )
-                    self.event_table = self.event_table.append(
-                        {
-                            "time_stamp": recovery_end,
-                            "components": component,
-                            "perf_level": 100,
-                            "component_state": "Service Restored",
-                        },
-                        ignore_index=True,
-                    )
-
-                    # -----------------------------------------------
-                    disruption_time = self.network.disruptive_events[
-                        self.network.disruptive_events.components == component
-                    ].time_stamp.item()
-                    self.event_table_wide = self.event_table_wide.append(
-                        {
-                            "component": component,
-                            "disrupt_time": disruption_time,
-                            "repair_start": recovery_start,
-                            "functional_start": recovery_end,
-                        },
-                        ignore_index=True,
-                    )
-
-                    # -----------------------------------------------
-
-                    if compon_details[0] == "water":
-                        self.total_water_recovery_time = recovery_start + recovery_time
-                    elif compon_details[0] == "power":
-                        self.total_power_recovery_time = recovery_start + recovery_time
-                    elif compon_details[0] == "transpo":
-                        self.total_transpo_recovery_time = (
-                            recovery_start + recovery_time
-                        )
-
-                    self.event_table = self.event_table.append(
-                        {
-                            "time_stamp": recovery_start
-                            + recovery_time
-                            + self.sim_step * 2,
-                            "components": component,
-                            "perf_level": 100,
-                            "component_state": "Service Restored",
-                        },
-                        ignore_index=True,
-                    )
-                    self.event_table = self.event_table.append(
-                        {
-                            "time_stamp": recovery_start + recovery_time + 10 * 3600,
-                            "components": component,
-                            "perf_level": 100,
-                            "component_state": "Service Restored",
-                        },
-                        ignore_index=True,
-                    )
-
-            while len(components_to_repair) > 0:
-                recovery_start = None
-                for _, component in enumerate(components_to_repair):
-                    compon_details = interdependencies.get_compon_details(component)
-
-                    if compon_details[0] == "power":
-                        power_crew = self.network.get_idle_crew("power")
-
-                        recovery_time = self.calculate_recovery_time(component)
-                        connected_buses = interdependencies.find_connected_power_node(
-                            component, self.network.pn
-                        )
-
-                        nearest_nodes = []
-                        for connected_bus in connected_buses:
-                            nearest_node, _ = interdependencies.get_nearest_node(
-                                self.network.integrated_graph,
-                                connected_bus,
-                                "transpo_node",
-                            )
-                            nearest_nodes.append(nearest_node)
-
-                        travel_time = 1e10
-                        update_times = list(self.transpo_updated_model_dict.keys())
-                        curr_update_time = max(
-                            [
-                                x
-                                for x in update_times
-                                if x <= power_crew.get_next_trip_start()
-                            ]
-                        )
-                        tn = self.transpo_updated_model_dict[curr_update_time]
-                        for nearest_node in nearest_nodes:
-                            (
-                                curr_path,
-                                curr_travel_time,
-                            ) = tn.calculateShortestTravelTime(
-                                power_crew.get_crew_loc(), nearest_node
-                            )
-
-                            if curr_travel_time < travel_time:
-                                path = curr_path
-                                travel_time = curr_travel_time
-                        actual_travel_time = 10 + int(round(travel_time, 0))
-                        # 10 minutes for preparations
-
-                        failed_transpo_link_en_route = [
-                            link for link in path if link in repair_order
-                        ]
-
-                        accessible, possible_start = self.check_route_accessibility(
-                            failed_transpo_link_en_route
-                        )
-                        disruption_time = self.network.disruptive_events[
-                            self.network.disruptive_events["components"] == component
-                        ].time_stamp.values[0]
-                        already_disrupted = (
-                            power_crew.get_next_trip_start() >= disruption_time
-                        )
-                        accessible, possible_start = self.check_route_accessibility(
-                            failed_transpo_link_en_route
-                        )
-                        # print(accessible, possible_start)
-                        if already_disrupted:
-                            if not failed_transpo_link_en_route:
-                                recovery_start = (
-                                    power_crew.get_next_trip_start()
-                                    + actual_travel_time * 60
-                                )
-
-                                print(
-                                    f"Repair {component}: The power crew {power_crew._name} is at {power_crew.get_crew_loc()} at t = {power_crew.get_next_trip_start() / 60} minutes. It takes {actual_travel_time} minutes to reach nearest node {nearest_node},  the nearest transportation node from {component}."
-                                )
-
-                                power_crew.set_crew_loc(nearest_node)
-                                power_crew.set_next_trip_start(
-                                    recovery_start + recovery_time
-                                )
-
-                                self.repair_time_dict[component] = (
-                                    recovery_start + recovery_time
-                                )
-                                components_to_repair.remove(component)
-                                self.power_crew_total_tt += actual_travel_time
-                                break
-                            elif accessible:
-                                if possible_start >= power_crew.get_next_trip_start():
-                                    recovery_start = (
-                                        possible_start + actual_travel_time * 60
-                                    )
-                                else:
-                                    recovery_start = (
-                                        power_crew.get_next_trip_start()
-                                        + actual_travel_time * 60
-                                    )
-
-                                idle_time = round(
-                                    (recovery_start - power_crew.get_next_trip_start())
-                                    / 60,
-                                    0,
-                                )
-
-                                print(
-                                    f"Repair {component}: The power crew {power_crew._name} is at {power_crew.get_crew_loc()} at t = {power_crew.get_next_trip_start() / 60}  minutes. It takes {round(idle_time,2)} minutes to reach nearest node {nearest_node}, the nearest transportation  node from {component} considering time for road link repair."
-                                )
-
-                                power_crew.set_crew_loc(nearest_node)
-                                power_crew.set_next_trip_start(
-                                    recovery_start + recovery_time
-                                )
-
-                                self.repair_time_dict[component] = (
-                                    recovery_start + recovery_time
-                                )
-                                components_to_repair.remove(component)
-                                self.power_crew_total_tt += actual_travel_time
-                                break
-                            else:
-                                print(
-                                    f"The power crew {power_crew._name} cannot reach the destination {nearest_node} from {power_crew.get_crew_loc()}  since there are failed transportation component(s) {failed_transpo_link_en_route} in its possible  route. The simulation will defer the repair of {component} and try to repair other failed components."
-                                )
-                                if component not in self.power_access_no_redundancy:
-                                    self.power_access_no_redundancy.append(component)
-
-                    elif compon_details[0] == "water":
-
-                        # select an available power repair crew
-                        water_crew = self.network.get_idle_crew("water")
-
-                        recovery_time = self.calculate_recovery_time(component)
-
-                        connected_nodes = interdependencies.find_connected_water_node(
-                            component, self.network.wn
-                        )
-                        nearest_nodes = []
-                        for connected_node in connected_nodes:
-                            nearest_node, _ = interdependencies.get_nearest_node(
-                                self.network.integrated_graph,
-                                connected_node,
-                                "transpo_node",
-                            )
-                            nearest_nodes.append(nearest_node)
-
-                        travel_time = 1e10
-                        update_times = list(self.transpo_updated_model_dict.keys())
-                        curr_update_time = max(
-                            [
-                                x
-                                for x in update_times
-                                if x <= water_crew.get_next_trip_start()
-                            ]
-                        )
-                        tn = self.transpo_updated_model_dict[curr_update_time]
-                        for nearest_node in nearest_nodes:
-                            (
-                                curr_path,
-                                curr_travel_time,
-                            ) = tn.calculateShortestTravelTime(
-                                water_crew.get_crew_loc(), nearest_node
-                            )
-
-                            if curr_travel_time < travel_time:
-                                path = curr_path
-                                travel_time = curr_travel_time
-
-                        print(curr_path, curr_travel_time)
-                        actual_travel_time = 10 + int(round(travel_time, 0))
-                        # 10 minutes for preparations
-
-                        failed_transpo_link_en_route = [
-                            link for link in path if link in repair_order
-                        ]
-
-                        accessible, possible_start = self.check_route_accessibility(
-                            failed_transpo_link_en_route
-                        )
-                        disruption_time = self.network.disruptive_events[
-                            self.network.disruptive_events["components"] == component
-                        ].time_stamp.values[0]
-                        already_disrupted = (
-                            water_crew.get_next_trip_start() >= disruption_time
-                        )
-                        accessible, possible_start = self.check_route_accessibility(
-                            failed_transpo_link_en_route
-                        )
-                        # print(accessible, possible_start)
-                        if already_disrupted:
-                            if not failed_transpo_link_en_route:
-                                recovery_start = (
-                                    water_crew.get_next_trip_start()
-                                    + actual_travel_time * 60
-                                )
-
-                                print(
-                                    f"Repair {component}: The water crew {water_crew._name} is at {water_crew.get_crew_loc()} at t = {water_crew.get_next_trip_start() / 60}  minutes. It takes {actual_travel_time} minutes to reach nearest node {nearest_node}, the nearest transportation  node from {component}."
-                                )
-
-                                water_crew.set_crew_loc(nearest_node)
-                                water_crew.set_next_trip_start(
-                                    recovery_start + recovery_time
-                                )
-
-                                self.repair_time_dict[component] = (
-                                    recovery_start + recovery_time
-                                )
-                                components_to_repair.remove(component)
-                                self.water_crew_total_tt += actual_travel_time
-                                break
-                            elif accessible:
-                                if possible_start >= water_crew.get_next_trip_start():
-                                    recovery_start = (
-                                        possible_start + actual_travel_time * 60
-                                    )
-                                else:
-                                    recovery_start = (
-                                        water_crew.get_next_trip_start()
-                                        + actual_travel_time * 60
-                                    )
-
-                                idle_time = round(
-                                    (recovery_start - water_crew.get_next_trip_start())
-                                    / 60,
-                                    0,
-                                )
-                                print(
-                                    f"Repair {component}: The water crew {water_crew._name} is at {water_crew.get_crew_loc()} at t = {water_crew.get_next_trip_start() / 60}  minutes. It takes {idle_time} minutes to reach nearest node {nearest_node}, the nearest transportation  node from {component} considering time for road link repair."
-                                )
-
-                                water_crew.set_crew_loc(nearest_node)
-                                water_crew.set_next_trip_start(
-                                    recovery_start + recovery_time
-                                )
-
-                                self.repair_time_dict[component] = (
-                                    recovery_start + recovery_time
-                                )
-                                components_to_repair.remove(component)
-                                self.water_crew_total_tt += actual_travel_time
-                                break
-                            else:
-                                print(
-                                    f"The water crew {water_crew._name} cannot reach the destination {nearest_node} from {water_crew.get_crew_loc()}  since there are failed transportation component(s) {failed_transpo_link_en_route} in its  possible route. The simulation will will defer the repair of {component} and try to repair other failed components."
-                                )
-                                if component not in self.water_access_no_redundancy:
-                                    self.water_access_no_redundancy.append(component)
+                (
+                    component,
+                    recovery_start,
+                    recovery_time,
+                ) = self.calculate_recovery_start_end(
+                    self.transpo_links_to_repair, repair_order
+                )
 
                 # Schedule the recovery action
-                if recovery_start is not None:
-                    recovery_start = int(120 * round(float(recovery_start) / 120))
+                self.add_recovery_to_event_table(
+                    component, recovery_start, recovery_time
+                )
 
-                    disruption_time = self.network.disruptive_events[
-                        self.network.disruptive_events.components == component
-                    ].time_stamp.item()
+            while len(self.components_to_repair) > 0:
+                recovery_start = None
+                (
+                    component,
+                    recovery_start,
+                    recovery_time,
+                ) = self.calculate_recovery_start_end(
+                    self.components_to_repair, repair_order
+                )
 
-                    if compon_details[0] == "power":
-                        if compon_details[1] in ["L"]:
-                            if self._line_close_policy == "sensor_based_line_isolation":
-                                if (
-                                    recovery_start
-                                    > disruption_time + 60 * self._pipe_closure_delay
-                                ):
-                                    self.event_table = self.event_table.append(
-                                        {
-                                            "time_stamp": disruption_time
-                                            + 60
-                                            * self._line_closure_delay,  # Leaks closed within 10 mins
-                                            "components": component,
-                                            "perf_level": 100
-                                            - self.network.disruptive_events[
-                                                self.network.disruptive_events.components
-                                                == component
-                                            ].fail_perc.item(),
-                                            "component_state": "Line Isolated",
-                                        },
-                                        ignore_index=True,
-                                    )
-                            elif (
-                                self._line_close_policy
-                                == "sensor_based_cluster_isolation"
-                            ):
-                                if (
-                                    recovery_start
-                                    > disruption_time + 60 * self._pipe_closure_delay
-                                ):
-                                    self.event_table = self.event_table.append(
-                                        {
-                                            "time_stamp": disruption_time
-                                            + 60
-                                            * self._line_closure_delay,  # Leaks closed within 10 mins
-                                            "components": component,
-                                            "perf_level": 100
-                                            - self.network.disruptive_events[
-                                                self.network.disruptive_events.components
-                                                == component
-                                            ].fail_perc.item(),
-                                            "component_state": "Switches Isolated",
-                                        },
-                                        ignore_index=True,
-                                    )
+                # Schedule the recovery action
+                self.add_recovery_to_event_table(
+                    component, recovery_start, recovery_time
+                )
 
-                    elif compon_details[0] == "water":
-                        if compon_details[1] in ["PMA", "P", "T"]:
-                            if self._pipe_close_policy == "sensor_based_pipe_isolation":
-                                if (
-                                    recovery_start
-                                    > disruption_time + 60 * self._pipe_closure_delay
-                                ):
-                                    self.event_table = self.event_table.append(
-                                        {
-                                            "time_stamp": disruption_time
-                                            + 60
-                                            * self._pipe_closure_delay,  # Leaks closed within 10 mins
-                                            "components": component,
-                                            "perf_level": 100
-                                            - self.network.disruptive_events[
-                                                self.network.disruptive_events.components
-                                                == component
-                                            ].fail_perc.item(),
-                                            "component_state": "Pipe Isolated",
-                                        },
-                                        ignore_index=True,
-                                    )
-                            elif (
-                                self._pipe_close_policy
-                                == "sensor_based_cluster_isolation"
-                            ):
-                                if (
-                                    recovery_start
-                                    > disruption_time + 60 * self._pipe_closure_delay
-                                ):
-                                    self.event_table = self.event_table.append(
-                                        {
-                                            "time_stamp": disruption_time
-                                            + 60
-                                            * self._pipe_closure_delay,  # Leaks closed within 10 mins
-                                            "components": component,
-                                            "perf_level": 100
-                                            - self.network.disruptive_events[
-                                                self.network.disruptive_events.components
-                                                == component
-                                            ].fail_perc.item(),
-                                            "component_state": "Valves Isolated",
-                                        },
-                                        ignore_index=True,
-                                    )
-
-                    self.event_table = self.event_table.append(
-                        {
-                            "time_stamp": recovery_start,
-                            "components": component,
-                            "perf_level": 100
-                            - self.network.disruptive_events[
-                                self.network.disruptive_events.components == component
-                            ].fail_perc.item(),
-                            "component_state": "Repairing",
-                        },
-                        ignore_index=True,
-                    )
-
-                    recovery_end = int(
-                        120 * round(float(recovery_start + recovery_time) / 120)
-                    )
-                    self.event_table = self.event_table.append(
-                        {
-                            "time_stamp": recovery_end - self.sim_step * 2,
-                            "components": component,
-                            "perf_level": 100
-                            - self.network.disruptive_events[
-                                self.network.disruptive_events.components == component
-                            ].fail_perc.item(),
-                            "component_state": "Repairing",
-                        },
-                        ignore_index=True,
-                    )
-                    self.event_table = self.event_table.append(
-                        {
-                            "time_stamp": recovery_end,
-                            "components": component,
-                            "perf_level": 100,
-                            "component_state": "Service Restored",
-                        },
-                        ignore_index=True,
-                    )
-
-                    # -----------------------------------------------
-                    self.event_table_wide = self.event_table_wide.append(
-                        {
-                            "component": component,
-                            "disrupt_time": disruption_time,
-                            "repair_start": recovery_start,
-                            "functional_start": recovery_end,
-                        },
-                        ignore_index=True,
-                    )
-
-                    # -----------------------------------------------
-
-                    if compon_details[0] == "water":
-                        self.total_water_recovery_time = recovery_start + recovery_time
-                    elif compon_details[0] == "power":
-                        self.total_power_recovery_time = recovery_start + recovery_time
-                    elif compon_details[0] == "transpo":
-                        self.total_transpo_recovery_time = (
-                            recovery_start + recovery_time
-                        )
-
-                    self.event_table = self.event_table.append(
-                        {
-                            "time_stamp": recovery_start
-                            + recovery_time
-                            + self.sim_step * 2,
-                            "components": component,
-                            "perf_level": 100,
-                            "component_state": "Service Restored",
-                        },
-                        ignore_index=True,
-                    )
-                    self.event_table = self.event_table.append(
-                        {
-                            "time_stamp": recovery_start + recovery_time + 10 * 3600,
-                            "components": component,
-                            "perf_level": 100,
-                            "component_state": "Service Restored",
-                        },
-                        ignore_index=True,
-                    )
+            self.add_additional_end_events(repair_order=repair_order)
 
             self.event_table.sort_values(by=["time_stamp"], inplace=True)
             self.event_table["time_stamp"] = self.event_table["time_stamp"].astype(int)
             self.network.reset_crew_locs()
             print("All restoration actions are successfully scheduled.")
+            print(
+                f"Total travel times: power: {self.crew_total_tt['power']} mins, water: {self.crew_total_tt['water']} min, transportation: {self.crew_total_tt['transpo']} mins"
+            )
+            print(
+                f"Total recovery times: power: {self.total_recovery_time['power']} mins, water: {self.total_recovery_time['water']} min, transportation: {self.total_recovery_time['transpo']} mins"
+            )
             self.transpo_updated_model_dict = dict()
         else:
             print("No repair action to schedule.")
@@ -1126,10 +840,10 @@ class NetworkRecovery:
     def check_route_accessibility(self, failed_transpo_link_en_route):
         """Checks when the failed transportation links along a route are repaired and the possible start time.
 
-        :param failed_transpo_link_en_route: [description]
-        :type failed_transpo_link_en_route: [type]
-        :return: [description]
-        :rtype: [type]
+        :param failed_transpo_link_en_route: List of transportation links along the route.
+        :type failed_transpo_link_en_route: list
+        :return: Accessibility and possible start time of the route.
+        :rtype: list
         """
         accessible = True
         possible_start_time = 0
@@ -1184,6 +898,13 @@ class NetworkRecovery:
         return allowed
 
     def calculate_recovery_time(self, component):
+        """Calculates the recovery time of the given component.
+
+        :param component: Component whose recovery time is to be calculated.
+        :type component: string
+        :return: Recovery time of the component in seconds.
+        :rtype: float
+        """
         disruptive_events = self.network.disruptive_events
         perc_damage = disruptive_events[disruptive_events["components"] == component][
             "fail_perc"
@@ -1199,8 +920,9 @@ class NetworkRecovery:
 
 def pipe_leak_node_generator(network):
     """Splits the directly affected pipes to induce leak during simulations.
-    :param wn: Water network object.
-    :type wn: wntr network object
+    
+    :param network: Integrated infrastructure network object
+    :type network: IntegratedNetwork object
     """
     for _, component in enumerate(network.get_disrupted_components()):
         compon_details = interdependencies.get_compon_details(component)

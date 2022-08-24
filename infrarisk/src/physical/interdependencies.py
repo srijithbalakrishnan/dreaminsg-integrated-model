@@ -2,6 +2,7 @@
 
 import pandas as pd
 from scipy import spatial
+import re
 import infrarisk.src.physical.water.water_network_model as water
 import infrarisk.src.physical.power.power_system_model as power
 import infrarisk.src.physical.transportation.transpo_compons as transpo_compons
@@ -9,6 +10,9 @@ import infrarisk.src.physical.transportation.transpo_compons as transpo_compons
 water_dict = water.get_water_dict()
 power_dict = power.get_power_dict()
 transpo_dict = transpo_compons.get_transpo_dict()
+
+water_control_dict = water.get_water_control_dict()
+power_control_dict = power.get_power_control_dict()
 
 # ---------------------------------------------------------------------------- #
 #                      DEPENDENCY TABLE CLASS AND METHODS                      #
@@ -146,14 +150,14 @@ class DependencyTable:
         nodes_of_interest = [
             x
             for x, y in integrated_graph.nodes(data=True)
-            if y["node_type"] == "power_node" or y["node_type"] == "water_node"
+            if y["node_type"] == "power" or y["node_type"] == "water"
         ]
         for node in nodes_of_interest:
             comp_details = get_compon_details(node)
             near_node, near_dist = get_nearest_node(
                 integrated_graph,
                 node,
-                "transpo_node",
+                "transpo",
             )
             self.access_table = self.access_table.append(
                 {
@@ -201,11 +205,7 @@ class DependencyTable:
                         network.wn.remove_control(
                             f"{row.water_id}_power_on_{next_time_stamp}"
                         )
-
                     pump = network.wn.get_link(row.water_id)
-
-                    if f"{row.water_id}_outage" in network.wn.control_name_list:
-                        network.wn.remove_control(f"{row.water_id}_outage")
                     pump.add_outage(
                         network.wn,
                         time_stamp,
@@ -228,7 +228,8 @@ def get_compon_details(compon_name):
     :rtype: list of strings
     """
     compon_infra, compon_id = compon_name.split("_")
-    # print(compon_infra, compon_id)
+    id = re.findall("\d+", compon_name)[0]
+
     compon_type = ""
     for char in compon_id:
         if char.isalpha():
@@ -240,6 +241,7 @@ def get_compon_details(compon_name):
                 compon_type,
                 power_dict[compon_type]["code"],
                 power_dict[compon_type]["name"],
+                id,
             )
         else:
             print(
@@ -255,6 +257,7 @@ def get_compon_details(compon_name):
                 compon_type,
                 water_dict[compon_type]["code"],
                 water_dict[compon_type]["name"],
+                id,
             )
         else:
             print(
@@ -270,11 +273,49 @@ def get_compon_details(compon_name):
                 compon_type,
                 transpo_dict[compon_type]["code"],
                 transpo_dict[compon_type]["name"],
+                id,
             )
     else:
         print(
             "Component does not belong to water, power, or transportation networks. Please check the name."
         )
+
+
+def get_controller_details(compon_name):
+    compon_infra, compon_id = compon_name.split("_")
+    id = re.findall("\d+", compon_name)[0]
+
+    compon_type = ""
+    for char in compon_id:
+        if char.isalpha():
+            compon_type = "".join([compon_type, char])
+    if compon_infra == "P":
+        if compon_type in power_control_dict.keys():
+            pass
+        else:
+            print(
+                "The naming convention suggests that {} belongs to power netwok. However, the element {} does not exist in the power controller component dictionary.".format(
+                    compon_name,
+                    compon_type,
+                )
+            )
+
+    elif compon_infra == "W":
+        if compon_type in water_dict.keys():
+            return (
+                "water",
+                compon_type,
+                water_control_dict[compon_type]["code"],
+                water_control_dict[compon_type]["name"],
+                id,
+            )
+        else:
+            print(
+                "The naming convention suggests that {} belongs to water netwok. However, the element {} does not exist in the water controller component dictionary.".format(
+                    compon_name,
+                    compon_type,
+                )
+            )
 
 
 def get_nearest_node(integrated_graph, connected_node, target_type):
@@ -284,26 +325,43 @@ def get_nearest_node(integrated_graph, connected_node, target_type):
     :type integrated_graph: netwrokx object
     :param connected_node: Name of the node for which the nearest node has to be identified.
     :type connected_node: string/integer
-    :param target_type: The type of the target node (power_node, transpo_node, water_node)
+    :param target_type: The type of the target node (power, transpo, water)
     :type target_type: string
     :return: Nearest node belonging to target type and the distance in meters.
     :rtype: list
     """
-    curr_node_loc = integrated_graph.nodes[connected_node]["coord"]
-    nodes_of_interest = [
-        x for x, y in integrated_graph.nodes(data=True) if y["node_type"] == target_type
-    ]
-    coords_of_interest = [
-        y["coord"]
-        for x, y in integrated_graph.nodes(data=True)
-        if y["node_type"] == target_type
-    ]
+    compon_details = get_compon_details(connected_node)
+    if compon_details[0] == "target_type":
+        return connected_node, 0
+    else:
+        curr_node_loc = integrated_graph.nodes[connected_node]["coord"]
+        nodes_of_interest = [
+            x
+            for x, y in integrated_graph.nodes(data=True)
+            if y["node_type"] == target_type
+        ]
+        coords_of_interest = [
+            y["coord"]
+            for x, y in integrated_graph.nodes(data=True)
+            if y["node_type"] == target_type
+        ]
 
-    tree = spatial.KDTree(coords_of_interest)
-    dist_nearest = tree.query([curr_node_loc])[0][0]
-    nearest_node = nodes_of_interest[tree.query([curr_node_loc])[1][0]]
+        tree = spatial.KDTree(coords_of_interest)
+        dist_nearest = tree.query([curr_node_loc])[0][0]
+        nearest_node = nodes_of_interest[tree.query([curr_node_loc])[1][0]]
 
-    return nearest_node, round(dist_nearest, 2)
+        return nearest_node, round(dist_nearest, 2)
+
+
+def find_connected_nodes(component, integrated_network):
+
+    if component.startswith("P_"):
+        connected_nodes = find_connected_power_node(component, integrated_network.pn)
+    elif component.startswith("W_"):
+        connected_nodes = find_connected_water_node(component, integrated_network.wn)
+    elif component.startswith("T_"):
+        connected_nodes = find_connected_transpo_node(component, integrated_network.tn)
+    return connected_nodes
 
 
 def find_connected_power_node(component, pn):
@@ -383,6 +441,18 @@ def find_connected_transpo_node(component, tn):
             connected_junctions.append(getattr(tn.link[component], near_node_field))
 
     return connected_junctions
+
+
+def get_power_repair_time(component):
+    compon_details = get_compon_details(component)
+    repair_time = power_dict[compon_details[1]]["repair_time"]
+    return repair_time
+
+
+def get_transpo_repair_time(component):
+    compon_details = get_compon_details(component)
+    repair_time = transpo_dict[compon_details[1]]["repair_time"]
+    return repair_time
 
 
 def get_compon_repair_time(component):

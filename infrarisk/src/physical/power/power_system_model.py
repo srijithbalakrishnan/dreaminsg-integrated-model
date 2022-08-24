@@ -183,6 +183,8 @@ def get_power_dict():
     }
     return power_dict
 
+def get_power_control_dict():
+    pass
 
 def load_power_network(network_json, sim_type="1ph"):
     """Loads the power system model from a json file.
@@ -225,6 +227,4 @@ def generate_base_supply(pn):
     run_power_simulation(pn_base)
     return pn_base
 
-
-# def idenitfy_switches_to_isolate(pn, component):
     

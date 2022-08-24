@@ -231,6 +231,7 @@ class WeightedResilienceMetric:
         water_demands_ratio = water_demands / base_water_demands_new
         self.water_demands_ratio = water_demands_ratio.clip(upper=1, lower=0)
 
+        # Network level performance metrics
         self.water_ecs_list = self.water_demands_ratio.mean(
             axis=1, skipna=True
         ).tolist()
@@ -262,6 +263,16 @@ class WeightedResilienceMetric:
             "equivalent outage hours (EOH)",
         )
 
+        # Node level performance metrics
+        water_demand_nodes = network_recovery.base_network.wn.junction_name_list
+        water_node_pcs_dict = {node: 0 for node in water_demand_nodes}
+
+        for node in water_demand_nodes:
+            water_node_pcs_dict[node] = self.integrate(
+                water_time_list / 60, [1 - x for x in self.water_demands_ratio[node]]
+            )
+        self.water_node_pcs_dict = water_node_pcs_dict
+
     def calculate_power_resmetric(self, network_recovery):
         """Calculates the power network performance timelines (pcs and ecs).
 
@@ -289,6 +300,7 @@ class WeightedResilienceMetric:
         power_demand_ratio = power_demands.iloc[:, 1:] / base_load_demands
         self.power_demand_ratio = power_demand_ratio.clip(upper=1, lower=0)
 
+        # Network level performance metrics
         self.power_ecs_list = self.power_demand_ratio.mean(axis=1, skipna=True).tolist()
         power_pcs_list = pd.concat(
             [power_demands.iloc[:, 1:], base_load_demands]
@@ -316,6 +328,16 @@ class WeightedResilienceMetric:
             self.power_auc_pcs,
             "equivalent outage hours (EOH)",
         )
+
+        # Node level performance metrics
+        power_demand_nodes = network_recovery.base_network.pn.load.name.tolist()
+        power_node_pcs_dict = {node: 0 for node in power_demand_nodes}
+
+        for node in power_demand_nodes:
+            power_node_pcs_dict[node] = self.integrate(
+                power_time_list / 60, [1 - x for x in self.power_demand_ratio[node]]
+            )
+        self.power_node_pcs_dict = power_node_pcs_dict
 
     def calculate_transpo_resmetric(self, tn):
         pass

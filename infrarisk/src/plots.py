@@ -1,29 +1,20 @@
 """Functions to generate infrastructure network plots and result plots."""
 
 # import pandapower.plotting as pandaplot
-import pandas as pd
 import contextily as ctx
-
-import seaborn as sns
-import numpy as np
-
-import matplotlib.pyplot as plt
 import matplotlib.colors as colors
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-
+import matplotlib.pyplot as plt
 import networkx as nx
-
-from bokeh.io import show, output_notebook, curdoc
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from bokeh.io import curdoc, output_notebook, show
+from bokeh.models import ColorBar, ColumnDataSource, HoverTool, Range1d
+from bokeh.palettes import Category10, RdYlGn, Turbo256, Viridis3
 from bokeh.plotting import figure
-from bokeh.models import ColumnDataSource, HoverTool, Range1d, ColorBar
-from bokeh.palettes import Category10, Turbo256, Viridis3, RdYlGn
-from bokeh.tile_providers import get_provider, CARTODBPOSITRON_RETINA
+from bokeh.tile_providers import CARTODBPOSITRON_RETINA, get_provider
 from bokeh.transform import factor_cmap, linear_cmap
-
-
-from IPython.html import widgets
-from IPython.display import display
-from ipywidgets import interact, interactive, fixed, interact_manual
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 # -----------------------------------------------------------#
 #                      NETWORK PLOTS                        #
@@ -706,10 +697,12 @@ def plot_region_impact_map(resilience_metrics, sa_dict, strategy, extends):
     merged = [merged_water, merged_power]
     vmax = max(merged_power[strategy].max(), merged_water[strategy].max())
 
-    fig, axes = plt.subplots(2, 1, figsize=(10, 15))
-    fig.suptitle("Networkwide effects of infrastructure disruptions", fontsize=16)
+    fig, axes = plt.subplots(1, 2, figsize=(20, 10))
+    sns.set_style("whitegrid")
+    sns.set_context("notebook", font_scale=1.5, rc={"lines.linewidth": 2.5})
+    fig.suptitle("Networkwide effects of infrastructure disruptions")
     for index, ax in enumerate(axes):
-        ax.set_title(f"{list(sa_dict.keys())[index].title()} supply", fontsize=14)
+        ax.set_title(f"{list(sa_dict.keys())[index].title()} supply")
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("bottom", size="5%", pad=0.2)
         merged[index].plot(
@@ -739,7 +732,7 @@ def plot_region_impact_map(resilience_metrics, sa_dict, strategy, extends):
     fig.tight_layout()
 
 
-def plot_disruptions_and_crews(integrated_network):
+def plot_disruptions_and_crews(integrated_network, basemap=False):
     """Generate a plot of the number of disruptions and crews for each strategy.
 
     :param integrated_network: IntegratedNetwork object
@@ -748,19 +741,24 @@ def plot_disruptions_and_crews(integrated_network):
     extent = integrated_network.map_extends
     p = figure(
         background_fill_color="white",
-        plot_width=700,
-        height=400,
+        plot_width=800,
+        height=450,
         x_range=(extent[0][0] - 100, extent[1][0] + 100),
         y_range=(extent[0][1] - 100, extent[1][1] + 100),
     )
+    p.axis.visible = False
 
-    failed_components_list = list(integrated_network.disrupted_components)
+    tile_provider = get_provider(CARTODBPOSITRON_RETINA)
+    if basemap:
+        p.add_tile(tile_provider)
+
+    failed_components_list = integrated_network.disrupted_components.to_list()
     affected_nodes = {}
     affected_links = {}
     fail_compon_dict = {
         "power": {"L", "MP"},
         "water": {"R", "PMA", "P", "WP"},
-        "transport": {"L"},
+        "transpo": {"L"},
     }
 
     G = integrated_network.integrated_graph
@@ -797,12 +795,12 @@ def plot_disruptions_and_crews(integrated_network):
 
     # water
     water_node_list = [
-        node for node in G.nodes.keys() if G.nodes[node]["node_type"] == "Water"
+        node for node in G.nodes.keys() if G.nodes[node]["node_type"] == "water"
     ]
     water_link_list = [
         G.edges[edge]["id"]
         for edge in G.edges.keys()
-        if G.edges[edge]["link_type"] == "Water"
+        if G.edges[edge]["link_type"] == "water"
     ]
 
     affected_nodes["water"] = [
@@ -833,15 +831,21 @@ def plot_disruptions_and_crews(integrated_network):
     affected_nodes["transpo"] = [
         compon
         for compon in failed_components_list
-        for compon_type in fail_compon_dict["transport"]
+        for compon_type in fail_compon_dict["transpo"]
         if (compon.startswith("T_" + compon_type) and compon in transpo_node_list)
     ]
     affected_links["transpo"] = [
         compon
         for compon in failed_components_list
-        for compon_type in fail_compon_dict["transport"]
+        for compon_type in fail_compon_dict["transpo"]
         if (compon.startswith("T_" + compon_type) and compon in transpo_link_list)
     ]
+
+    for infra in ["water", "power", "transpo"]:
+        affected_links[infra] = list(set(affected_links[infra]))
+        affected_nodes[infra] = list(set(affected_nodes[infra]))
+
+    print(affected_links)
 
     for _, node in enumerate(G.nodes.keys()):
         if (

@@ -1,16 +1,16 @@
 """Functions to implement the various steps of the interdependent infrastructure network simulations."""
 
-from pathlib import Path
 import copy
+from pathlib import Path
 
-from wntr import network
-import infrarisk.src.physical.water.water_network_model as water
+import infrarisk.src.physical.interdependencies as interdependencies
 import infrarisk.src.physical.power.power_system_model as power
 import infrarisk.src.physical.transportation.network as transpo
-import infrarisk.src.physical.interdependencies as interdependencies
+import infrarisk.src.physical.water.water_network_model as water
 import infrarisk.src.plots as model_plots
 import infrarisk.src.resilience_metrics as resm
 import infrarisk.src.socioeconomic.se_analysis as se_analysis
+from wntr import network
 
 
 class NetworkSimulation:
@@ -200,12 +200,15 @@ class NetworkSimulation:
         unique_time_stamps = sorted(
             list(network_recovery.event_table.time_stamp.unique())
         )
-        print(unique_time_stamps)
+        print(
+            "Time instances for which simulations will be performed:\n",
+            unique_time_stamps,
+        )
 
         unique_time_differences = [
             x - unique_time_stamps[i - 1] for i, x in enumerate(unique_time_stamps)
         ][1:]
-        print(unique_time_differences)
+        # print(unique_time_differences)
 
         for index, time_stamp in enumerate(unique_time_stamps[:-1]):
             print(f"Simulating network conditions until {time_stamp} s")
@@ -287,8 +290,8 @@ class NetworkSimulation:
         return resilience_metrics
 
     def write_results(self, file_dir, resilience_metrics):
-        """Writes tje
-
+        """Writes the results to csv files.
+        
         :param file_dir: The directory in which the simulation contents are to be saved.
         :type file_dir: string
         :param resilience_metrics: The object in which simulation related data are stored.

@@ -67,6 +67,7 @@ class IntegratedNetwork:
         transp_folder,
         power_sim_type="1ph",
         water_sim_type="PDA",
+        cyber_layer=False,
     ):
         """Loads the water, power and transportation networks.
 
@@ -81,19 +82,25 @@ class IntegratedNetwork:
         :param water_sim_type: Type of water simulation: 'PDA' for pressure-dependent driven analysis, 'DDA' for demand driven analysis
         :type water_sim_type: string
         """
+        self.has_cyber_layer = cyber_layer
+
         # load water_network model
         if water_folder is not None:
-            self.load_water_network(water_folder, water_sim_type)
+            self.load_water_network(
+                water_folder, water_sim_type, cyber_layer=cyber_layer
+            )
 
         # load power systems network
         if power_folder is not None:
-            self.load_power_network(power_folder, power_sim_type)
+            self.load_power_network(
+                power_folder, power_sim_type, cyber_layer=cyber_layer
+            )
 
         # load static traffic assignment network
         if transp_folder is not None:
             self.load_transpo_network(transp_folder)
 
-    def load_power_network(self, power_folder, power_sim_type):
+    def load_power_network(self, power_folder, power_sim_type, cyber_layer=False):
         """Loads the power network.
 
         :param power_file: The power systems file in json format
@@ -138,7 +145,7 @@ class IntegratedNetwork:
             pn.service_area.Power_Node = "P_LO" + pn.service_area.Power_Node.astype(str)
             pn.service_area.Id = pn.service_area.index
 
-    def load_water_network(self, water_folder, water_sim_type):
+    def load_water_network(self, water_folder, water_sim_type, cyber_layer=False):
         """Loads the water network.
 
         :param water_folder: The directory that consists of required water network files
@@ -148,7 +155,7 @@ class IntegratedNetwork:
         """
         initial_sim_step = 60
         self.wn = water.load_water_network(
-            f"{water_folder}/water.inp", water_sim_type, initial_sim_step
+            f"{water_folder}/water.inp", water_sim_type, initial_sim_step, cyber_layer
         )
         self.water_sim_type = water_sim_type
 
@@ -304,7 +311,7 @@ class IntegratedNetwork:
             power_nodes = power_nodes.append(
                 {
                     "id": row["name"],
-                    "node_type": "power_node",
+                    "node_type": "power",
                     "node_category": "Bus",
                     "x": self.pn.bus_geodata.x[index],
                     "y": self.pn.bus_geodata.y[index],
@@ -321,7 +328,7 @@ class IntegratedNetwork:
             power_links = power_links.append(
                 {
                     "id": row["name"],
-                    "link_type": "Power",
+                    "link_type": "power",
                     "link_category": "Power line",
                     "from": self.pn.bus.name.values[row["from_bus"]],
                     "to": self.pn.bus.name.values[row["to_bus"]],
@@ -333,7 +340,7 @@ class IntegratedNetwork:
             power_links = power_links.append(
                 {
                     "id": row["name"],
-                    "link_type": "Power",
+                    "link_type": "power",
                     "link_category": "Transformer",
                     "from": self.pn.bus.name.values[row["hv_bus"]],
                     "to": self.pn.bus.name.values[row["lv_bus"]],
@@ -345,7 +352,7 @@ class IntegratedNetwork:
             power_links = power_links.append(
                 {
                     "id": row["name"],
-                    "link_type": "Power",
+                    "link_type": "power",
                     "link_category": "Switch",
                     "from": self.pn.bus.name.values[row["bus"]],
                     "to": self.pn.bus.name.values[row["element"]],
@@ -407,7 +414,7 @@ class IntegratedNetwork:
             water_nodes = water_nodes.append(
                 {
                     "id": node_name,
-                    "node_type": "water_node",
+                    "node_type": "water",
                     "node_category": "Junction",
                     "x": list(self.wn.get_node(node_name).coordinates)[0],
                     "y": list(self.wn.get_node(node_name).coordinates)[1],
@@ -418,7 +425,7 @@ class IntegratedNetwork:
             water_nodes = water_nodes.append(
                 {
                     "id": node_name,
-                    "node_type": "water_node",
+                    "node_type": "water",
                     "node_category": "Tank",
                     "x": list(self.wn.get_node(node_name).coordinates)[0],
                     "y": list(self.wn.get_node(node_name).coordinates)[1],
@@ -429,7 +436,7 @@ class IntegratedNetwork:
             water_nodes = water_nodes.append(
                 {
                     "id": node_name,
-                    "node_type": "water_node",
+                    "node_type": "water",
                     "node_category": "Reservoir",
                     "x": list(self.wn.get_node(node_name).coordinates)[0],
                     "y": list(self.wn.get_node(node_name).coordinates)[1],
@@ -449,7 +456,7 @@ class IntegratedNetwork:
             water_links = water_links.append(
                 {
                     "id": link_name,
-                    "link_type": "Water",
+                    "link_type": "water",
                     "link_category": "Water pipe",
                     "from": self.wn.get_link(link_name).start_node_name,
                     "to": self.wn.get_link(link_name).end_node_name,
@@ -460,7 +467,7 @@ class IntegratedNetwork:
             water_links = water_links.append(
                 {
                     "id": link_name,
-                    "link_type": "Water",
+                    "link_type": "water",
                     "link_category": "Water pump",
                     "from": self.wn.get_link(link_name).start_node_name,
                     "to": self.wn.get_link(link_name).end_node_name,
@@ -516,7 +523,7 @@ class IntegratedNetwork:
             transpo_nodes = transpo_nodes.append(
                 {
                     "id": node_name,
-                    "node_type": "transpo_node",
+                    "node_type": "transpo",
                     "node_category": "Junction",
                     "x": self.tn.node_coords[
                         self.tn.node_coords["Node"] == node_name
@@ -537,7 +544,7 @@ class IntegratedNetwork:
             transpo_links = transpo_links.append(
                 {
                     "id": link_name,
-                    "link_type": "Transportation",
+                    "link_type": "transpo",
                     "link_category": "Road link",
                     "from": self.tn.link[link_name].tail,
                     "to": self.tn.link[link_name].head,
@@ -553,7 +560,7 @@ class IntegratedNetwork:
         )
 
         for _, node_name in enumerate(transpo_node_list):
-            G_transpo.nodes[node_name]["node_type"] = "transpo_node"
+            G_transpo.nodes[node_name]["node_type"] = "transpo"
             G_transpo.nodes[node_name]["node_category"] = transpo_nodes[
                 transpo_nodes.id == node_name
             ]["node_category"].item()
@@ -597,19 +604,13 @@ class IntegratedNetwork:
 
         self.dependency_table = dependency_table
 
-    def set_disrupted_components(self, scenario_file):
+    def set_disrupted_components(self, disruption_file):
         """Sets the disrupted components in the network.
 
-        :param scenario_file: The location of the disruption scenario file in the list.
+        :param scenario_file: The location of the physical disruption scenario file in the list.
         :type scenario_file: string
         """
-        try:
-            self.disruptive_events = pd.read_csv(scenario_file, sep=",")
-        except FileNotFoundError:
-            print(
-                "Error: The scenario file does not exist. No such directory: ",
-                scenario_file,
-            )
+        self.disruptive_events = pd.read_csv(disruption_file, sep=",")
         self.disrupted_components = self.disruptive_events.components
         self.set_disrupted_infra_dict()
 
@@ -628,6 +629,21 @@ class IntegratedNetwork:
         self.disruption_time_dict["transpo"] = self.disruptive_events[
             self.disruptive_events["components"].isin(transpo_list)
         ]["time_stamp"].min()
+
+    def set_disrupted_cyber_components(self, cyber_disruption_file):
+        """Sets the disrupted components in the network.
+
+        :param cyber_disruption_file: The location of the disruption scenario file in the list.
+        :type scenario_file: string
+        """
+        if self.has_cyber_layer:
+            self.cyber_disruptive_events = pd.read_csv(cyber_disruption_file, sep=",")
+            self.disrupted_cyber_components = (
+                self.cyber_disruptive_events.cyber_component
+            )
+            self.set_disrupted_cyber_dict()
+        else:
+            print("The network has no cyber layer. Please construct a cyber layer.")
 
     def get_disruptive_events(self):
         """Returns the disruptive event data
@@ -660,6 +676,22 @@ class IntegratedNetwork:
             elif compon_details[0] == "transpo":
                 disrupted_infra_dict["transpo"].append(component)
         self.disrupted_infra_dict = disrupted_infra_dict
+
+    def set_disrupted_cyber_dict(self):
+        """Sets the disrupted infrastructure components dictionary with infrastructure type as keys."""
+        disrupted_cyber_dict = {"power": [], "water": [], "transpo": []}
+        for _, component in enumerate(self.disrupted_components):
+            # print(component)
+            compon_details = interdependencies.get_compon_details(component)
+            # print(compon_details)
+
+            if compon_details[0] == "power":
+                disrupted_cyber_dict["power"].append(component)
+            elif compon_details[0] == "water":
+                disrupted_cyber_dict["water"].append(component)
+            elif compon_details[0] == "transpo":
+                disrupted_cyber_dict["transpo"].append(component)
+        self.disrupted_cyber_dict = disrupted_cyber_dict
 
     def get_disrupted_infra_dict(self):
         """Returns the  disrupted infrastructure components dictionary.
@@ -861,3 +893,28 @@ class IntegratedNetwork:
             "transpo": {"node": ["J"], "link": ["L"]},
         }
         return node_link_dict
+
+    def build_universal_control_systems(self):
+        water.add_universal_control_system(self.wn)
+
+    def set_initial_configurations(
+        self,
+        water_actuator_status=1,
+        water_sensor_status=1,
+        water_controller_status=1,
+        power_actuator_status=1,
+        power_sensor_status=1,
+        power_controller_status=1,
+        power_ef=1,
+        water_ef=1,
+    ):
+        water.set_initial_control_system_status(
+            self.wn,
+            actuator_status=water_actuator_status,
+            sensor_status=water_sensor_status,
+            controller_status=water_controller_status,
+        )
+        for tank_id in self.wn.tank_name_list:
+            water.set_tl_sensor_ef(self.wn, tank_id, error_factor=water_ef)
+
+        print("Water control system initial configuration set.")
