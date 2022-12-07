@@ -1,0 +1,580 @@
+[TITLE]
+
+
+[JUNCTIONS]
+;ID              	Elev        	Demand      	Pattern         
+ W_J1            	0           	0.003699    	Residential1    	;
+ W_J2            	0           	0           	Residential1    	;
+ W_J3            	0           	0           	Residential1    	;
+ W_J4            	0           	0.110973    	Residential1    	;
+ W_J5            	0           	0           	Residential1    	;
+ W_J6            	0           	0.081380    	Residential1    	;
+ W_J7            	0           	0.381017    	Residential1    	;
+ W_J8            	0           	0.070283    	Residential1    	;
+ W_J9            	0           	0.270034    	Residential1    	;
+ W_J10           	0           	0           	Residential1    	;
+ W_J11           	0           	0.066583    	Residential1    	;
+ W_J12           	0           	0.059185    	Residential1    	;
+ W_J13           	0           	0.107274    	Residential1    	;
+ W_J14           	0           	0           	Residential1    	;
+ W_J15           	0           	0.203450    	Residential1    	;
+ W_J16           	0           	0           	Residential1    	;
+ W_J17           	0           	0.454988    	Residential1    	;
+ W_J18           	0           	0.144264    	Residential1    	;
+ W_J19           	0           	0.155362    	Residential1    	;
+ W_J20           	0           	0           	Residential1    	;
+ W_J21           	0           	0.312487    	Residential1    	;
+ W_J22           	0           	0           	Residential1    	;
+ W_J23           	0           	0.181255    	Residential1    	;
+ W_J24           	0           	0.181255    	Residential1    	;
+ W_J25           	0           	0           	Residential1    	;
+ W_J26           	0           	0           	Residential1    	;
+ W_J27           	0           	0.018495    	Residential1    	;
+ W_J28           	0           	0.048088    	Residential1    	;
+ W_J29           	0           	0.295927    	Residential1    	;
+ W_J30           	0           	0.070283    	Residential1    	;
+ W_J31           	0           	0.173857    	Residential1    	;
+ W_J32           	0           	0           	Residential1    	;
+ W_J33           	0           	0.029592    	Residential1    	;
+ W_J34           	0           	0.133167    	Residential1    	;
+ W_J35           	0           	0.007398    	Residential1    	;
+ W_J36           	0           	0           	Residential1    	;
+ W_J37           	0           	0.003699    	Residential1    	;
+ W_J38           	0           	0.003699    	Residential1    	;
+ W_J39           	0           	0.003699    	Residential1    	;
+ W_J40           	0           	0.033291    	Residential1    	;
+ W_J41           	0           	0.007398    	Residential1    	;
+ W_J42           	0           	0.003699    	Residential1    	;
+ W_J43           	0           	0           	Residential1    	;
+ W_J44           	0           	0.014796    	Residential1    	;
+ W_J45           	0           	0           	Residential1    	;
+ W_J46           	0           	0.003699    	Residential1    	;
+ W_J47           	0           	0.003699    	Residential1    	;
+ W_J48           	0           	0           	Residential1    	;
+ W_J49           	0           	0.007398    	Residential1    	;
+ W_J50           	20          	0           	                	;
+ W_J51           	20          	0           	                	;
+ W_J52           	20          	0           	                	;
+ W_J53           	20          	0           	                	;
+ W_J54           	20          	0           	                	;
+ W_J55           	20          	0           	                	;
+
+[RESERVOIRS]
+;ID              	Head        	Pattern         
+ W_R50           	20          	                	;
+ W_R51           	20          	                	;
+ W_R52           	20          	                	;
+ W_R53           	20          	                	;
+ W_R54           	20          	                	;
+ W_R55           	20          	                	;
+ W_R56           	20          	                	;
+ W_R57           	20          	                	;
+ W_R58           	20          	                	;
+
+[TANKS]
+;ID              	Elevation   	InitLevel   	MinLevel    	MaxLevel    	Diameter    	MinVol      	VolCurve
+ W_T60           	20          	4           	2           	8           	9           	0           	                	;
+ W_T61           	20          	4           	2           	7           	6           	0           	                	;
+ W_T62           	20          	4           	2           	8           	8           	0           	                	;
+ W_T63           	20          	4           	3           	12          	15          	0           	                	;
+ W_T64           	20          	7           	4           	14          	16          	0           	                	;
+ W_T65           	20          	5           	2           	8           	10          	0           	                	;
+
+[PIPES]
+;ID              	Node1           	Node2           	Length      	Diameter    	Roughness   	MinorLoss   	Status
+ W_PMA1          	W_J1            	W_J2            	7150        	300         	100         	0           	Open  	;
+ W_PMA2          	W_J2            	W_J3            	9600        	300         	100         	0           	Open  	;
+ W_PMA3          	W_J3            	W_J4            	7670        	300         	100         	0           	Open  	;
+ W_PMA4          	W_J4            	W_J5            	10730       	300         	100         	0           	Open  	;
+ W_PMA5          	W_J5            	W_J6            	9360        	300         	100         	0           	Open  	;
+ W_PMA6          	W_J1            	W_J7            	10500       	300         	100         	0           	Open  	;
+ W_PMA7          	W_J7            	W_J3            	6410        	300         	100         	0           	Open  	;
+ W_PMA8          	W_J7            	W_J8            	4510        	300         	100         	0           	Open  	;
+ W_PMA9          	W_J8            	W_J9            	4990        	300         	100         	0           	Open  	;
+ W_PMA10         	W_J9            	W_J4            	3440        	300         	100         	0           	Open  	;
+ W_PMA11         	W_J9            	W_J10           	6600        	300         	100         	0           	Open  	;
+ W_PMA12         	W_J10           	W_J5            	6560        	300         	100         	0           	Open  	;
+ W_PMA13         	W_J13           	W_J14           	4030        	300         	100         	0           	Open  	;
+ W_PMA14         	W_J14           	W_J7            	3960        	300         	100         	0           	Open  	;
+ W_PMA15         	W_J14           	W_J15           	3890        	300         	100         	0           	Open  	;
+ W_PMA16         	W_J15           	W_J8            	4920        	300         	100         	0           	Open  	;
+ W_PMA17         	W_J15           	W_J16           	4920        	300         	100         	0           	Open  	;
+ W_PMA18         	W_J16           	W_J9            	6650        	300         	100         	0           	Open  	;
+ W_PMA19         	W_J16           	W_J17           	6660        	300         	100         	0           	Open  	;
+ W_PMA20         	W_J17           	W_J10           	4750        	300         	100         	0           	Open  	;
+ W_PMA21         	W_J10           	W_J11           	13180       	300         	100         	0           	Open  	;
+ W_PMA22         	W_J11           	W_J12           	8170        	300         	100         	0           	Open  	;
+ W_PMA23         	W_J13           	W_J19           	5730        	300         	100         	0           	Open  	;
+ W_PMA24         	W_J19           	W_J20           	1480        	300         	100         	0           	Open  	;
+ W_PMA25         	W_J20           	W_J18           	2800        	300         	100         	0           	Open  	;
+ W_PMA26         	W_J18           	W_J16           	8360        	300         	100         	0           	Open  	;
+ W_PMA27         	W_J16           	W_J21           	3760        	300         	100         	0           	Open  	;
+ W_PMA28         	W_J21           	W_J20           	6210        	300         	100         	0           	Open  	;
+ W_PMA29         	W_J21           	W_J22           	9140        	300         	100         	0           	Open  	;
+ W_PMA30         	W_J22           	W_J17           	9080        	300         	100         	0           	Open  	;
+ W_PMA31         	W_J22           	W_J23           	8820        	300         	100         	0           	Open  	;
+ W_PMA32         	W_J23           	W_J26           	8050        	300         	100         	0           	Open  	;
+ W_PMA33         	W_J22           	W_J26           	8650        	300         	100         	0           	Open  	;
+ W_PMA34         	W_J22           	W_J29           	1000        	300         	100         	0           	Open  	;
+ W_PMA35         	W_J21           	W_J32           	1000        	300         	100         	0           	Open  	;
+ W_PMA36         	W_J32           	W_J29           	1000        	300         	100         	0           	Open  	;
+ W_PMA37         	W_J19           	W_J30           	1000        	300         	100         	0           	Open  	;
+ W_PMA38         	W_J30           	W_J31           	1000        	300         	100         	0           	Open  	;
+ W_PMA39         	W_J20           	W_J31           	1000        	300         	100         	0           	Open  	;
+ W_PMA40         	W_J30           	W_J33           	2950        	300         	100         	0           	Open  	;
+ W_PMA41         	W_J31           	W_J32           	1000        	300         	100         	0           	Open  	;
+ W_PMA42         	W_J33           	W_J34           	7770        	300         	100         	0           	Open  	;
+ W_PMA43         	W_J32           	W_J34           	3870        	300         	100         	0           	Open  	;
+ W_PMA44         	W_J33           	W_J36           	8340        	300         	100         	0           	Open  	;
+ W_PMA45         	W_J36           	W_J38           	9560        	300         	100         	0           	Open  	;
+ W_PMA46         	W_J38           	W_J37           	1930        	300         	100         	0           	Open  	;
+ W_PMA47         	W_J37           	W_J42           	3810        	300         	100         	0           	Open  	;
+ W_PMA48         	W_J42           	W_J41           	2550        	300         	100         	0           	Open  	;
+ W_PMA49         	W_J38           	W_J39           	1500        	300         	100         	0           	Open  	;
+ W_PMA50         	W_J39           	W_J40           	4170        	300         	100         	0           	Open  	;
+ W_PMA51         	W_J40           	W_J41           	1940        	300         	100         	0           	Open  	;
+ W_PMA52         	W_J38           	W_J41           	3340        	300         	100         	0           	Open  	;
+ W_PMA53         	W_J41           	W_J43           	8180        	300         	100         	0           	Open  	;
+ W_PMA54         	W_J43           	W_J44           	3510        	300         	100         	0           	Open  	;
+ W_PMA55         	W_J34           	W_J35           	12110       	300         	100         	0           	Open  	;
+ W_PMA56         	W_J43           	W_J45           	7890        	300         	100         	0           	Open  	;
+ W_PMA57         	W_J45           	W_J46           	5020        	300         	100         	0           	Open  	;
+ W_PMA58         	W_J46           	W_J47           	2180        	300         	100         	0           	Open  	;
+ W_PMA59         	W_J47           	W_J48           	6510        	300         	100         	0           	Open  	;
+ W_PMA60         	W_J46           	W_J48           	5840        	300         	100         	0           	Open  	;
+ W_PMA61         	W_J48           	W_J49           	6260        	300         	100         	0           	Open  	;
+ W_PMA62         	W_J45           	W_J49           	5980        	300         	100         	0           	Open  	;
+ W_PMA63         	W_J23           	W_J11           	4620        	300         	100         	0           	Open  	;
+ W_PMA64         	W_J12           	W_J25           	7770        	300         	100         	0           	Open  	;
+ W_PMA65         	W_J11           	W_J24           	4120        	300         	100         	0           	Open  	;
+ W_PMA66         	W_J24           	W_J25           	8680        	300         	100         	0           	Open  	;
+ W_PMA67         	W_J24           	W_J26           	5270        	300         	100         	0           	Open  	;
+ W_PMA68         	W_J26           	W_J27           	10140       	300         	100         	0           	Open  	;
+ W_PMA69         	W_J27           	W_J28           	10520       	300         	100         	0           	Open  	;
+ W_PMA70         	W_J27           	W_J25           	3390        	300         	100         	0           	Open  	;
+ W_PMA71         	W_J18           	W_J14           	3300        	300         	100         	0           	Open  	;
+ W_PMA72         	W_J50           	W_J36           	100        	300         	100         	0           	Open  	;
+ W_PMA73         	W_J51           	W_J43           	100        	300         	100         	0           	Open  	;
+ W_PMA74         	W_J52           	W_J45           	100        	300         	100         	0           	Open  	;
+ W_PMA75         	W_J53           	W_J25           	100        	300         	100         	0           	Open  	;
+ W_PMA76         	W_J55           	W_J5            	100        	300         	100         	0           	Open  	;
+ W_PMA77         	W_J54           	W_J26           	100        	300         	100         	0           	Open  	;
+ W_PTV65         	W_T65           	W_J50           	20          	300         	100         	0           	Open  	;
+ W_PTV60         	W_T60           	W_J51           	20          	300         	100         	0           	Open  	;
+ W_PTV61         	W_T61           	W_J52           	20          	300         	100         	0           	Open  	;
+ W_PTV62         	W_T62           	W_J53           	20          	300         	100         	0           	Open  	;
+ W_PTV63         	W_T63           	W_J54           	20          	300         	100         	0           	Open  	;
+ W_PTV64         	W_T64           	W_J55           	20          	300         	100         	0           	Open  	;
+
+[PUMPS]
+;ID              	Node1           	Node2           	Parameters
+ W_WP81          	W_R57           	W_J2            	HEAD 1	;
+ W_WP82          	W_R56           	W_J3            	HEAD 2	;
+ W_WP83          	W_R55           	W_J10           	HEAD 3	;
+ W_WP84          	W_R58           	W_J48           	HEAD 9	;
+ W_WP85          	W_R53           	W_J20           	HEAD 5	;
+ W_WP86          	W_R50           	W_J32           	HEAD 8	;
+ W_WP87          	W_R51           	W_J22           	HEAD 7	;
+ W_WP88          	W_R54           	W_J16           	HEAD 6	;
+ W_WP89          	W_R52           	W_J14           	HEAD 4	;
+ W_WP90          	W_R52           	W_J14           	HEAD 4	;
+ W_WP91          	W_R52           	W_J14           	HEAD 4	;
+ W_WP92          	W_R55           	W_J10           	HEAD 3	;
+ W_WP93          	W_R55           	W_J10           	HEAD 3	;
+ W_WP94          	W_R50           	W_J32           	HEAD 8	;
+
+[VALVES]
+;ID              	Node1           	Node2           	Diameter    	Type	Setting     	MinorLoss   
+
+[TAGS]
+
+[DEMANDS]
+;Junction        	Demand      	Pattern         	Category
+
+[STATUS]
+;ID              	Status/Setting
+
+[PATTERNS]
+;ID              	Multipliers
+;
+ Residential1    	1           	1           	1           	1           	1           	1           
+ Residential1    	1           	1           	1           	1           	1           	1           
+ Residential1    	1           	1           	1           	1           	1           	1           
+ Residential1    	1           	1           	1           	1           	1           	1           
+;
+ Residential2    	0.1         	0.1         	0.2         	0.2         	0.5         	0.7         
+ Residential2    	0.8         	1.2         	1.2         	0.8         	0.8         	0.6         
+ Residential2    	0.4         	0.4         	0.8         	1           	1.2         	1.5         
+ Residential2    	1.1         	1           	0.8         	0.8         	0.4         	0.2         
+
+[CURVES]
+;ID              	X-Value     	Y-Value
+;PUMP: PUMP: 
+ 1               	0.1970403226	30          
+;PUMP: PUMP: 
+ 2               	0.9145645161	30          
+;PUMP: PUMP: 
+ 3               	0.977766129 	30          
+;PUMP: PUMP: 
+ 4               	0.9108467742	30          
+;PUMP: PUMP: 
+ 5               	0.4684354839	30          
+;PUMP: PUMP: 
+ 6               	1.070709677 	30          
+;PUMP: PUMP: 
+ 7               	0.8922580645	30          
+;PUMP: PUMP: 
+ 8               	0.6413104839	30          
+;PUMP: PUMP: 
+ 9               	0.1784516129	30          
+
+[CONTROLS]
+
+
+[RULES]
+
+RULE 1
+IF TANK W_T60 LEVEL BELOW 2
+THEN PUMP W_WP84 STATUS IS OPEN 
+
+RULE 2
+IF TANK W_T60 LEVEL ABOVE 8
+THEN PUMP W_WP84 STATUS IS CLOSED
+
+RULE 3
+IF TANK W_T61 LEVEL BELOW 2
+THEN PUMP W_WP84 STATUS IS OPEN 
+
+RULE 4
+IF TANK W_T61 LEVEL ABOVE 7
+THEN PUMP W_WP84 STATUS IS CLOSED
+
+RULE 5
+IF TANK W_T62 LEVEL BELOW 2
+THEN PUMP W_WP87 STATUS IS OPEN 
+AND PUMP W_WP85 STATUS IS OPEN
+AND PUMP W_WP92 STATUS IS OPEN
+AND PUMP W_WP93 STATUS IS OPEN
+
+RULE 6
+IF TANK W_T62 LEVEL ABOVE 2
+AND TANK W_T62 LEVEL BELOW 6
+THEN PUMP W_WP87 STATUS IS OPEN
+AND PUMP W_WP85 STATUS IS OPEN
+AND PUMP W_WP92 STATUS IS CLOSED
+AND PUMP W_WP93 STATUS IS CLOSED
+
+RULE 7
+IF TANK W_T62 LEVEL ABOVE 6
+AND TANK W_T62 LEVEL BELOW 8
+THEN PUMP W_WP87 STATUS IS OPEN
+AND PUMP W_WP85 STATUS IS CLOSED
+AND PUMP W_WP92 STATUS IS CLOSED
+AND PUMP W_WP93 STATUS IS CLOSED
+
+RULE 8
+IF TANK W_T62 LEVEL ABOVE 8
+THEN PUMP W_WP87 STATUS IS CLOSED
+AND PUMP W_WP85 STATUS IS CLOSED
+AND PUMP W_WP92 STATUS IS CLOSED
+AND PUMP W_WP93 STATUS IS CLOSED
+
+RULE 9
+IF TANK W_T63 LEVEL BELOW 3
+THEN PUMP W_WP87 STATUS IS OPEN 
+AND PUMP W_WP86 STATUS IS OPEN
+AND PUMP W_WP94 STATUS IS OPEN
+AND PUMP W_WP85 STATUS IS OPEN
+
+RULE 10
+IF TANK W_T63 LEVEL ABOVE 3
+AND TANK W_T63 LEVEL BELOW 6
+THEN PUMP W_WP87 STATUS IS OPEN 
+AND PUMP W_WP86 STATUS IS OPEN
+AND PUMP W_WP94 STATUS IS OPEN
+AND PUMP W_WP85 STATUS IS CLOSED
+
+RULE 11
+IF TANK W_T63 LEVEL ABOVE 6
+AND TANK W_T63 LEVEL BELOW 9
+THEN PUMP W_WP87 STATUS IS OPEN 
+AND PUMP W_WP86 STATUS IS OPEN
+AND PUMP W_WP94 STATUS IS CLOSED
+AND PUMP W_WP85 STATUS IS CLOSED
+
+RULE 12
+IF TANK W_T63 LEVEL ABOVE 9
+AND TANK W_T63 LEVEL BELOW 12
+THEN PUMP W_WP87 STATUS IS OPEN 
+AND PUMP W_WP86 STATUS IS CLOSED
+AND PUMP W_WP94 STATUS IS CLOSED
+AND PUMP W_WP85 STATUS IS CLOSED
+
+RULE 13
+IF TANK W_T63 LEVEL ABOVE 12
+THEN PUMP W_WP87 STATUS IS CLOSED
+AND PUMP W_WP86 STATUS IS CLOSED
+AND PUMP W_WP94 STATUS IS CLOSED
+AND PUMP W_WP85 STATUS IS CLOSED
+
+RULE 14
+IF TANK W_T64 LEVEL BELOW 4
+THEN PUMP W_WP85 STATUS IS OPEN 
+AND PUMP W_WP92 STATUS IS OPEN
+AND PUMP W_WP93 STATUS IS OPEN
+AND PUMP W_WP82 STATUS IS OPEN
+AND PUMP W_WP81 STATUS IS OPEN
+AND PUMP W_WP88 STATUS IS OPEN
+AND PUMP W_WP87 STATUS IS OPEN
+AND PUMP W_WP89 STATUS IS OPEN
+AND PUMP W_WP90 STATUS IS OPEN
+AND PUMP W_WP91 STATUS IS OPEN
+
+RULE 15
+IF TANK W_T64 LEVEL ABOVE 4
+AND TANK W_T64 LEVEL BELOW 6
+THEN PUMP W_WP85 STATUS IS OPEN 
+AND PUMP W_WP92 STATUS IS OPEN
+AND PUMP W_WP93 STATUS IS OPEN
+AND PUMP W_WP82 STATUS IS OPEN
+AND PUMP W_WP81 STATUS IS OPEN
+AND PUMP W_WP88 STATUS IS OPEN
+AND PUMP W_WP87 STATUS IS OPEN
+AND PUMP W_WP89 STATUS IS CLOSED
+AND PUMP W_WP90 STATUS IS CLOSED
+AND PUMP W_WP91 STATUS IS CLOSED
+
+RULE 16
+IF TANK W_T64 LEVEL ABOVE 6
+AND TANK W_T64 LEVEL BELOW 8
+THEN PUMP W_WP85 STATUS IS OPEN 
+AND PUMP W_WP92 STATUS IS OPEN
+AND PUMP W_WP93 STATUS IS OPEN
+AND PUMP W_WP82 STATUS IS OPEN
+AND PUMP W_WP81 STATUS IS OPEN
+AND PUMP W_WP88 STATUS IS OPEN
+AND PUMP W_WP87 STATUS IS CLOSED
+AND PUMP W_WP89 STATUS IS CLOSED
+AND PUMP W_WP90 STATUS IS CLOSED
+AND PUMP W_WP91 STATUS IS CLOSED
+
+RULE 17
+IF TANK W_T64 LEVEL ABOVE 8
+AND TANK W_T64 LEVEL BELOW 10
+THEN PUMP W_WP85 STATUS IS OPEN 
+AND PUMP W_WP92 STATUS IS OPEN
+AND PUMP W_WP93 STATUS IS OPEN
+AND PUMP W_WP82 STATUS IS OPEN
+AND PUMP W_WP81 STATUS IS OPEN
+AND PUMP W_WP88 STATUS IS CLOSED
+AND PUMP W_WP87 STATUS IS CLOSED
+AND PUMP W_WP89 STATUS IS CLOSED
+AND PUMP W_WP90 STATUS IS CLOSED
+AND PUMP W_WP91 STATUS IS CLOSED
+
+RULE 18
+IF TANK W_T64 LEVEL ABOVE 10
+AND TANK W_T64 LEVEL BELOW 12
+THEN PUMP W_WP85 STATUS IS OPEN 
+AND PUMP W_WP92 STATUS IS OPEN
+AND PUMP W_WP93 STATUS IS OPEN
+AND PUMP W_WP82 STATUS IS OPEN
+AND PUMP W_WP81 STATUS IS CLOSED
+AND PUMP W_WP88 STATUS IS CLOSED
+AND PUMP W_WP87 STATUS IS CLOSED
+AND PUMP W_WP89 STATUS IS CLOSED
+AND PUMP W_WP90 STATUS IS CLOSED
+AND PUMP W_WP91 STATUS IS CLOSED
+
+RULE 19
+IF TANK W_T64 LEVEL ABOVE 12
+AND TANK W_T64 LEVEL BELOW 10
+THEN PUMP W_WP85 STATUS IS OPEN 
+AND PUMP W_WP92 STATUS IS OPEN
+AND PUMP W_WP93 STATUS IS OPEN
+AND PUMP W_WP82 STATUS IS CLOSED
+AND PUMP W_WP81 STATUS IS CLOSED
+AND PUMP W_WP88 STATUS IS CLOSED
+AND PUMP W_WP87 STATUS IS CLOSED
+AND PUMP W_WP89 STATUS IS CLOSED
+AND PUMP W_WP90 STATUS IS CLOSED
+AND PUMP W_WP91 STATUS IS CLOSED
+
+RULE 20
+IF TANK W_T64 LEVEL ABOVE 14
+THEN PUMP W_WP85 STATUS IS CLOSED
+AND PUMP W_WP92 STATUS IS CLOSED
+AND PUMP W_WP93 STATUS IS CLOSED
+AND PUMP W_WP82 STATUS IS CLOSED
+AND PUMP W_WP81 STATUS IS CLOSED
+AND PUMP W_WP88 STATUS IS CLOSED
+AND PUMP W_WP87 STATUS IS CLOSED
+AND PUMP W_WP89 STATUS IS CLOSED
+AND PUMP W_WP90 STATUS IS CLOSED
+AND PUMP W_WP91 STATUS IS CLOSED
+
+RULE 21
+IF TANK W_T65 LEVEL BELOW 2
+THEN PUMP W_WP86 STATUS IS OPEN
+AND PUMP W_WP94 STATUS IS OPEN
+
+RULE 22
+IF TANK W_T65 LEVEL ABOVE 8
+THEN PUMP W_WP86 STATUS IS CLOSED
+AND PUMP W_WP94 STATUS IS CLOSED
+
+
+
+
+
+
+[ENERGY]
+ Global Efficiency  	75
+ Global Price       	0
+ Demand Charge      	0
+
+[EMITTERS]
+;Junction        	Coefficient
+
+[QUALITY]
+;Node            	InitQual
+
+[SOURCES]
+;Node            	Type        	Quality     	Pattern
+
+[REACTIONS]
+;Type     	Pipe/Tank       	Coefficient
+
+
+[REACTIONS]
+ Order Bulk            	1
+ Order Tank            	1
+ Order Wall            	1
+ Global Bulk           	0
+ Global Wall           	0
+ Limiting Potential    	0
+ Roughness Correlation 	0
+
+[MIXING]
+;Tank            	Model
+
+[TIMES]
+ Duration           	0:00 
+ Hydraulic Timestep 	1:00 
+ Quality Timestep   	0:05 
+ Pattern Timestep   	1:00 
+ Pattern Start      	0:00 
+ Report Timestep    	1:00 
+ Report Start       	0:00 
+ Start ClockTime    	12 am
+ Statistic          	NONE
+
+[REPORT]
+ Status             	No
+ Summary            	No
+ Page               	0
+
+[OPTIONS]
+ Units              	MLD
+ Headloss           	H-W
+ Specific Gravity   	1
+ Viscosity          	1
+ Trials             	40
+ Accuracy           	0.001
+ CHECKFREQ          	2
+ MAXCHECK           	10
+ DAMPLIMIT          	0
+ Unbalanced         	Continue 10
+ Pattern            	Residential1
+ Demand Multiplier  	1.0
+ Emitter Exponent   	0.5
+ Quality            	None mg/L
+ Diffusivity        	1
+ Tolerance          	0.01
+
+[COORDINATES]
+;Node            	X-Coord         	Y-Coord
+ W_J1            	-10034817.35    	4174777.73      
+ W_J2            	-10031214.94    	4166624.00      
+ W_J3            	-10019772.19    	4164812.89      
+ W_J4            	-10010554.27    	4167400.32      
+ W_J5            	-9997628.18     	4165589.08      
+ W_J6            	-9986079.34     	4165330.30      
+ W_J7            	-10021997.13    	4172059.11      
+ W_J8            	-10016593.57    	4172576.86      
+ W_J9            	-10010766.22    	4171282.47      
+ W_J10           	-10002925.76    	4171929.65      
+ W_J11           	-9989257.96     	4180605.40      
+ W_J12           	-9979510.38     	4178403.51      
+ W_J13           	-10026235.29    	4179051.10      
+ W_J14           	-10021891.15    	4176978.91      
+ W_J15           	-10017229.32    	4178273.97      
+ W_J16           	-10011190.01    	4179439.62      
+ W_J17           	-10003137.72    	4177237.96      
+ W_J18           	-10021255.52    	4181123.55      
+ W_J19           	-10022632.88    	4185399.37      
+ W_J20           	-10020831.73    	4184362.70      
+ W_J21           	-10013097.14    	4183455.59      
+ W_J22           	-10003137.72    	4188898.95      
+ W_J23           	-9994661.52     	4181771.30      
+ W_J24           	-9990211.52     	4185528.99      
+ W_J25           	-9980146.01     	4187732.30      
+ W_J26           	-9992966.23     	4191362.32      
+ W_J27           	-9980675.78     	4192010.67      
+ W_J28           	-9989681.75     	4201480.76      
+ W_J29           	-10001760.25    	4194863.79      
+ W_J30           	-10020513.80    	4195382.61      
+ W_J31           	-10016275.75    	4195123.26      
+ W_J32           	-10014368.63    	4196550.07      
+ W_J33           	-10020937.59    	4199144.92      
+ W_J34           	-10011190.01    	4200702.18      
+ W_J35           	-9996674.62     	4203946.93      
+ W_J36           	-10023904.26    	4209140.73      
+ W_J37           	-10013203.11    	4216415.91      
+ W_J38           	-10013309.09    	4213947.09      
+ W_J39           	-10014156.68    	4212387.96      
+ W_J40           	-10009282.89    	4211218.82      
+ W_J41           	-10009071.05    	4213167.49      
+ W_J42           	-10008753.12    	4216286.06      
+ W_J43           	-9999005.54     	4214986.54      
+ W_J44           	-9999005.54     	4210958.97      
+ W_J45           	-9989469.80     	4215116.51      
+ W_J46           	-9992012.67     	4209530.31      
+ W_J47           	-9992754.39     	4207062.89      
+ W_J48           	-9984913.94     	4208491.37      
+ W_J49           	-9982477.04     	4215506.30      
+ W_J50           	-10023866.99    	4209085.86      
+ W_J51           	-9999082.19     	4215132.31      
+ W_J52           	-9989631.75     	4215240.17      
+ W_J53           	-9980091.04     	4188071.89      
+ W_J54           	-9993074.96     	4191561.41      
+ W_J55           	-9997593.70     	4165594.79      
+ W_R50           	-10014054.60    	4196611.13      
+ W_R51           	-10003308.93    	4188754.72      
+ W_R52           	-10021582.47    	4177426.95      
+ W_R53           	-10020656.18    	4184737.11      
+ W_R54           	-10011308.79    	4179485.62      
+ W_R55           	-10002719.38    	4171767.40      
+ W_R56           	-10019898.20    	4164876.90      
+ W_R57           	-10031350.86    	4166830.48      
+ W_R58           	-9984698.42     	4208451.39      
+ W_T60           	-9999098.38     	4215162.38      
+ W_T61           	-9989666.83     	4215265.74      
+ W_T62           	-9980066.86     	4188239.48      
+ W_T63           	-9993119.41     	4191639.97      
+ W_T64           	-9997582.54     	4165596.69      
+ W_T65           	-10023856.17    	4209070.73      
+
+[VERTICES]
+;Link            	X-Coord         	Y-Coord
+
+[LABELS]
+;X-Coord           Y-Coord          Label & Anchor Node
+
+[BACKDROP]
+ DIMENSIONS     	-10037582.70    	4162232.73      	-9976745.03     	4218996.06      
+ UNITS          	None
+ FILE           	
+ OFFSET         	0.00            	0.00            
+
+[END]
