@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from itertools import permutations
-from sklearn import metrics
 import pandas as pd
 import timeit
 import copy

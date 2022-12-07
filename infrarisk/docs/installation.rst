@@ -1,22 +1,22 @@
 Installation
 ============
 
-Stable release
---------------
+.. Stable release
+.. --------------
 
-To install dreaminsg-integrated-model, run this command in your terminal:
+.. To install dreaminsg-integrated-model, run this command in your terminal:
 
-.. code-block:: console
+.. .. code-block:: console
 
-    $ pip install dreaminsg_integrated_model
+..     $ pip install dreaminsg_integrated_model
 
-This is the preferred method to install dreaminsg-integrated-model, as it will always install the most recent stable release.
+.. This is the preferred method to install dreaminsg-integrated-model, as it will always install the most recent stable release.
 
-If you don't have `pip`_ installed, this `Python installation guide`_ can guide
-you through the process.
+.. If you don't have `pip`_ installed, this `Python installation guide`_ can guide
+.. you through the process.
 
-.. _pip: https://pip.pypa.io
-.. _Python installation guide: http://docs.python-guide.org/en/latest/starting/installation/
+.. .. _pip: https://pip.pypa.io
+.. .. _Python installation guide: http://docs.python-guide.org/en/latest/starting/installation/
 
 
 From sources
@@ -30,11 +30,6 @@ You can either clone the public repository:
 
     $ git clone git://github.com/srijithabalakrishnan/dreaminsg_integrated_model
 
-Or download the `tarball`_:
-
-.. code-block:: console
-
-    $ curl -OJL https://github.com/srijithabalakrishnan/dreaminsg_integrated_model/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -44,7 +39,6 @@ Once you have a copy of the source, you can install it with:
 
 
 .. _Github repo: https://github.com/srijithabalakrishnan/dreaminsg_integrated_model
-.. _tarball: https://github.com/srijithabalakrishnan/dreaminsg_integrated_model/tarball/master
 
 
 You may need to create a new Python environment that has all required packages and dependencies installed before start using the package.

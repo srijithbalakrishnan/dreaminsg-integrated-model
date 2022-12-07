@@ -43,7 +43,7 @@ class TrackDisruption:
         self.name = name
         self.intensity = intensity
         self.hazard_tracks = []
-        self.set_fail_compon_dict()
+        # self.set_fail_compon_dict()
         self.set_intensity_failure_probability()
         self.disrupt_file = pd.DataFrame()
 
@@ -64,13 +64,21 @@ class TrackDisruption:
         self.set_time_of_occurrence(time_of_occurrence)
         # print(f"The time of the {self.name} is set to {time_of_occurrence}s.")
 
-    def set_fail_compon_dict(self):
-        """Sets the dictionary of components that could be failed due to a radial disaster."""
-        self.fail_compon_dict = {
-            "power": {"L"},
-            "water": {"R", "PMA"},
-            "transport": {"L"},
-        }
+    def set_fail_compon_dict(
+        self,
+        fail_compon_dict={
+            "power": ["L"],
+            "water": ["PMA", "WP"],
+            "transport": ["L"],
+        },
+    ):
+        """Sets the dictionary of components that could be failed due to a radial disaster.
+
+
+        :param fail_compon_dict: A dictionary of the prefixes of different infrastructure components that must be considered for failing
+        :type fail_compon_dict: _type_
+        """
+        self.fail_compon_dict = fail_compon_dict
 
     def get_fail_compon_dict(self):
         """Returns the dictionary of that could be failed due to a radial disaster.
@@ -280,129 +288,142 @@ class TrackDisruption:
 
         # bokeh plot
         if plot_components == True:
-            palette = [RdYlGn[11][2], RdYlGn[11][9]]
+            self.plot_disruptions(integrated_graph=G)
 
-            p = figure(
-                background_fill_color="white",
-                plot_width=700,
-                height=450,
-                title=f"{self.name}: Disrupted components",
-                x_range=(1000, 8000),
-                y_range=(1000, 6600),
-            )
+    def plot_disruptions(self, integrated_graph):
+        palette = [RdYlGn[11][2], RdYlGn[11][9]]
 
-            # instatiate the tile source provider
-            tile_provider = get_provider(Vendors.CARTODBPOSITRON_RETINA)
+        p = figure(
+            background_fill_color="white",
+            plot_width=700,
+            height=450,
+            title=f"{self.name}: Disrupted components",
+            x_range=(1000, 8000),
+            y_range=(1000, 6600),
+        )
 
-            # add the back ground basemap
-            p.add_tile(tile_provider, alpha=0.1)
+        # instatiate the tile source provider
+        tile_provider = get_provider(Vendors.CARTODBPOSITRON_RETINA)
 
-            # event area
-            for _, track in enumerate(self.hazard_tracks):
-                track_buffer = track.buffer(self.buffer_of_impact)
+        # add the back ground basemap
+        p.add_tile(tile_provider, alpha=0.1)
 
-                x, y = [], []
-                [
-                    (
-                        x.append(list(track_buffer.exterior.coords.xy[0])),
-                        y.append(list(track_buffer.exterior.coords.xy[1])),
-                    )
-                ]
+        # event area
+        for _, track in enumerate(self.hazard_tracks):
+            track_buffer = track.buffer(self.buffer_of_impact)
 
-                p.patches(
-                    "x",
-                    "y",
-                    source=ColumnDataSource(dict(x=x, y=y)),
-                    fill_color="silver",
-                    fill_alpha=1,
-                    line_color="silver",
-                    line_alpha=1,
-                    legend_label="Affected area",
+            x, y = [], []
+            [
+                (
+                    x.append(list(track_buffer.exterior.coords.xy[0])),
+                    y.append(list(track_buffer.exterior.coords.xy[1])),
                 )
+            ]
 
-            # nodes
-            x, y, node_type, node_category, fail_status, id = [], [], [], [], [], []
-
-            for _, node in enumerate(G.nodes.keys()):
-                x.append(G.nodes[node]["coord"][0])
-                y.append(G.nodes[node]["coord"][1])
-                node_type.append(G.nodes[node]["node_type"])
-                node_category.append(G.nodes[node]["node_category"])
-                fail_status.append(G.nodes[node]["fail_status"])
-                id.append(node)
-
-            plot_nodes = p.square(
+            p.patches(
                 "x",
                 "y",
-                source=ColumnDataSource(
-                    dict(
-                        x=x,
-                        y=y,
-                        node_type=node_type,
-                        node_category=node_category,
-                        fail_status=fail_status,
-                        id=id,
-                    )
-                ),
-                color=factor_cmap(
-                    "fail_status", palette, np.array(["Functional", "Disrupted"])
-                ),
-                alpha=0.7,
-                size=5,
-            )
-
-            # links
-            x, y, link_layer, link_category, fail_status, id = [], [], [], [], [], []
-            for _, link in enumerate(G.edges.keys()):
-                x.append([G.nodes[link[0]]["coord"][0], G.nodes[link[1]]["coord"][0]])
-                y.append([G.nodes[link[0]]["coord"][1], G.nodes[link[1]]["coord"][1]])
-                link_layer.append(G.edges[link]["link_type"])
-                link_category.append(G.edges[link]["link_category"])
-                fail_status.append(G.edges[link]["fail_status"])
-                id.append(G.edges[link]["id"])
-
-            plot_links = p.multi_line(
-                "x",
-                "y",
-                source=ColumnDataSource(
-                    dict(
-                        x=x,
-                        y=y,
-                        link_layer=link_layer,
-                        link_category=link_category,
-                        fail_status=fail_status,
-                        id=id,
-                    )
-                ),
-                line_color=factor_cmap(
-                    "fail_status", palette, np.array(["Functional", "Disrupted"])
-                ),
+                source=ColumnDataSource(dict(x=x, y=y)),
+                fill_color="silver",
+                fill_alpha=1,
+                line_color="silver",
                 line_alpha=1,
-                line_width=1.5,
-                legend_field="fail_status",
+                legend_label="Affected area",
             )
 
-            # hover tools
-            node_hover = HoverTool(renderers=[plot_nodes])
-            node_hover.tooltips = [
-                ("Node ID", "@id"),
-                ("Infrastructure", "@node_type"),
-                ("Node category", "@node_category"),
-                ("Affected", "@fail_status"),
-            ]
-            p.add_tools(node_hover)
+        # nodes
+        x, y, node_type, node_category, fail_status, id = [], [], [], [], [], []
 
-            link_hover = HoverTool(renderers=[plot_links])
-            link_hover.tooltips = [
-                ("Link ID", "@id"),
-                ("Infrastructure", "@link_layer"),
-                ("Link category", "@link_category"),
-                ("Affected", "@fail_status"),
-            ]
-            p.add_tools(link_hover)
+        for _, node in enumerate(integrated_graph.nodes.keys()):
+            x.append(integrated_graph.nodes[node]["coord"][0])
+            y.append(integrated_graph.nodes[node]["coord"][1])
+            node_type.append(integrated_graph.nodes[node]["node_type"])
+            node_category.append(integrated_graph.nodes[node]["node_category"])
+            fail_status.append(integrated_graph.nodes[node]["fail_status"])
+            id.append(node)
 
-            p.legend.location = "top_left"
-            show(p)
+        plot_nodes = p.square(
+            "x",
+            "y",
+            source=ColumnDataSource(
+                dict(
+                    x=x,
+                    y=y,
+                    node_type=node_type,
+                    node_category=node_category,
+                    fail_status=fail_status,
+                    id=id,
+                )
+            ),
+            color=factor_cmap(
+                "fail_status", palette, np.array(["Functional", "Disrupted"])
+            ),
+            alpha=0.7,
+            size=5,
+        )
+
+        # links
+        x, y, link_layer, link_category, fail_status, id = [], [], [], [], [], []
+        for _, link in enumerate(integrated_graph.edges.keys()):
+            x.append(
+                [
+                    integrated_graph.nodes[link[0]]["coord"][0],
+                    integrated_graph.nodes[link[1]]["coord"][0],
+                ]
+            )
+            y.append(
+                [
+                    integrated_graph.nodes[link[0]]["coord"][1],
+                    integrated_graph.nodes[link[1]]["coord"][1],
+                ]
+            )
+            link_layer.append(integrated_graph.edges[link]["link_type"])
+            link_category.append(integrated_graph.edges[link]["link_category"])
+            fail_status.append(integrated_graph.edges[link]["fail_status"])
+            id.append(integrated_graph.edges[link]["id"])
+
+        plot_links = p.multi_line(
+            "x",
+            "y",
+            source=ColumnDataSource(
+                dict(
+                    x=x,
+                    y=y,
+                    link_layer=link_layer,
+                    link_category=link_category,
+                    fail_status=fail_status,
+                    id=id,
+                )
+            ),
+            line_color=factor_cmap(
+                "fail_status", palette, np.array(["Functional", "Disrupted"])
+            ),
+            line_alpha=1,
+            line_width=1.5,
+            legend_field="fail_status",
+        )
+
+        # hover tools
+        node_hover = HoverTool(renderers=[plot_nodes])
+        node_hover.tooltips = [
+            ("Node ID", "@id"),
+            ("Infrastructure", "@node_type"),
+            ("Node category", "@node_category"),
+            ("Affected", "@fail_status"),
+        ]
+        p.add_tools(node_hover)
+
+        link_hover = HoverTool(renderers=[plot_links])
+        link_hover.tooltips = [
+            ("Link ID", "@id"),
+            ("Infrastructure", "@link_layer"),
+            ("Link category", "@link_category"),
+            ("Affected", "@fail_status"),
+        ]
+        p.add_tools(link_hover)
+
+        p.legend.location = "top_left"
+        show(p)
 
     def assign_node_failure(self, track, node_point):
         """Assigns node failure status.
@@ -414,7 +435,7 @@ class TrackDisruption:
         :return: The failure status of the node.
         :rtype: bool
         """
-        # print(track, node_point)
+
         nearest_point = nearest_points(track, node_point)[0]
 
         if self.intensity == "complete":

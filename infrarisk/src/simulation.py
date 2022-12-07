@@ -2,21 +2,18 @@
 
 import copy
 from pathlib import Path
+import time
 
 import infrarisk.src.physical.interdependencies as interdependencies
 import infrarisk.src.physical.power.power_system_model as power
-import infrarisk.src.physical.transportation.network as transpo
 import infrarisk.src.physical.water.water_network_model as water
-import infrarisk.src.plots as model_plots
 import infrarisk.src.resilience_metrics as resm
-import infrarisk.src.socioeconomic.se_analysis as se_analysis
-from wntr import network
 
 
 class NetworkSimulation:
     """Methods to perform simulation of interdependent effects."""
 
-    def __init__(self, network_recovery, sim_step):
+    def __init__(self, network_recovery):
         """Initates a NetworkSimulation object
 
         :param network_recovery: A integrated infrastructure network recovery object.
@@ -25,117 +22,33 @@ class NetworkSimulation:
         :type sim_step: non-negative integer
         """
         self.network_recovery = network_recovery
-        self.sim_step = sim_step
         self.components_to_repair = network_recovery.network.get_disrupted_components()
         self.components_repaired = []
 
-    def expand_event_table(self, add_points):
-        """Expands the event table with additional time_stamps for simulation.
-
-        :param add_points: A positive integer denoting the number of extra time-stamps to be added to the simulation.
-        :type add_points: integer
-        """
-        compon_list = list(self.network_recovery.event_table.components.unique())
-        full_time_list = self.network_recovery.event_table.time_stamp.unique()
-
-        # print("Prior to expansion: ", full_time_list)  ###
-
-        interval_approx = (full_time_list[-1] - full_time_list[0]) / add_points
-        act_interval = int(self.sim_step * round(interval_approx / self.sim_step))
-
-        new_range = range(full_time_list[0], full_time_list[-1], act_interval)
-
-        # print("Additional points that might be added: ", [i for i in new_range])
-
-        new_time_stamps = [time_stamp for time_stamp in new_range]
-
-        for time in full_time_list:
-            curr_components = list(
-                self.network_recovery.event_table[
-                    self.network_recovery.event_table.time_stamp == time
-                ].components
-            )
-            components_to_add = [
-                i
-                for i in compon_list + curr_components
-                if i not in compon_list or i not in curr_components
-            ]
-            # print("Components to add at {}".format(time), components_to_add)
-            for _, compon in enumerate(components_to_add):
-                compon_time_list = self.network_recovery.event_table[
-                    self.network_recovery.event_table.components == compon
-                ].time_stamp.unique()
-
-                maxless = max(compon_time_list[compon_time_list <= time])
-
-                perf_level = self.network_recovery.event_table[
-                    (self.network_recovery.event_table.components == compon)
-                    & (self.network_recovery.event_table.time_stamp == maxless)
-                ].perf_level.values[0]
-
-                perf_state = self.network_recovery.event_table[
-                    (self.network_recovery.event_table.components == compon)
-                    & (self.network_recovery.event_table.time_stamp == maxless)
-                ].component_state.values[0]
-
-                self.network_recovery.event_table = (
-                    self.network_recovery.event_table.append(
-                        {
-                            "time_stamp": time,
-                            "components": compon,
-                            "perf_level": perf_level,
-                            "component_state": perf_state,
-                        },
-                        ignore_index=True,
-                    )
-                )
-
-        for compon in compon_list:
-            compon_time_list = self.network_recovery.event_table[
-                self.network_recovery.event_table.components == compon
-            ].time_stamp.unique()
-
-            for time in new_time_stamps:
-                if time not in compon_time_list:
-                    if time not in [
-                        compon_time - 60 for compon_time in compon_time_list
-                    ]:
-                        if time not in [
-                            compon_time + 60 for compon_time in compon_time_list
-                        ]:
-                            maxless = max(compon_time_list[compon_time_list <= time])
-
-                            perf_level = self.network_recovery.event_table[
-                                (self.network_recovery.event_table.components == compon)
-                                & (
-                                    self.network_recovery.event_table.time_stamp
-                                    == maxless
-                                )
-                            ].perf_level.values[0]
-
-                            perf_state = self.network_recovery.event_table[
-                                (self.network_recovery.event_table.components == compon)
-                                & (
-                                    self.network_recovery.event_table.time_stamp
-                                    == maxless
-                                )
-                            ].component_state.values[0]
-
-                            self.network_recovery.event_table = (
-                                self.network_recovery.event_table.append(
-                                    {
-                                        "time_stamp": time,
-                                        "components": compon,
-                                        "perf_level": perf_level,
-                                        "component_state": perf_state,
-                                    },
-                                    ignore_index=True,
-                                )
-                            )
-        self.network_recovery.event_table.sort_values(by=["time_stamp"], inplace=True)
-        self.network_recovery.event_table["time_stamp"] = (
-            self.network_recovery.event_table["time_stamp"] + 60
+    def expand_event_table(self):
+        """Expands the event table with additional time_stamps for simulation."""
+        self.network_recovery.event_table.reset_index(drop=True, inplace=True)
+        self.network_recovery.event_table.time_stamp = (
+            self.network_recovery.event_table.time_stamp
+            + self.network_recovery.network.time_step
         )
+        state_pivot_table = self.network_recovery.event_table.pivot(
+            index="time_stamp", columns="components", values="component_state"
+        )
+        state_pivot_table = state_pivot_table.fillna(method="ffill").reset_index()
+        # state_pivot_table["time_stamp"] = (
+        #     state_pivot_table["time_stamp"] + self.network_recovery.network.time_step
+        # )
+        self.network_recovery.state_pivot_table = state_pivot_table
+
+        perf_pivot_table = self.network_recovery.event_table.pivot(
+            index="time_stamp", columns="components", values="perf_level"
+        )
+        perf_pivot_table = perf_pivot_table.fillna(method="ffill").reset_index()
+        # perf_pivot_table["time_stamp"] = (
+        #     perf_pivot_table["time_stamp"] + self.network_recovery.network.time_step
+        # )
+        self.network_recovery.perf_pivot_table = perf_pivot_table
 
     def get_components_to_repair(self):
         """Returns the remaining components to be repaired.
@@ -174,7 +87,7 @@ class NetworkSimulation:
 
         for _, row in network_recovery.event_table_wide.iterrows():
             compon_details = interdependencies.get_compon_details(row["component"])
-            if compon_details[0] in ["water", "power"]:
+            if compon_details["infra"] in ["water", "power"]:
                 if row["functional_start"] > simtime_max:
                     simtime_max = row["functional_start"]
 
@@ -194,12 +107,62 @@ class NetworkSimulation:
         :return: lists of time stamps and resilience values of power and water supply.
         :rtype: lists
         """
+        start_time = time.time()
         network_recovery = copy.deepcopy(network_recovery_original)
         resilience_metrics = resm.WeightedResilienceMetric()
 
-        unique_time_stamps = sorted(
-            list(network_recovery.event_table.time_stamp.unique())
+        water_control_dict = {
+            "base": network_recovery.network.wn.control_name_list,
+            "curr": [],
+            "future": [],
+        }
+
+        unique_time_stamps = (
+            self.network_recovery.state_pivot_table.time_stamp.unique().tolist()
         )
+
+        # consider only time until water and power are restored
+        event_table = self.network_recovery.event_table
+        event_table_reduced = event_table[
+            event_table.apply(
+                lambda x: x["components"].startswith("W_")
+                or x["components"].startswith("P_"),
+                axis=1,
+            )
+        ]
+        event_table_reduced = event_table_reduced[
+            event_table_reduced["component_state"] == "Service Restored"
+        ]
+        time_stamp_max_needed = (
+            event_table_reduced[
+                [
+                    "components",
+                    "time_stamp",
+                ]
+            ]
+            .groupby("components")
+            .min()  # minimum of every failed component
+            .max()  # maximum of all minimum times to restore completelyu\
+        )
+        time_index = (
+            event_table.time_stamp.sort_values()
+            .unique()
+            .tolist()
+            .index(time_stamp_max_needed[0])
+        )
+        if len(unique_time_stamps) >= time_index + 3:
+            sim_time_max = (
+                event_table.time_stamp.sort_values().unique().tolist()[time_index + 2]
+            )
+        else:
+            sim_time_max = (
+                event_table.time_stamp.sort_values().unique().tolist()[time_index]
+            )
+
+        unique_time_stamps = [
+            time for time in unique_time_stamps if time <= sim_time_max
+        ]
+
         print(
             "Time instances for which simulations will be performed:\n",
             unique_time_stamps,
@@ -209,6 +172,8 @@ class NetworkSimulation:
             x - unique_time_stamps[i - 1] for i, x in enumerate(unique_time_stamps)
         ][1:]
         # print(unique_time_differences)
+
+        stop_counter = None
 
         for index, time_stamp in enumerate(unique_time_stamps[:-1]):
             print(f"Simulating network conditions until {time_stamp} s")
@@ -221,6 +186,11 @@ class NetworkSimulation:
                 "; Report time step: ",
                 network_recovery.network.wn.options.time.report_timestep,
             )
+
+            # Remove unnecessary controls from previous iterations
+            for control in water_control_dict["curr"]:
+                network_recovery.network.wn.remove_control(control)
+            water_control_dict["curr"] = water_control_dict["future"]
 
             # update performance of directly affected components
 
@@ -242,27 +212,38 @@ class NetworkSimulation:
             )
 
             # run water network model and print results
+            # print(network_recovery.network.wn.control_name_list)
 
-            # Fix the time until which the wntr model should run in this iteration
             wn_results = water.run_water_simulation(network_recovery.network.wn)
+
+            water_control_dict["future"] = list(
+                set(network_recovery.network.wn.control_name_list)
+                - set(water_control_dict["base"])
+                - set(water_control_dict["curr"])
+            )
+            # print("\nFuture: ", water_control_dict["future"], "\n")
 
             # print(
             #     "Pumps: ",
-            #     "\t\tstatus = \n",
-            #     wn_results.link["status"][
-            #         network_recovery.network.wn.pump_name_list
-            #     ].round(decimals=4),
-            #     # "\tflowrate = \n",
-            #     # wn_results.link["flowrate"][
+            #     # "\t\tstatus = \n",
+            #     # wn_results.link["status"][
             #     #     network_recovery.network.wn.pump_name_list
             #     # ].round(decimals=4),
+            #     "\tflowrate = \n",
+            #     wn_results.link["flowrate"][network_recovery.network.wn.pump_name_list]
+            #     .round(decimals=4)
+            #     .iloc[-1]
+            #     .tolist(),
             # )
             # print(
             #     "Tank: ",
             #     "\t\tdemand\n",
-            #     wn_results.node["demand"]["W_T1"].round(decimals=4),
-            #     "\thead = \n",
-            #     wn_results.node["head"]["W_T1"].round(decimals=4),
+            #     wn_results.node["demand"][network_recovery.network.wn.tank_name_list]
+            #     .round(decimals=4)
+            #     .iloc[-1]
+            #     .tolist(),
+            #     # "\thead = \n",
+            #     # wn_results.node["head"][network_recovery.network.wn.tank_name_list].round(decimals=4).iloc[-1].tolist(),
             # )
             # print(
             #     "Pipe from Tank: ",
@@ -271,7 +252,10 @@ class NetworkSimulation:
             #     "\tflowrate = ",
             #     wn_results.link["flowrate"]["W_PMA2000"].round(decimals=4).values,
             # )
-            # print("Total leak: ", wn_results.node["leak_demand"].sum())
+            # print(
+            #     "Total leak: ",
+            #     wn_results.node["leak_demand"][["W_PMA44_leak_node"]].iloc[-1].tolist(),
+            # )
 
             # track results
             resilience_metrics.calculate_node_details(network_recovery, wn_results)
@@ -280,6 +264,19 @@ class NetworkSimulation:
             resilience_metrics.calculate_power_load(network_recovery, time_stamp)
             resilience_metrics.calculate_pump_status(network_recovery, wn_results)
 
+            if index > 0:
+                resilience_metrics.calculate_power_resmetric(network_recovery)
+                resilience_metrics.calculate_water_resmetrics(network_recovery)
+                resilience_metrics.set_weighted_auc_metrics()
+                if resilience_metrics.power_pcs_list[-1] > 0.99:
+                    if resilience_metrics.water_pcs_list[-1] > 0.99:
+                        stop_counter = 0
+
+            if stop_counter is not None:
+                stop_counter += 1
+                if stop_counter == 2:
+                    break
+
             # # Fix the time until which the wntr model should run in this iteration
             if index < len(unique_time_stamps) - 1:
                 network_recovery.network.wn.options.time.duration += int(
@@ -287,11 +284,15 @@ class NetworkSimulation:
                 )
             print("******************\n")
 
+        end_time = time.time()
+
+        time_taken = round(end_time) - round(start_time)
+        print(f"Simulation completed in {time_taken} s")
         return resilience_metrics
 
     def write_results(self, file_dir, resilience_metrics):
         """Writes the results to csv files.
-        
+
         :param file_dir: The directory in which the simulation contents are to be saved.
         :type file_dir: string
         :param resilience_metrics: The object in which simulation related data are stored.

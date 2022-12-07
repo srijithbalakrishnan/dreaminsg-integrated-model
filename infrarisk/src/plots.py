@@ -10,9 +10,9 @@ import pandas as pd
 import seaborn as sns
 from bokeh.io import curdoc, output_notebook, show
 from bokeh.models import ColorBar, ColumnDataSource, HoverTool, Range1d
-from bokeh.palettes import Category10, RdYlGn, Turbo256, Viridis3
+from bokeh.palettes import RdYlGn, Turbo256, Viridis3
 from bokeh.plotting import figure
-from bokeh.tile_providers import CARTODBPOSITRON_RETINA, get_provider
+from bokeh.tile_providers import CARTODBPOSITRON_RETINA, get_provider, ESRI_IMAGERY
 from bokeh.transform import factor_cmap, linear_cmap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
@@ -143,7 +143,7 @@ def plot_bokeh_from_integrated_graph(
     :type extent: list, optional
     """
     output_notebook()
-    tile_provider = get_provider(CARTODBPOSITRON_RETINA)
+    tile_provider = get_provider(ESRI_IMAGERY)
 
     p = figure(
         background_fill_color="white",
@@ -170,100 +170,80 @@ def plot_bokeh_from_integrated_graph(
         source=ColumnDataSource(
             dict(x=x, y=y, node_type=node_type, node_category=node_category, id=id)
         ),
-        color="gainsboro",
-        alpha=0.6,
+        color="grey",
+        alpha=0.2,
         muted_color="gainsboro",
         muted_alpha=0.2,
         size=5,
     )
 
     # links
-    x_water, y_water, link_layer_water, link_category_water, id_water = (
-        [],
-        [],
-        [],
-        [],
-        [],
-    )
-    x_power, y_power, link_layer_power, link_category_power, id_power = (
-        [],
-        [],
-        [],
-        [],
-        [],
-    )
-    x_transpo, y_transpo, link_layer_transpo, link_category_transpo, id_transpo = (
-        [],
-        [],
-        [],
-        [],
-        [],
-    )
+    x_w, y_w, link_layer_w, link_cat_w, id_w = [], [], [], [], []
+    x_p, y_p, link_layer_p, link_cat_p, id_p = [], [], [], [], []
+    x_t, y_t, link_layer_t, link_cat_t, id_t = [], [], [], [], []
 
     for _, link in enumerate(G.edges.keys()):
         link_id = G.edges[link]["id"]
         if link_id.startswith("W_"):
-            x_water.append([G.nodes[link[0]]["coord"][0], G.nodes[link[1]]["coord"][0]])
-            y_water.append([G.nodes[link[0]]["coord"][1], G.nodes[link[1]]["coord"][1]])
-            link_layer_water.append(G.edges[link]["link_type"])
-            link_category_water.append(G.edges[link]["link_category"])
-            id_water.append(G.edges[link]["id"])
+            x_w.append([G.nodes[link[0]]["coord"][0], G.nodes[link[1]]["coord"][0]])
+            y_w.append([G.nodes[link[0]]["coord"][1], G.nodes[link[1]]["coord"][1]])
+            link_layer_w.append(G.edges[link]["link_type"])
+            link_cat_w.append(G.edges[link]["link_category"])
+            id_w.append(G.edges[link]["id"])
         elif link_id.startswith("P_"):
-            x_power.append([G.nodes[link[0]]["coord"][0], G.nodes[link[1]]["coord"][0]])
-            y_power.append([G.nodes[link[0]]["coord"][1], G.nodes[link[1]]["coord"][1]])
-            link_layer_power.append(G.edges[link]["link_type"])
-            link_category_power.append(G.edges[link]["link_category"])
-            id_power.append(G.edges[link]["id"])
+            x_p.append([G.nodes[link[0]]["coord"][0], G.nodes[link[1]]["coord"][0]])
+            y_p.append([G.nodes[link[0]]["coord"][1], G.nodes[link[1]]["coord"][1]])
+            link_layer_p.append(G.edges[link]["link_type"])
+            link_cat_p.append(G.edges[link]["link_category"])
+            id_p.append(G.edges[link]["id"])
         elif link_id.startswith("T_"):
-            x_transpo.append(
-                [G.nodes[link[0]]["coord"][0], G.nodes[link[1]]["coord"][0]]
-            )
-            y_transpo.append(
-                [G.nodes[link[0]]["coord"][1], G.nodes[link[1]]["coord"][1]]
-            )
-            link_layer_transpo.append(G.edges[link]["link_type"])
-            link_category_transpo.append(G.edges[link]["link_category"])
-            id_transpo.append(G.edges[link]["id"])
+            x_t.append([G.nodes[link[0]]["coord"][0], G.nodes[link[1]]["coord"][0]])
+            y_t.append([G.nodes[link[0]]["coord"][1], G.nodes[link[1]]["coord"][1]])
+            link_layer_t.append(G.edges[link]["link_type"])
+            link_cat_t.append(G.edges[link]["link_category"])
+            id_t.append(G.edges[link]["id"])
 
     plot_transpolinks = plot_bokeh_lines(
         p=p,
-        x=x_transpo,
-        y=y_transpo,
-        link_layer=link_layer_transpo,
-        link_category=link_category_transpo,
-        ids=id_transpo,
+        x=x_t,
+        y=y_t,
+        link_layer=link_layer_t,
+        link_category=link_cat_t,
+        ids=id_t,
         infra="Transportation",
-        alpha=0.3,
+        alpha=1,
         line_dash="solid",
-        color="black",  # Category10[5][4],
+        color="limegreen",  # Category10[5][4],
     )
     plot_waterlinks = plot_bokeh_lines(
         p=p,
-        x=x_water,
-        y=y_water,
-        link_layer=link_layer_water,
-        link_category=link_category_water,
-        ids=id_water,
+        x=x_w,
+        y=y_w,
+        link_layer=link_layer_w,
+        link_category=link_cat_w,
+        ids=id_w,
         infra="Water",
         alpha=1,
         line_dash="solid",
-        color=Category10[5][1],
+        color="yellow",  # Category10[5][1],
     )
     plot_powerlinks = plot_bokeh_lines(
         p=p,
-        x=x_power,
-        y=y_power,
-        link_layer=link_layer_power,
-        link_category=link_category_power,
-        ids=id_power,
+        x=x_p,
+        y=y_p,
+        link_layer=link_layer_p,
+        link_category=link_cat_p,
+        ids=id_p,
         infra="Power",
         alpha=1,
         line_dash="solid",
-        color=Category10[5][3],
+        color="lightskyblue",  # Category10[5][3],
     )
 
     if basemap:
         p.add_tile(tile_provider)
+    else:
+        p.background_fill_color = "black"
 
     # hover tools
     node_hover = HoverTool(renderers=[plot_nodes])
@@ -300,6 +280,9 @@ def plot_bokeh_from_integrated_graph(
 
     p.legend.location = "top_left"
     p.legend.click_policy = "mute"
+    p.legend.background_fill_alpha = 0.3
+    p.legend.background_fill_color = "black"
+    p.legend.label_text_color = "white"
     p.grid.visible = False
     p.axis.visible = False
     show(p)
@@ -418,14 +401,14 @@ def plot_interdependent_effects(resilience_metrics, metric, title=True):
         title = "Prioritized Consumer Serviceability"
 
     sns.set_style(style="ticks")
-    sns.set_context("paper", font_scale=1.5)
+    sns.set_context("paper", font_scale=1.75)
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(7, 5))
     fig.tight_layout()
     sns.lineplot(
         ax=ax,
         x=[x / 60 for x in resilience_metrics.water_time_list],
         y=water_metric_list,
-        # drawstyle="steps-post",
+        drawstyle="steps-post",
         label="Water",
         linewidth=2,
         linestyle=(0, (5, 1)),
@@ -446,7 +429,7 @@ def plot_interdependent_effects(resilience_metrics, metric, title=True):
 
     plt.legend(loc="lower right")
 
-    ax.set(xlabel="Time (hours)", ylabel=title, ylim=(0, 1.01))
+    ax.set(xlabel="Time (hours)", ylabel="Average satisfied demand (%)", ylim=(0, 1.01))
     if title is True:
         ax.set_title("Network-wide performance", fontsize=12)
 
@@ -455,53 +438,93 @@ def plot_interdependent_effects(resilience_metrics, metric, title=True):
 
 
 def plot_network_impact_map(
-    resilience_metrics, integrated_network, strategy, node_prefix, infra="power"
+    resilience_metrics,
+    integrated_network,
+    strategy,
+    node_prefix,
+    infra="power",
+    time_index=None,
 ):
     output_notebook()
-    avg_water_demand_ratio = {"capacity": {}, "centrality": {}, "zone": {}}
-    avg_power_demand_ratio = {"capacity": {}, "centrality": {}, "zone": {}}
 
-    water_demands_ratio = resilience_metrics.water_demands_ratio
-    power_demands_ratio = resilience_metrics.power_demand_ratio
-    water_time_list = resilience_metrics.water_time_list
-    power_time_list = resilience_metrics.power_time_list
-    for column in water_demands_ratio.columns:
-        if column.startswith(node_prefix):
-            if column in avg_water_demand_ratio[strategy].keys():
-                avg_water_demand_ratio[strategy][column].append(
-                    integrate(water_time_list, 1 - water_demands_ratio[column])
+    if infra == "water":
+        avg_water_demand_ratio = {"capacity": {}, "centrality": {}, "zone": {}}
+        water_demands_ratio = resilience_metrics.water_demands_ratio
+        water_time_list = resilience_metrics.water_time_list
+        for column in water_demands_ratio.columns:
+            if column.startswith(node_prefix):
+                if column in avg_water_demand_ratio[strategy].keys():
+                    if time_index is None:
+                        avg_water_demand_ratio[strategy][column].append(
+                            integrate(water_time_list, 1 - water_demands_ratio[column])
+                        )
+                    else:
+                        avg_water_demand_ratio[strategy][column].append(
+                            1 - water_demands_ratio[column][time_index]
+                        )
+                else:
+                    if time_index is None:
+                        avg_water_demand_ratio[strategy][column] = [
+                            integrate(water_time_list, 1 - water_demands_ratio[column])
+                        ]
+                    else:
+                        avg_water_demand_ratio[strategy][column] = (
+                            1 - water_demands_ratio[column][time_index]
+                        )
+        water_compon_auc = {"capacity": {}, "centrality": {}, "zone": {}}
+
+        for node in avg_water_demand_ratio[strategy].keys():
+            if time_index is None:
+                water_compon_auc[strategy][node] = (
+                    np.mean(avg_water_demand_ratio[strategy][node]) / 60
                 )
             else:
-                avg_water_demand_ratio[strategy][column] = [
-                    integrate(water_time_list, 1 - water_demands_ratio[column])
+                water_compon_auc[strategy][node] = avg_water_demand_ratio[strategy][
+                    node
                 ]
-    for column in power_demands_ratio.columns:
-        if column in avg_power_demand_ratio[strategy].keys():
-            avg_power_demand_ratio[strategy][column].append(
-                integrate(power_time_list, 1 - power_demands_ratio[column])
-            )
-        else:
-            avg_power_demand_ratio[strategy][column] = [
-                integrate(power_time_list, 1 - power_demands_ratio[column])
-            ]
 
-    water_compon_auc = {"capacity": {}, "centrality": {}, "zone": {}}
-    power_compon_auc = {"capacity": {}, "centrality": {}, "zone": {}}
+        water_compon_auc_df = pd.DataFrame(water_compon_auc)
+        water_compon_auc_df["component"] = water_compon_auc_df.index
 
-    for node in avg_water_demand_ratio[strategy].keys():
-        water_compon_auc[strategy][node] = (
-            np.mean(avg_water_demand_ratio[strategy][node]) / 60
-        )
-    for node in avg_power_demand_ratio[strategy].keys():
-        power_compon_auc[strategy][node] = (
-            np.mean(avg_power_demand_ratio[strategy][node]) / 60
-        )
+    elif infra == "power":
+        avg_power_demand_ratio = {"capacity": {}, "centrality": {}, "zone": {}}
+        power_demands_ratio = resilience_metrics.power_demand_ratio
+        power_time_list = resilience_metrics.power_time_list
 
-    water_compon_auc_df = pd.DataFrame(water_compon_auc)
-    water_compon_auc_df["component"] = water_compon_auc_df.index
+        for column in power_demands_ratio.columns:
+            if column.startswith(node_prefix):
+                if column in avg_power_demand_ratio[strategy].keys():
+                    if time_index is None:
+                        avg_power_demand_ratio[strategy][column].append(
+                            integrate(power_time_list, 1 - power_demands_ratio[column])
+                        )
+                    else:
+                        avg_power_demand_ratio[strategy][column].append(
+                            1 - power_demands_ratio[column][time_index]
+                        )
+                else:
+                    if time_index is None:
+                        avg_power_demand_ratio[strategy][column] = [
+                            integrate(power_time_list, 1 - power_demands_ratio[column])
+                        ]
+                    else:
+                        avg_power_demand_ratio[strategy][column] = (
+                            1 - power_demands_ratio[column][time_index]
+                        )
 
-    power_compon_auc_df = pd.DataFrame(power_compon_auc)
-    power_compon_auc_df["component"] = power_compon_auc_df.index
+        power_compon_auc = {"capacity": {}, "centrality": {}, "zone": {}}
+        for node in avg_power_demand_ratio[strategy].keys():
+            if time_index is None:
+                power_compon_auc[strategy][node] = (
+                    np.mean(avg_power_demand_ratio[strategy][node]) / 60
+                )
+            else:
+                power_compon_auc[strategy][node] = avg_power_demand_ratio[strategy][
+                    node
+                ]
+
+        power_compon_auc_df = pd.DataFrame(power_compon_auc)
+        power_compon_auc_df["component"] = power_compon_auc_df.index
 
     G = integrated_network.integrated_graph
     if infra == "water":
@@ -547,52 +570,58 @@ def plot_network_impact_map(
     )
 
     # links
-    x, y, link_layer, link_category, avg_perf, id = [], [], [], [], [], []
+    x, y = [], []
     for _, link in enumerate(G.edges.keys()):
         x.append([G.nodes[link[0]]["coord"][0], G.nodes[link[1]]["coord"][0]])
         y.append([G.nodes[link[0]]["coord"][1], G.nodes[link[1]]["coord"][1]])
-        avg_perf.append(G.edges[link]["avg_perf"])
+        # avg_perf.append(G.edges[link]["avg_perf"])
 
-    plot_links = p.multi_line(
+    _ = p.multi_line(
         "x",
         "y",
         source=ColumnDataSource(
             dict(
                 x=x,
                 y=y,
-                avg_perf=avg_perf,
+                # avg_perf=avg_perf,
             )
         ),
         line_color="grey",
         line_alpha=0.6,
         line_width=0.75,
         legend_label="Infrastructure links",
-        # legend_field="fail_prob",
     )
 
-    x, y, node_type, node_category, avg_perf, id = [], [], [], [], [], []
-
+    # nodes
+    x, y, avg_perf = [], [], []
     if infra == "water":
-        for _, node in enumerate(G.nodes.keys()):
-            if G.nodes[node]["avg_perf"] is not np.nan:
-                x.append(G.nodes[node]["coord"][0])
-                y.append(G.nodes[node]["coord"][1])
-                avg_perf.append(G.nodes[node]["avg_perf"])
+        for _, node in enumerate(auc_type[strategy].keys()):
+            x.append(G.nodes[node]["coord"][0])
+            y.append(G.nodes[node]["coord"][1])
+            avg_perf.append(G.nodes[node]["avg_perf"])
     elif infra == "power":
         for index, node in enumerate(integrated_network.pn.load.name):
             if node in auc_type[strategy].keys():
                 x.append(integrated_network.pn.loads_geodata.x[index])
                 y.append(integrated_network.pn.loads_geodata.y[index])
                 avg_perf.append(auc_type[strategy][node])
+
+    if time_index is None:
+        title = f"{infra.title()} outage (equivalent outage hours)"
+        high = max(avg_perf)
+    else:
+        title = f"Proportion of satisfied {infra} demand"
+        high = 1
+
     color_mapper = linear_cmap(
         field_name="avg_perf",
         palette=palette,
         low=0,
-        high=max(avg_perf),
+        high=high,
         nan_color="snow",
     )
 
-    plot_nodes = p.square(
+    _ = p.square(
         "x",
         "y",
         source=ColumnDataSource(
@@ -616,7 +645,7 @@ def plot_network_impact_map(
         color_mapper=color_mapper["transform"],
         width=15,
         location=(0, 0),
-        title=f"{infra.title()} outage (equivalent outage hours)",
+        title=title,
         title_text_font="helvetica",
         title_text_font_style="normal",
         title_text_font_size="14pt",
@@ -699,7 +728,7 @@ def plot_region_impact_map(resilience_metrics, sa_dict, strategy, extends):
 
     fig, axes = plt.subplots(1, 2, figsize=(20, 10))
     sns.set_style("whitegrid")
-    sns.set_context("notebook", font_scale=1.5, rc={"lines.linewidth": 2.5})
+    sns.set_context("notebook", font_scale=1.75, rc={"lines.linewidth": 2.5})
     fig.suptitle("Networkwide effects of infrastructure disruptions")
     for index, ax in enumerate(axes):
         ax.set_title(f"{list(sa_dict.keys())[index].title()} supply")
@@ -743,8 +772,8 @@ def plot_disruptions_and_crews(integrated_network, basemap=False):
         background_fill_color="white",
         plot_width=800,
         height=450,
-        x_range=(extent[0][0] - 100, extent[1][0] + 100),
-        y_range=(extent[0][1] - 100, extent[1][1] + 100),
+        # x_range=(extent[0][0] - 100, extent[1][0] + 100),
+        # y_range=(extent[0][1] - 100, extent[1][1] + 100),
     )
     p.axis.visible = False
 
@@ -772,12 +801,12 @@ def plot_disruptions_and_crews(integrated_network, basemap=False):
         crew_locs["transpo"].append(integrated_network.transpo_crews[key]._init_loc)
 
     power_node_list = [
-        node for node in G.nodes.keys() if G.nodes[node]["node_type"] == "Power"
+        node for node in G.nodes.keys() if G.nodes[node]["node_type"] == "power"
     ]
     power_link_list = [
         G.edges[edge]["id"]
         for edge in G.edges.keys()
-        if G.edges[edge]["link_type"] == "Power"
+        if G.edges[edge]["link_type"] == "power"
     ]
 
     affected_nodes["power"] = [
@@ -818,14 +847,12 @@ def plot_disruptions_and_crews(integrated_network, basemap=False):
 
     # transportation
     transpo_node_list = [
-        node
-        for node in G.nodes.keys()
-        if G.nodes[node]["node_type"] == "Transportation"
+        node for node in G.nodes.keys() if G.nodes[node]["node_type"] == "transpo"
     ]
     transpo_link_list = [
         G.edges[edge]["id"]
         for edge in G.edges.keys()
-        if G.edges[edge]["link_type"] == "Transportation"
+        if G.edges[edge]["link_type"] == "transpo"
     ]
 
     affected_nodes["transpo"] = [
@@ -989,9 +1016,18 @@ def plot_disruptions_and_crews(integrated_network, basemap=False):
         legend_field="crew_type",
     )
 
+    if basemap:
+        p.add_tile(tile_provider)
+    else:
+        p.background_fill_color = "black"
+
     p.legend.location = "top_left"
-    # p.axis.visible = False
-    # p.grid.visible = False
+    p.legend.click_policy = "mute"
+    p.legend.background_fill_alpha = 0.3
+    p.legend.background_fill_color = "black"
+    p.legend.label_text_color = "white"
+    p.grid.visible = False
+    p.axis.visible = False
     show(p)
 
 

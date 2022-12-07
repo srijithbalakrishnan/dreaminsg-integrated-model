@@ -1,11 +1,8 @@
-from io import StringIO
 import pandas as pd
 import networkx as nx
 import wntr
 import math
 import os
-import numpy as np
-import geopandas as gpd
 
 import infrarisk.src.physical.interdependencies as interdependencies
 import infrarisk.src.physical.water.water_network_model as water
@@ -14,6 +11,8 @@ import infrarisk.src.physical.transportation.network as transpo
 import infrarisk.src.plots as model_plots
 
 import infrarisk.src.repair_crews as repair_crews
+import numpy as np
+import geopandas as gpd
 
 
 class IntegratedNetwork:
@@ -67,6 +66,7 @@ class IntegratedNetwork:
         transp_folder,
         power_sim_type="1ph",
         water_sim_type="PDA",
+        sim_step=60,
         cyber_layer=False,
     ):
         """Loads the water, power and transportation networks.
@@ -81,13 +81,18 @@ class IntegratedNetwork:
         :type power_sim_type: string, optional
         :param water_sim_type: Type of water simulation: 'PDA' for pressure-dependent driven analysis, 'DDA' for demand driven analysis
         :type water_sim_type: string
+        :param sim_step: Simulation step in seconds, defaults to 60
+        :type sim_step: int, optional
+        :param cyber_layer: Whether to include cyber layer in the integrated network, defaults to False
+        :type cyber_layer: bool, optional
         """
         self.has_cyber_layer = cyber_layer
+        self.time_step = sim_step
 
         # load water_network model
         if water_folder is not None:
             self.load_water_network(
-                water_folder, water_sim_type, cyber_layer=cyber_layer
+                water_folder, water_sim_type, sim_step, cyber_layer=cyber_layer
             )
 
         # load power systems network
@@ -139,21 +144,26 @@ class IntegratedNetwork:
             print("Loading power service area details...")
             pn.service_area = gpd.read_file(
                 power_folder / "service_area/service_area.shp",
-                crs={"init": "epsg:4326"},
+                crs="epsg:4326",
             )
-            pn.service_area = pn.service_area.to_crs({"init": "epsg:3857"})
+            pn.service_area = pn.service_area.to_crs("epsg:3857")
             pn.service_area.Power_Node = "P_LO" + pn.service_area.Power_Node.astype(str)
             pn.service_area.Id = pn.service_area.index
 
-    def load_water_network(self, water_folder, water_sim_type, cyber_layer=False):
+    def load_water_network(
+        self, water_folder, water_sim_type, initial_sim_step=60, cyber_layer=False
+    ):
         """Loads the water network.
 
         :param water_folder: The directory that consists of required water network files
         :type water_folder: pathlib.Path object
         :param water_sim_type: Type of water simulation: 'PDA' for pressure-dependent driven analysis, 'DDA' for demand driven analysis
         :type water_sim_type: string
+        :param initial_sim_step: The initial simulation step in seconds, defaults to 60
+        :type initial_sim_step: int, optional
+        :param cyber_layer: If True, the cyber layer will be loaded, defaults to False
+        :type cyber_layer: bool, optional
         """
-        initial_sim_step = 60
         self.wn = water.load_water_network(
             f"{water_folder}/water.inp", water_sim_type, initial_sim_step, cyber_layer
         )
@@ -194,9 +204,9 @@ class IntegratedNetwork:
             print("Loading water service area details...")
             self.wn.service_area = gpd.read_file(
                 water_folder / "service_area/service_area.shp",
-                crs={"init": "epsg:4326"},
+                crs="epsg:4326",
             )
-            self.wn.service_area = self.wn.service_area.to_crs({"init": "epsg:3857"})
+            self.wn.service_area = self.wn.service_area.to_crs("epsg:3857")
             self.wn.service_area.Water_Node = (
                 "W_J" + self.wn.service_area.Water_Node.astype(str)
             )
@@ -611,6 +621,7 @@ class IntegratedNetwork:
         :type scenario_file: string
         """
         self.disruptive_events = pd.read_csv(disruption_file, sep=",")
+        self.disruptive_events.time_stamp = 2 * self.time_step
         self.disrupted_components = self.disruptive_events.components
         self.set_disrupted_infra_dict()
 
@@ -669,11 +680,11 @@ class IntegratedNetwork:
             compon_details = interdependencies.get_compon_details(component)
             # print(compon_details)
 
-            if compon_details[0] == "power":
+            if compon_details["infra"] == "power":
                 disrupted_infra_dict["power"].append(component)
-            elif compon_details[0] == "water":
+            elif compon_details["infra"] == "water":
                 disrupted_infra_dict["water"].append(component)
-            elif compon_details[0] == "transpo":
+            elif compon_details["infra"] == "transpo":
                 disrupted_infra_dict["transpo"].append(component)
         self.disrupted_infra_dict = disrupted_infra_dict
 
@@ -685,11 +696,11 @@ class IntegratedNetwork:
             compon_details = interdependencies.get_compon_details(component)
             # print(compon_details)
 
-            if compon_details[0] == "power":
+            if compon_details["infra"] == "power":
                 disrupted_cyber_dict["power"].append(component)
-            elif compon_details[0] == "water":
+            elif compon_details["infra"] == "water":
                 disrupted_cyber_dict["water"].append(component)
-            elif compon_details[0] == "transpo":
+            elif compon_details["infra"] == "transpo":
                 disrupted_cyber_dict["transpo"].append(component)
         self.disrupted_cyber_dict = disrupted_cyber_dict
 
@@ -724,7 +735,7 @@ class IntegratedNetwork:
         self.transpo_crews = {}
 
         try:
-            for i in range(len(init_power_crew_locs)):
+            for i, _ in enumerate(init_power_crew_locs):
                 crew_size = None if power_crews_size is None else power_crews_size[i]
                 self.power_crews[i + 1] = repair_crews.PowerRepairCrew(
                     name=i + 1,
@@ -741,7 +752,7 @@ class IntegratedNetwork:
             )
 
         try:
-            for i in range(len(init_water_crew_locs)):
+            for i, _ in enumerate(init_water_crew_locs):
                 crew_size = None if water_crews_size is None else water_crews_size[i]
                 self.water_crews[i + 1] = repair_crews.WaterRepairCrew(
                     name=i + 1,
@@ -758,7 +769,7 @@ class IntegratedNetwork:
             )
 
         try:
-            for i in range(len(init_transpo_crew_locs)):
+            for i, _ in enumerate(init_transpo_crew_locs):
                 crew_size = (
                     None if transpo_crews_size is None else transpo_crews_size[i]
                 )
@@ -788,21 +799,21 @@ class IntegratedNetwork:
             crews = self.power_crews
 
             idle_crew = crews[list(crews.keys())[0]]
-            for crew_name in crews.keys():
+            for crew_name, _ in crews.items():
                 if crews[crew_name].next_trip_start < idle_crew.next_trip_start:
                     idle_crew = crews[crew_name]
             return idle_crew
         elif crew_type == "water":
             crews = self.water_crews
             idle_crew = crews[list(crews.keys())[0]]
-            for crew_name in crews.keys():
+            for crew_name, _ in crews.items():
                 if crews[crew_name].next_trip_start < idle_crew.next_trip_start:
                     idle_crew = crews[crew_name]
             return idle_crew
         elif crew_type == "transpo":
             crews = self.transpo_crews
             idle_crew = crews[list(crews.keys())[0]]
-            for crew_name in crews.keys():
+            for crew_name, _ in crews.items():
                 if crews[crew_name].next_trip_start < idle_crew.next_trip_start:
                     idle_crew = crews[crew_name]
             return idle_crew
@@ -866,7 +877,7 @@ class IntegratedNetwork:
 
         for _, component in enumerate(self.get_disrupted_components()):
             compon_details = interdependencies.get_compon_details(component)
-            if compon_details[3] in [
+            if compon_details["name"] in [
                 "Pipe",
                 "Service Connection Pipe",
                 "Main Pipe",

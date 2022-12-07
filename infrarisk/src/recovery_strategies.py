@@ -45,12 +45,27 @@ class CentralityStrategy:
         for compon in self.integrated_network.get_disrupted_components():
             compon_details = interdependencies.get_compon_details(compon)
 
-            if compon_details[0] == "water":
-                if compon_details[1] in ["R", "J", "JIN", "JVN", "JTN", "JHY", "T"]:
+            if compon_details["infra"] == "water":
+                if compon_details["type_code"] in [
+                    "R",
+                    "J",
+                    "JIN",
+                    "JVN",
+                    "JTN",
+                    "JHY",
+                    "T",
+                ]:
                     water_centrality_dict[compon] = self.integrated_network.wn_nodebc[
                         compon
                     ]
-                elif compon_details[1] in ["P", "PSC", "PMA", "PHC", "PV", "WP"]:
+                elif compon_details["type_code"] in [
+                    "P",
+                    "PSC",
+                    "PMA",
+                    "PHC",
+                    "PV",
+                    "WP",
+                ]:
                     compon_key = [
                         (u, v)
                         for u, v, e in self.integrated_network.integrated_graph.edges(
@@ -62,8 +77,8 @@ class CentralityStrategy:
                         compon_key[0]
                     ]
 
-            elif compon_details[0] == "power":
-                if compon_details[1] in [
+            elif compon_details["infra"] == "power":
+                if compon_details["type_code"] in [
                     "B",
                     "BL",
                     "BS",
@@ -79,7 +94,15 @@ class CentralityStrategy:
                     power_centrality_dict[compon] = self.integrated_network.pn_nodebc[
                         compon
                     ]
-                elif compon_details[1] in ["S", "L", "LS", "TF", "TH", "I", "DL"]:
+                elif compon_details["type_code"] in [
+                    "S",
+                    "L",
+                    "LS",
+                    "TF",
+                    "TH",
+                    "I",
+                    "DL",
+                ]:
                     compon_key = [
                         (u, v)
                         for u, v, e in self.integrated_network.integrated_graph.edges(
@@ -91,12 +114,12 @@ class CentralityStrategy:
                         compon_key[0]
                     ]
 
-            elif compon_details[0] == "transpo":
-                if compon_details[1] in ["J"]:
+            elif compon_details["infra"] == "transpo":
+                if compon_details["type_code"] in ["J"]:
                     transpo_centrality_dict[compon] = self.integrated_network.tn_nodebc[
                         compon
                     ]
-                elif compon_details[1] in ["L"]:
+                elif compon_details["type_code"] in ["L"]:
                     compon_key = [
                         (u, v)
                         for u, v, e in self.integrated_network.integrated_graph.edges(
@@ -169,7 +192,7 @@ class CrewDistanceStrategy:
         for compon in self.integrated_network.get_disrupted_components():
             compon_details = interdependencies.get_compon_details(compon)
 
-            if compon_details[0] == "water":
+            if compon_details["infra"] == "water":
                 connected_nodes = interdependencies.find_connected_water_node(
                     compon, self.integrated_network.wn
                 )
@@ -192,7 +215,7 @@ class CrewDistanceStrategy:
                         travel_time = curr_tt
                 water_dist_dict[compon] = travel_time
 
-            elif compon_details[0] == "power":
+            elif compon_details["infra"] == "power":
                 connected_buses = interdependencies.find_connected_power_node(
                     compon, self.integrated_network.pn
                 )
@@ -215,7 +238,7 @@ class CrewDistanceStrategy:
                         travel_time = curr_tt
                 power_dist_dict[compon] = travel_time
 
-            elif compon_details[0] == "transpo":
+            elif compon_details["infra"] == "transpo":
                 connected_junctions = interdependencies.find_connected_transpo_node(
                     compon, self.integrated_network.tn
                 )
@@ -297,9 +320,9 @@ class HandlingCapacityStrategy:
         for compon in self.integrated_network.get_disrupted_components():
             compon_details = interdependencies.get_compon_details(compon)
             # print(compon_details)
-            if compon_details[0] == "water":
+            if compon_details["infra"] == "water":
                 water_dict = water.get_water_dict()
-                capacity_ref = water_dict[compon_details[1]]["results"]
+                capacity_ref = water_dict[compon_details["type_code"]]["results"]
                 if capacity_ref == "link":
                     capacity = (
                         self.integrated_network.base_water_link_flow[compon]
@@ -311,19 +334,22 @@ class HandlingCapacityStrategy:
                 elif capacity_ref == "node":
                     capacity = (
                         self.integrated_network.base_water_node_supply[compon]
-                        .abs.max()
+                        .abs()
+                        .max()
                         .item()
                     )
                     water_capacity_dict[compon] = capacity
 
-            elif compon_details[0] == "power":
+            elif compon_details["infra"] == "power":
                 power_dict = power.get_power_dict()
-                capacity_ref = power_dict[compon_details[1]]["results"]
-                capacity_fields = power_dict[compon_details[1]]["capacity_fields"]
+                capacity_ref = power_dict[compon_details["type_code"]]["results"]
+                capacity_fields = power_dict[compon_details["type_code"]][
+                    "capacity_fields"
+                ]
                 # print(compon, ": ", capacity_ref, ", ", capacity_fields)
 
                 base_pn = self.integrated_network.base_power_supply
-                base_pn_table = base_pn[compon_details[2]]
+                base_pn_table = base_pn[compon_details["type"]]
                 compon_index = base_pn_table[
                     base_pn_table["name"] == compon
                 ].index.item()
@@ -335,8 +361,8 @@ class HandlingCapacityStrategy:
                 )
                 power_capacity_dict[compon] = capacity
 
-            elif compon_details[0] == "transpo":
-                if compon_details[2] == "link":
+            elif compon_details["infra"] == "transpo":
+                if compon_details["type"] == "link":
                     base_tn_dict = getattr(
                         self.integrated_network.base_transpo_flow, "link"
                     )
@@ -412,10 +438,10 @@ class ZoneBasedStrategy:
         for compon in self.integrated_network.get_disrupted_components():
             compon_details = interdependencies.get_compon_details(compon)
 
-            compon_infra = compon_details[0]
-            if compon_details[1] in node_link_dict[compon_infra]["node"]:
+            compon_infra = compon_details["infra"]
+            if compon_details["type_code"] in node_link_dict[compon_infra]["node"]:
                 compon_geometry = Point(G.nodes[compon]["coord"])
-            elif compon_details[1] in node_link_dict[compon_infra]["link"]:
+            elif compon_details["type_code"] in node_link_dict[compon_infra]["link"]:
                 compon_key = [
                     (u, v)
                     for u, v, e in self.integrated_network.integrated_graph.edges(

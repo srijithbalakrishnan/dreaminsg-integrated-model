@@ -65,6 +65,13 @@ def get_water_dict():
             "repair_time": 2,
             "results": "link",
         },
+        "PTV": {
+            "code": "pipes",
+            "name": "Tank Valve converted to Pipe",
+            "connect_field": ["start_node_name", "end_node_name"],
+            "repair_time": 2,
+            "results": "link",
+        },
         "J": {
             "code": "junctions",
             "name": "Junction",
@@ -208,9 +215,7 @@ def load_water_network(
             f"Water network successfully loaded from {network_inp}. The analysis type is set to {water_sim_type}."
         )
         print(
-            "initial simulation duration: {0}s; hydraulic time step: {0}s; pattern time step: 3600s\n".format(
-                initial_sim_step
-            )
+            f"initial simulation duration: {initial_sim_step}s; hydraulic time step: {initial_sim_step}s; pattern time step: 3600s\n"
         )
 
         if cyber_layer:
@@ -238,7 +243,7 @@ def load_water_network(
         return wn
     except FileNotFoundError:
         print(
-            f"Error: The water network file does not exist. No such file or directory: ",
+            "Error: The water network file does not exist. No such file or directory: ",
             network_inp,
         )
 

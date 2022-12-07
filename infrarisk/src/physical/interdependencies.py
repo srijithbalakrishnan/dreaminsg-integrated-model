@@ -50,20 +50,22 @@ class DependencyTable:
                 water_details = get_compon_details(water_id)
                 power_details = get_compon_details(power_id)
 
-                if (power_details[3] == "Motor") & (water_details[3] == "Pump"):
+                if (power_details["name"] == "Motor") & (
+                    water_details["name"] == "Pump"
+                ):
                     self.add_pump_motor_coupling(
                         water_id=water_id,
                         power_id=power_id,
                     )
-                elif (power_details[3] == "Motor as Load") & (
-                    water_details[3] == "Pump"
+                elif (power_details["name"] == "Motor as Load") & (
+                    water_details["name"] == "Pump"
                 ):
                     self.add_pump_loadmotor_coupling(
                         water_id=water_id,
                         power_id=power_id,
                     )
-                elif (water_details[3] == "Reservoir") & (
-                    power_details[3] == "Generator"
+                elif (water_details["name"] == "Reservoir") & (
+                    power_details["name"] == "Generator"
                 ):
                     self.add_gen_reserv_coupling(
                         water_id=water_id,
@@ -163,8 +165,8 @@ class DependencyTable:
                 {
                     "origin_id": node,
                     "transp_id": near_node,
-                    "origin_cat": comp_details[0],
-                    "origin_type": comp_details[3],
+                    "origin_cat": comp_details["infra"],
+                    "origin_type": comp_details["name"],
                     "access_dist": near_dist,
                 },
                 ignore_index=True,
@@ -185,6 +187,8 @@ class DependencyTable:
         # )
 
         # print(network.wn.control_name_list)
+        time_stamp = int(time_stamp)
+        next_time_stamp = int(next_time_stamp)
         for _, row in self.wp_table.iterrows():
             if (row.water_type == "Pump") & (row.power_type == "Motor"):
                 pump_index = network.pn.motor[
@@ -227,6 +231,7 @@ def get_compon_details(compon_name):
     :return: Infrastructure type, component type, component code and component actual name.
     :rtype: list of strings
     """
+    compon_details_dict = {}
     compon_infra, compon_id = compon_name.split("_")
     id = re.findall("\d+", compon_name)[0]
 
@@ -236,45 +241,45 @@ def get_compon_details(compon_name):
             compon_type = "".join([compon_type, char])
     if compon_infra == "P":
         if compon_type in power_dict.keys():
-            return (
-                "power",
-                compon_type,
-                power_dict[compon_type]["code"],
-                power_dict[compon_type]["name"],
-                id,
-            )
+            compon_details_dict["infra"] = "power"
+            compon_details_dict["infra_code"] = "P"
+            compon_details_dict["type_code"] = compon_type
+            compon_details_dict["type"] = power_dict[compon_type]["code"]
+            compon_details_dict["name"] = power_dict[compon_type]["name"]
+            compon_details_dict["id"] = id
+            return compon_details_dict
         else:
             print(
-                "The naming convention suggests that {} belongs to power netwok. However, the element {} does not exist in the power component dictionary.".format(
+                "The naming convention suggests that {} belongs to power network. However, the element {} does not exist in the power component dictionary.".format(
                     compon_name,
                     compon_type,
                 )
             )
     elif compon_infra == "W":
         if compon_type in water_dict.keys():
-            return (
-                "water",
-                compon_type,
-                water_dict[compon_type]["code"],
-                water_dict[compon_type]["name"],
-                id,
-            )
+            compon_details_dict["infra"] = "water"
+            compon_details_dict["infra_code"] = "W"
+            compon_details_dict["type_code"] = compon_type
+            compon_details_dict["type"] = water_dict[compon_type]["code"]
+            compon_details_dict["name"] = water_dict[compon_type]["name"]
+            compon_details_dict["id"] = id
+            return compon_details_dict
         else:
             print(
-                "The naming convention suggests that {} belongs to water netwok. However, the element {} does not exist in the water component dictionary.".format(
+                "The naming convention suggests that {} belongs to water network. However, the element {} does not exist in the water component dictionary.".format(
                     compon_name,
                     compon_type,
                 )
             )
     elif compon_infra == "T":
         if compon_type in transpo_dict.keys():
-            return (
-                "transpo",
-                compon_type,
-                transpo_dict[compon_type]["code"],
-                transpo_dict[compon_type]["name"],
-                id,
-            )
+            compon_details_dict["infra"] = "transpo"
+            compon_details_dict["infra_code"] = "T"
+            compon_details_dict["type_code"] = compon_type
+            compon_details_dict["type"] = transpo_dict[compon_type]["code"]
+            compon_details_dict["name"] = transpo_dict[compon_type]["name"]
+            compon_details_dict["id"] = id
+            return compon_details_dict
     else:
         print(
             "Component does not belong to water, power, or transportation networks. Please check the name."
@@ -294,7 +299,7 @@ def get_controller_details(compon_name):
             pass
         else:
             print(
-                "The naming convention suggests that {} belongs to power netwok. However, the element {} does not exist in the power controller component dictionary.".format(
+                "The naming convention suggests that {} belongs to power network. However, the element {} does not exist in the power controller component dictionary.".format(
                     compon_name,
                     compon_type,
                 )
@@ -311,7 +316,7 @@ def get_controller_details(compon_name):
             )
         else:
             print(
-                "The naming convention suggests that {} belongs to water netwok. However, the element {} does not exist in the water controller component dictionary.".format(
+                "The naming convention suggests that {} belongs to water network. However, the element {} does not exist in the water controller component dictionary.".format(
                     compon_name,
                     compon_type,
                 )
@@ -331,7 +336,7 @@ def get_nearest_node(integrated_graph, connected_node, target_type):
     :rtype: list
     """
     compon_details = get_compon_details(connected_node)
-    if compon_details[0] == "target_type":
+    if compon_details["infra"] == "target_type":
         return connected_node, 0
     else:
         curr_node_loc = integrated_graph.nodes[connected_node]["coord"]
@@ -376,14 +381,14 @@ def find_connected_power_node(component, pn):
     """
     compon_details = get_compon_details(component)
 
-    if compon_details[2] == "bus":
+    if compon_details["type"] == "bus":
         connected_buses = list(component)
     else:
-        near_node_fields = power_dict[compon_details[1]]["connect_field"]
+        near_node_fields = power_dict[compon_details["type_code"]]["connect_field"]
         connected_buses = []
         for near_node_field in near_node_fields:
             bus_index = (
-                pn[compon_details[2]]
+                pn[compon_details["type"]]
                 .query('name == "{}"'.format(component))[near_node_field]
                 .item()
             )
@@ -402,15 +407,15 @@ def find_connected_water_node(component, wn):
     :rtype: string
     """
     compon_details = get_compon_details(component)
-    near_node_fields = water_dict[compon_details[1]]["connect_field"]
+    near_node_fields = water_dict[compon_details["type_code"]]["connect_field"]
 
     connected_nodes = []
-    if compon_details[1] in ["P", "PMA", "PSC", "PV", "MP", "PHC", "WP"]:
+    if compon_details["type_code"] in ["P", "PMA", "PSC", "PV", "MP", "PHC", "WP"]:
         for near_node_field in near_node_fields:
             connected_node = getattr(wn.get_link(component), near_node_field)
             if connected_node in wn.original_node_list:
                 connected_nodes.append(connected_node)
-    elif compon_details[1] in ["R", "J", "JIN", "JVN", "JTN", "JHY", "T"]:
+    elif compon_details["type_code"] in ["R", "J", "JIN", "JVN", "JTN", "JHY", "T"]:
         for near_node_field in near_node_fields:
             connected_node = getattr(wn.get_node(component), near_node_field)
             if connected_node in wn.original_node_list:
@@ -430,14 +435,14 @@ def find_connected_transpo_node(component, tn):
     :rtype: string
     """
     compon_details = get_compon_details(component)
-    near_node_fields = transpo_dict[compon_details[1]]["connect_field"]
+    near_node_fields = transpo_dict[compon_details["type_code"]]["connect_field"]
 
     connected_junctions = []
 
     for near_node_field in near_node_fields:
-        if compon_details[1] == "J":
+        if compon_details["type_code"] == "J":
             connected_junctions.append(getattr(tn.node[component], near_node_field))
-        elif compon_details[1] == "L":
+        elif compon_details["type_code"] == "L":
             connected_junctions.append(getattr(tn.link[component], near_node_field))
 
     return connected_junctions
@@ -445,23 +450,23 @@ def find_connected_transpo_node(component, tn):
 
 def get_power_repair_time(component):
     compon_details = get_compon_details(component)
-    repair_time = power_dict[compon_details[1]]["repair_time"]
+    repair_time = power_dict[compon_details["type_code"]]["repair_time"]
     return repair_time
 
 
 def get_transpo_repair_time(component):
     compon_details = get_compon_details(component)
-    repair_time = transpo_dict[compon_details[1]]["repair_time"]
+    repair_time = transpo_dict[compon_details["type_ciode"]]["repair_time"]
     return repair_time
 
 
 def get_compon_repair_time(component):
     compon_details = get_compon_details(component)
-    if compon_details[0] == "power":
-        repair_time = power_dict[compon_details[1]]["repair_time"]
-    elif compon_details[0] == "transpo":
-        repair_time = transpo_dict[compon_details[1]]["repair_time"]
-    elif compon_details[0] == "water":
-        repair_time = water_dict[compon_details[1]]["repair_time"]
+    if compon_details["infra"] == "power":
+        repair_time = power_dict[compon_details["type_code"]]["repair_time"]
+    elif compon_details["infra"] == "transpo":
+        repair_time = transpo_dict[compon_details["type_code"]]["repair_time"]
+    elif compon_details["infra"] == "water":
+        repair_time = water_dict[compon_details["type_code"]]["repair_time"]
 
     return repair_time
