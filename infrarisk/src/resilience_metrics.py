@@ -252,16 +252,16 @@ class WeightedResilienceMetric:
             3,
         )
 
-        print(
-            "The water Resilience Metric value based on ECS is",
-            self.water_auc_ecs,
-            "equivalent outage hours (EOH)",
-        )
-        print(
-            "The water Resilience Metric value based on PCS is",
-            self.water_auc_pcs,
-            "equivalent outage hours (EOH)",
-        )
+        # print(
+        #     "The water Resilience Metric value based on ECS is",
+        #     self.water_auc_ecs,
+        #     "equivalent outage hours (EOH)",
+        # )
+        # print(
+        #     "The water Resilience Metric value based on PCS is",
+        #     self.water_auc_pcs,
+        #     "equivalent outage hours (EOH)",
+        # )
 
         # Node level performance metrics
         water_demand_nodes = network_recovery.base_network.wn.junction_name_list
@@ -318,16 +318,16 @@ class WeightedResilienceMetric:
             3,
         )
 
-        print(
-            "The power Resilience Metric value based on ECS is",
-            self.power_auc_ecs,
-            "equivalent outage hours (EOH)",
-        )
-        print(
-            "The power Resilience Metric value based on PCS is",
-            self.power_auc_pcs,
-            "equivalent outage hours (EOH)",
-        )
+        # print(
+        #     "The power Resilience Metric value based on ECS is",
+        #     self.power_auc_ecs,
+        #     "equivalent outage hours (EOH)",
+        # )
+        # print(
+        #     "The power Resilience Metric value based on PCS is",
+        #     self.power_auc_pcs,
+        #     "equivalent outage hours (EOH)",
+        # )
 
         # Node level performance metrics
         power_demand_nodes = network_recovery.base_network.pn.load.name.tolist()

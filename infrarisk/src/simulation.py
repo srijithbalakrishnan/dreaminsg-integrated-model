@@ -174,9 +174,12 @@ class NetworkSimulation:
         # print(unique_time_differences)
 
         stop_counter = None
+        last_five_pcs_list = []
 
         for index, time_stamp in enumerate(unique_time_stamps[:-1]):
-            print(f"Simulating network conditions until {time_stamp} s")
+            print(
+                f"Simulating network conditions at {time_stamp}/{unique_time_stamps[-1]} s..."
+            )
 
             print(
                 "Simulation time: ",
@@ -268,6 +271,14 @@ class NetworkSimulation:
                 resilience_metrics.calculate_power_resmetric(network_recovery)
                 resilience_metrics.calculate_water_resmetrics(network_recovery)
                 resilience_metrics.set_weighted_auc_metrics()
+
+                if len(last_five_pcs_list) == 3:
+                    del last_five_pcs_list[0]
+                last_five_pcs_list.append(
+                    resilience_metrics.power_pcs_list[-1]
+                    * resilience_metrics.water_pcs_list[-1]
+                )
+
                 if resilience_metrics.power_pcs_list[-1] > 0.99:
                     if resilience_metrics.water_pcs_list[-1] > 0.99:
                         stop_counter = 0
@@ -275,6 +286,10 @@ class NetworkSimulation:
             if stop_counter is not None:
                 stop_counter += 1
                 if stop_counter == 2:
+                    break
+
+            if len(last_five_pcs_list) == 3:
+                if all(x >= 0.98 for x in last_five_pcs_list):
                     break
 
             # # Fix the time until which the wntr model should run in this iteration

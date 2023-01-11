@@ -246,9 +246,10 @@ class IntegratedNetwork:
         self.transpo_graph = self.generate_transpo_networkx_graph()
         print("Successfully added transportation network to the integrated graph...")
 
-        G = nx.compose(
-            self.power_graph, nx.compose(self.water_graph, self.transpo_graph)
-        )
+        # G = nx.compose(
+        #     self.power_graph, nx.compose(self.water_graph, self.transpo_graph)
+        # )
+        G = nx.compose_all([self.transpo_graph, self.power_graph, self.water_graph])
 
         self.integrated_graph = G
         self.set_map_extends()
@@ -374,7 +375,7 @@ class IntegratedNetwork:
             power_links,
             source="from",
             target="to",
-            edge_attr=True,
+            edge_attr=["id", "link_type", "link_category"],
         )
 
         for _, row in power_nodes.iterrows():
@@ -486,7 +487,10 @@ class IntegratedNetwork:
             )
 
         G_water = nx.from_pandas_edgelist(
-            water_links, source="from", target="to", edge_attr=True
+            water_links,
+            source="from",
+            target="to",
+            edge_attr=["id", "link_type", "link_category"],
         )
 
         for _, row in water_nodes.iterrows():
@@ -496,7 +500,6 @@ class IntegratedNetwork:
 
         for graph in [G_water]:
             for _, link in enumerate(graph.edges.keys()):
-                start_node, end_node = link
                 start_coords = graph.nodes[link[0]]["coord"]
                 end_coords = graph.nodes[link[1]]["coord"]
                 graph.edges[link]["length"] = round(
@@ -566,7 +569,8 @@ class IntegratedNetwork:
             transpo_links,
             source="from",
             target="to",
-            edge_attr=True,
+            edge_attr=["id", "link_type", "link_category"],
+            create_using=nx.DiGraph(),
         )
 
         for _, node_name in enumerate(transpo_node_list):
@@ -787,13 +791,13 @@ class IntegratedNetwork:
                 "TypeError: The initial locations of the transportation crews are not specified or not valid."
             )
 
-    def get_idle_crew(self, crew_type):
+    def get_idle_crew(self, crew_type, min_time=None):
         """Returns the idle crew of the given type.
 
         :param crew_type: Type of the crew.
         :type crew_type: string
         :return: The idle crew of the given type.
-        :rtype: repair_crews.RepairCrew
+        :rtype: repair_crews.
         """
         if crew_type == "power":
             crews = self.power_crews
@@ -904,28 +908,3 @@ class IntegratedNetwork:
             "transpo": {"node": ["J"], "link": ["L"]},
         }
         return node_link_dict
-
-    def build_universal_control_systems(self):
-        water.add_universal_control_system(self.wn)
-
-    def set_initial_configurations(
-        self,
-        water_actuator_status=1,
-        water_sensor_status=1,
-        water_controller_status=1,
-        power_actuator_status=1,
-        power_sensor_status=1,
-        power_controller_status=1,
-        power_ef=1,
-        water_ef=1,
-    ):
-        water.set_initial_control_system_status(
-            self.wn,
-            actuator_status=water_actuator_status,
-            sensor_status=water_sensor_status,
-            controller_status=water_controller_status,
-        )
-        for tank_id in self.wn.tank_name_list:
-            water.set_tl_sensor_ef(self.wn, tank_id, error_factor=water_ef)
-
-        print("Water control system initial configuration set.")

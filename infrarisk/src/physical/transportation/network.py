@@ -391,10 +391,11 @@ class Network:
             allOrNothing[ij] = 0
 
         for origin in self.node.keys():
-
+            print(f"Finding shortest paths from origin {origin}")
             (backlink, _) = self.shortestPath(origin)
             for OD in [OD for OD in self.ODpair if self.ODpair[OD].origin == origin]:
                 curnode = self.ODpair[OD].destination
+                print(curnode, backlink[curnode], OD)
                 while curnode != self.ODpair[OD].origin:
                     allOrNothing[backlink[curnode]] += self.ODpair[OD].demand
                     curnode = self.link[backlink[curnode]].tail

@@ -852,7 +852,6 @@ class FragilityBasedDisruption:
                 else:
                     disruption_folder = f"{location}"
 
-                print(disruption_folder)
                 if not os.path.exists(disruption_folder):
                     os.makedirs(disruption_folder)
                 self.disrupt_file.to_csv(

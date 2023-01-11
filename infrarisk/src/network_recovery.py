@@ -1,5 +1,3 @@
-"""Functions to generate and save disruptive scenarios."""
-
 import math
 import copy
 import pandas as pd
@@ -135,12 +133,12 @@ class NetworkRecovery:
         connected_nodes = interdependencies.find_connected_nodes(
             component, self.network
         )
-        nearest_nodes = []
+        near_nodes = []
         for connected_node in connected_nodes:
-            nearest_node, _ = interdependencies.get_nearest_node(
+            near_node, _ = interdependencies.get_nearest_node(
                 self.network.integrated_graph, connected_node, "transpo"
             )
-            nearest_nodes.append(nearest_node)
+            near_nodes.append(near_node)
 
         travel_time = 1e10
         update_times = list(self.transpo_updated_model_dict.keys())
@@ -148,14 +146,14 @@ class NetworkRecovery:
             [x for x in update_times if x <= crew.get_next_trip_start()]
         )
         tn = self.transpo_updated_model_dict[curr_update_time]
-        for nearest_node in nearest_nodes:
+        for near_node in near_nodes:
             (
                 curr_path,
                 curr_travel_time,
-            ) = tn.calculateShortestTravelTime(crew.get_crew_loc(), nearest_node)
+            ) = tn.calculateShortestTravelTime(crew.get_crew_loc(), near_node)
 
             if curr_travel_time < travel_time:
-                nearest_node = nearest_node
+                nearest_node = near_node
                 path = curr_path
                 travel_time = curr_travel_time
         return nearest_node, path, travel_time
@@ -213,6 +211,8 @@ class NetworkRecovery:
         #     )
         # }
 
+        print("Components yet to repair", len(links_to_repair))
+
         # for component, _ in compon_importance_dict.items():
         for _, component in enumerate(links_to_repair):
             compon_details = interdependencies.get_compon_details(component)
@@ -267,7 +267,6 @@ class NetworkRecovery:
 
                     self.repair_time_dict[component] = recovery_start + recovery_time
                     self.components_to_repair.remove(component)
-                    # skipped_transpo_links = []
                     self.crew_total_tt[compon_details["infra"]] += actual_travel_time
                     break
                 elif accessible is True:
@@ -276,7 +275,7 @@ class NetworkRecovery:
                     if (
                         possible_start <= crew.get_next_trip_start()
                         or no_other_transpo_repairs is True
-                        or component in self.skipped_transpo_links
+                        # or component in self.skipped_transpo_links
                     ):
                         recovery_start = (
                             crew.get_next_trip_start() + actual_travel_time * 60
@@ -313,19 +312,19 @@ class NetworkRecovery:
                     elif possible_start > crew.get_next_trip_start():
 
                         print(
-                            f"The {compon_details['infra']} repair crew {crew._name} is available for service at time = {crew.get_next_trip_start() / 60} minutes, much before the possible repair start of {component} at {possible_start/60} minutes. Hence the simulation will check if there are other components, whose repair can be initiated at the earliest."
+                            f"Attempting repair {component}. The {compon_details['infra']} repair crew {crew._name} is available for service at time = {crew.get_next_trip_start() / 60} minutes, much before the possible repair start of {component} at {possible_start/60} minutes. Hence the simulation will check if there are other components, whose repair can be initiated at the earliest."
                         )
                         if compon_details["infra"] == "transpo":
                             self.skipped_transpo_links.append(component)
                         recovery_start = None
                 else:
                     print(
-                        f"The {compon_details['infra']} crew {crew._name} cannot reach the destination {nearest_node} from {crew.get_crew_loc()} since there are failed transportation component(s) {failed_transpo_link_en_route} in its possible route. The simulation will defer the repair of {component} and try to repair other failed components."
+                        f"Attempting repair {component}. The {compon_details['infra']} crew {crew._name} cannot reach the destination {nearest_node} from {crew.get_crew_loc()} since there are failed transportation component(s) {failed_transpo_link_en_route} in its possible route. The simulation will defer the repair of {component} and try to repair other failed components."
                     )
                     recovery_start = None
                     if component not in self.transpo_access_no_redundancy:
                         self.transpo_access_no_redundancy[component] = 1e10
-
+        print("\n")
         return component, recovery_start, recovery_time
 
     def add_recovery_to_event_table(self, component, recovery_start, recovery_time):
@@ -632,6 +631,7 @@ class NetworkRecovery:
         else:
             print("No repair action to schedule.")
 
+        del self.transpo_updated_model_dict
         print(
             f"Scheduling recovery actions completed in {time.process_time() - start} seconds"
         )
@@ -947,7 +947,8 @@ class NetworkRecovery:
         # self.network.tn.userEquilibrium(
         #     "FW", 400, 1e-4, self.network.tn.averageExcessCost
         # )
-        pass
+        for link in self.network.tn.link:
+            self.network.tn.link[link].updateCost()
 
     def fail_transpo_link(self, link_compon):
         """Fails the given transportation link by changing the free-flow travel time to a very large value.

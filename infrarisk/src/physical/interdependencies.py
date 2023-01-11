@@ -182,11 +182,6 @@ class DependencyTable:
         :param next_time_stamp: The end tiem of the iteration.
         :type next_time_stamp: integer
         """
-        # print(
-        #     f"Updating status of indirectly affected components between {time_stamp} and {next_time_stamp}..."
-        # )
-
-        # print(network.wn.control_name_list)
         time_stamp = int(time_stamp)
         next_time_stamp = int(next_time_stamp)
         for _, row in self.wp_table.iterrows():
@@ -286,43 +281,6 @@ def get_compon_details(compon_name):
         )
 
 
-def get_controller_details(compon_name):
-    compon_infra, compon_id = compon_name.split("_")
-    id = re.findall("\d+", compon_name)[0]
-
-    compon_type = ""
-    for char in compon_id:
-        if char.isalpha():
-            compon_type = "".join([compon_type, char])
-    if compon_infra == "P":
-        if compon_type in power_control_dict.keys():
-            pass
-        else:
-            print(
-                "The naming convention suggests that {} belongs to power network. However, the element {} does not exist in the power controller component dictionary.".format(
-                    compon_name,
-                    compon_type,
-                )
-            )
-
-    elif compon_infra == "W":
-        if compon_type in water_dict.keys():
-            return (
-                "water",
-                compon_type,
-                water_control_dict[compon_type]["code"],
-                water_control_dict[compon_type]["name"],
-                id,
-            )
-        else:
-            print(
-                "The naming convention suggests that {} belongs to water network. However, the element {} does not exist in the water controller component dictionary.".format(
-                    compon_name,
-                    compon_type,
-                )
-            )
-
-
 def get_nearest_node(integrated_graph, connected_node, target_type):
     """Finds the nearest node belonging to a specific family from a given node and the distance between the two.
 
@@ -339,27 +297,39 @@ def get_nearest_node(integrated_graph, connected_node, target_type):
     if compon_details["infra"] == "target_type":
         return connected_node, 0
     else:
-        curr_node_loc = integrated_graph.nodes[connected_node]["coord"]
-        nodes_of_interest = [
-            x
-            for x, y in integrated_graph.nodes(data=True)
-            if y["node_type"] == target_type
-        ]
-        coords_of_interest = [
-            y["coord"]
-            for x, y in integrated_graph.nodes(data=True)
-            if y["node_type"] == target_type
-        ]
+        if compon_details["infra"] in ["power", "water"]:
+            curr_node_loc = integrated_graph.nodes[connected_node]["coord"]
+            nodes_of_interest = [
+                x
+                for x, y in integrated_graph.nodes(data=True)
+                if y["node_type"] == target_type
+            ]
+            coords_of_interest = [
+                y["coord"]
+                for x, y in integrated_graph.nodes(data=True)
+                if y["node_type"] == target_type
+            ]
 
-        tree = spatial.KDTree(coords_of_interest)
-        dist_nearest = tree.query([curr_node_loc])[0][0]
-        nearest_node = nodes_of_interest[tree.query([curr_node_loc])[1][0]]
+            tree = spatial.KDTree(coords_of_interest)
+            dist_nearest = tree.query([curr_node_loc])[0][0]
+            nearest_node = nodes_of_interest[tree.query([curr_node_loc])[1][0]]
+        else:
+            nearest_node = connected_node
+            dist_nearest = 0
 
         return nearest_node, round(dist_nearest, 2)
 
 
 def find_connected_nodes(component, integrated_network):
+    """Finds the nodes to which the given component is connected to.
 
+    :param component: Name of the component.
+    :type component: string
+    :param integrated_network: The integrated network in networkx format.
+    :type integrated_network: netwrokx object
+    :return: List of connected nodes.
+    :rtype: list
+    """
     if component.startswith("P_"):
         connected_nodes = find_connected_power_node(component, integrated_network.pn)
     elif component.startswith("W_"):
@@ -449,18 +419,40 @@ def find_connected_transpo_node(component, tn):
 
 
 def get_power_repair_time(component):
+    """Returns the repair time of the given component.
+
+    :param component: Name of the component.
+    :type component: string
+    :return: Repair time of the component.
+    :rtype: float
+    """
     compon_details = get_compon_details(component)
     repair_time = power_dict[compon_details["type_code"]]["repair_time"]
     return repair_time
 
 
 def get_transpo_repair_time(component):
+    """Returns the repair time of the given component.
+
+    :param component: Name of the component.
+    :type component: string
+    :return: Repair time of the component.
+    :rtype: float
+    """
     compon_details = get_compon_details(component)
     repair_time = transpo_dict[compon_details["type_ciode"]]["repair_time"]
     return repair_time
 
 
 def get_compon_repair_time(component):
+    """Returns the repair time of the given component.
+
+    :param component: Name of the component.
+    :type component: string
+    :return: Repair time of the component.
+    :rtype: float
+
+    """
     compon_details = get_compon_details(component)
     if compon_details["infra"] == "power":
         repair_time = power_dict[compon_details["type_code"]]["repair_time"]
