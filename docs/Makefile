@@ -4,7 +4,7 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = python -msphinx
-SPHINXPROJ    = dreaminsg_integrated_model
+SPHINXPROJ    = infrarisk
 SOURCEDIR     = .
 BUILDDIR      = _build
 
