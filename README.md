@@ -35,13 +35,17 @@ git clone https://github.com/srijithbalakrishnan/dreaminsg-integrated-model.git 
 
 ## Help
 
-For instructions to run sample simulation on the simple network testbed, please refer to ```notebooks/demo_no_optimization_simple.ipynb``` (faster).
+For instructions to run sample simulation on the simple network testbed, please refer to ```notebooks/event_based_simulations/simple_network.ipynb``` (faster).
 
-For instructions to run sample simulation on the Micropolis testbed, please refer to ```notebooks/demo_no_optimization_micropolis.ipynb``` (slower).
+For instructions to run sample simulation on the Micropolis testbed, please refer to ```notebooks/event_based_simulations/micropolis_network.ipynb``` (slower).
 
-For instructions to run MPC optimization on the simple network testbed, please refer to ```notebooks/demo_optimization_incomplete.ipynb``` (faster). The notebook works for the current disruptive event (tset1). However, please note that there could be an issue of infinite loops when performing MPC optimization of repair sequence for disruptions involving inaccessible components. The bug will be rectified soon.
+For instructions to run sample simulation on the Shelby County testbed, please refer to ```notebooks/event_based_simulations/shelby_county.ipynb``` (slower).
 
-Full documentation is available at ```dreaminsg_integrated_model/dreaminsg_documentation.pdf```. Please do note some sections need to be updated and the process is going on.
+For instructions to run MPC optimization on the simple network testbed, please refer to ```notebooks/recovery_optimization/demo_optimization_incomplete.ipynb``` (faster). The notebook works for the current disruptive event (``test1``). However, please note that there could be an issue of infinite loops when performing MPC optimization of repair sequence for disruptions involving inaccessible components. The bug will be rectified soon.
+
+For generating various hazards, see tutorials in ```notebooks/hazard_generation/```
+
+Full documentation is available at ```dreaminsg_documentation.pdf``` or HTML version is available in this [(link)](docs/index.html). Please do note some sections need to be updated and the process is going on.
 
 ## Publications
 
