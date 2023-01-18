@@ -45,7 +45,7 @@ For instructions to run MPC optimization on the simple network testbed, please r
 
 For generating various hazards, see tutorials in ```notebooks/hazard_generation/```
 
-Full documentation is available at ```dreaminsg_documentation.pdf``` or HTML version is available in this [(link)](docs/index.html). Please do note some sections need to be updated and the process is going on.
+Full documentation is available at ```dreaminsg_documentation.pdf``` or HTML version is available in [Read the Docs website](https://dreaminsg-integrated-model.readthedocs.io/en/latest/index.html). Please do note some sections need to be updated and the process is going on.
 
 ## Publications
 
