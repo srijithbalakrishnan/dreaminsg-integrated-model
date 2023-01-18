@@ -67,6 +67,14 @@ Contributors' names and contact info:
 
 This project is licensed under the MIT License
 
+## SEC Disclaimer
+
+This research is carried out by Singapore ETH Centre through its Future Resilient Systems module
+funded by the National Research Foundation (NRF) Singapore. It is subject to Agency's review and hence is for internal use only.
+Not the contents necessarily reflect the views of the Agency. Mention of trade names, products, or services does not convey official 
+NRF approval, endorsement, or recommendation. 
+
+
 ## Acknowledgments
 
 The platform is developed as part of the DREAMIN'SG project funded by the National Research Foundation Singapore (NRF) through the Intra-CREATE program.
