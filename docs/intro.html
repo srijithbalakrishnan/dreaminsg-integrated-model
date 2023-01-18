@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction &mdash; InfraRisk Simulation Platform 1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Methodology and Architecture" href="model.html" />
+    <link rel="prev" title="Welcome to InfraRisk Simulation Platform’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> InfraRisk Simulation Platform
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Methodology and Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_req.html">Data requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use.html"><span class="sectnum">1</span> Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="infrarisk.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">InfraRisk Simulation Platform</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Introduction</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/intro.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline"></a></h1>
+<p>This package was developed as part of the Disaster REsilience Assessment,
+Modelling, and INno-vation Singapore (DREAMIN’SG) project at the Future
+Resilient Systems of the Singapore-ETH Centre. The DREAMIN’SG project is
+funded by the National Research Foundation, Singapore under the Intra-CREATE
+grant program. In the wake of increasing threats posed by climate change
+on urban infrastructure <a class="footnote-reference brackets" href="#id2" id="id1">1</a>, this project aims at
+studying the effects of policy interventions and network characteristics on
+the resilience of urban infrastructure networks. Given the critical nature of
+the above infrastructure systems, their interdependencies need to be
+considered in pre- and post-disaster resilience actions.</p>
+<p>In specific, the DREAMIN’SG project envisaged to build a platform to assess and predict
+the resilience of urban infrastructure systems and propose new pathways to
+develop innovative technologies and services for its improvement. The urban
+infrastructure system is modeled as an interdependent power-, water-, and
+transportation network that interact with each other before, during and
+after a disaster. The researchers are developing an integrated simulation
+model to study the performance of the interdependent infrastructure network
+under various disruption and recov-ery scenarios. Based on the
+simulation-generated datasets, machine learning algorithms are implemented
+to understand the causal relationship between topological and policy-related
+interventions and disaster risks. The results of the research are intended to support local governments and system managers
+to improve infrastructure resilience against weather-related disruptions.
+The methodology adopted in the study is presented in Fig. 1.</p>
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="_images/methodology.PNG"><img alt="map to buried treasure" src="_images/methodology.PNG" style="width: 867.5px; height: 146.0px;" /></a>
+<figcaption>
+<p><span class="caption-text">Figure 1. Methodological framework of DREAMIN’SG project</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<p>The steps of the project are summarized as follows:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Multiple scenarios are generated by considering different disruptions, network models, technological constraints and system configurations.</p></li>
+<li><p>A simulation model is created for the interdependent power grid, water distribution system, and road transportation system.</p></li>
+<li><p>Resilience is assessed based on the simulated performance of the three systems.</p></li>
+<li><p>An interpretable machine learning algorithm is implemented to analyze the scenarios and extract information related to key system features that influence resilience.</p></li>
+<li><p>The identified system features inform the design of new services, technologies, and prod-ucts that are able to simultaneously enhance resilience and accommodate the technological constraints.</p></li>
+</ol>
+</div></blockquote>
+<p>For further information and updates on the project, please visit the
+<a class="reference external" href="https://frs.ethz.ch/research/projects/dreamin_sg.html">DREAMIN’SG webpage</a>.
+In the rest of the documentation, the details of the interdependent infrastructure
+simulation platform,including its modeling, installation, and usage are
+discussed.</p>
+<dl class="footnote brackets">
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Nissen, K. M. and U. Ulbrich (2017). Increasing frequencies and changing characteristics of heavy precipitation events threatening infrastructure in Europe under climate change. Natural Hazards and Earth System Sciences, 17(7), 1177–1190. ISSN 16849981.</p>
+</dd>
+</dl>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to InfraRisk Simulation Platform’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="model.html" class="btn btn-neutral float-right" title="Methodology and Architecture" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Srijith Balakrishnan.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

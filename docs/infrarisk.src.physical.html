@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2. infrarisk.src.physical package &mdash; InfraRisk Simulation Platform 1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2.1.1. infrarisk.src.physical.power package" href="infrarisk.src.physical.power.html" />
+    <link rel="prev" title="1. infrarisk.src.hazards package" href="infrarisk.src.hazards.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> InfraRisk Simulation Platform
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Methodology and Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_req.html">Data requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="infrarisk.html">API Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="infrarisk.src.html">infrarisk.src package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="infrarisk.src.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="infrarisk.src.hazards.html">1. infrarisk.src.hazards package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">2. infrarisk.src.physical package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="infrarisk.src.socioeconomic.html">3. infrarisk.src.socioeconomic package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="infrarisk.src.html#module-infrarisk.src.network_recovery">infrarisk.src.network_recovery module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="infrarisk.src.html#module-infrarisk.src.optimizer">infrarisk.src.optimizer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="infrarisk.src.html#module-infrarisk.src.plots">infrarisk.src.plots module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="infrarisk.src.html#module-infrarisk.src.recovery_strategies">infrarisk.src.recovery_strategies module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="infrarisk.src.html#module-infrarisk.src.repair_crews">infrarisk.src.repair_crews module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="infrarisk.src.html#module-infrarisk.src.resilience_metrics">infrarisk.src.resilience_metrics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="infrarisk.src.html#module-infrarisk.src.simulation">infrarisk.src.simulation module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="infrarisk.src.html#module-infrarisk.src">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">InfraRisk Simulation Platform</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="infrarisk.html">API Documentation</a></li>
+          <li class="breadcrumb-item"><a href="infrarisk.src.html">infrarisk.src package</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">2. </span>infrarisk.src.physical package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/infrarisk.src.physical.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="infrarisk-src-physical-package">
+<h1><span class="section-number">2. </span>infrarisk.src.physical package<a class="headerlink" href="#infrarisk-src-physical-package" title="Permalink to this headline"></a></h1>
+<section id="subpackages">
+<h2><span class="section-number">2.1. </span>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="infrarisk.src.physical.power.html">2.1.1. infrarisk.src.physical.power package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="infrarisk.src.physical.power.html#submodules">2.1.1.1. Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="infrarisk.src.physical.power.html#module-infrarisk.src.physical.power.power_system_model">2.1.1.2. infrarisk.src.physical.power.power_system_model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="infrarisk.src.physical.power.html#module-infrarisk.src.physical.power">2.1.1.3. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="infrarisk.src.physical.transportation.html">2.1.2. infrarisk.src.physical.transportation package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="infrarisk.src.physical.transportation.html#module-infrarisk.src.physical.transportation.network">2.1.2.1. infrarisk.src.physical.transportation.network module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="infrarisk.src.physical.transportation.html#module-infrarisk.src.physical.transportation.transpo_compons">2.1.2.2. infrarisk.src.physical.transportation.transpo_compons module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="infrarisk.src.physical.transportation.html#module-infrarisk.src.physical.transportation.utils">2.1.2.3. infrarisk.src.physical.transportation.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="infrarisk.src.physical.transportation.html#module-infrarisk.src.physical.transportation">2.1.2.4. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="infrarisk.src.physical.water.html">2.1.3. infrarisk.src.physical.water package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="infrarisk.src.physical.water.html#module-infrarisk.src.physical.water.water_network_model">2.1.3.1. infrarisk.src.physical.water.water_network_model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="infrarisk.src.physical.water.html#module-infrarisk.src.physical.water">2.1.3.2. Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2><span class="section-number">2.2. </span>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-infrarisk.src.physical.integrated_network">
+<span id="infrarisk-src-physical-integrated-network-module"></span><h2><span class="section-number">2.3. </span>infrarisk.src.physical.integrated_network module<a class="headerlink" href="#module-infrarisk.src.physical.integrated_network" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">infrarisk.src.physical.integrated_network.</span></span><span class="sig-name descname"><span class="pre">IntegratedNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">water_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transp_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power_sim_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">water_sim_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>An integrated infrastructure network class</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.deploy_crews">
+<span class="sig-name descname"><span class="pre">deploy_crews</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init_power_crew_locs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power_crews_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_water_crew_locs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">water_crews_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_transpo_crew_locs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpo_crews_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.deploy_crews" title="Permalink to this definition"></a></dt>
+<dd><p>Deploys the infrastructure crews for performing recovery actions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>init_power_crew_locs</strong> (<em>list of strings</em>) – Initial locations (nearest transportation nodes) of the power crews.</p></li>
+<li><p><strong>init_water_crew_locs</strong> (<em>list of strings</em>) – Initial locations (nearest transportation nodes) of the water crews.</p></li>
+<li><p><strong>init_transpo_crew_locs</strong> (<em>list of strings</em>) – Initial locations (nearest transportation nodes) of the transportation crews.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.generate_betweenness_centrality">
+<span class="sig-name descname"><span class="pre">generate_betweenness_centrality</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.generate_betweenness_centrality" title="Permalink to this definition"></a></dt>
+<dd><p>Generates the betweenness centrality of the integrated graph.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.generate_dependency_table">
+<span class="sig-name descname"><span class="pre">generate_dependency_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dependency_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.generate_dependency_table" title="Permalink to this definition"></a></dt>
+<dd><p>Generates the dependency table from an input file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dependency_file</strong> (<em>string</em>) – The location of the dependency file in csv format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.generate_integrated_graph">
+<span class="sig-name descname"><span class="pre">generate_integrated_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basemap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.generate_integrated_graph" title="Permalink to this definition"></a></dt>
+<dd><p>Generates the integrated network as a Networkx graph.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.generate_power_networkx_graph">
+<span class="sig-name descname"><span class="pre">generate_power_networkx_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.generate_power_networkx_graph" title="Permalink to this definition"></a></dt>
+<dd><p>Generates the power network as a networkx object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>plot</strong> (<em>bool</em><em>, </em><em>optional</em>) – To generate the network plot, defaults to False.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The power network as a networkx object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Networkx object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.generate_transpo_networkx_graph">
+<span class="sig-name descname"><span class="pre">generate_transpo_networkx_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.generate_transpo_networkx_graph" title="Permalink to this definition"></a></dt>
+<dd><p>Generates the transportation network as a networkx object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>plot</strong> (<em>bool</em><em>, </em><em>optional</em>) – To generate the network plot, defaults to False., defaults to False.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The transportation network as a networkx object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Networkx object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.generate_water_networkx_graph">
+<span class="sig-name descname"><span class="pre">generate_water_networkx_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.generate_water_networkx_graph" title="Permalink to this definition"></a></dt>
+<dd><p>Generates the water network as a networkx object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>plot</strong> (<em>bool</em><em>, </em><em>optional</em>) – To generate the network plot, defaults to False., defaults to False.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The water network as a networkx object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Networkx object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.get_disrupted_components">
+<span class="sig-name descname"><span class="pre">get_disrupted_components</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.get_disrupted_components" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the list of disrupted components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>current list of disrupted components.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list of strings</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.get_disrupted_infra_dict">
+<span class="sig-name descname"><span class="pre">get_disrupted_infra_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.get_disrupted_infra_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the  disrupted infrastructure components dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The disrupted infrastructure components dictionary.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.get_disruptive_events">
+<span class="sig-name descname"><span class="pre">get_disruptive_events</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.get_disruptive_events" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the disruptive event data</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>pandas dataframe: The table with details of disrupted components and the respective damage levels.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.get_idle_crew">
+<span class="sig-name descname"><span class="pre">get_idle_crew</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crew_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.get_idle_crew" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the idle crew of the given type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>crew_type</strong> (<em>string</em>) – Type of the crew.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The idle crew of the given type.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>repair_crews.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.get_map_extends">
+<span class="sig-name descname"><span class="pre">get_map_extends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.get_map_extends" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the extents of the map in the format ((xmin, ymin), (xmax, ymax)).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The extent of the integrated graph (coordinates)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list of tuples</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.get_node_link_dict">
+<span class="sig-name descname"><span class="pre">get_node_link_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.get_node_link_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.get_power_crew_loc">
+<span class="sig-name descname"><span class="pre">get_power_crew_loc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.get_power_crew_loc" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the current power crew location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Power crew location</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.get_transpo_crew_loc">
+<span class="sig-name descname"><span class="pre">get_transpo_crew_loc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.get_transpo_crew_loc" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the current transportation crew location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Transportation crew location</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.get_water_crew_loc">
+<span class="sig-name descname"><span class="pre">get_water_crew_loc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.get_water_crew_loc" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the current water crew location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Water crew location</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.load_networks">
+<span class="sig-name descname"><span class="pre">load_networks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">water_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transp_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power_sim_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1ph'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">water_sim_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PDA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cyber_layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.load_networks" title="Permalink to this definition"></a></dt>
+<dd><p>Loads the water, power and transportation networks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>water_folder</strong> (<em>pathlib.Path object</em><em>, </em><em>optional</em>) – The directory that consists of required water network files, defaults to None</p></li>
+<li><p><strong>power_folder</strong> (<em>pathlib.Path object</em><em>, </em><em>optional</em>) – The directory that consists of required power network files, defaults to None</p></li>
+<li><p><strong>transp_folder</strong> (<em>pathlib.Path object</em><em>, </em><em>optional</em>) – The directory that consists of required traffic network files, defaults to None</p></li>
+<li><p><strong>power_sim_type</strong> (<em>string</em><em>, </em><em>optional</em>) – Power simulation type (“1ph” for single phase networks, “3ph” for three phase networks), defaults to “1ph”</p></li>
+<li><p><strong>water_sim_type</strong> (<em>string</em>) – Type of water simulation: ‘PDA’ for pressure-dependent driven analysis, ‘DDA’ for demand driven analysis</p></li>
+<li><p><strong>sim_step</strong> (<em>int</em><em>, </em><em>optional</em>) – Simulation step in seconds, defaults to 60</p></li>
+<li><p><strong>cyber_layer</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include cyber layer in the integrated network, defaults to False</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.load_power_network">
+<span class="sig-name descname"><span class="pre">load_power_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">power_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power_sim_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cyber_layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.load_power_network" title="Permalink to this definition"></a></dt>
+<dd><p>Loads the power network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>power_file</strong> (<em>string</em>) – The power systems file in json format</p></li>
+<li><p><strong>power_sim_type</strong> (<em>string</em><em>, </em><em>optional</em>) – Power simulation type (“1ph” for single phase networks, “3ph” for three phase networks), defaults to “1ph”</p></li>
+<li><p><strong>service_area</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the service area will be loaded, defaults to False</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.load_transpo_network">
+<span class="sig-name descname"><span class="pre">load_transpo_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transp_folder</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.load_transpo_network" title="Permalink to this definition"></a></dt>
+<dd><p>Loads the transportation network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>transp_folder</strong> (<em>string</em>) – The directory that consists of required transportation network files</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.load_water_network">
+<span class="sig-name descname"><span class="pre">load_water_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">water_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">water_sim_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_sim_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cyber_layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.load_water_network" title="Permalink to this definition"></a></dt>
+<dd><p>Loads the water network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>water_folder</strong> (<em>pathlib.Path object</em>) – The directory that consists of required water network files</p></li>
+<li><p><strong>water_sim_type</strong> (<em>string</em>) – Type of water simulation: ‘PDA’ for pressure-dependent driven analysis, ‘DDA’ for demand driven analysis</p></li>
+<li><p><strong>initial_sim_step</strong> (<em>int</em><em>, </em><em>optional</em>) – The initial simulation step in seconds, defaults to 60</p></li>
+<li><p><strong>cyber_layer</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the cyber layer will be loaded, defaults to False</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.pipe_leak_node_generator">
+<span class="sig-name descname"><span class="pre">pipe_leak_node_generator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.pipe_leak_node_generator" title="Permalink to this definition"></a></dt>
+<dd><p>Splits the directly affected pipes to induce leak during simulations.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.reset_crew_locs">
+<span class="sig-name descname"><span class="pre">reset_crew_locs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.reset_crew_locs" title="Permalink to this definition"></a></dt>
+<dd><p>Resets the location of infrastructure crews.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.set_disrupted_components">
+<span class="sig-name descname"><span class="pre">set_disrupted_components</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">disruption_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.set_disrupted_components" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the disrupted components in the network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>scenario_file</strong> (<em>string</em>) – The location of the physical disruption scenario file in the list.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.set_disrupted_cyber_components">
+<span class="sig-name descname"><span class="pre">set_disrupted_cyber_components</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cyber_disruption_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.set_disrupted_cyber_components" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the disrupted components in the network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cyber_disruption_file</strong> – The location of the disruption scenario file in the list.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.set_disrupted_cyber_dict">
+<span class="sig-name descname"><span class="pre">set_disrupted_cyber_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.set_disrupted_cyber_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the disrupted infrastructure components dictionary with infrastructure type as keys.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.set_disrupted_infra_dict">
+<span class="sig-name descname"><span class="pre">set_disrupted_infra_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.set_disrupted_infra_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the disrupted infrastructure components dictionary with infrastructure type as keys.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.set_map_extends">
+<span class="sig-name descname"><span class="pre">set_map_extends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.set_map_extends" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the extents of the map in the format ((xmin, ymin), (xmax, ymax)).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.set_power_crew_loc">
+<span class="sig-name descname"><span class="pre">set_power_crew_loc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">power_crew_loc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.set_power_crew_loc" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the location of the power crew.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>power_crew_loc</strong> (<em>string</em>) – The name of the location (transportation  node)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.set_transpo_crew_loc">
+<span class="sig-name descname"><span class="pre">set_transpo_crew_loc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transpo_crew_loc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.set_transpo_crew_loc" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the location of the transportation crew.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>transpo_crew_loc</strong> (<em>string</em>) – The name of the location (transportation  node)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.integrated_network.IntegratedNetwork.set_water_crew_loc">
+<span class="sig-name descname"><span class="pre">set_water_crew_loc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">water_crew_loc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.integrated_network.IntegratedNetwork.set_water_crew_loc" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the location of the water crew.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>water_crew_loc</strong> (<em>string</em>) – The name of the location (transportation  node)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-infrarisk.src.physical.interdependencies">
+<span id="infrarisk-src-physical-interdependencies-module"></span><h2><span class="section-number">2.4. </span>infrarisk.src.physical.interdependencies module<a class="headerlink" href="#module-infrarisk.src.physical.interdependencies" title="Permalink to this headline"></a></h2>
+<p>Classes and functions to manage dependencies in the integrated infrastructure network.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="infrarisk.src.physical.interdependencies.DependencyTable">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">infrarisk.src.physical.interdependencies.</span></span><span class="sig-name descname"><span class="pre">DependencyTable</span></span><a class="headerlink" href="#infrarisk.src.physical.interdependencies.DependencyTable" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to store information related to dependencies among power, water and transportation networks.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.interdependencies.DependencyTable.add_gen_reserv_coupling">
+<span class="sig-name descname"><span class="pre">add_gen_reserv_coupling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">water_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.interdependencies.DependencyTable.add_gen_reserv_coupling" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a generator-on-reservoir dependency entry in the dependency table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>water_id</strong> (<em>string</em>) – The name of the reservoir in the water network model.</p></li>
+<li><p><strong>power_id</strong> (<em>string</em>) – The name of the generator in the power systems model.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.interdependencies.DependencyTable.add_pump_loadmotor_coupling">
+<span class="sig-name descname"><span class="pre">add_pump_loadmotor_coupling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">water_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.interdependencies.DependencyTable.add_pump_loadmotor_coupling" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a pump-on-motor dependency entry in the dependency table when motor is modled as a load.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>water_id</strong> (<em>string</em>) – The name of the pump in the water network model.</p></li>
+<li><p><strong>power_id</strong> (<em>string</em>) – The name of the motor (modeled as load in three phase pandapower networks) in the power systems model.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.interdependencies.DependencyTable.add_pump_motor_coupling">
+<span class="sig-name descname"><span class="pre">add_pump_motor_coupling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">water_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.interdependencies.DependencyTable.add_pump_motor_coupling" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a pump-on-motor dependency entry in the dependency table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>water_id</strong> (<em>string</em>) – The name of the pump in the water network model.</p></li>
+<li><p><strong>power_id</strong> (<em>string</em>) – The name of the motor in the power systems model.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.interdependencies.DependencyTable.add_transpo_access">
+<span class="sig-name descname"><span class="pre">add_transpo_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">integrated_graph</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.interdependencies.DependencyTable.add_transpo_access" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a mapping to nearest road link from every water/power network component.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>integrated_graph</strong> (<em>[</em><em>networkx object</em><em>]</em>) – The integrated network as networkx object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.interdependencies.DependencyTable.build_power_water_dependencies">
+<span class="sig-name descname"><span class="pre">build_power_water_dependencies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dependency_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.interdependencies.DependencyTable.build_power_water_dependencies" title="Permalink to this definition"></a></dt>
+<dd><p>Adds the power-water dependency table to the DependencyTable object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dependency_file</strong> (<em>string</em>) – The location of the dependency file containing dependency information.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.interdependencies.DependencyTable.build_transportation_access">
+<span class="sig-name descname"><span class="pre">build_transportation_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">integrated_graph</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.interdependencies.DependencyTable.build_transportation_access" title="Permalink to this definition"></a></dt>
+<dd><p>Adds the transportatio naccess table to the DependencyTable object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>integrated_graph</strong> (<em>Nextworkx object</em>) – The integrated network as Networkx object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="infrarisk.src.physical.interdependencies.DependencyTable.update_dependencies">
+<span class="sig-name descname"><span class="pre">update_dependencies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_time_stamp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.interdependencies.DependencyTable.update_dependencies" title="Permalink to this definition"></a></dt>
+<dd><p>Updates the operational performance of all the dependent components in the integrated network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>network</strong> (<em>An IntegratedNetwork object</em>) – The integrated infrastructure network object.</p></li>
+<li><p><strong>time_stamp</strong> (<em>integer</em>) – The start time of the current iteration in seconds.</p></li>
+<li><p><strong>next_time_stamp</strong> (<em>integer</em>) – The end tiem of the iteration.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="infrarisk.src.physical.interdependencies.find_connected_nodes">
+<span class="sig-prename descclassname"><span class="pre">infrarisk.src.physical.interdependencies.</span></span><span class="sig-name descname"><span class="pre">find_connected_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integrated_network</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.interdependencies.find_connected_nodes" title="Permalink to this definition"></a></dt>
+<dd><p>Finds the nodes to which the given component is connected to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>component</strong> (<em>string</em>) – Name of the component.</p></li>
+<li><p><strong>integrated_network</strong> (<em>netwrokx object</em>) – The integrated network in networkx format.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of connected nodes.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="infrarisk.src.physical.interdependencies.find_connected_power_node">
+<span class="sig-prename descclassname"><span class="pre">infrarisk.src.physical.interdependencies.</span></span><span class="sig-name descname"><span class="pre">find_connected_power_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.interdependencies.find_connected_power_node" title="Permalink to this definition"></a></dt>
+<dd><p>Finds the bus to which the given power systems component is connected to. For elements which are connected to two buses, the start bus is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>component</strong> (<em>string</em>) – Name of the power systems component.</p></li>
+<li><p><strong>pn</strong> (<em>pandapower network object</em>) – The power network the origin node belongs to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Name of the connected bus.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="infrarisk.src.physical.interdependencies.find_connected_transpo_node">
+<span class="sig-prename descclassname"><span class="pre">infrarisk.src.physical.interdependencies.</span></span><span class="sig-name descname"><span class="pre">find_connected_transpo_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.interdependencies.find_connected_transpo_node" title="Permalink to this definition"></a></dt>
+<dd><p>Finds the bus to which the given power systems component is connected to. For elements which are connected to two buses, the start bus is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>component</strong> (<em>string</em>) – Name of the power systems component.</p></li>
+<li><p><strong>pn</strong> (<em>pandapower network object</em>) – The power network the origin node belongs to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Name of the connected bus.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="infrarisk.src.physical.interdependencies.find_connected_water_node">
+<span class="sig-prename descclassname"><span class="pre">infrarisk.src.physical.interdependencies.</span></span><span class="sig-name descname"><span class="pre">find_connected_water_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.interdependencies.find_connected_water_node" title="Permalink to this definition"></a></dt>
+<dd><p>Finds the water network node to which the water component is connected to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>component</strong> (<em>string</em>) – Name of the water network component.</p></li>
+<li><p><strong>wn</strong> (<em>wntr network object</em>) – The water distribution network the origin node belongs to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Name of the water network node.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="infrarisk.src.physical.interdependencies.get_compon_details">
+<span class="sig-prename descclassname"><span class="pre">infrarisk.src.physical.interdependencies.</span></span><span class="sig-name descname"><span class="pre">get_compon_details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compon_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.interdependencies.get_compon_details" title="Permalink to this definition"></a></dt>
+<dd><p>Fetches the infrastructure type, component type, component code and component actual name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>compon_name</strong> (<em>string</em>) – Name of the component.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Infrastructure type, component type, component code and component actual name.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of strings</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="infrarisk.src.physical.interdependencies.get_compon_repair_time">
+<span class="sig-prename descclassname"><span class="pre">infrarisk.src.physical.interdependencies.</span></span><span class="sig-name descname"><span class="pre">get_compon_repair_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.interdependencies.get_compon_repair_time" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the repair time of the given component.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>component</strong> (<em>string</em>) – Name of the component.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Repair time of the component.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="infrarisk.src.physical.interdependencies.get_nearest_node">
+<span class="sig-prename descclassname"><span class="pre">infrarisk.src.physical.interdependencies.</span></span><span class="sig-name descname"><span class="pre">get_nearest_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">integrated_graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connected_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.interdependencies.get_nearest_node" title="Permalink to this definition"></a></dt>
+<dd><p>Finds the nearest node belonging to a specific family from a given node and the distance between the two.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>integrated_graph</strong> (<em>netwrokx object</em>) – The integrated network in networkx format.</p></li>
+<li><p><strong>connected_node</strong> (<em>string/integer</em>) – Name of the node for which the nearest node has to be identified.</p></li>
+<li><p><strong>target_type</strong> (<em>string</em>) – The type of the target node (power, transpo, water)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Nearest node belonging to target type and the distance in meters.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="infrarisk.src.physical.interdependencies.get_power_repair_time">
+<span class="sig-prename descclassname"><span class="pre">infrarisk.src.physical.interdependencies.</span></span><span class="sig-name descname"><span class="pre">get_power_repair_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.interdependencies.get_power_repair_time" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the repair time of the given component.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>component</strong> (<em>string</em>) – Name of the component.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Repair time of the component.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="infrarisk.src.physical.interdependencies.get_transpo_repair_time">
+<span class="sig-prename descclassname"><span class="pre">infrarisk.src.physical.interdependencies.</span></span><span class="sig-name descname"><span class="pre">get_transpo_repair_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#infrarisk.src.physical.interdependencies.get_transpo_repair_time" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the repair time of the given component.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>component</strong> (<em>string</em>) – Name of the component.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Repair time of the component.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-infrarisk.src.physical">
+<span id="module-contents"></span><h2><span class="section-number">2.5. </span>Module contents<a class="headerlink" href="#module-infrarisk.src.physical" title="Permalink to this headline"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="infrarisk.src.hazards.html" class="btn btn-neutral float-left" title="1. infrarisk.src.hazards package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="infrarisk.src.physical.power.html" class="btn btn-neutral float-right" title="2.1.1. infrarisk.src.physical.power package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Srijith Balakrishnan.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
