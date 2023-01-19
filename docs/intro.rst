@@ -28,7 +28,7 @@ to improve infrastructure resilience against weather-related disruptions.
 The methodology adopted in the study is presented in Fig. 1.
 
 .. figure:: images/methodology.jpg
-   :scale: 50 %
+   :width: 100 %
    :alt: methodological framework
 
    Figure 1. Methodological framework of DREAMIN'SG project

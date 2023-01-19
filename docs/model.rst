@@ -4,7 +4,7 @@ Methodology and Architecture
 The integrated simulation model has been developed as a Python-based package consisting of modules for simulation of system- and network-level 
 cascading effects resulting from component failures. The overall methodological framework of the integrated simulation platform is illustrated in Figure 2.
 
-.. figure:: images/Sim_framework.PNG
+.. figure:: images/Sim_framework.jpg
    :width: 100 %
    :alt: map to buried treasure
 
