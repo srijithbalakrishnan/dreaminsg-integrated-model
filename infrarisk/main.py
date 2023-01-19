@@ -1,12 +1,12 @@
 """This is the main module of the integrated infrastructure model where the simulations are performed."""
 
 import os
-import infrarisk.src.network_recovery as nr
-import infrarisk.src.simulation as simulation
-import infrarisk.src.network_sim_models.integrated_network as int_net
-import infrarisk.src.optimizer as optim
-
 import warnings
+
+import infrarisk.src.network_recovery as nr
+import infrarisk.src.optimizer as optim
+import infrarisk.src.physical.integrated_network as int_net
+import infrarisk.src.simulation as simulation
 
 warnings.filterwarnings("ignore")
 
@@ -43,7 +43,7 @@ def main():
 
     # ----------- set disrupted components based on the hazard scenario ---------- #
     scenario_file = "infrarisk/data/disruptive_scenarios/test1/motor_failure_net1.csv"
-    simple_network.set_disrupted_components(scenario_file=scenario_file)
+    simple_network.set_disrupted_components(disruption_file=scenario_file)
 
     # ----- set the initial locations of the infrastructure maintenance crews ---- #
     simple_network.set_init_crew_locs(
@@ -72,10 +72,7 @@ def main():
     sim_step = simple_network.wn.options.time.hydraulic_timestep
 
     # ------------------------ create a simulation object ------------------------ #
-    bf_simulation = simulation.NetworkSimulation(
-        network_recovery,
-        sim_step,
-    )
+    bf_simulation = simulation.NetworkSimulation(network_recovery)
 
     # ---------------------------------------------------------------------------- #
     #              REPAIR/RECOVERY OPTIMIZATION AND OUTPUT GENERATION              #
