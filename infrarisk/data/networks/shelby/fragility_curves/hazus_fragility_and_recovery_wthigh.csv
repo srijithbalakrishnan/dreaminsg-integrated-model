@@ -1,11 +1,11 @@
 component,compon_prefix,damage_state,imt,ds_median,ds_beta,recov_mean,recov_sigma
-Water pump,W_WP,Slight,PGA,0.2,0.4,0.9,0.3
-Water pump,W_WP,Moderate,PGA,0.35,0.4,3.1,2.7
-Water pump,W_WP,Extensive,PGA,0.75,0.5,5,3
+Water pump,W_WP,Slight,PGA,0.37,0.4,0.9,0.3
+Water pump,W_WP,Moderate,PGA,0.52,0.4,3.1,2.7
+Water pump,W_WP,Extensive,PGA,0.73,0.5,5,3
 Water pump,W_WP,Complete,PGA,1.28,0.5,10,3
-Water tank,W_T,Slight,PGA,0.15,0.6,1.2,0.4
-Water tank,W_T,Moderate,PGA,0.4,0.6,3.1,2.7
-Water tank,W_T,Extensive,PGA,0.7,0.7,10,3
+Water tank,W_T,Slight,PGA,0.18,0.5,1.2,0.4
+Water tank,W_T,Moderate,PGA,0.55,0.5,3.1,2.7
+Water tank,W_T,Extensive,PGA,1.15,0.6,10,3
 ESSL substation,P_TF,Slight,PGA,0.1,0.6,1,0.5
 ESSL substation,P_TF,Moderate,PGA,0.2,0.5,3,1.5
 ESSL substation,P_TF,Extensive,PGA,0.3,0.4,7,3.5
@@ -22,9 +22,9 @@ Switch,P_S,Slight,PGA,0.24,0.25,0.3,0.2
 Switch,P_S,Moderate,PGA,0.33,0.2,1,0.5
 Switch,P_S,Extensive,PGA,0.58,0.15,3,1.5
 Switch,P_S,Complete,PGA,0.89,0.15,7,3
-Roads,T_L,Slight,PGD,6,0.7,0.4,0
-Roads,T_L,Moderate,PGD,12,0.7,1.1,0.45
-Roads,T_L,Extensive,PGD,24,0.7,10.5,4
+Roads,T_L,Slight,PGD,12,0.7,0.4,0
+Roads,T_L,Moderate,PGD,24,0.7,1.1,0.45
+Roads,T_L,Extensive,PGD,60,0.7,10.5,4
 Pipe,W_P,Moderate,RR,0.1,1.5,0.3,0
 Pipe,W_P,Extensive,RR,0.5,1.5,0.3,0
 Pipe Main,W_PMA,Moderate,RR,0.1,1.5,0.3,0
