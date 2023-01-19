@@ -37,11 +37,6 @@ Funding Statement
 =================
 The project is funded by the National Research Foundation Singapore through the Inter-CREATE program.
 
-Contributors
-============
-* Srijith Balakrishnan
-* Geetanjali C.
-* Beatrice Cassottana
 
 Acknowledgements
 ================
