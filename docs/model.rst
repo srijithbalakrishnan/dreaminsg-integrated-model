@@ -2,13 +2,14 @@ Methodology and Architecture
 ==================================
 
 The integrated simulation model has been developed as a Python-based package consisting of modules for simulation of system- and network-level 
-cascading effects resulting from component failures. The overall methodological framework of the integrated simulation platform is illustrated in Figure 2.
+cascading effects resulting from component failures. The overall methodological framework of the integrated simulation platform is illustrated in :numref:`simframework`.
 
+.. _simframework:
 .. figure:: images/Sim_framework.jpg
    :width: 100 %
    :alt: map to buried treasure
 
-   Figure 2. InfraRisk integrated simulation platform structure
+   InfraRisk integrated simulation platform structure
 
 The platform is based on the widely accepted risk- and resilience analysis frameworks as 
 presented in [Argyroudis2020]_ and [Balakrishnan2020]_. In this framework, the most important component is an interdependent 
@@ -20,7 +21,14 @@ restoration/repair actions, a recovery model is also developed. The restoration 
 based on specific recovery strategies or optimization methods. The indirect failures in the network are 
 simulated using the interdependent infrastructure model based on the initial failure events and the 
 subsequent repair actions. The component- and system-level operational performance are quantified and 
-tracked using appropriate resilience metrics.
+tracked using appropriate resilience metrics (:numref:`perfcurves`).
+
+.. _perfcurves:
+.. figure:: images/perf_curves.PNG
+   :width: 100 %
+   :alt: map to buried treasure
+
+   Implementation of the simulation platform to generate performance curves
 
 The basic idea behind the InfraRisk simulation package is to integrate existing infrastructure-specific 
 simulation models through an object-oriented interface so that interdependent infrastructure simulation 
@@ -41,11 +49,6 @@ InfraRisk consists of five modules, namely,
 In the rest of the section, a detailed discussion on each of the above modules is provided.
 
 
-.. figure:: images/perf_curves.PNG
-   :width: 100 %
-   :alt: map to buried treasure
-
-   Figure #. Implementation of the simulation platform to generate performance curves
 
 
 Integrated infrastructure network
@@ -59,9 +62,11 @@ employed [Thurner2018]_. The water distribution system is modeled using *wntr* p
 in the network to another and is modeled using the static traffic assignment
 method [Boyles2020]_. All three packages have network-flow optimization models that
 identify the steady-state resource flows in the respective systems considering
-the operational constraints. The details of the packages are presented in Table 2.
+the operational constraints. The details of the packages are presented in :numref:`infrapackages`.
 
-Table 2. Infrastructure packages used in the simulation model
+.. _infrapackages:
+.. _table::
+   Infrastructure packages used in the simulation model
 
 +----------------+-----------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
 | Infrastructure | Package                           | Capabilities                                                                                                                              |

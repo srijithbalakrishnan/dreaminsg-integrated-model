@@ -25,13 +25,14 @@ simulation-generated datasets, machine learning algorithms are implemented
 to understand the causal relationship between topological and policy-related
 interventions and disaster risks. The results of the research are intended to support local governments and system managers 
 to improve infrastructure resilience against weather-related disruptions. 
-The methodology adopted in the study is presented in Fig. 1.
+The methodology adopted in the study is presented in :numref:`methodology`.
 
+.. _methodology:
 .. figure:: images/methodology.jpg
    :width: 100 %
    :alt: methodological framework
 
-   Figure 1. Methodological framework of DREAMIN'SG project
+   Methodological framework of DREAMIN'SG project
 
 The steps of the project are summarized as follows:
 

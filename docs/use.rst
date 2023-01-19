@@ -12,7 +12,7 @@ It is suggested to create a Jupyter notebook inside the notebooks folder as belo
     $ cd notebooks
     $ conda activate redcar
     (infrarisk) $ conda install ipykernel
-    (infrarisk) $ ipython kernel install –user –name=redcar
+    (infrarisk) $ ipython kernel install –user –name=infrarisk
 
 The browser would open showing available notebook kernels. Select redcar from options to open
 a Jupyter notebook that can run the integrated simulation model.
@@ -87,14 +87,16 @@ purposes.
     shelby_network.generate_integrated_graph(basemap = True)
 
 
-The above method will create the object and outputs the integrated graph (Fig. 4) consisting of the
+The above method will create the object and outputs the integrated graph (:numref:`shelby_network`) consisting of the
 topologies of all the three infrastructure networks that were loaded.
 
+.. _shelby_network:
 .. figure:: images/shelby_integrated_network.png
-    :align: left
-    :width: 100 %
-    
-    Fig. 4: Integrated network of Shelby County, TN
+    :align: center
+    :width: 70 %
+
+    Integrated network of Shelby County, TN
+
 
 In the next step, we need to build the interdependencies within the integrated network. In this
 model, three types of interdependencies are considered.
@@ -217,12 +219,12 @@ code.
     shelby_network.get_disruptive_events()
 
 
-The returned pandas dataframe would like the one below (Table 6). It shows the time (time_stamp)
-in seconds at which the component (components) failed and the intensity of damage in percentage
-(fail_perc).
+The returned pandas dataframe would like the one below (Table 6). It shows the time (``time_stamp``)
+in seconds at which the component (``components``) failed and the intensity of damage in percentage
+(``fail_perc``).
 
 
-Set initial locations of restoratio ncrews
+Set initial locations of restoration crews
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To perform the restoration and recovery of damaged or failed components after disruptive event occurs,

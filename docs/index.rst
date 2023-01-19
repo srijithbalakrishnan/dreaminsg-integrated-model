@@ -15,6 +15,7 @@ at `srijith.balakrishnan[at]sec.ethz.ch <mailto:srijith.balakrishnan@sec.ethz.ch
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+   :numbered:
 
    intro
    model
@@ -36,6 +37,16 @@ Funding Statement
 =================
 The project is funded by the National Research Foundation Singapore through the Inter-CREATE program.
 
+Contributors
+============
+* Srijith Balakrishnan
+* Geetanjali C.
+* Beatrice Cassottana
+
+Acknowledgements
+================
+
+* Prof. Stephen Boyles, Department of Civil, Architectural and Environmental Engineering, The University of Texas at Austin provided the codes of the static traffic assignment model.
 
 Indices and tables
 ==================

@@ -30,10 +30,10 @@ page.
 In addition, the integrated simulation model identifies the component details such as infrastructure
 type, component type, etc. using the component names. The name of the components must follow
 the nomenclature. The details of nomenclature and whether a component can be failed in the model
-is presented in Table 2. For example, a water pump can be named as W_WP1. Integers must be
+is presented in Table 3.1. For example, a water pump can be named as W_WP1. Integers must be
 followed by the prefix to name components belonging to same category.
 
-Table 2. Nomenclature for water network components
+Table 3.1. Nomenclature for water network components
 
 +---------+--------------------------+-----------------------+---------+--------------------------+-----------------------+
 | Prefix  | Component name           | Disruption supported  | Prefix  | Component name           | Disruption supported  |
@@ -55,13 +55,13 @@ Power systems
 
 The power system is modeled using pandapower package, and therefore the network file must
 be in \*.json format. Several tutorials for generating power system networks using pandapower
-are available in the package's tutorial page3. Similar to water network components, naming of
+are available in the package's tutorial page. Similar to water network components, naming of
 power system components must also follow the stipulated nomenclature presented in Table 3. Currently,
 power networks are modeled as three-phase systems. Therefore, single-phase components
 in pandapower are not supported. Integers must be followed by the prefix to name components
 belonging to same category.
 
-Table 3. Nomenclature for power network components
+Table 3.2. Nomenclature for power network components
 
 +---------+--------------------------------------------+-----------------------+---------+-----------------------------------------+-----------------------+
 | Prefix  | Component name                             | Disruption supported  | Prefix  | Component name                          | Disruption supported  |
@@ -89,10 +89,10 @@ The transportation system is simulated using the static traffic assignment model
 Stephen Boyles of Department of Civil, Architectural and Environmental Engineering, The University
 of Texas at Austin. The transportation network data must be in the TNTP data format. More
 details on the format and example networks can be found in Ben Stabler's Github page4. The naming
-of the transportation network components must follow the nomenclature presented in Table 4.
+of the transportation network components must follow the nomenclature presented in Table 3.3.
 Integers must be followed by the prefix to name components belonging to same category.
 
-Table 4. Nomenclature for transportation network components
+Table 3.3. Nomenclature for transportation network components
 
 +---------+-----------------+-----------------------+
 | Prefix  | Component name  | Disruption supported  |
@@ -106,21 +106,13 @@ Table 4. Nomenclature for transportation network components
 Infrastructure dependencies
 --------------------------------
 
-Data related to water-power dependencies5 between infrastructure components must be provided
-separately in a .csv file. The file must contain water_id and power_id fields which represent
-the water- and power component names (Table 5). The model will determine the type of the waterand
+Data related to water-power dependencies between infrastructure components must be provided
+separately in a .csv file. The file must contain ``water_id`` and ``power_id`` fields which represent
+the water- and power component names (Table 3.4). The model will determine the type of the waterand
 power components and construct the dependencies accordingly.
 
-Infrastructure disruption data
-----------------------------------
 
-The third data input is related to disrupted components. Similar to the dependency input file, the
-disruption data also needs to be provided in \*.csv format. The file should have three fields, namely
-time_stamp (time of disruption in seconds), components (name of the component that is included
-in any of the three networks), and fail_perc (percentage of damage). An example for the dependency
-data is presented in Table 6.
-
-Table 6. Format of disruption data 
+Table 3.4. Format of disruption data 
 
 +-----------+-----------+
 | water_id  | power_id  |
@@ -129,6 +121,27 @@ Table 6. Format of disruption data
 +-----------+-----------+
 | W_R9      | P_G3      |
 +-----------+-----------+
+
+Infrastructure disruption data
+----------------------------------
+
+The third data input is related to disrupted components. Similar to the dependency input file, the
+disruption data also needs to be provided in \*.dat format. The file should have three fields, namely
+``time_stamp`` (time of disruption in seconds), ``components`` (name of the component that is included
+in any of the three networks), `fail_perc` (percentage of damage), and ``recovery_time`` (recovery time in hours). An example for the dependency
+data is presented in Table 3.5.
+
+table 3.5. Format of disruption data
+
++------------+------------+-----------+---------------+
+| time_stamp | components | fail_perc | recovery_time |
++============+============+===========+===============+
+|       7200 |     W_PMA1 |        50 |             7 |
++------------+------------+-----------+---------------+
+|       7200 |      W_MP2 |        75 |           138 |
++------------+------------+-----------+---------------+
+|       7200 |     T_L438 |        25 |            13 |
++------------+------------+-----------+---------------+
 
 While the percentage of damage of component is not used in the current model, this may be incorporated
 in the model to find the repair duration estimate in the future versions.
