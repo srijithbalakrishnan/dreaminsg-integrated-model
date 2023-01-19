@@ -27,9 +27,9 @@ interventions and disaster risks. The results of the research are intended to su
 to improve infrastructure resilience against weather-related disruptions. 
 The methodology adopted in the study is presented in Fig. 1.
 
-.. figure:: images/methodology.PNG
+.. figure:: images/methodology.jpg
    :scale: 50 %
-   :alt: map to buried treasure
+   :alt: methodological framework
 
    Figure 1. Methodological framework of DREAMIN'SG project
 

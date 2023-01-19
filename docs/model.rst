@@ -45,7 +45,7 @@ In the rest of the section, a detailed discussion on each of the above modules i
    :width: 100 %
    :alt: map to buried treasure
 
-   Figure 3. Implementation of the simulation platform to generate performance curves
+   Figure #. Implementation of the simulation platform to generate performance curves
 
 
 Integrated infrastructure network
