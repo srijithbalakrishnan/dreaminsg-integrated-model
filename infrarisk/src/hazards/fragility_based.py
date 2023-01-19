@@ -525,13 +525,13 @@ class FragilityBasedDisruption:
         if method == 1 or method == 2:
             corr_factor = (
                 0.5 * 1.2
-                if self.resilience_level == "low"
+                if self.resilience_level in ["low", "phigh", "pthigh", "thigh"]
                 else 0.5 * 1
                 if self.resilience_level == "moderate"
                 else 0.5 * 0.3
             )  # Asbetos cements vs PVC vs Ductile iron
         elif method == "hazus":
-            corr_factor = 1 if self.resilience_level == "low" else 0.3
+            corr_factor = 1 if self.resilience_level in ["low", "phigh", "pthigh", 'thigh'] else 0.3
 
         if method == 1:
             # linear model
@@ -838,7 +838,7 @@ class FragilityBasedDisruption:
         self.disrupt_file["recovery_time"] = fail_prob_df["recovery_time"].tolist()
 
         if location is not None:
-
+            
             if maximum_data is not None:
                 if self.disrupt_file.shape[0] > maximum_data:
                     self.disrupt_file = self.disrupt_file.iloc[:maximum_data, :]
