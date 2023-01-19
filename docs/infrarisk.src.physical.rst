@@ -11,8 +11,6 @@ Subpackages
    infrarisk.src.physical.transportation
    infrarisk.src.physical.water
 
-Submodules
-----------
 
 infrarisk.src.physical.integrated\_network module
 -------------------------------------------------

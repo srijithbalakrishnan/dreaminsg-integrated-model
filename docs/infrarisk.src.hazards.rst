@@ -1,8 +1,6 @@
 infrarisk.src.hazards package
 =============================
 
-.. Submodules
-.. -----------
 
 infrarisk.src.hazards.custom module
 -----------------------------------
@@ -44,10 +42,10 @@ infrarisk.src.hazards.track module
    :undoc-members:
    :show-inheritance:
 
-.. Module contents
-.. ---------------
+Module contents
+---------------
 
-.. .. automodule:: infrarisk.src.hazards
-..    :members:
-..    :undoc-members:
-..    :show-inheritance:
+.. automodule:: infrarisk.src.hazards
+   :members:
+   :undoc-members:
+   :show-inheritance:

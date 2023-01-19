@@ -1,8 +1,6 @@
 infrarisk.src.socioeconomic package
 ===================================
 
-Submodules
-----------
 
 infrarisk.src.socioeconomic.se\_analysis module
 -----------------------------------------------

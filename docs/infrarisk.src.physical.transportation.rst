@@ -1,6 +1,7 @@
 infrarisk.src.physical.transportation package
 =============================================
 
+
 infrarisk.src.physical.transportation.network module
 ----------------------------------------------------
 
@@ -9,6 +10,13 @@ infrarisk.src.physical.transportation.network module
    :undoc-members:
    :show-inheritance:
 
+infrarisk.src.physical.transportation.tests module
+--------------------------------------------------
+
+.. automodule:: infrarisk.src.physical.transportation.tests
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 infrarisk.src.physical.transportation.transpo\_compons module
 -------------------------------------------------------------

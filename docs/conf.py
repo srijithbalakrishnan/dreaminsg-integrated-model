@@ -13,12 +13,12 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath("../.."))
+sys.path.insert(0, os.path.abspath(".."))
 
 
 # -- Project information -----------------------------------------------------
 
-project = "InfraRisk Simulation Platform"
+project = "InfraRisk"
 copyright = "2023, Srijith Balakrishnan"
 author = "Srijith Balakrishnan"
 
@@ -34,6 +34,7 @@ release = "1.0"
 extensions = [
     "sphinx.ext.autodoc",
 ]
+
 
 # ignore modules
 autodoc_mock_imports = [
@@ -74,3 +75,11 @@ html_theme = "sphinx_rtd_theme"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+
+html_theme_options = {
+    "collapse_navigation": False,
+    "sticky_navigation": True,
+    "navigation_depth": 4,
+    "includehidden": True,
+    "titles_only": False,
+}

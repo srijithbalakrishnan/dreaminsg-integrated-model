@@ -1,8 +1,7 @@
 infrarisk.src.physical.power package
 ====================================
 
-Submodules
-----------
+
 
 infrarisk.src.physical.power.power\_system\_model module
 --------------------------------------------------------

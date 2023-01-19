@@ -5,13 +5,11 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
-   :numbered:
+   :maxdepth: 2
 
    infrarisk.src.hazards
    infrarisk.src.physical
    infrarisk.src.socioeconomic
-
 
 
 infrarisk.src.network\_recovery module
