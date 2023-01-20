@@ -7,7 +7,7 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    infrarisk.src.hazards
    infrarisk.src.physical
@@ -72,10 +72,3 @@ infrarisk.src.simulation module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: infrarisk.src
-   :members:
-   :undoc-members:
-   :show-inheritance:
