@@ -13,6 +13,8 @@ Subpackages
    infrarisk.src.physical
    infrarisk.src.socioeconomic
 
+.. toctree::
+   :maxdepth: 2
 
 infrarisk.src.network\_recovery module
 --------------------------------------
