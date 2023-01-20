@@ -7,7 +7,7 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 4
 
    infrarisk.src.hazards
    infrarisk.src.physical
