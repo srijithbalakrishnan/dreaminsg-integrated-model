@@ -53,6 +53,8 @@ autodoc_mock_imports = [
     "mpl_toolkits",
     "geopandas",
     "setup",
+    "networkx",
+    "ipywidgets",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
