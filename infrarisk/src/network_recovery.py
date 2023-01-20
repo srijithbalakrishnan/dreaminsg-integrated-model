@@ -1048,7 +1048,9 @@ def pipe_leak_node_generator(network):
 
     :param network: Integrated infrastructure network object
     :type network: IntegratedNetwork object
+    
     """
+
     for _, component in enumerate(network.get_disrupted_components()):
         compon_details = interdependencies.get_compon_details(component)
         if compon_details["name"] == "Pipe":
@@ -1059,6 +1061,7 @@ def pipe_leak_node_generator(network):
 
 def link_open_event(wn, pipe_name, time_stamp, state):
     """Opens a pipe.
+
     :param wn: Water network object.
     :type wn: wntr.network.WaterNetworkModel
     :param pipe_name:  Name of the pipe.
@@ -1069,7 +1072,9 @@ def link_open_event(wn, pipe_name, time_stamp, state):
     :type state: string
     :return: The modified wntr network object after pipe splits.
     :rtype: wntr.network.WaterNetworkModel
+
     """
+
     pipe = wn.get_link(pipe_name)
     act_open = wntr.network.controls.ControlAction(
         pipe, "status", wntr.network.LinkStatus.Open
@@ -1095,7 +1100,9 @@ def link_close_event(wn, pipe_name, time_stamp, state):
     :type state: string
     :return: The modified wntr network object after pipe splits.
     :rtype: wntr network object
+
     """
+
     pipe = wn.get_link(pipe_name)
     act_close = wntr.network.controls.ControlAction(
         pipe, "status", wntr.network.LinkStatus.Closed
