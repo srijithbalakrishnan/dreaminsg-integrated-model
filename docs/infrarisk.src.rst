@@ -11,70 +11,67 @@ Subpackages
    infrarisk.src.physical
    infrarisk.src.socioeconomic
 
-.. toctree::
-   :maxdepth: 1
 
+.. infrarisk.src.network\_recovery module
+.. --------------------------------------
 
-infrarisk.src.network\_recovery module
---------------------------------------
+.. .. automodule:: infrarisk.src.network_recovery
+..    :members:
+..    :undoc-members:
+..    :show-inheritance:
 
-.. automodule:: infrarisk.src.network_recovery
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. infrarisk.src.optimizer module
+.. ------------------------------
 
-infrarisk.src.optimizer module
-------------------------------
+.. .. automodule:: infrarisk.src.optimizer
+..    :members:
+..    :undoc-members:
+..    :show-inheritance:
 
-.. automodule:: infrarisk.src.optimizer
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. infrarisk.src.plots module
+.. --------------------------
 
-infrarisk.src.plots module
---------------------------
+.. .. automodule:: infrarisk.src.plots
+..    :members:
+..    :undoc-members:
+..    :show-inheritance:
 
-.. automodule:: infrarisk.src.plots
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. infrarisk.src.recovery\_strategies module
+.. -----------------------------------------
 
-infrarisk.src.recovery\_strategies module
------------------------------------------
+.. .. automodule:: infrarisk.src.recovery_strategies
+..    :members:
+..    :undoc-members:
+..    :show-inheritance:
 
-.. automodule:: infrarisk.src.recovery_strategies
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. infrarisk.src.repair\_crews module
+.. ----------------------------------
 
-infrarisk.src.repair\_crews module
-----------------------------------
+.. .. automodule:: infrarisk.src.repair_crews
+..    :members:
+..    :undoc-members:
+..    :show-inheritance:
 
-.. automodule:: infrarisk.src.repair_crews
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. infrarisk.src.resilience\_metrics module
+.. ----------------------------------------
 
-infrarisk.src.resilience\_metrics module
-----------------------------------------
+.. .. automodule:: infrarisk.src.resilience_metrics
+..    :members:
+..    :undoc-members:
+..    :show-inheritance:
 
-.. automodule:: infrarisk.src.resilience_metrics
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. infrarisk.src.simulation module
+.. -------------------------------
 
-infrarisk.src.simulation module
--------------------------------
+.. .. automodule:: infrarisk.src.simulation
+..    :members:
+..    :undoc-members:
+..    :show-inheritance:
 
-.. automodule:: infrarisk.src.simulation
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. Module contents
+.. ---------------
 
-Module contents
----------------
-
-.. automodule:: infrarisk.src
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. .. automodule:: infrarisk.src
+..    :members:
+..    :undoc-members:
+..    :show-inheritance:
