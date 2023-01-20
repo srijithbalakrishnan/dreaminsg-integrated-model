@@ -85,7 +85,7 @@ class DependencyTable:
         """Adds the transportatio naccess table to the DependencyTable object.
 
         :param integrated_graph: The integrated network as Networkx object.
-        :type integrated_graph: Nextworkx object
+        :type integrated_graph: networkx.Graph
         """
         self.add_transpo_access(integrated_graph)
 
@@ -147,7 +147,7 @@ class DependencyTable:
         """Creates a mapping to nearest road link from every water/power network component.
 
         :param integrated_graph: The integrated network as networkx object.
-        :type integrated_graph: [networkx object]
+        :type integrated_graph: networkx.Graph
         """
         nodes_of_interest = [
             x
@@ -176,7 +176,7 @@ class DependencyTable:
         """Updates the operational performance of all the dependent components in the integrated network.
 
         :param network: The integrated infrastructure network object.
-        :type network: An IntegratedNetwork object
+        :type network: networkx.Graph
         :param time_stamp: The start time of the current iteration in seconds.
         :type time_stamp: integer
         :param next_time_stamp: The end tiem of the iteration.
@@ -224,7 +224,7 @@ def get_compon_details(compon_name):
     :param compon_name: Name of the component.
     :type compon_name: string
     :return: Infrastructure type, component type, component code and component actual name.
-    :rtype: list of strings
+    :rtype: list
     """
     compon_details_dict = {}
     compon_infra, compon_id = compon_name.split("_")
@@ -285,7 +285,7 @@ def get_nearest_node(integrated_graph, connected_node, target_type):
     """Finds the nearest node belonging to a specific family from a given node and the distance between the two.
 
     :param integrated_graph: The integrated network in networkx format.
-    :type integrated_graph: netwrokx object
+    :type integrated_graph: netwrokx.Graph
     :param connected_node: Name of the node for which the nearest node has to be identified.
     :type connected_node: string/integer
     :param target_type: The type of the target node (power, transpo, water)
@@ -326,7 +326,7 @@ def find_connected_nodes(component, integrated_network):
     :param component: Name of the component.
     :type component: string
     :param integrated_network: The integrated network in networkx format.
-    :type integrated_network: netwrokx object
+    :type integrated_network: networkx.Graph
     :return: List of connected nodes.
     :rtype: list
     """
@@ -345,7 +345,7 @@ def find_connected_power_node(component, pn):
     :param component: Name of the power systems component.
     :type component: string
     :param pn: The power network the origin node belongs to.
-    :type pn: pandapower network object
+    :type pn: pandaPowerNet
     :return: Name of the connected bus.
     :rtype: string
     """
@@ -372,7 +372,7 @@ def find_connected_water_node(component, wn):
     :param component: Name of the water network component.
     :type component: string
     :param wn: The water distribution network the origin node belongs to.
-    :type wn: wntr network object
+    :type wn: wntr.network.WaterNetworkModel
     :return: Name of the water network node.
     :rtype: string
     """
@@ -400,7 +400,7 @@ def find_connected_transpo_node(component, tn):
     :param component: Name of the power systems component.
     :type component: string
     :param pn: The power network the origin node belongs to.
-    :type pn: pandapower network object
+    :type pn: pandaPowerNet
     :return: Name of the connected bus.
     :rtype: string
     """
@@ -418,30 +418,30 @@ def find_connected_transpo_node(component, tn):
     return connected_junctions
 
 
-def get_power_repair_time(component):
-    """Returns the repair time of the given component.
+# def get_power_repair_time(component):
+#     """Returns the repair time of the given power network component.
 
-    :param component: Name of the component.
-    :type component: string
-    :return: Repair time of the component.
-    :rtype: float
-    """
-    compon_details = get_compon_details(component)
-    repair_time = power_dict[compon_details["type_code"]]["repair_time"]
-    return repair_time
+#     :param component: Name of the component.
+#     :type component: string
+#     :return: Repair time of the component in hours.
+#     :rtype: float
+#     """
+#     compon_details = get_compon_details(component)
+#     repair_time = power_dict[compon_details["type_code"]]["repair_time"]
+#     return repair_time
 
 
-def get_transpo_repair_time(component):
-    """Returns the repair time of the given component.
+# def get_transpo_repair_time(component):
+#     """Returns the repair time of the given component.
 
-    :param component: Name of the component.
-    :type component: string
-    :return: Repair time of the component.
-    :rtype: float
-    """
-    compon_details = get_compon_details(component)
-    repair_time = transpo_dict[compon_details["type_ciode"]]["repair_time"]
-    return repair_time
+#     :param component: Name of the transport network component.
+#     :type component: string
+#     :return: Repair time of the component in hours.
+#     :rtype: float
+#     """
+#     compon_details = get_compon_details(component)
+#     repair_time = transpo_dict[compon_details["type_ciode"]]["repair_time"]
+#     return repair_time
 
 
 def get_compon_repair_time(component):
@@ -449,7 +449,7 @@ def get_compon_repair_time(component):
 
     :param component: Name of the component.
     :type component: string
-    :return: Repair time of the component.
+    :return: Repair time of the component in hours.
     :rtype: float
 
     """

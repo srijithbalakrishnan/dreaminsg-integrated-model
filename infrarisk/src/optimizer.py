@@ -58,9 +58,9 @@ class BruteForceOptimizer(Optimizer):
         """Returns all possible permutations of the repair order.
 
         :param simulation: An integrated infrastructure network simulation object.
-        :type simulation: Simulation object
+        :type simulation: infrarisk.src.simulation.NetworkSimulation
         :return: A nested list of all possible repair permutations for the given list of components.
-        :rtype: list of lists of strings.
+        :rtype: list
         """
         comps_to_repair = simulation.get_components_to_repair()
         if len(comps_to_repair) >= self.prediction_horizon:
@@ -73,7 +73,7 @@ class BruteForceOptimizer(Optimizer):
         """Identifies the optimal recovery strategy using the Model Predictive Control principle.
 
         :param simulation: The infrastructure network simulation object.
-        :type simulation: Simulation object.
+        :type simulation: infrarisk.src.simulation.NetworkSimulation
         """
         start = timeit.default_timer()
         counter = 1
@@ -194,7 +194,7 @@ class BruteForceOptimizer(Optimizer):
         """Returns the time, power consumption ratio and water consumption ratio values.
 
         Returns:
-            lists: lists of lists
+            lists: list
         """
         return self.trackers
 
@@ -202,6 +202,6 @@ class BruteForceOptimizer(Optimizer):
         """Returns the optimization log.
 
         :return: A table consisting of the AUC values from the network simulations.
-        :rtype: pandas dataframe.
+        :rtype: pandas.DataFrame
         """
         return self.auc_log

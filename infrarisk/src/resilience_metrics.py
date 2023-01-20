@@ -1,12 +1,9 @@
 """Resilience metric classes to be used for optimizing recovery actions."""
 
 # from sklearn import metrics
-from statistics import mean
 import pandas as pd
 import wntr
-import copy
 import numpy as np
-import seaborn as sns
 
 
 class WeightedResilienceMetric:
@@ -28,9 +25,9 @@ class WeightedResilienceMetric:
         """Calculates the flows through pipe leaks and stores it to a table.
 
         :param network_recovery: The network recovery object
-        :type network_recovery: NetworkRecovery object
+        :type network_recovery: infrarisk.src.network_recovery.NetworkRecovery
         :param wn_results: The water network simulation results for the current time interval
-        :type wn_results: wntr object
+        :type wn_results: dictionary
         """
         pass
         # node_list = network_recovery.network.wn.node_name_list
@@ -51,9 +48,9 @@ class WeightedResilienceMetric:
         """Calculates the node head, deamand and pressure and stores them to respective tables.
 
         :param network_recovery: The network recovery object
-        :type network_recovery: NetworkRecovery object
+        :type network_recovery: infrarisk.src.network_recovery.NetworkRecovery
         :param wn_results: The water network simulation results for the current time interval
-        :type wn_results: wntr object
+        :type wn_results: dictionary
         """
         node_list = network_recovery.network.wn.node_name_list
         if self.water_node_head_df is None:
@@ -101,9 +98,9 @@ class WeightedResilienceMetric:
         """Calculates the flowrates in pumps and stores the values to a table.
 
         :param network_recovery: The network recovery object.
-        :type network_recovery: NetworkRecovery object
+        :type network_recovery: infrarisk.src.network_recovery.NetworkRecovery
         :param wn_results: The water network simulation results for the current time interval
-        :type wn_results: wntr object
+        :type wn_results: dictionary
         """
         pump_list = network_recovery.network.wn.pump_name_list
         if self.water_pump_flow_df is None:
@@ -125,9 +122,9 @@ class WeightedResilienceMetric:
         """Calculates the status of pumps and stores the values to a table.
 
         :param network_recovery: The network recovery object.
-        :type network_recovery: NetworkRecovery object
-        :param wn_results: The water network simulation results for the current time interval
-        :type wn_results: wntr object
+        :type network_recovery: infrarisk.src.network_recovery.NetworkRecovery
+        :param wn_results: The water network simulation results for the current time interval.
+        :type wn_results: dictionary
         """
         pump_list = network_recovery.network.wn.pump_name_list
         if self.water_pump_status_df is None:
@@ -149,8 +146,8 @@ class WeightedResilienceMetric:
         """Calculates the power flow in loads and motor pumps.
 
         :param network_recovery: The network recovery object.
-        :type network_recovery: NetworkRecovery object
-        :param sim_time: The simulation time when the data is collected.
+        :type network_recovery: infrarisk.src.network_recovery.NetworkRecovery
+        :param sim_time: The simulation time when the data is collected in seconds.
         :type sim_time: integer
         """
         self.sim_times.append(sim_time)
@@ -171,7 +168,7 @@ class WeightedResilienceMetric:
         """Calculates the energy consumed by each pump in kWhr in the network and stores the values in a dictionary.
 
         :param wn_object: The water network model.
-        :type wn_object: wntr water network object
+        :type wn_object: wntr.network.WaterNetworkModel
         """
         pump_flows = self.water_pump_flow_df
         pump_flows = pump_flows.set_index("time", drop=True)
@@ -190,28 +187,11 @@ class WeightedResilienceMetric:
             )
         self.pump_energy_consumed = pump_energy_dict
 
-    def integrate(self, x, y):
-        """Calculates the area under a curve
-
-        :param x: An array of the x values of the curve
-        :type x: array of floats
-        :param y: An array of the y values of the curve
-        :type y:array of floats
-        :return: The area under the curve
-        :rtype: float
-        """
-        sm = 0
-        for i in range(1, len(x)):
-            h = x[i] - x[i - 1]
-            sm += h * (y[i - 1] + y[i]) / 2
-
-        return sm
-
     def calculate_water_resmetrics(self, network_recovery):
         """Calculates the water network performance timelines (pcs and ecs).
 
         :param network_recovery: The network recovery object
-        :type network_recovery: NetworkRecovery object
+        :type network_recovery: infrarisk.src.network_recovery.NetworkRecovery
         """
         junc_list = network_recovery.base_network.wn.junction_name_list
         base_water_demands = network_recovery.network.base_water_node_supply
@@ -277,7 +257,7 @@ class WeightedResilienceMetric:
         """Calculates the power network performance timelines (pcs and ecs).
 
         :param network_recovery: The network recovery object
-        :type network_recovery: NetworkRecovery object
+        :type network_recovery: infrarisk.src.network_recovery.NetworkRecovery
         """
         power_demands = self.power_load_df
         power_time_list = power_demands.time / 60
@@ -340,6 +320,7 @@ class WeightedResilienceMetric:
         self.power_node_pcs_dict = power_node_pcs_dict
 
     def calculate_transpo_resmetric(self, tn):
+        # TO DO
         pass
 
     def set_weighted_auc_metrics(self):
@@ -361,3 +342,20 @@ class WeightedResilienceMetric:
             round(self.weighed_ecs_auc, 3),
             round(self.weighed_pcs_auc, 3),
         )
+
+    def integrate(self, x, y):
+        """Calculates the area under a curve
+
+        :param x: An array of the x values of the curve
+        :type x: array of floats
+        :param y: An array of the y values of the curve
+        :type y:array of floats
+        :return: The area under the curve
+        :rtype: float
+        """
+        sm = 0
+        for i in range(1, len(x)):
+            h = x[i] - x[i - 1]
+            sm += h * (y[i - 1] + y[i]) / 2
+
+        return sm

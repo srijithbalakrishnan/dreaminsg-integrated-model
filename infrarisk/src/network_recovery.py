@@ -335,7 +335,7 @@ class NetworkRecovery:
         :param recovery_start: The start time of the recovery in seconds
         :type recovery_start: integer
         :param recovery_time: The duration of the recovery in seconds
-
+        :type recovery_time: integer
         """
         if recovery_start is not None:
             compon_details = interdependencies.get_compon_details(component)
@@ -349,17 +349,6 @@ class NetworkRecovery:
             )
 
             recovery_start = max(recovery_start, disruption_time + 2 * self.sim_step)
-            # recovery_start = (
-            #     get_nearest_time_step(recovery_start, 2 * self.sim_step)
-            #     if get_nearest_time_step(recovery_start, 2 * self.sim_step)
-            #     > disruption_time
-            #     else get_nearest_time_step(recovery_start, 2 * self.sim_step)
-            #     + 2 * self.sim_step
-            # )
-
-            # recovery_end = get_nearest_time_step(
-            #     recovery_start + recovery_time, 2 * self.sim_step
-            # )
             recovery_end = max(recovery_end, recovery_start + 2 * self.sim_step)
 
             if compon_details["infra"] == "transpo":
@@ -510,17 +499,6 @@ class NetworkRecovery:
                 ignore_index=True,
             )
 
-            # else:
-            #     self.event_table = self.event_table.append(
-            #         {
-            #             "time_stamp": recovery_end,
-            #             "components": component,
-            #             "perf_level": 100,
-            #             "component_state": "Service Restored",
-            #         },
-            #         ignore_index=True,
-            #     )
-
             # -----------------------------------------------
             self.event_table_wide = self.event_table_wide.append(
                 {
@@ -637,7 +615,11 @@ class NetworkRecovery:
         )
 
     def get_event_table(self):
-        """Returns the event table."""
+        """Returns the event table.
+
+        :return: The event table.
+        :rtype: pandas.DataFrame
+        """
         return self.event_table
 
     def update_directly_affected_components(self, time_stamp, next_sim_time):
@@ -953,16 +935,16 @@ class NetworkRecovery:
     def fail_transpo_link(self, link_compon):
         """Fails the given transportation link by changing the free-flow travel time to a very large value.
 
-        Args:
-            link_compon (string): Name of the transportation link.
+        :param link_compon: Name of the transportation link.
+        :type link_compon: string
         """
         self.network.tn.link[link_compon].freeFlowTime = 9999
 
     def restore_transpo_link(self, link_compon):
         """Restores the disrupted transportation link by changing the free flow travel time to the original value.
 
-        Args:
-            link_compon (string): Name of the transportation link.
+        :param link_compon: Name of the transportation link.
+        :type link_compon: string
         """
         self.network.tn.link[link_compon].freeFlowTime = self.network.tn.link[
             link_compon
@@ -1015,12 +997,12 @@ class NetworkRecovery:
     def switch_closure_allowed(self, compons_to_repair, switch):
         """Check if a switch closure is possible. Depends on whether a switch needs to be open to isolate any component whose repair is not yet performed
 
-        :param network_recovery: NetworkRecovery object
-        :type network_recovery: NetworkRecovery
         :param compons_to_repair: List of components to be repaired excluding the component under consideration.
         :type compons_to_repair: list
         :param switch: Switch component
         :type switch: string
+        :return: True if switch closure is allowed, False otherwise.
+        :rtype: bool
         """
         allowed = True
         p_compons = [compon for compon in compons_to_repair if compon.startswith("P_")]
@@ -1078,7 +1060,7 @@ def pipe_leak_node_generator(network):
 def link_open_event(wn, pipe_name, time_stamp, state):
     """Opens a pipe.
     :param wn: Water network object.
-    :type wn: wntr network object
+    :type wn: wntr.network.WaterNetworkModel
     :param pipe_name:  Name of the pipe.
     :type pipe_name: string
     :param time_stamp: Time stamp at which the pipe must be opened in seconds.
@@ -1086,7 +1068,7 @@ def link_open_event(wn, pipe_name, time_stamp, state):
     :param state: The state of the object.
     :type state: string
     :return: The modified wntr network object after pipe splits.
-    :rtype: wntr network object
+    :rtype: wntr.network.WaterNetworkModel
     """
     pipe = wn.get_link(pipe_name)
     act_open = wntr.network.controls.ControlAction(
@@ -1104,7 +1086,7 @@ def link_close_event(wn, pipe_name, time_stamp, state):
     """Closes a pipe.
 
     :param wn: Water network object.
-    :type wn: wntr network object
+    :type wn: wntr.network.WaterNetworkModel
     :param pipe_name: Name of the pipe.
     :type pipe_name: string
     :param time_stamp: Time stamp at which the pipe must be closed in seconds.
@@ -1129,6 +1111,22 @@ def link_close_event(wn, pipe_name, time_stamp, state):
 def add_pipe_leak(
     wn, leak_junc, area, discharge_coeff=0.75, start_time=None, end_time=None
 ):
+    """Adds a leak to a junction.
+
+    :param wn: Water network object.
+    :type wn: wntr.network.WaterNetworkModel
+    :param leak_junc: Name of the junction where the leak is to be added.
+    :type leak_junc: string
+    :param area: Area of the leak in m^2.
+    :type area: float
+    :param discharge_coeff: Discharge coefficient of the leak.
+    :type discharge_coeff: float
+    :param start_time: Time at which the leak must start in seconds.
+    :type start_time: integer
+    :param end_time: Time at which the leak must end in seconds.
+    :type end_time: integer
+    """
+
     leak_junc._leak = True
     leak_junc.leak_area = area
     leak_junc.leak_discharge_coeff = discharge_coeff
@@ -1149,6 +1147,13 @@ def add_pipe_leak(
 
 
 def get_nearest_time_step(time_stamp, time_step):
+    """Returns the nearest time step to the given time stamp.
+
+    :param time_stamp: Time stamp in seconds.
+    :type time_stamp: integer
+    :param time_step: Time step in seconds.
+    :type time_step: integer
+    """
     u = time_stamp % time_step > time_step // 2
     nearest_time = time_stamp + (-1) ** (1 - u) * abs(
         time_step * u - time_stamp % time_step

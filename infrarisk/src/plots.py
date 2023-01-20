@@ -12,6 +12,7 @@ from bokeh.io import curdoc, output_notebook, show
 from bokeh.models import ColorBar, ColumnDataSource, HoverTool, Range1d
 from bokeh.palettes import RdYlGn, Turbo256, Viridis3
 from bokeh.plotting import figure
+
 from bokeh.tile_providers import CARTODBPOSITRON_RETINA, get_provider, ESRI_IMAGERY
 from bokeh.transform import factor_cmap, linear_cmap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -28,7 +29,7 @@ cmap = colors.LinearSegmentedColormap.from_list(
 def plot_transpo_net(transpo_folder):
     """Generates the transportation network plot.
 
-    :param transpo_folder: Location of the .tntp files.
+    :param transpo_folder: Location of the transport model (.tntp files).
     :type transpo_folder: string
     """
     links = pd.DataFrame(
@@ -90,7 +91,7 @@ def plot_power_net(net):
     """Generates the power systems plot.
 
     :param net: The power systems network.
-    :type net: pandapower network object
+    :type net: pandapowerNet
     """
     options = {
         "bus_size": 1.5,
@@ -108,7 +109,7 @@ def plot_water_net(wn):
     """Generates the water network plot.
 
     :param wn: The water network.
-    :type wn: wntr network object
+    :type wn: wntr.network.WaterNetworkModel
     """
     # wn = wntr.network.WaterNetworkModel(water_net)
 
@@ -136,7 +137,7 @@ def plot_bokeh_from_integrated_graph(
     """Converts the integrated network into a Bokeh interactive plot.
 
     :param G: Integrated network on which the simulation is to be performed.
-    :type G: networkx object
+    :type G: networkx.Graph
     :param title: Title of the plot.
     :type title: string
     :param extent: Extent of the plot as a list of tuple in the format [(xmin, xmax), (ymin, ymax)], defaults to [(1000, 8000), (1000, 6600)]
@@ -300,6 +301,32 @@ def plot_bokeh_lines(
     color="black",
     alpha=1,
 ):
+    """Plots the links on the map.
+
+    :param p: The bokeh figure object.
+    :type p: bokeh.plotting.figure.Figure
+    :param x: The x coordinates of the links.
+    :type x: list
+    :param y: The y coordinates of the links.
+    :type y: list
+    :param infra: The infrastructure type of the links.
+    :type infra: string
+    :param link_layer: The link layer of the links.
+    :type link_layer: string
+    :param link_category: The link category of the links.
+    :type link_category: string
+    :param ids: The link ids.
+    :type ids: list
+    :param line_dash: The line dash style of the links.
+    :type line_dash: string
+    :param color: The color of the links.
+    :type color: string
+    :param alpha: The alpha value of the links.
+    :type alpha: float
+    :return: The bokeh figure object.
+    :rtype: bokeh.plotting.figure.Figure
+
+    """
     plot_links = p.multi_line(
         "x",
         "y",
@@ -322,18 +349,16 @@ def plot_bokeh_lines(
 #############################################################
 
 
-def plot_repair_curves(disrupt_recovery_object, scatter=False):
+def plot_repair_curves(network_recovery, scatter=False):
     """Generates the direct impact and repair level plots for the failed components.
 
-    :param disrupt_recovery_object: The disrupt_generator.DisruptionAndRecovery object.
-    :type disrupt_recovery_object: DisasterAndRecovery object
+    :param network_recovery: The disrupt_generator.DisruptionAndRecovery object.
+    :type network_recovery: infrarisk.src.network_recovery.NetworkRecovery
     :param scatter: scatter plot, defaults to False
     :type scatter: bool, optional
     """
     colors = list(Turbo256)
-    interval = len(colors) // len(
-        disrupt_recovery_object.network.get_disrupted_components()
-    )
+    interval = len(colors) // len(network_recovery.network.get_disrupted_components())
 
     palette = [colors[i] for i in range(0, len(colors), interval)]
 
@@ -351,18 +376,16 @@ def plot_repair_curves(disrupt_recovery_object, scatter=False):
     )
     p.y_range = Range1d(0, 100)
 
-    for index, name in enumerate(
-        disrupt_recovery_object.network.get_disrupted_components()
-    ):
+    for index, name in enumerate(network_recovery.network.get_disrupted_components()):
         time_tracker = (
-            disrupt_recovery_object.event_table[
-                disrupt_recovery_object.event_table.components == name
+            network_recovery.event_table[
+                network_recovery.event_table.components == name
             ].time_stamp
             / 60
         )
 
-        damage_tracker = disrupt_recovery_object.event_table[
-            disrupt_recovery_object.event_table.components == name
+        damage_tracker = network_recovery.event_table[
+            network_recovery.event_table.components == name
         ].perf_level
 
         if scatter == True:
@@ -392,6 +415,15 @@ def plot_repair_curves(disrupt_recovery_object, scatter=False):
 
 
 def plot_interdependent_effects(resilience_metrics, metric, title=True):
+    """Plots the interdependent effects of the water and power systems.
+
+    :param resilience_metrics: The object in which simulation results are stored.
+    :type resilience_metrics: infrarisk.src.resilience_metrics.WeightedResilienceMetric
+    :param metric: The metric to be plotted.
+    :type metric: string
+    :param title: Whether to show the title, defaults to True
+    :type title: bool, optional
+    """
     water_metric_list = getattr(resilience_metrics, f"water_{metric}_list")
     power_metric_list = getattr(resilience_metrics, f"power_{metric}_list")
 
@@ -445,6 +477,21 @@ def plot_network_impact_map(
     infra="power",
     time_index=None,
 ):
+    """Plots the impact of the disruption on the network.
+
+    :param resilience_metrics: The object in which simulation results are stored.
+    :type resilience_metrics: infrarisk.src.resilience_metrics.WeightedResilienceMetric
+    :param integrated_network: The integrated network.
+    :type integrated_network: infrarisk.src.integrated_network.IntegratedNetwork
+    :param strategy: The strategy used to restore the network.
+    :type strategy: string
+    :param node_prefix: The prefix of the nodes to be considered.
+    :type node_prefix: string
+    :param infra: The infrastructure to be considered, defaults to "power"
+    :type infra: string, optional
+    :param time_index: The time index to be considered, defaults to None
+    :type time_index: int, optional
+    """
     output_notebook()
 
     if infra == "water":
@@ -661,6 +708,18 @@ def plot_network_impact_map(
 
 
 def plot_region_impact_map(resilience_metrics, sa_dict, strategy, extends):
+    """Plot the impact map of the region.
+
+    :param resilience_metrics: The object in which simulation results are stored
+    :type resilience_metrics: : infrarisk.src.resilience_metrics.WeightedResilienceMetric
+    :param sa_dict: The power and water socioeconomic impact dictionary
+    :type sa_dict: dictionary of geopandas.GeoDataFrame
+    :param strategy: The name of the recovery strategy
+    :type strategy: string
+    :param extends: The extends of the region
+    :type extends: tuple
+    """
+
     avg_water_demand_ratio = {"capacity": {}, "centrality": {}, "zone": {}}
     avg_power_demand_ratio = {"capacity": {}, "centrality": {}, "zone": {}}
 
@@ -764,8 +823,10 @@ def plot_region_impact_map(resilience_metrics, sa_dict, strategy, extends):
 def plot_disruptions_and_crews(integrated_network, basemap=False):
     """Generate a plot of the number of disruptions and crews for each strategy.
 
-    :param integrated_network: IntegratedNetwork object
-    :type integrated_network: IntegratedNetwork
+    :param integrated_network: The integrated network object
+    :type integrated_network: infrarisk.src.physical.integrated_network.IntegratedNetwork
+    :param basemap: Whether to include a basemap, defaults to False
+    :type basemap: bool, optional
     """
     extent = integrated_network.map_extends
     p = figure(
@@ -1040,6 +1101,7 @@ def integrate(x, y):
     :type y:array of floats
     :return: The area under the curve
     :rtype: float
+
     """
     sm = 0
     for i in range(1, len(x)):

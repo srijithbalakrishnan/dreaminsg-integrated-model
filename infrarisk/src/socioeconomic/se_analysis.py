@@ -23,10 +23,24 @@ CMAP = colors.LinearSegmentedColormap.from_list(
 
 
 class SocioEconomicTable:
-    """A class for downloading and analyzing socioeconomic data for a given county."""
+    """A class for downloading and analyzing socioeconomic data for a given county in the United States. The module is used to quantify the sector-wise economic impacts from infrastructure disruptions."""
 
     def __init__(self, name, year, tract, state, county, dir):
-        """Initialize the SocioEconomicTable class."""
+        """Initialize the SocioEconomicTable class.
+
+        :param name: Name of the county
+        :type name: string
+        :param year: Year of the data
+        :type year: integer
+        :param tract: Tract of the county
+        :type tract: string
+        :param state: State of the county
+        :type state: string
+        :param county: County of the county
+        :type county: string
+        :param dir: Directory to save the data
+        :type dir: string
+        """
         self.name = name
         self.year = year
         self.tract = tract
@@ -34,6 +48,7 @@ class SocioEconomicTable:
         self.county = county
         self.dir = Path(dir)
 
+        # Dictionary of 2-digit NAICS codes and their corresponding industry names
         self.industry_vars = {
             "DP03_0033E": "Agriculture, forestry, fishing and hunting, and mining",
             "DP03_0034E": "Construction",
@@ -50,6 +65,7 @@ class SocioEconomicTable:
             "DP03_0045E": "Public administration",
         }
 
+        # Dictionary of relevant variables in the County Business Patterns (CBP) dataset and their corresponding descriptions
         self.cbp_vars = {
             "NAME": "Geographic area code",
             # "EMP": "Number of employees",
@@ -60,6 +76,7 @@ class SocioEconomicTable:
             "ZIPCODE": "ZIP code",
         }
 
+        # Dictionary of relevant variables in the Economic Census (ECN) dataset and their corresponding descriptions
         self.ecn_vars = {
             "NAME": "Geographic area code",
             "EMP": "Number of employees",
@@ -75,6 +92,7 @@ class SocioEconomicTable:
             "YEAR": "Year",
         }
 
+        # Dictionary of relevant variables in the American Business Survey (ACS) dataset and their corresponding descriptions
         self.abs_vars = {
             "EMP": "Number of employees",
             "FIRMPDEMP": "Number of employer firms",
@@ -96,6 +114,7 @@ class SocioEconomicTable:
             "RCPPDEMP",
         ]
 
+        # Dictionary of 2-digit NAICS codes, their corresponding industry names, and resilience factors to infrastructure disruptions
         self.naics_codes = {
             "00": {
                 "Industry": "Total for all industries",
@@ -218,6 +237,8 @@ class SocioEconomicTable:
         }
 
     def create_setable(self):
+        """Create a socioeconomic table for the county zipcodes by combining American Business Survey data with County shapefile."""
+
         revenue_df = self.county_abs_df
 
         # expand county_gpd to include all naics
@@ -264,6 +285,11 @@ class SocioEconomicTable:
         self.county_gpd_truncated = zip_revenue_df
 
     def download_zipcode_map(self, force_download=False):
+        """Download zipcode shapefile from census.gov and save to the local drive.
+
+        :param force_download: If True, download the zipcode-level county shapefile even if it already exists on the local drive.
+        :type force_download: bool
+        """
         if (
             not os.path.exists(
                 self.dir / f"zipcode_{self.year}_{self.state}{self.county}.shp"
@@ -346,6 +372,12 @@ class SocioEconomicTable:
         ]
 
     def download_acs5_data(self, force_download=False):
+        """Download 5-year American Community Survey data from census.gov and save to the local drive.
+
+        :param force_download: If True, download the ACS5 data even if it already exists on the local drive.
+        :type force_download: bool
+        """
+
         if (
             not os.path.exists(
                 self.dir / f"acs5_{self.year}_{self.state}{self.county}.csv"
@@ -378,6 +410,12 @@ class SocioEconomicTable:
             )
 
     def download_cbp_data(self, force_download=False):
+        """Download County Business Patterns data from census.gov and save to the local drive.
+
+        :param force_download: If True, download the CBP data even if it already exists on the local drive.
+        :type force_download: bool
+        """
+
         if (
             not os.path.exists(
                 self.dir / f"cbp_{self.year}_{self.state}{self.county}.csv"
@@ -415,6 +453,12 @@ class SocioEconomicTable:
             )
 
     def download_ecnbasic_data(self, force_download=False):
+        """Download Economic Census Basic data from census.gov and save to the local drive.
+
+        :param force_download: If True, download the ECNBasic data even if it already exists on the local drive.
+        :type force_download: bool
+        """
+
         if (
             not os.path.exists(
                 self.dir / f"ecn_{self.year}_{self.state}{self.county}.csv"
@@ -451,6 +495,12 @@ class SocioEconomicTable:
             )
 
     def download_abs_data(self, force_download=False):
+        """Download Annual Business Survey data from census.gov and save to the local drive.
+
+        :param force_download: If True, download the ABS data even if it already exists on the local drive.
+        :type force_download: bool
+        """
+
         if (
             not os.path.exists(
                 self.dir / f"abs_{self.year}_{self.state}{self.county}.csv"
@@ -485,6 +535,12 @@ class SocioEconomicTable:
             )
 
     def download_se_data(self, force_download=False):
+        """Download all SE data (County maps, CBP, ECN and ABS datasets) from census.gov and save to the local drive.
+
+        :param force_download: If True, download the SE data even if it already exists on the local drive.
+        :type force_download: bool
+        """
+
         self.download_zipcode_map(force_download=force_download)
         # self.download_acs5_data(force_download=force_download)
         self.download_cbp_data(force_download=force_download)
@@ -492,6 +548,14 @@ class SocioEconomicTable:
         self.download_abs_data(force_download=force_download)
 
     def combine_infrastructure_se_data(self, integrated_network, resilience_metrics):
+        """Combine the SE data with the infrastructure data.
+
+        :param integrated_network: The integrated network object.
+        :type integrated_network: IntegratedNetwork
+        :param resilience_metrics: The resilience metrics object.
+        :type resilience_metrics: ResilienceMetrics
+        """
+
         county_gpd_truncated = self.county_gpd_truncated.copy()
 
         water_sa = integrated_network.wn.service_area
@@ -514,6 +578,8 @@ class SocioEconomicTable:
         self.zipcode_sa = zipcode_sa
 
     def calculate_economic_costs(self):
+        """Calculate the zipcode-level economic costs of water and power outages for each industrial sector in the county."""
+
         economic_cost_df = self.zipcode_sa.copy()
 
         for industry in self.available_naics:
@@ -539,6 +605,12 @@ class SocioEconomicTable:
         ).reset_index()
 
     def plot_interactive(self, type="annual receipts"):
+        """Plot the economic costs of water and power outages for each industrial sector in the county.
+
+        :param type: The type of plot to generate. Options are "annual receipts" and "economic costs".
+        :type type: str
+        """
+
         if type == "annual receipts":
             widgets.interact(
                 self.plot_industry_output,
@@ -587,6 +659,14 @@ class SocioEconomicTable:
             # display(n_widget)
 
     def plot_industry_output(self, var, alpha):
+        """Plot the annual receipts of an industry in the county.
+
+        :param var: The name of the industry to plot.
+        :type var: str
+        :param alpha: The transparency of the plot.
+        :type alpha: float
+        """
+
         label = "Annual receipts in million US$"
         sns.set_context("talk", rc={"font.size": 20, "axes.titlesize": 20})
         sns.set_style("white")
@@ -645,6 +725,13 @@ class SocioEconomicTable:
         plt.show()
 
     def plot_economic_costs(self, var, alpha):
+        """Plot the economic costs of an industry in the county.
+
+        :param var: The name of the industry to plot.
+        :type var: str
+        :param alpha: The transparency of the plot.
+        :type alpha: float
+        """
         label = "Direct business disruption costs in (1000) US$"
         sns.set_context("talk", font_scale=1.1)
         sns.set_style("white")

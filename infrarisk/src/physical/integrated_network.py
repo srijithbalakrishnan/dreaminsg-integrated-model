@@ -238,7 +238,11 @@ class IntegratedNetwork:
             print("Error: Some required network files not found.")
 
     def generate_integrated_graph(self, basemap=False):
-        """Generates the integrated network as a Networkx graph."""
+        """Generates the integrated network as a Networkx graph.
+
+        :param basemap: If True, the basemap will be added to the integrated graph, defaults to False
+        :type basemap: bool, optional
+        """
         self.power_graph = self.generate_power_networkx_graph()
         print("Successfully added power network to the integrated graph...")
         self.water_graph = self.generate_water_networkx_graph()
@@ -309,7 +313,7 @@ class IntegratedNetwork:
         :param plot: To generate the network plot, defaults to False.
         :type plot: bool, optional
         :return: The power network as a networkx object.
-        :rtype: Networkx object
+        :rtype: networkx.Graph
         """
         G_power = nx.Graph()
 
@@ -408,7 +412,7 @@ class IntegratedNetwork:
         :param plot: To generate the network plot, defaults to False., defaults to False.
         :type plot: bool, optional
         :return: The water network as a networkx object.
-        :rtype: Networkx object
+        :rtype: networkx.Graph
         """
         G_water = nx.Graph()
 
@@ -522,7 +526,7 @@ class IntegratedNetwork:
         :param plot: To generate the network plot, defaults to False., defaults to False.
         :type plot: bool, optional
         :return: The transportation network as a networkx object.
-        :rtype: Networkx object
+        :rtype: networkx.Graph
         """
         G_transpo = nx.Graph()
 
@@ -663,8 +667,8 @@ class IntegratedNetwork:
     def get_disruptive_events(self):
         """Returns the disruptive event data
 
-        Returns:
-            pandas dataframe: The table with details of disrupted components and the respective damage levels.
+        :return: The table of disruptive events.
+        :rtype: pandas.DataFrame
         """
         return self.disruptive_events
 
@@ -672,7 +676,7 @@ class IntegratedNetwork:
         """Returns the list of disrupted components.
 
         :return: current list of disrupted components.
-        :rtype: list of strings
+        :rtype: list
         """
         return list(self.disrupted_components)
 
@@ -729,10 +733,16 @@ class IntegratedNetwork:
 
         :param init_power_crew_locs: Initial locations (nearest transportation nodes) of the power crews.
         :type init_power_crew_locs: list of strings
+        :param power_crews_size: Size of the power crews.
+        :type power_crews_size: list
         :param init_water_crew_locs: Initial locations (nearest transportation nodes) of the water crews.
-        :type init_water_crew_locs: list of strings
+        :type init_water_crew_locs: list
+        :param water_crews_size: Size of the water crews.
+        :type water_crews_size: list
         :param init_transpo_crew_locs: Initial locations (nearest transportation nodes) of the transportation crews.
         :type init_transpo_crew_locs: list of strings
+        :param transpo_crews_size: Size of the transportation crews.
+        :type transpo_crews_size: list
         """
         self.power_crews = {}
         self.water_crews = {}
@@ -796,6 +806,8 @@ class IntegratedNetwork:
 
         :param crew_type: Type of the crew.
         :type crew_type: string
+        :param min_time: Earliest time to be considered for the idle crew.
+        :type min_time: float
         :return: The idle crew of the given type.
         :rtype: repair_crews.
         """
@@ -896,6 +908,7 @@ class IntegratedNetwork:
                 )
 
     def get_node_link_dict(self):
+        """Returns the dictionary of nodes and links in the network."""
         node_link_dict = {
             "water": {
                 "node": ["R", "J", "JIN", "JVN", "JTN", "JHY", "T"],

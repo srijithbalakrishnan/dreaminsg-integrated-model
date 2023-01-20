@@ -31,13 +31,13 @@ class WaterRepairCrew:
     def set_next_trip_start(self, time):
         """Sets the next trip start time for the crew.
 
-        :param time: Start time of the next trip start
+        :param time: Start time of the next trip start in seconds
         :type time: integer
         """
         self.next_trip_start = time
 
     def get_next_trip_start(self):
-        """Returns the next trip start time for the crew.
+        """Returns the next trip start time for the crew in seconds.
 
         :param time: Start time of the next trip start
         :type time: integer
@@ -45,7 +45,7 @@ class WaterRepairCrew:
         return self.next_trip_start
 
     def set_crew_loc(self, loc):
-        """Sets the current location of the crew.
+        """Sets the current location of the crew (transport junction name).
 
         :param loc: Name of the current location of the crew
         :type loc: string
@@ -53,7 +53,7 @@ class WaterRepairCrew:
         self.crew_loc = loc
 
     def get_crew_loc(self):
-        """Returns the current location of the crew.
+        """Returns the current location of the crew (transport junction name).
 
         :return: Name of the current location of the crew
         :rtype: string
@@ -89,7 +89,7 @@ class PowerRepairCrew:
         self.curr_loc = self._init_loc
 
     def set_next_trip_start(self, time):
-        """Sets the next trip start time for the crew.
+        """Sets the next trip start time for the crew in seconds.
 
         :param time: Start time of the next trip start
         :type time: integer
@@ -97,7 +97,7 @@ class PowerRepairCrew:
         self.next_trip_start = time
 
     def get_next_trip_start(self):
-        """Returns the next trip start time for the crew.
+        """Returns the next trip start time for the crew in seconds.
 
         :param time: Start time of the next trip start
         :type time: integer
@@ -105,7 +105,7 @@ class PowerRepairCrew:
         return self.next_trip_start
 
     def set_crew_loc(self, loc):
-        """Sets the current location of the crew.
+        """Sets the current location of the crew (transport junction name).
 
         :param loc: Name of the current location of the crew
         :type loc: string
@@ -113,7 +113,7 @@ class PowerRepairCrew:
         self.crew_loc = loc
 
     def get_crew_loc(self):
-        """Returns the current location of the crew.
+        """Returns the current location of the crew (transport junction).
 
         :return: Name of the current location of the crew
         :rtype: string
@@ -149,7 +149,7 @@ class TranspoRepairCrew:
         self.curr_loc = self._init_loc
 
     def set_next_trip_start(self, time):
-        """Sets the next trip start time for the crew.
+        """Sets the next trip start time for the crew in seconds.
 
         :param time: Start time of the next trip start
         :type time: integer
@@ -157,7 +157,7 @@ class TranspoRepairCrew:
         self.next_trip_start = time
 
     def get_next_trip_start(self):
-        """Returns the next trip start time for the crew.
+        """Returns the next trip start time for the crew in seconds.
 
         :param time: Start time of the next trip start
         :type time: integer
@@ -165,7 +165,7 @@ class TranspoRepairCrew:
         return self.next_trip_start
 
     def set_crew_loc(self, loc):
-        """Sets the current location of the crew.
+        """Sets the current location of the crew (transport node name).
 
         :param loc: Name of the current location of the crew
         :type loc: string
@@ -173,7 +173,7 @@ class TranspoRepairCrew:
         self.crew_loc = loc
 
     def get_crew_loc(self):
-        """Returns the current location of the crew.
+        """Returns the current location of the crew (transport node name).
 
         :return: Name of the current location of the crew
         :rtype: string

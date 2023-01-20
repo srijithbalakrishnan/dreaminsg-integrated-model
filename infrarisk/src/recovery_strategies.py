@@ -14,7 +14,7 @@ class CentralityStrategy:
         """Initiates the CentralityStrategy object.
 
         :param integrated_network: An integrated network object
-        :type integrated_network: IntegratedNetwork object
+        :type integrated_network: infrarisk.src.physical.IntegratedNetwork
         """
         self.integrated_network = integrated_network
 
@@ -167,7 +167,7 @@ class CentralityStrategy:
         """Returns the repair sequence based on the principle of betweenness centrality.
 
         :return: A list of component names in the order of repair action.
-        :rtype: list of strings
+        :rtype: list
         """
         return self.repair_order
 
@@ -179,7 +179,7 @@ class CrewDistanceStrategy:
         """Initiates the CrewDistanceStrategy object.
 
         :param integrated_network: An integrated network object
-        :type integrated_network: IntegratedNetwork object
+        :type integrated_network: infrarisk.src.physical.IntegratedNetwork
         """
         self.integrated_network = integrated_network
 
@@ -294,7 +294,7 @@ class CrewDistanceStrategy:
         """Returns the repair sequence based on the distance from the initial crew location.
 
         :return: A list of component names in the order of repair action.
-        :rtype: list of strings
+        :rtype: list
         """
         return self.repair_order
 
@@ -306,7 +306,7 @@ class HandlingCapacityStrategy:
         """Initiates the HandlingCapacityStrategy object.
 
         :param integrated_network: An integrated network object
-        :type integrated_network: IntegratedNetwork object
+        :type integrated_network: infrarisk.src.physical.IntegratedNetwork
         """
         self.integrated_network = integrated_network
 
@@ -407,7 +407,7 @@ class HandlingCapacityStrategy:
         """Returns the repair sequence based on the distance from the initial crew location.
 
         :return: A list of component names in the order of repair action.
-        :rtype: list of strings
+        :rtype: list
         """
         return self.repair_order
 
@@ -419,7 +419,7 @@ class ZoneBasedStrategy:
         """Initiates the ZoneBasedStrategy object.
 
         :param integrated_network: An integrated network object
-        :type integrated_network: IntegratedNetwork object
+        :type integrated_network: infrarisk.src.physical.IntegratedNetwork
         :param zones_shp: The shapefile consisting the zone maps as polygons.
         :type zones_shp: shapefile
         """
@@ -545,7 +545,7 @@ class ZoneBasedStrategy:
         """Returns the repair sequence based on the distance from the initial crew location.
 
         :return: A list of component names in the order of repair action.
-        :rtype: list of strings
+        :rtype: list
         """
         return self.repair_order
 
