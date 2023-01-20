@@ -5,7 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 4
 
    infrarisk.src.physical.power
    infrarisk.src.physical.transportation
