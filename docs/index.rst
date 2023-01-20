@@ -14,7 +14,7 @@ at `srijith.balakrishnan[at]sec.ethz.ch <mailto:srijith.balakrishnan@sec.ethz.ch
 
 .. toctree::
    :maxdepth: 4
-   :caption: Contents:
+   :caption: Table of Contents
    :numbered:
 
    intro
