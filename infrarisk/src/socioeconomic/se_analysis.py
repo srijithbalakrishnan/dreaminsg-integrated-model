@@ -551,9 +551,9 @@ class SocioEconomicTable:
         """Combine the SE data with the infrastructure data.
 
         :param integrated_network: The integrated network object.
-        :type integrated_network: IntegratedNetwork
+        :type integrated_network: infrarisk.src.physical.integrated_network.IntegratedNetwork
         :param resilience_metrics: The resilience metrics object.
-        :type resilience_metrics: ResilienceMetrics
+        :type resilience_metrics: infrarisk.src.resilience_metrics.WeightedResilienceMetric
         """
 
         county_gpd_truncated = self.county_gpd_truncated.copy()
@@ -608,7 +608,7 @@ class SocioEconomicTable:
         """Plot the economic costs of water and power outages for each industrial sector in the county.
 
         :param type: The type of plot to generate. Options are "annual receipts" and "economic costs".
-        :type type: str
+        :type type: string
         """
 
         if type == "annual receipts":
