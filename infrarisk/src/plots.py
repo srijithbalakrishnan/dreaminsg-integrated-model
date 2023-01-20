@@ -1,6 +1,5 @@
 """Functions to generate infrastructure network plots and result plots."""
 
-# import pandapower.plotting as pandaplot
 import contextily as ctx
 import matplotlib.colors as colors
 import matplotlib.pyplot as plt
@@ -17,9 +16,6 @@ from bokeh.tile_providers import CARTODBPOSITRON_RETINA, get_provider, ESRI_IMAG
 from bokeh.transform import factor_cmap, linear_cmap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-# -----------------------------------------------------------#
-#                      NETWORK PLOTS                        #
-# -----------------------------------------------------------#
 
 cmap = colors.LinearSegmentedColormap.from_list(
     "", ["green", "yellow", "orange", "red"]
@@ -342,11 +338,6 @@ def plot_bokeh_lines(
         legend_label=infra,
     )
     return plot_links
-
-
-#############################################################
-#                      RESULT PLOTS                        #
-#############################################################
 
 
 def plot_repair_curves(network_recovery, scatter=False):
