@@ -347,9 +347,9 @@ class WeightedResilienceMetric:
         """Calculates the area under a curve
 
         :param x: An array of the x values of the curve
-        :type x: array of floats
+        :type x: list
         :param y: An array of the y values of the curve
-        :type y:array of floats
+        :type y: list
         :return: The area under the curve
         :rtype: float
         """
