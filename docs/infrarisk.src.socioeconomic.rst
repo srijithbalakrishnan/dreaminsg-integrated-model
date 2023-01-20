@@ -10,10 +10,4 @@ infrarisk.src.socioeconomic.se\_analysis module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
 
-.. automodule:: infrarisk.src.socioeconomic
-   :members:
-   :undoc-members:
-   :show-inheritance:

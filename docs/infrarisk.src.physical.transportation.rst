@@ -33,11 +33,3 @@ infrarisk.src.physical.transportation.utils module
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: infrarisk.src.physical.transportation
-   :members:
-   :undoc-members:
-   :show-inheritance:

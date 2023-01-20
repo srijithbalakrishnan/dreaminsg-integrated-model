@@ -1,7 +1,6 @@
 infrarisk.src.hazards package
 =============================
 
-
 infrarisk.src.hazards.custom module
 -----------------------------------
 

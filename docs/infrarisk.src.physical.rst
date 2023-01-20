@@ -27,11 +27,3 @@ infrarisk.src.physical.interdependencies module
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: infrarisk.src.physical
-   :members:
-   :undoc-members:
-   :show-inheritance:

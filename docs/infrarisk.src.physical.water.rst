@@ -10,10 +10,3 @@ infrarisk.src.physical.water.water\_network\_model module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: infrarisk.src.physical.water
-   :members:
-   :undoc-members:
-   :show-inheritance:
