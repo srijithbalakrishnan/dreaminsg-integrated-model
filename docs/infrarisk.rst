@@ -13,7 +13,6 @@ Subpackages
    infrarisk.src.physical
    infrarisk.src.socioeconomic
 
-
 infrarisk.src.network\_recovery module
 --------------------------------------
 
