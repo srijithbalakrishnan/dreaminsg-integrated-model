@@ -13,7 +13,7 @@ We are continuously working to add new features and improve the tool. If you hav
 at `srijith.balakrishnan[at]sec.ethz.ch <mailto:srijith.balakrishnan@sec.ethz.ch>`_.
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
    :caption: Table of Contents
    :numbered:
 
