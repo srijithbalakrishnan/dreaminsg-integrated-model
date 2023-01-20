@@ -11,15 +11,13 @@ import infrarisk.src.resilience_metrics as resm
 
 
 class NetworkSimulation:
-    """Methods to perform simulation of interdependent effects."""
+    """A class to perform simulation of interdependent effects."""
 
     def __init__(self, network_recovery):
         """Initates a NetworkSimulation object
 
         :param network_recovery: A integrated infrastructure network recovery object.
-        :type network_recovery: NetworkRecovery object
-        :param sim_step: step size used for simulation in seconds.
-        :type sim_step: non-negative integer
+        :type network_recovery: infrarisk.src.network_recovery.NetworkRecovery
         """
         self.network_recovery = network_recovery
         self.components_to_repair = network_recovery.network.get_disrupted_components()
@@ -54,7 +52,7 @@ class NetworkSimulation:
         """Returns the remaining components to be repaired.
 
         :return: The list of components
-        :rtype: list of strings
+        :rtype: list
         """
         return self.components_to_repair
 
@@ -62,7 +60,7 @@ class NetworkSimulation:
         """Returns the list of components that are already repaired.
 
         :return: list of components which are already repaired.
-        :rtype: list of strings
+        :rtype: list
         """
         return self.components_repaired
 
@@ -79,9 +77,9 @@ class NetworkSimulation:
         """Returns the unique simulation times scheduled by the event table.
 
         :param network_recovery: A integrated infrastructure network recovery object.
-        :type network_recovery: NetworkRecovery object
+        :type network_recovery: infrarisk.src.network_recovery.NetworkRecovery
         :return: Unique simulation time stamps
-        :rtype: list of integers
+        :rtype: list
         """
         simtime_max = 0
 
@@ -103,9 +101,9 @@ class NetworkSimulation:
         """Simulates the interdependent effect based on the initial disruptions and subsequent repair actions.
 
         :param network_recovery_original: A integrated infrastructure network recovery object.
-        :type network_recovery_original: NetworkRecovery object
+        :type network_recovery_original: infrarisk.src.network_recovery.NetworkRecovery
         :return: lists of time stamps and resilience values of power and water supply.
-        :rtype: lists
+        :rtype: infrarisk.src.resilience_metrics.WeightedResilienceMetric
         """
         start_time = time.time()
         network_recovery = copy.deepcopy(network_recovery_original)
@@ -311,7 +309,7 @@ class NetworkSimulation:
         :param file_dir: The directory in which the simulation contents are to be saved.
         :type file_dir: string
         :param resilience_metrics: The object in which simulation related data are stored.
-        :type resilience_metrics: The WeightedResilienceMetric object
+        :type resilience_metrics: infrarisk.src.resilience_metrics.WeightedResilienceMetric
         """
         sim_times = resilience_metrics.power_load_df.time.astype("int32").to_list()
 
