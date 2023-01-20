@@ -10,7 +10,7 @@ It is suggested to create a Jupyter notebook inside the notebooks folder as belo
 .. code-block:: bash
 
     $ cd notebooks
-    $ conda activate redcar
+    $ conda activate infrarisk
     (infrarisk) $ conda install ipykernel
     (infrarisk) $ ipython kernel install –user –name=infrarisk
 
