@@ -48,7 +48,7 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .pytest_cache
 
 lint: ## check style with flake8
-	flake8 dreaminsg_integrated_model tests
+	flake8 infrarisk tests
 
 test: ## run tests quickly with the default Python
 	python setup.py test
@@ -57,15 +57,15 @@ test-all: ## run tests on every Python version with tox
 	tox
 
 coverage: ## check code coverage quickly with the default Python
-	coverage run --source dreaminsg_integrated_model setup.py test
+	coverage run --source infrarisk setup.py test
 	coverage report -m
 	coverage html
 	$(BROWSER) htmlcov/index.html
 
 docs: ## generate Sphinx HTML documentation, including API docs
-	rm -f docs/dreaminsg_integrated_model.rst
+	rm -f docs/infrarisk.rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ dreaminsg_integrated_model
+	sphinx-apidoc -o docs/ infrarisk
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	$(BROWSER) docs/_build/html/index.html
