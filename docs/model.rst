@@ -62,11 +62,9 @@ employed [Thurner2018]_. The water distribution system is modeled using *wntr* p
 in the network to another and is modeled using the static traffic assignment
 method [Boyles2020]_. All three packages have network-flow optimization models that
 identify the steady-state resource flows in the respective systems considering
-the operational constraints. The details of the packages are presented in :numref:`infrapackages`.
+the operational constraints. The details of the packages are presented in Table 2.1.
 
-.. _infrapackages:
-.. _table::
-   Infrastructure packages used in the simulation model
+Table 2.1 Infrastructure packages used in the simulation model
 
 +----------------+-----------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
 | Infrastructure | Package                           | Capabilities                                                                                                                              |
