@@ -23,7 +23,7 @@ at `srijith.balakrishnan[at]sec.ethz.ch <mailto:srijith.balakrishnan@sec.ethz.ch
    installation
    use
    support
-   infrarisk
+   infrarisk.src
 
 SEC Disclaimer
 ==============
