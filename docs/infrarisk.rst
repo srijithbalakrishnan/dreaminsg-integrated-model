@@ -1,6 +1,8 @@
 API Documentation
 =====================
 
+The following API documentation is automatically generated from the source code.
+
 Subpackages
 -----------
 
