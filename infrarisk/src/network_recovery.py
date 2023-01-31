@@ -126,7 +126,7 @@ class NetworkRecovery:
         :param component: The component for which the travel time and path is to be calculated
         :type component: string
         :param crew: The crew for which the travel time and path is to be calculated
-        :type crew: crew object
+        :type crew: infrarisk.src.repair_crew.WaterRepairCrew or infrarisk.src.repair_crew.PowerRepairCrew or infrarisk.src.repair_crew.TranspoRepairCrew
         :return: The nearest node, travel time to that node for the crew and path for the component and crew
         :rtype: list
         """
@@ -518,7 +518,7 @@ class NetworkRecovery:
 
         :param repair_order: list of components to be repaired
         :type repair_order: list
-        :param extra_hours: Number of hours post-recovery to be added, defaults to 5
+        :param extra_hours: Number of hours post-recovery to be simulated, defaults to 8
         :type extra_hours: integer, optional
         """
         max_event_table_time = self.event_table["time_stamp"].max()
@@ -924,11 +924,16 @@ class NetworkRecovery:
         """Resets the IntegratedNetwork object within NetworkRecovery object."""
         self.network = copy.deepcopy(self.base_network)
 
-    def update_traffic_model(self):
-        """Updates the static traffic assignment model based on current network conditions."""
-        # self.network.tn.userEquilibrium(
-        #     "FW", 400, 1e-4, self.network.tn.averageExcessCost
-        # )
+    def update_traffic_model(self, run_user_equilibrium=False):
+        """Updates the static traffic assignment model based on current network conditions.
+
+        :param run_user_equilibrium: If True, runs user equilibrium before updating the traffic assignment model.
+        :type run_user_equilibrium: bool
+        """
+        if run_user_equilibrium is True:
+            self.network.tn.userEquilibrium(
+                "FW", 400, 1e-4, self.network.tn.averageExcessCost
+            )
         for link in self.network.tn.link:
             self.network.tn.link[link].updateCost()
 
@@ -956,7 +961,7 @@ class NetworkRecovery:
         :param failed_transpo_link_en_route: List of transportation links along the route.
         :type failed_transpo_link_en_route: list
         :return: Accessibility and possible start time of the route.
-        :rtype: list
+        :rtype: [bool, int]
         """
         accessible = True
         possible_start_time = 0
@@ -976,6 +981,7 @@ class NetworkRecovery:
 
     def remove_previous_water_controls(self):
         """Removes all previous pump controls"""
+
         pump_list = self.network.wn.pump_name_list
         for pump_name in pump_list:
             pump_close_controls = [
@@ -1047,8 +1053,8 @@ def pipe_leak_node_generator(network):
     """Splits the directly affected pipes to induce leak during simulations.
 
     :param network: Integrated infrastructure network object
-    :type network: IntegratedNetwork object
-    
+    :type network: infrarisk.src.physical.integrated_network.IntegratedNetwork
+
     """
 
     for _, component in enumerate(network.get_disrupted_components()):
@@ -1099,7 +1105,7 @@ def link_close_event(wn, pipe_name, time_stamp, state):
     :param state: The state of the object.
     :type state: string
     :return: The modified wntr network object after pipe splits.
-    :rtype: wntr network object
+    :rtype: wntr.network.WaterNetworkModel
 
     """
 

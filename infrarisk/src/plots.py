@@ -478,9 +478,9 @@ def plot_network_impact_map(
     :type strategy: string
     :param node_prefix: The prefix of the nodes to be considered.
     :type node_prefix: string
-    :param infra: The infrastructure to be considered, defaults to "power"
+    :param infra: The infrastructure to be considered, defaults to "power". Other option is "water".
     :type infra: string, optional
-    :param time_index: The time index to be considered, defaults to None
+    :param time_index: The time index to be considered, defaults to None. If not None, plot the network impact map at the given time index.
     :type time_index: int, optional
     """
     output_notebook()

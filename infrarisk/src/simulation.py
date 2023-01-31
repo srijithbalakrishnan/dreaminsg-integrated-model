@@ -24,7 +24,8 @@ class NetworkSimulation:
         self.components_repaired = []
 
     def expand_event_table(self):
-        """Expands the event table with additional time_stamps for simulation."""
+        """Creates the pivot tables (for functional state and performance level) corresponding to the event table."""
+        
         self.network_recovery.event_table.reset_index(drop=True, inplace=True)
         self.network_recovery.event_table.time_stamp = (
             self.network_recovery.event_table.time_stamp
