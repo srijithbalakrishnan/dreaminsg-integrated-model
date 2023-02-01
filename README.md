@@ -55,8 +55,9 @@ Full documentation is available at ```dreaminsg_documentation.pdf``` or HTML ver
 
 Contributors' names and contact info:
 
-1. Srijith Balakrishnan (Email: sbalakrishna@ethz.ch)
-2. Geetanjali C (Email: geetanjalichipurapalli@gmail.com)
+1. Srijith Balakrishnan, Ph.D. (Email: sbalakrishna@ethz.ch)
+2. Beatrice Cassottana, Ph.D.
+3. Geetanjali C
 
 ## Version History
 
