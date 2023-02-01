@@ -3,6 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. _logo:
+.. figure:: images/infrarisk_logo.PNG
+   :width: 30 %
+   :alt: methodological framework
+
 Welcome to InfraRisk Simulation Platform's documentation!
 =========================================================
 
