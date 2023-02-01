@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 .. _logo:
-.. figure:: images/infrarisk_logo.PNG
+.. figure:: images/infrarisk_logo.png
    :width: 30 %
    :alt: methodological framework
 
