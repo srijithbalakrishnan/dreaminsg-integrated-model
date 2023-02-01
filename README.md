@@ -1,5 +1,4 @@
-<img src="docs/images/infrarisk_logo.PNG" alt="drawing" width="400"/>
-
+<img src="/tree/main/docs/images/infrarisk_logo.PNG" alt="drawing" width="400"/>
 
 # InfraRisk: A simulation tool for interdependent infrastructure simulation
 
