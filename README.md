@@ -1,3 +1,6 @@
+<img src="docs/images/infrarisk_logo.PNG" alt="drawing" width="400"/>
+
+
 # InfraRisk: A simulation tool for interdependent infrastructure simulation
 
 A Python -based model to simulate the interdependent failures in interdependent water-power-transport networks.
