@@ -49,7 +49,9 @@ Full documentation is available at ```dreaminsg_documentation.pdf``` or HTML ver
 
 ## Publications
 
-1. Balakrishnan, S., B. Cassottana. InfraRisk: A Python-based Simulation Platform for Risk and Resilience Analysis in Interdependent Infrastructure Networks. Accepted for publication in *Sustainable Cities and Society* [(link)](https://doi.org/10.1016/j.scs.2022.103963).
+1. Balakrishnan, S., & Cassottana, B. (2022). InfraRisk: An open-source simulation platform for resilience analysis in interconnected power–water–transport networks. Sustainable Cities and Society, 83, 103963 [(link)](https://doi.org/10.1016/j.scs.2022.103963).
+2. Cassottana, B., Biswas, P. P., Balakrishnan, S., Ng, B., Mashima, D., & Sansavini, G. (2022). Predicting Resilience of Interdependent Urban Infrastructure Systems. IEEE Access, 10, 116432-116442 [(link)](https://doi.org/10.1109/ACCESS.2022.3217903).
+3. Balakrishnan, S., Cassottana, B., & Verma, A. (2022). Application of Clustering Algorithms for Dimensionality Reduction in Infrastructure Resilience Prediction Models. arXiv preprint arXiv:2205.03316. [(link)](https://doi.org/10.48550/arXiv.2205.03316).
 
 ## Authors
 
