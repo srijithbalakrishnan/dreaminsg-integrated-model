@@ -5,7 +5,7 @@
 
 .. _logo:
 .. figure:: images/infrarisk_logo.png
-   :width: 30 %
+   :width: 40 %
    :alt: methodological framework
 
 Welcome to InfraRisk Simulation Platform's documentation!
