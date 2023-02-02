@@ -8,11 +8,6 @@
    :width: 40 %
    :alt: logo_full
 
-.. _logo2:
-.. figure:: images/logo.PNG
-   :width: 0 %
-   :alt: logo
-
 
 Welcome to InfraRisk Simulation Platform's documentation!
 =========================================================
