@@ -1,4 +1,4 @@
-<img src="https://github.com/srijithbalakrishnan/dreaminsg-integrated-model/blob/main/docs/images/infrarisk_logo.png" alt="drawing" width="400"/>
+<img src="https://github.com/srijithbalakrishnan/dreaminsg-integrated-model/blob/main/docs/images/infrarisk_logo.png" alt="drawing" width="300"/>
 
 # InfraRisk: A simulation tool for interdependent infrastructure simulation
 
