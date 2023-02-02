@@ -9,7 +9,7 @@
    :alt: logo_full
 
 .. _logo2:
-.. figure:: images/logo.png
+.. figure:: images/logo.PNG
    :width: 0 %
    :alt: logo
 
