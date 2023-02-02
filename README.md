@@ -1,8 +1,8 @@
 <img src="https://github.com/srijithbalakrishnan/dreaminsg-integrated-model/blob/main/docs/images/infrarisk_logo.png" alt="drawing" width="300"/>
 
-# InfraRisk: A simulation tool for interdependent infrastructure simulation
+# InfraRisk: A simulation tool for risk and resilience analysis of interdependent infrastructure networks
 
-A Python -based model to simulate the interdependent failures in interdependent water-power-transport networks.
+A Python -based simulation platform to simulate the interdependent failures in interdependent water-power-transport networks.
 
 ## Getting Started
 
