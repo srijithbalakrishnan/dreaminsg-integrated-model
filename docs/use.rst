@@ -14,8 +14,9 @@ It is suggested to create a Jupyter notebook inside the notebooks folder as belo
     (infrarisk) $ conda install ipykernel
     (infrarisk) $ ipython kernel install –user –name=infrarisk
 
-The browser would open showing available notebook kernels. Select redcar from options to open
+The browser would open showing available notebook kernels. Select ``infrarisk`` from options to open
 a Jupyter notebook that can run the integrated simulation model.
+
 
 Shelby county simulation demonstration
 --------------------------------------
