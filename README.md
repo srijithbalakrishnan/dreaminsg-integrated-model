@@ -25,7 +25,7 @@ git clone https://github.com/srijithbalakrishnan/dreaminsg-integrated-model.git 
  2. Create a new python virtual environment with all required packages needed to run the simulation platform
 
  ```
- conda env create --name ENV_NAME --file=environment.ym
+ conda env create --name ENV_NAME --file=environment.yml
  ```
 
  3. Install the InfraRisk package in the created environment. Go to the project folder and run the following command:
