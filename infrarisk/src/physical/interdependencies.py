@@ -7,6 +7,8 @@ import infrarisk.src.physical.water.water_network_model as water
 import infrarisk.src.physical.power.power_system_model as power
 import infrarisk.src.physical.transportation.transpo_compons as transpo_compons
 
+import infrarisk.src.network_recovery as network_recovery
+
 water_dict = water.get_water_dict()
 power_dict = power.get_power_dict()
 transpo_dict = transpo_compons.get_transpo_dict()
@@ -204,9 +206,15 @@ class DependencyTable:
                         network.wn.remove_control(
                             f"{row.water_id}_power_on_{next_time_stamp}"
                         )
-                    pump = network.wn.get_link(row.water_id)
-                    pump.add_outage(
+                    # pump = network.wn.get_link(row.water_id)
+                    # pump.add_outage(
+                    #     network.wn,
+                    #     time_stamp,
+                    #     next_time_stamp,
+                    # )
+                    network_recovery.pump_outage_event(
                         network.wn,
+                        row.water_id,
                         time_stamp,
                         next_time_stamp,
                     )

@@ -25,7 +25,7 @@ class NetworkSimulation:
 
     def expand_event_table(self):
         """Creates the pivot tables (for functional state and performance level) corresponding to the event table."""
-        
+
         self.network_recovery.event_table.reset_index(drop=True, inplace=True)
         self.network_recovery.event_table.time_stamp = (
             self.network_recovery.event_table.time_stamp
@@ -214,7 +214,7 @@ class NetworkSimulation:
             )
 
             # run water network model and print results
-            # print(network_recovery.network.wn.control_name_list)
+            print(network_recovery.network.wn.control_name_list)
 
             wn_results = water.run_water_simulation(network_recovery.network.wn)
 
@@ -223,7 +223,7 @@ class NetworkSimulation:
                 - set(water_control_dict["base"])
                 - set(water_control_dict["curr"])
             )
-            # print("\nFuture: ", water_control_dict["future"], "\n")
+            print("\nFuture: ", water_control_dict["future"], "\n")
 
             # print(
             #     "Pumps: ",

@@ -717,8 +717,14 @@ class NetworkRecovery:
                             self.network.wn.remove_control(
                                 f"{component}_power_on_{next_sim_time}"
                             )
-                        self.network.wn.get_link(component).add_outage(
-                            self.network.wn, time_stamp, next_sim_time
+                        # self.network.wn.get_link(component).add_outage(
+                        #     self.network.wn, time_stamp, next_sim_time
+                        # )
+                        pump_outage_event(
+                            self.network.wn,
+                            component,
+                            time_stamp,
+                            next_sim_time,
                         )
                         # print(
                         #     f"The pump outage is added for {component} between {time_stamp} s and {next_sim_time} s"
@@ -1065,6 +1071,55 @@ def pipe_leak_node_generator(network):
             )
 
 
+def pump_outage_event(wn, pump_name, start_time, end_time):
+    # from wntr.network.controls import (
+    #     ControlAction,
+    #     SimTimeCondition,
+    #     AndCondition,
+    #     Rule,
+    # )
+    from wntr.network.base import Node, Link, Registry, LinkStatus
+    from wntr.network.controls import _InternalControlAction, Control
+
+    pump = wn.get_link(pump_name)
+    # pump._power_outage = True
+
+    # # Outage
+    # act = ControlAction(pump, "status", LinkStatus.Closed)
+    # cond1 = SimTimeCondition(wn, "Above", start_time)
+    # if end_time is not None:
+    #     cond2 = SimTimeCondition(wn, "Below", end_time)
+    #     cond = AndCondition(cond1, cond2)
+    # else:
+    #     cond = cond1
+    # rule = Rule(cond, act, priority=priority)
+    # wn.add_control(f"{pump}_power_off_{start_time}", rule)
+
+    # # After outage
+    # if add_after_outage_rule and end_time is not None:
+    #     act = ControlAction(pump, "status", LinkStatus.Open)
+    #     cond = SimTimeCondition(wn, "Above", end_time)
+    #     rule = Rule(cond, act, priority=priority)
+    #     wn.add_control(f"{pump}_power_on_{end_time}", rule)
+
+    start_power_outage_action = _InternalControlAction(
+        pump, "_power_outage", LinkStatus.Closed, "status"
+    )
+    end_power_outage_action = _InternalControlAction(
+        pump, "_power_outage", LinkStatus.Open, "status"
+    )
+
+    start_control = Control._time_control(
+        wn, start_time, "SIM_TIME", False, start_power_outage_action
+    )
+    end_control = Control._time_control(
+        wn, end_time, "SIM_TIME", False, end_power_outage_action
+    )
+
+    wn.add_control(pump.name + "_power_off_" + str(start_time), start_control)
+    wn.add_control(pump.name + "_power_on_" + str(end_time), end_control)
+
+
 def link_open_event(wn, pipe_name, time_stamp, state):
     """Opens a pipe.
 
@@ -1141,8 +1196,8 @@ def add_pipe_leak(
     """
 
     leak_junc._leak = True
-    leak_junc.leak_area = area
-    leak_junc.leak_discharge_coeff = discharge_coeff
+    leak_junc._leak_area = area
+    leak_junc._leak_discharge_coeff = discharge_coeff
 
     if start_time is not None:
         start_control_action = ControlAction(leak_junc, "leak_status", True)

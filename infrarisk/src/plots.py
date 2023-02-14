@@ -116,14 +116,14 @@ def plot_water_net(wn):
     pos = {node_list[i]: element for i, element in enumerate(node_coords)}
 
     options = {
-        "node_size": 500,
+        "node_size": 0,
         "node_color": "lightsteelblue",
         "font_size": 14,
         "edge_color": "slategray",
         "width": 2,
     }
     plt.figure(1, figsize=(10, 7))
-    nx.draw(G, pos, with_labels=True, **options)
+    nx.draw(G, pos, with_labels=False, **options)
     # nodes, edges = wntr.graphics.plot_network(water_net, node_cmap='lightsteelblue', **options)
 
 
