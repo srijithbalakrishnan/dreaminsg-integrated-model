@@ -328,36 +328,36 @@ class NetworkSimulation:
         pump_flow = resilience_metrics.water_pump_flow_df
         if pump_flow is not None:
             pump_flow[pump_flow.time.isin(subset_times)].to_csv(
-                Path(file_dir) / "water_pump_flow.csv", sep="\t", index=False
+                f"{file_dir}/water_pump_flow.csv", sep="\t", index=False
             )
 
         pump_status = resilience_metrics.water_pump_status_df
         if pump_status is not None:
             pump_status[pump_status.time.isin(subset_times)].to_csv(
-                Path(file_dir) / "water_pump_status.csv", sep="\t", index=False
+                f"{file_dir}/water_pump_status.csv", sep="\t", index=False
             )
 
         water_head = resilience_metrics.water_node_head_df
         if water_head is not None:
             water_head[water_head.time.isin(subset_times)].to_csv(
-                Path(file_dir) / "water_node_head.csv", sep="\t", index=False
+                f"{file_dir}/water_node_head.csv", sep="\t", index=False
             )
 
         water_demand = resilience_metrics.water_junc_demand_df
         if water_demand is not None:
             water_demand[water_demand.time.isin(subset_times)].to_csv(
-                Path(file_dir) / "water_junc_demand.csv", sep="\t", index=False
+                f"{file_dir}/water_junc_demand.csv", sep="\t", index=False
             )
 
         # water_pressure = resilience_metrics.water_node_pressure_df
         # if water_pressure is not None:
         #     water_pressure[water_pressure.time.isin(subset_times)].to_csv(
-        #         Path(file_dir) / "water_node_pressure.csv", sep="\t", index=False
+        #         f"{file_dir}/water_node_pressure.csv", sep="\t", index=False
         #     )
 
         if resilience_metrics.power_load_df is not None:
             resilience_metrics.power_load_df.to_csv(
-                Path(file_dir) / "power_load_demand.csv", sep="\t", index=False
+                f"{file_dir}/power_load_demand.csv", sep="\t", index=False
             )
 
         print(f"The simulation results successfully saved to {Path(file_dir)}")

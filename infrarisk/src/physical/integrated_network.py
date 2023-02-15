@@ -117,7 +117,7 @@ class IntegratedNetwork:
         """
         try:
             pn = power.load_power_network(
-                power_folder / "power.json", sim_type=power_sim_type
+                os.path.join(power_folder, "power.json"), sim_type=power_sim_type
             )
             power.run_power_simulation(pn)
             self.pn = pn
@@ -126,12 +126,12 @@ class IntegratedNetwork:
         except UserWarning:
             print(
                 "Error: The power systems file does not exist. No such file or directory: ",
-                power_folder / "power.json",
+                os.path.join(power_folder, "power.json"),
             )
 
-        if os.path.exists(power_folder / "line_to_switch_map.csv"):
+        if os.path.exists(os.path.join(power_folder, "line_to_switch_map.csv")):
             line_switch_df = pd.read_csv(
-                power_folder / "line_to_switch_map.csv", sep=","
+                os.path.join(power_folder, "line_to_switch_map.csv"), sep=","
             )
 
             self.line_switch_dict = dict()
@@ -140,10 +140,13 @@ class IntegratedNetwork:
                 switch_list = [x for x in row[1:] if x is not np.nan]
                 self.line_switch_dict[line] = switch_list
 
-        if os.path.exists(power_folder / "service_area/service_area.shp"):
+        water_service_area_file = os.path.join(
+            power_folder, "service_area/service_area.shp"
+        )
+        if os.path.exists(water_service_area_file):
             print("Loading power service area details...")
             pn.service_area = gpd.read_file(
-                power_folder / "service_area/service_area.shp",
+                water_service_area_file,
                 crs="epsg:4326",
             )
             pn.service_area = pn.service_area.to_crs("epsg:3857")
@@ -170,29 +173,31 @@ class IntegratedNetwork:
         self.water_sim_type = water_sim_type
 
         if water_sim_type == "DDA":
-            if not os.path.exists(water_folder / "base_water_node_supply.csv"):
+            base_wns = os.path.join(water_folder, "base_water_node_supply.csv")
+            if not os.path.exists(base_wns):
                 print("Generating base water supply values...")
                 water.generate_base_supply(self.wn, water_folder)
-            self.base_water_node_supply = pd.read_csv(
-                water_folder / "base_water_node_supply.csv"
-            )
+            self.base_water_node_supply = pd.read_csv(base_wns)
             self.base_water_link_flow = pd.read_csv(
-                water_folder / "base_water_link_flow.csv"
+                os.path.join(water_folder, "base_water_link_flow.csv")
             )
         elif self.water_sim_type == "PDA":
-            if not os.path.exists(water_folder / "base_water_node_supply_pda.csv"):
+            base_wns_pda = os.path.join(water_folder, "base_water_node_supply_pda.csv")
+            if not os.path.exists(base_wns_pda):
                 print("Generating base water supply values...")
                 water.generate_base_supply_pda(self.wn, water_folder)
 
             self.base_water_node_supply = pd.read_csv(
-                water_folder / "base_water_node_supply_pda.csv"
+                os.path.join(water_folder, "base_water_node_supply_pda.csv")
             )
             self.base_water_link_flow = pd.read_csv(
-                water_folder / "base_water_link_flow_pda.csv"
+                os.path.join(water_folder, "base_water_link_flow_pda.csv")
             )
 
-        if os.path.exists(water_folder / "pipe_to_valve_map.csv"):
-            pipe_valve_df = pd.read_csv(water_folder / "pipe_to_valve_map.csv", sep=",")
+        if os.path.exists(os.path.join(water_folder, "pipe_to_valve_map.csv")):
+            pipe_valve_df = pd.read_csv(
+                os.path.join(water_folder, "pipe_to_valve_map.csv"), sep=","
+            )
 
             self.pipe_valve_dict = dict()
             for _, row in pipe_valve_df.iterrows():
@@ -200,10 +205,11 @@ class IntegratedNetwork:
                 valve_list = [x for x in row[1:] if x is not np.nan]
                 self.pipe_valve_dict[pipe] = valve_list
 
-        if os.path.exists(water_folder / "service_area/service_area.shp"):
+        service_area_file = os.path.join(water_folder, "service_area/service_area.shp")
+        if os.path.exists(service_area_file):
             print("Loading water service area details...")
             self.wn.service_area = gpd.read_file(
-                water_folder / "service_area/service_area.shp",
+                service_area_file,
                 crs="epsg:4326",
             )
             self.wn.service_area = self.wn.service_area.to_crs("epsg:3857")
@@ -257,7 +263,7 @@ class IntegratedNetwork:
 
         self.integrated_graph = G
         self.set_map_extends()
-        print("Integrated graph successffully created.")
+        print("Integrated graph successfully created.")
 
         title = f"{self.name} integrated network"
 
