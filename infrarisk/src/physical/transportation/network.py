@@ -598,7 +598,7 @@ class Network:
                         float(data[6]),  # BPR beta
                         float(data[7]),  # Speed limit
                         float(data[8]),  # Toll
-                        data[9],
+                        int(data[9]),
                     )  # Link type
 
                     # Create nodes if necessary

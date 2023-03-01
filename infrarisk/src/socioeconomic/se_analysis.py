@@ -534,6 +534,37 @@ class SocioEconomicTable:
                 self.dir / f"abs_{self.year}_{self.state}{self.county}.csv"
             )
 
+    def load_se_data(self):
+        self.county_gpd_truncated = gpd.read_file(
+            self.dir / f"zipcode_{self.year}_{self.state}{self.county}.shp"
+        )
+        xdiff = (
+            self.county_gpd_truncated.bounds.maxx.max()
+            - self.county_gpd_truncated.bounds.minx.min()
+        )
+        ydiff = (
+            self.county_gpd_truncated.bounds.maxy.max()
+            - self.county_gpd_truncated.bounds.miny.min()
+        )
+        tol = [0.1, 0.1]
+        self.bounds = [
+            self.county_gpd_truncated.bounds.minx.min() - tol[0] * xdiff,
+            self.county_gpd_truncated.bounds.maxx.max() + tol[0] * xdiff,
+            self.county_gpd_truncated.bounds.miny.min() - tol[1] * ydiff,
+            self.county_gpd_truncated.bounds.maxy.max() + tol[1] * ydiff,
+        ]
+
+        self.county_cbp_df = pd.read_csv(
+            self.dir / f"cbp_{self.year}_{self.state}{self.county}.csv"
+        )
+
+        self.county_ecn_df = pd.read_csv(
+            self.dir / f"ecn_{self.year}_{self.state}{self.county}.csv"
+        )
+        self.county_abs_df = pd.read_csv(
+            self.dir / f"abs_{self.year}_{self.state}{self.county}.csv"
+        )
+
     def download_se_data(self, force_download=False):
         """Download all SE data (County maps, CBP, ECN and ABS datasets) from census.gov and save to the local drive.
 
