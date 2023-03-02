@@ -14,6 +14,8 @@ import configparser
 import tempfile
 import os
 
+import sys
+
 # hide warnings
 import warnings
 
@@ -248,4 +250,4 @@ def create_init_file():
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1])
