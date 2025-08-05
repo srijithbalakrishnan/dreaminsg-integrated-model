@@ -1,0 +1,23 @@
+Industry,NAICS,IMPLAN_CODE,P,W,PW
+Total for all industries,0,NA,NA,NA,NA
+"Agriculture, Forestry, Fishing and Hunting",11,1,0.75,0.29,0.75
+"Mining, Quarrying, and Oil and Gas Extraction",21,2,0.25,1,1
+Utilities,22,3,0.95,0.45,0.97
+Construction,23,4,0.71,0.31,0.77
+Manufacturing,31-33,5,0.95,0.45,0.97
+Wholesale Trade,42,6,0.79,0.42,0.8
+Retail Trade,44-45,7,0.79,0.42,0.8
+Transportation and Warehousing,48-49,8,0.73,0.23,0.79
+Information,51,9,0.75,0.16,0.81
+Finance and Insurance,52,10,0.59,0.2,0.69
+Real Estate and Rental and Leasing,53,11,0.56,0.4,0.6
+"Professional, Scientific, and Technical Services",54,12,0.74,0.22,0.82
+Management of Companies and Enterprises,55,13,0.74,0.22,0.82
+Administrative and Support and Waste Management and Remediation Services,56,14,0.74,0.22,0.82
+Educational Services,61,15,0.74,0.22,0.82
+Health Care and Social Assistance,62,16,0.68,0.48,0.81
+"Arts, Entertainment, and Recreation",71,17,0.75,0.25,0.75
+Accommodation and Food Services,72,18,0.8,0.5,0.85
+Other Services (except Public Administration),81,19,0.74,0.22,0.82
+Public Administration,92,22,0.75,0.25,0.75
+Industries not classified,99,21,NA,NA,NA
