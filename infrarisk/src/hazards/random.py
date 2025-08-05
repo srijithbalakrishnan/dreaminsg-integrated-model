@@ -38,7 +38,7 @@ class RandomDisruption:
         self.transpo_fail_count = failure_count["transpo"]
         self.compon_scope = compon_scope
         self.set_time_of_occurrence(time_of_occurrence)
-        # self.set_fail_compon_dict()
+        self.set_fail_compon_dict()
         self.disrupt_file = pd.DataFrame()
 
     def set_fail_compon_dict(
@@ -364,11 +364,11 @@ class RandomDisruption:
                     row["components"]
                 )
 
-                if component_details[1] in fail_compon_dict["power"]:
+                if component_details["type_code"] in fail_compon_dict["power"] and row["components"].startswith("P_"):
                     indices.append(index)
-                elif component_details[1] in fail_compon_dict["water"]:
+                elif component_details["type_code"] in fail_compon_dict["water"] and row["components"].startswith("W_"):
                     indices.append(index)
-                elif component_details[1] in fail_compon_dict["transport"]:
+                elif component_details["type_code"] in fail_compon_dict["transport"] and row["components"].startswith("T_"):
                     indices.append(index)
 
             self.disrupt_file = self.disrupt_file.loc[indices]

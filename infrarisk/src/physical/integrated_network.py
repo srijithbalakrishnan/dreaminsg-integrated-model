@@ -288,21 +288,43 @@ class IntegratedNetwork:
         self.tn_nodebc = nx.betweenness_centrality(tn_nx, normalized=True)
         self.tn_edgebc = nx.edge_betweenness_centrality(tn_nx, normalized=True)
 
+    # def set_map_extends(self):
+    #     """Sets the extents of the map in the format ((xmin, ymin), (xmax, ymax))."""
+    #     x, y = [], []
+    #     for node in self.integrated_graph.nodes:
+    #         x_coord, y_coord = self.integrated_graph.nodes[node]["coord"]
+    #         x.append(x_coord)
+    #         y.append(y_coord)
+
+    #     xdiff = math.floor(max(x)) - math.floor(min(x))
+    #     ydiff = math.floor(max(y)) - math.floor(min(y))
+    #     tol = 0.2
+
+    #     self.map_extends = [
+    #         (math.floor(min(x)) - tol * xdiff, math.floor(min(y)) - tol * ydiff),
+    #         (math.floor(max(x)) + tol * xdiff, math.floor(max(y)) + tol * ydiff),
+    #     ]
+
     def set_map_extends(self):
         """Sets the extents of the map in the format ((xmin, ymin), (xmax, ymax))."""
-        x, y = [], []
-        for node in self.integrated_graph.nodes:
-            x_coord, y_coord = self.integrated_graph.nodes[node]["coord"]
-            x.append(x_coord)
-            y.append(y_coord)
+        x, y = zip(
+            *[
+                self.integrated_graph.nodes[node]["coord"]
+                for node in self.integrated_graph.nodes
+            ]
+        )
+        x_min = math.floor(min(x))
+        x_max = math.floor(max(x))
+        y_min = math.floor(min(y))
+        y_max = math.floor(max(y))
 
-        xdiff = math.floor(max(x)) - math.floor(min(x))
-        ydiff = math.floor(max(y)) - math.floor(min(y))
-        tol = 0.2
+        x_diff = x_max - x_min
+        y_diff = y_max - y_min
+        tol = 0.02
 
         self.map_extends = [
-            (math.floor(min(x)) - tol * xdiff, math.floor(min(y)) - tol * ydiff),
-            (math.floor(max(x)) + tol * xdiff, math.floor(max(y)) + tol * ydiff),
+            (x_min - tol * x_diff, y_min - tol * y_diff),
+            (x_max + tol * x_diff, y_max + tol * y_diff),
         ]
 
     def get_map_extends(self):
