@@ -236,7 +236,7 @@ def get_compon_details(compon_name):
     """
     compon_details_dict = {}
     compon_infra, compon_id = compon_name.split("_")
-    id = re.findall("\d+", compon_name)[0]
+    id = re.findall(r"\d+", compon_name)[0]
 
     compon_type = ""
     for char in compon_id:

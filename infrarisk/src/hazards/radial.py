@@ -162,13 +162,13 @@ class RadialDisruption:
                 if node_fail_status is True:
                     G.nodes[node]["fail_status"] = "Disrupted"
 
-                    if G.nodes[node]["node_type"] == "power_node":
+                    if G.nodes[node]["node_type"] == "power":
                         if node not in affected_nodes["power"]:
                             affected_nodes["power"].append(node)
-                    elif G.nodes[node]["node_type"] == "water_node":
+                    elif G.nodes[node]["node_type"] == "water":
                         if node not in affected_nodes["water"]:
                             affected_nodes["water"].append(node)
-                    elif G.nodes[node]["node_type"] == "transpo_node":
+                    elif G.nodes[node]["node_type"] == "transpo":
                         if node not in affected_nodes["transpo"]:
                             affected_nodes["transpo"].append(node)
                 else:
@@ -202,13 +202,13 @@ class RadialDisruption:
 
                 if link_fail_status is True:
                     G.edges[link]["fail_status"] = "Disrupted"
-                    if G.edges[link]["link_type"] == "Power":
+                    if G.edges[link]["link_type"] == "power":
                         if G.edges[link]["id"] not in affected_links["power"]:
                             affected_links["power"].append(G.edges[link]["id"])
-                    elif G.edges[link]["link_type"] == "Water":
+                    elif G.edges[link]["link_type"] == "water":
                         if G.edges[link]["id"] not in affected_links["water"]:
                             affected_links["water"].append(G.edges[link]["id"])
-                    elif G.edges[link]["link_type"] == "Transportation":
+                    elif G.edges[link]["link_type"] == "transpo":
                         if G.edges[link]["id"] not in affected_links["transpo"]:
                             affected_links["transpo"].append(G.edges[link]["id"])
                 else:
@@ -240,8 +240,8 @@ class RadialDisruption:
             plot_width=700,
             height=450,
             title=f"{self.name}: Disrupted components",
-            x_range=(1000, 8000),
-            y_range=(1000, 6600),
+            # x_range=(map_extends[0][0], map_extends[1][0]),
+            # y_range=(map_extends[0][1], map_extends[1][1]),
         )
 
         # instatiate the tile source provider

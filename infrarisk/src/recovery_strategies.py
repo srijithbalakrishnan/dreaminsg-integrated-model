@@ -328,7 +328,7 @@ class HandlingCapacityStrategy:
                         self.integrated_network.base_water_link_flow[compon]
                         .abs()
                         .max()
-                        .item()
+                        #.item()
                     )
                     water_capacity_dict[compon] = capacity
                 elif capacity_ref == "node":
@@ -336,7 +336,7 @@ class HandlingCapacityStrategy:
                         self.integrated_network.base_water_node_supply[compon]
                         .abs()
                         .max()
-                        .item()
+                        #.item()
                     )
                     water_capacity_dict[compon] = capacity
 

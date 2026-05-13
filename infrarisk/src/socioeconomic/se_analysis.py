@@ -15,7 +15,7 @@ import matplotlib.colors as colors
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 import ipywidgets as widgets
-from ipywidgets import fixed
+from ipywidgets import interact, fixed
 
 CMAP = colors.LinearSegmentedColormap.from_list(
     "", ["green", "yellow", "orange", "red"]
@@ -636,88 +636,93 @@ class SocioEconomicTable:
         ).reset_index()
 
     def plot_interactive(self, type="annual receipts"):
-        """Plot the economic costs of water and power outages for each industrial sector in the county.
-
-        :param type: The type of plot to generate. Options are "annual receipts" and "economic costs".
-        :type type: string
         """
+        Launch an ipywidgets.interact UI that lets the user pick an
+        industry and adjust plot transparency.  The two supported
+        modes are:
+
+        * "annual receipts" – shows a map + histogram of yearly receipts
+        * "economic costs"   – shows a map + histogram of business‑disruption costs
+        """
+
+        # ---- build a sorted list of industry names once -------------
+        industry_names = sorted([
+            info["Industry"] for info in self.available_naics.values()
+        ])
+        default_industry = industry_names[0] if industry_names else None
+
+        # ---- common widget for selecting the industry ----------------
+        industry_dropdown = widgets.Dropdown(
+            description="Industry",
+            tooltip="Select an industry to plot",
+            options=industry_names,
+            value=default_industry,
+            layout={"width": "max-content"},
+        )
+
+        # ---- common transparency slider -----------------------------
+        alpha_slider = widgets.FloatSlider(
+            description="Transparency",
+            value=0.8,
+            min=0.2,
+            max=1.0,
+            step=0.1
+        )
 
         if type == "annual receipts":
-            widgets.interact(
+            # NOTE: county_gpd_truncated is a *fixed* argument – it does not
+            # become a slider.
+            interact(
                 self.plot_industry_output,
-                var=widgets.Dropdown(
-                    description="Industry",
-                    tooltip="Select an industry to plot",
-                    options=sorted(
-                        [value["Industry"] for _, value in self.available_naics.items()]
-                    ),  # sorted(self.available_naics.values()),
-                    value=sorted(
-                        [value["Industry"] for _, value in self.available_naics.items()]
-                    )[
-                        0
-                    ],  # list(self.available_naics.values())[0],
-                    layout={"width": "max-content"},
-                ),
-                alpha=widgets.FloatSlider(
-                    description="Transparency", value=0.8, min=0.2, max=1.0, step=0.1
-                ),
-                county_gpd_truncated=fixed(self.county_gpd_truncated),
+                var=industry_dropdown,
+                alpha=alpha_slider,
+                county_gpd_truncated=fixed(self.county_gpd_truncated)
             )
-            # display(n_widget)
 
         elif type == "economic costs":
-            widgets.interact(
+            interact(
                 self.plot_economic_costs,
-                var=widgets.Dropdown(
-                    description="Industry",
-                    tooltip="Select an industry to plot",
-                    options=sorted(
-                        [value["Industry"] for _, value in self.available_naics.items()]
-                    ),  # sorted(self.available_naics.values()),
-                    value=sorted(
-                        [value["Industry"] for _, value in self.available_naics.items()]
-                    )[
-                        0
-                    ],  # list(self.available_naics.values())[0],
-                    layout={"width": "max-content"},
-                ),
-                alpha=widgets.FloatSlider(
-                    description="Transparency", value=0.8, min=0.2, max=1.0, step=0.1
-                ),
-                # county_gpd_truncated=fixed(self.county_gpd_truncated),
-                economic_cost_df=fixed(self.economic_cost_df),
+                var=industry_dropdown,
+                alpha=alpha_slider,
+                economic_cost_df=fixed(self.economic_cost_df)
             )
-            # display(n_widget)
 
-    def plot_industry_output(self, var, alpha):
-        """Plot the annual receipts of an industry in the county.
+        else:
+            raise ValueError(f'Unsupported plot type: {type!r}')
 
-        :param var: The name of the industry to plot.
-        :type var: str
-        :param alpha: The transparency of the plot.
-        :type alpha: float
+    def plot_industry_output(self, var, alpha, county_gpd_truncated):
         """
-
+        Plot a choropleth map of annual receipts for *var* together
+        with a histogram.  The `county_gpd_truncated` GeoDataFrame is
+        passed automatically by the `@fixed` widget.
+        """
         label = "Annual receipts in million US$"
         sns.set_context("talk", rc={"font.size": 20, "axes.titlesize": 20})
         sns.set_style("white")
+
+        # ---- locate the column name that matches the industry name ----
+        naics_list = [info["Industry"] for info in self.naics_codes.values()]
+        # If the requested industry does not exist we raise an informative error
+        try:
+            var_name = list(self.naics_codes.keys())[naics_list.index(var)]
+        except ValueError:
+            raise ValueError(f'Industry "{var}" not found in self.naics_codes')
+
+        # ---- figure setup ------------------------------------------------
         fig, axes = plt.subplots(
-            1,
-            2,
+            1, 2,
             figsize=(20, 10),
-            gridspec_kw={"width_ratios": [3, 1.5]},
+            gridspec_kw={"width_ratios": [3, 1.5]}
         )
-        title = "\n".join(wrap(var + f" ({self.year})", 60))  # industry_vars[var]
+        title = "\n".join(wrap(f"{var} ({self.year})", 60))
         axes[0].set_title(title)
         axes[0].tick_params(labelsize=20)
 
-        naics_list = [value["Industry"] for _, value in self.naics_codes.items()]
-        var_name = list(self.naics_codes.keys())[naics_list.index(var)]
-
-        # Plot the spatial map
+        # ---- Choropleth map -----------------------------------------------
         divider = make_axes_locatable(axes[0])
         cax = divider.append_axes("bottom", size="5%", pad=0.2)
-        plot = self.county_gpd_truncated.plot(
+
+        county_gpd_truncated.plot(
             ax=axes[0],
             column=var_name,
             cmap=CMAP,
@@ -737,51 +742,52 @@ class SocioEconomicTable:
         axes[0].set_xlim(self.bounds[0], self.bounds[1])
         axes[0].set_ylim(self.bounds[2], self.bounds[3])
         axes[0].axis("off")
-        # ctx.add_basemap(ax=axes[0], source=ctx.providers.Stamen.Terrain)
+        ctx.add_basemap(ax=axes[0], source=ctx.providers.CartoDB.Positron)
 
-        # Plot the histogram
+        # ---- Histogram ---------------------------------------------------
         axes[1].set_title(title)
         histplot = sns.histplot(
-            data=self.county_gpd_truncated,
+            data=county_gpd_truncated,
             x=var_name,
-            # binwidth=1000,
             color="steelblue",
             alpha=0.75,
             ax=axes[1],
         )
         histplot.set_xlabel(label)
         histplot.set_ylabel("Number of ZIP code tabulation areas")
+
         fig.tight_layout()
-        fig.savefig("output.png", dpi=300, transparent=True)
-        plt.show()
 
-    def plot_economic_costs(self, var, alpha):
-        """Plot the economic costs of an industry in the county.
+        plt.close(fig)   # free memory – interact already shows the widget
 
-        :param var: The name of the industry to plot.
-        :type var: str
-        :param alpha: The transparency of the plot.
-        :type alpha: float
+    def plot_economic_costs(self, var, alpha, economic_cost_df):
+        """
+        Plot a choropleth map of direct business‑disruption costs for *var*
+        together with a histogram.  The `economic_cost_df` GeoDataFrame is
+        passed automatically by the `@fixed` widget.
         """
         label = "Direct business disruption costs in (1000) US$"
         sns.set_context("talk", font_scale=1.1)
         sns.set_style("white")
+
+        naics_list = [info["Industry"] for info in self.naics_codes.values()]
+        try:
+            var_name = list(self.naics_codes.keys())[naics_list.index(var)]
+        except ValueError:
+            raise ValueError(f'Industry "{var}" not found in self.naics_codes')
+
         fig, axes = plt.subplots(
-            1,
-            2,
+            1, 2,
             figsize=(20, 10),
-            gridspec_kw={"width_ratios": [3, 1.5]},
+            gridspec_kw={"width_ratios": [3, 1.5]}
         )
-        title = "\n".join(wrap(var + f" ({self.year})", 60))
+        title = "\n".join(wrap(f"{var} ({self.year})", 60))
         axes[0].set_title(title)
 
-        naics_list = [value["Industry"] for _, value in self.naics_codes.items()]
-        var_name = list(self.naics_codes.keys())[naics_list.index(var)]
-
-        # Plot the spatial map
         divider = make_axes_locatable(axes[0])
         cax = divider.append_axes("bottom", size="5%", pad=0.2)
-        plot = self.economic_cost_df.plot(
+
+        economic_cost_df.plot(
             ax=axes[0],
             column=var_name,
             cmap=CMAP,
@@ -797,17 +803,14 @@ class SocioEconomicTable:
             legend=True,
             cax=cax,
             vmin=0,
-            # vmax=1100,
         )
         axes[0].set_xlim(self.bounds[0], self.bounds[1])
         axes[0].set_ylim(self.bounds[2], self.bounds[3])
         axes[0].axis("off")
-        # ctx.add_basemap(ax=axes[0], source=ctx.providers.Stamen.Terrain)
 
-        # Plot the histogram
-        # axes[1].set_title(title)
+        # ---- Histogram ---------------------------------------------------
         histplot = sns.histplot(
-            data=self.economic_cost_df,
+            data=economic_cost_df,
             x=var_name,
             color="steelblue",
             alpha=0.75,
@@ -816,5 +819,6 @@ class SocioEconomicTable:
         )
         histplot.set_xlabel(label)
         histplot.set_ylabel("Number of ZIP code tabulation areas")
+
         fig.tight_layout()
-        plt.show()
+        plt.close(fig)   # free memory – interact already shows the widget

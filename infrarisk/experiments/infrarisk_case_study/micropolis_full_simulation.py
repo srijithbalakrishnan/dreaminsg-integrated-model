@@ -52,7 +52,8 @@ class FullSimulation:
 
     def generate_disruptions(self):
 
-        disruption_list = ["flood"]
+        # disruption_list = ["flood"]
+        disruption_list = ["random"]
 
         buffer_list = [100]
         intensity_list = (
@@ -74,6 +75,19 @@ class FullSimulation:
                 intensity=intensity,
                 name="point",
             )
+            event.set_affected_components(
+                self.network.integrated_graph, plot_components=False
+            )
+        elif disruptive_event == "random":
+            compon_count_dict = {
+                "water": random.randint(0, 20),
+                "power": random.randint(0, 20),
+                "transpo": random.randint(0, 20),
+            }
+            micropolis_map_extents = self.network.get_map_extends()
+            event = hazard.RandomDisruption(failure_count=compon_count_dict, 
+                                       time_of_occurrence=6000,
+                                       name="Random disruption")
             event.set_affected_components(
                 self.network.integrated_graph, plot_components=False
             )

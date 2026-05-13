@@ -18,8 +18,8 @@ The browser would open showing available notebook kernels. Select ``infrarisk`` 
 a Jupyter notebook that can run the integrated simulation model.
 
 
-Shelby county simulation demonstration
---------------------------------------
+Simulation of interdependent effects in infrastructure networks and Resilience Quantification
+---------------------------------------------------------------------------------------------
 
 Load required modules and libraries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -165,35 +165,6 @@ Similarly, the access_table can be printed which will return a table as shown in
 |   P_B49L0 |     T_J54 |      power | Bus connected to load |      698.73 |
 +-----------+-----------+------------+-----------------------+-------------+
 
-Load socioeconomic data for Shelby County
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Before we initiate the simulations, we need to download the socio-economic data for Shelby county. The following
-code does that. Please note that socioeconomic analysis is only specific to Shlby county and may not work in the case of other 
-available networks in this package. The user may use the socio-economic module for retrieving data for other counties in the United States.
-
-.. code-block:: python
-
-    year, tract, county, state = 2017, '*', 157, 47
-    county = 157
-    se_dir = MAIN_DIR/f"{network_dir}/gis/se_data"
-    if not os.path.exists(se_dir):
-        os.makedirs(se_dir)
-
-    ShelbySE = se_analysis.SocioEconomicTable(name = 'Shelby', year = year, 
-                                                tract = tract, state = state, 
-                                                county = county, dir = se_dir)
-
-    ShelbySE.download_se_data(force_download = False)
-    ShelbySE.create_setable()
-
-
-.. code-block:: python
-
-    ShelbySE.plot_interactive(type = "annual receipts")
-
-The above code would produce an interative map showing the annual industrial output from various 
-zipcodes of Shelby County in Tennessee.
 
 Generate disaster scenario and set infrastructure component disruptions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -318,6 +289,43 @@ values.
 
     resilience_metrics.set_weighted_auc_metrics()
 
+
+Simulation of effects on businesses due to infrastructure failures
+-------------------------------------------------------------------
+
+Load socioeconomic data for Shelby County
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Before we initiate the simulations, we need to download the socio-economic data for Shelby county. The following
+code does that. Please note that socioeconomic analysis is only specific to Shlby county and may not work in the case of other 
+available networks in this package. The user may use the socio-economic module for retrieving data for other counties in the United States.
+
+.. code-block:: python
+
+    year, tract, county, state = 2017, '*', 157, 47
+    county = 157
+    se_dir = MAIN_DIR/f"{network_dir}/gis/se_data"
+    if not os.path.exists(se_dir):
+        os.makedirs(se_dir)
+
+    ShelbySE = se_analysis.SocioEconomicTable(name = 'Shelby', year = year, 
+                                                tract = tract, state = state, 
+                                                county = county, dir = se_dir)
+
+    ShelbySE.download_se_data(force_download = False)
+    ShelbySE.create_setable()
+
+
+.. code-block:: python
+
+    ShelbySE.plot_interactive(type = "annual receipts")
+
+The above code would produce an interative map showing the annual industrial output from various 
+zipcodes of Shelby County in Tennessee.
+
+Calculate economic costs of business disruptions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 In addition to the functional resilience values, we can also calculate the economic costs of business disruptions if the industry
 data is available for the network under study. The following code calculates the sector-wise economic costs of business disruptions.
 
@@ -329,7 +337,7 @@ data is available for the network under study. The following code calculates the
 
 
 Plot simulation results
-^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
 
 The network performance of water and power systems during the simulation can be visualized using the following code.
 
