@@ -8,32 +8,53 @@ A Python -based simulation platform to simulate the interdependent failures in i
 
 ### Prerequisites
 
-- Operating System: Windows 10
-- Python 3.7+
-- Anaconda
+- Operating System: Windows 10/11, macOS, or Linux
+- Python 3.8 or higher
+- Anaconda or Miniconda (recommended)
 
 ### Installation
 
 Please follow the steps below to setup the InfraRisk Integrated Simulation Platform.
 
- 1. Clone the InfraRisk integrated simulation platfom repository from [Github](https://github.com/srijithbalakrishnan/dreaminsg-integrated-model.git).
+#### Option 1: Using Conda (Recommended)
 
-```
+ 1. Clone the InfraRisk integrated simulation platform repository from [Github](https://github.com/srijithbalakrishnan/dreaminsg-integrated-model.git).
+
+```bash
 git clone https://github.com/srijithbalakrishnan/dreaminsg-integrated-model.git folder-name
+cd folder-name
 ```
 
  2. Create a new python virtual environment with all required packages needed to run the simulation platform
 
- ```
- conda env create --name ENV_NAME --file=environment.yml
+ ```bash
+ conda env create --name infrarisk --file=environment.yml
  ```
 
- 3. Install the InfraRisk package in the created environment. Go to the project folder and run the following command:
+ 3. Install the InfraRisk package in the created environment:
 
+ ```bash
+ conda activate infrarisk
+ pip install -e .
  ```
- conda activate redcar
- pip install –-editable .
- ```
+
+#### Option 2: Using pip only
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/srijithbalakrishnan/dreaminsg-integrated-model.git folder-name
+cd folder-name
+```
+
+2. Create a virtual environment and install:
+
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+pip install -e .
+```
 
 ## Help
 
